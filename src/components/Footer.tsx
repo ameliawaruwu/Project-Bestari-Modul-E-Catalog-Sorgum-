@@ -6,14 +6,14 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
-  const { t } = useApp();
+  const { t, shopSettings } = useApp();
 
   return (
     <footer className="w-full py-16 lg:py-20 px-4 md:px-10 bg-[#2b3e1d] text-white border-t border-[#c4c8bc]/20">
       <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12 lg:gap-16">
         <div className="max-w-sm">
           <span className="font-['Playfair_Display'] text-2xl lg:text-3xl font-semibold text-white mb-4 block">
-            BESTARI
+            {shopSettings.storeName || 'BESTARI'}
           </span>
           <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-white/90 leading-relaxed mb-6">
             {t(
@@ -134,8 +134,8 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#fde08b] mb-4 uppercase tracking-widest">
               {t('Layanan Pelanggan', 'Customer Service')}
             </h5>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">WhatsApp: +62 812-3456-7890</p>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-4 text-white/90">Email: halo@bestari.id</p>
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">WhatsApp: {shopSettings.whatsappNumber}</p>
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-4 text-white/90">Email: {shopSettings.storeEmail || 'halo@bestari.id'}</p>
             <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/70">
               {t('Senin - Jumat: 09:00 - 18:00 WIB', 'Monday - Friday: 09:00 - 18:00 WIB')}
             </p>

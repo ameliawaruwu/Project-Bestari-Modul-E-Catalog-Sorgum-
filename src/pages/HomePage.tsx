@@ -3,7 +3,6 @@ import { HeroBanner } from '../components/HeroBanner';
 import { ProductCard } from '../components/ProductCard';
 import { BenefitsSection } from '../components/BenefitsSection';
 import { Product, Article } from '../types';
-import { productApi } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface HomePageProps {
@@ -20,32 +19,43 @@ export const HomePage: React.FC<HomePageProps> = ({
   setActiveTab,
   searchQuery,
 }) => {
-  const { t } = useApp();
+  const { t, products: allProducts, landingContent } = useApp();
   const [selectedCategory] = useState('semua');
   const [sortBy] = useState('populer');
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
 
-  // Fetch products data using product API service
+  // Filter products reactively from centralized state
   useEffect(() => {
-    const fetchProductsData = async () => {
-      setLoadingProducts(true);
-      try {
-        const data = await productApi.getProducts({
-          category: selectedCategory,
-          searchQuery: searchQuery,
-          sortBy: sortBy as any,
-        });
-        setProducts(data);
-      } catch (err) {
-        console.error('Failed to fetch products', err);
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
+    setLoadingProducts(true);
+    let result = [...allProducts];
 
-    fetchProductsData();
-  }, [selectedCategory, sortBy, searchQuery]);
+    if (selectedCategory && selectedCategory !== 'semua' && selectedCategory !== 'all') {
+      const cat = selectedCategory.toLowerCase();
+      result = result.filter((p) => p.category === cat);
+    }
+
+    if (searchQuery && searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase().trim();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.categoryLabel.toLowerCase().includes(q)
+      );
+    }
+
+    if (sortBy) {
+      if (sortBy === 'harga-terendah') {
+        result.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'harga-tertinggi') {
+        result.sort((a, b) => b.price - a.price);
+      }
+    }
+
+    setProducts(result);
+    setLoadingProducts(false);
+  }, [allProducts, selectedCategory, sortBy, searchQuery]);
 
   return (
     <div className="animate-fadeIn bg-[#faf8f5]">
@@ -69,7 +79,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative rounded-xl overflow-hidden shadow-sm max-h-[420px] border border-[#c4c8bc]/40">
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl"
+              src={landingContent.storyImageUrl}
               alt="Petani Sorgum Bestari"
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
             />
@@ -77,22 +87,16 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <div className="space-y-6">
             <span className="text-[#162809] font-['Plus_Jakarta_Sans'] text-xs font-bold uppercase tracking-widest bg-[#fade88]/30 px-3 py-1 rounded border border-[#fade88]/40">
-              {t('Kisah Kami', 'Our Story')}
+              {t(landingContent.storyTaglineId, landingContent.storyTaglineEn)}
             </span>
             <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-[#162809] leading-tight">
-              {t('Kembalinya Warisan Pangan Leluhur Nusantara', 'The Return of the Ancestral Food Heritage of Nusantara')}
+              {t(landingContent.storyTitleId, landingContent.storyTitleEn)}
             </h2>
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/90 leading-relaxed font-semibold">
-              {t(
-                'Di Bestari, kami percaya bahwa kesehatan sejati dimulai dari apa yang ditanam oleh alam secara murni. Bersama para petani mitra lokal, kami menghidupkan kembali sorgum—tanaman super (*superfood*) kaya serat and bebas gluten yang telah menutrisi generasi sebelum kita.',
-                'At Bestari, we believe that true health starts from what nature grows purely. Together with local partner farmers, we revive sorghum—a fiber-rich and gluten-free superfood that has nourished generations before us.'
-              )}
+              {t(landingContent.storyDesc1Id, landingContent.storyDesc1En)}
             </p>
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/80 leading-relaxed font-normal">
-              {t(
-                'Setiap butir Bestari adalah wujud komitmen kami untuk menghadirkan kualitas terbaik dari tanah Indonesia langsung ke meja makan keluarga Anda, sambil melestarikan keseimbangan ekosistem bumi.',
-                'Every grain of Bestari is a testament to our commitment to bringing the finest quality from Indonesian soil straight to your family dining table, while preserving the balance of the Earth\'s ecosystem.'
-              )}
+              {t(landingContent.storyDesc2Id, landingContent.storyDesc2En)}
             </p>
           </div>
         </div>
@@ -101,13 +105,10 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 3. Section Title: Koleksi Produk Pilihan */}
       <div id="product-catalog-section" className="text-center pt-20 pb-10 px-4 md:px-10">
         <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#162809] mb-4">
-          {t('Koleksi Produk Pilihan', 'Featured Product Collection')}
+          {t(landingContent.featuredTitleId, landingContent.featuredTitleEn)}
         </h2>
         <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/80 max-w-xl mx-auto leading-relaxed font-semibold">
-          {t(
-            'Temukan berbagai olahan sorgum organik berkualitas tinggi, mulai dari beras sehat, tepung serbaguna, hingga camilan bergizi',
-            'Discover a variety of high-quality organic sorghum products, ranging from healthy rice, all-purpose flour, to nutritious snacks.'
-          )}
+          {t(landingContent.featuredDescId, landingContent.featuredDescEn)}
         </p>
       </div>
 

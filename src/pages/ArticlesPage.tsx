@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
 import { Article } from '../types';
-import { articleApi } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface ArticlesPageProps {
@@ -13,8 +12,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   selectedArticle,
   onClearSelectedArticle,
 }) => {
-  const { t } = useApp();
-  const [articles, setArticles] = useState<Article[]>([]);
+  const { t, articles: allArticles } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -26,25 +24,20 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     }
   }, [selectedArticle]);
 
+  // Load articles from context (excludes Promosi/Promotion category)
   useEffect(() => {
-    const fetchArticles = async () => {
-      setLoading(true);
-      try {
-        const data = await articleApi.getArticles();
-        setArticles(data);
-      } catch (err) {
-        console.error('Failed to load articles', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(false);
+  }, [allArticles]);
 
-    fetchArticles();
-  }, []);
+  // Filter out promotional articles — they appear only in Checkout
+  const publicArticles = allArticles.filter(
+    (a) => a.category !== 'Promosi' && a.category !== 'Promotion'
+  );
+
 
   const categories = [t('Semua', 'All'), t('Budidaya', 'Cultivation'), t('Nutrisi', 'Nutrition'), t('Inspirasi', 'Inspiration')];
 
-  const filteredArticles = articles.filter((art) => {
+  const filteredArticles = publicArticles.filter((art) => {
     const matchesCategory = selectedCategory === 'Semua' || art.category === selectedCategory;
     const matchesSearch =
       art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -205,7 +198,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                 {t('Artikel Lainnya', 'Other Articles')}
               </h4>
               <div className="space-y-4">
-                {articles
+                {publicArticles
                   .filter((a) => a.id !== activeArticle.id)
                   .slice(0, 3)
                   .map((other) => (

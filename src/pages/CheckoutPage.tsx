@@ -13,17 +13,24 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   onNavigateCart,
   onOrderComplete,
 }) => {
-  const { t } = useApp();
+  const { t, shopSettings, articles, appliedDiscount, setAppliedDiscount, currentUser } = useApp();
+
+  // Promotional articles for the checkout promotions section
+  const promoArticles = articles.filter(
+    (a) => a.category === 'Promosi' || a.category === 'Promotion'
+  );
+  const [promoExpanded, setPromoExpanded] = useState(false);
+
   const [formData, setFormData] = useState<CheckoutData>({
-    customerName: 'Budi Santoso',
-    customerPhone: '8123456789',
-    customerEmail: 'alamat@email.com',
-    address: 'Jl. Nusantara No. 88, RT 02/RW 05',
-    province: 'Jawa Barat',
-    city: 'Bandung',
-    district: 'Coblong',
-    postalCode: '40132',
-    notes: 'Titip di satpam jika tidak ada orang',
+    customerName: currentUser?.name || '',
+    customerPhone: '',
+    customerEmail: currentUser?.email || '',
+    address: '',
+    province: '',
+    city: '',
+    district: '',
+    postalCode: '',
+    notes: '',
     paymentMethod: 'cod',
   });
 
@@ -32,8 +39,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const discount = appliedDiscount > 0 ? Math.round(subtotal * (appliedDiscount / 100)) : 0;
   const shippingFee = cart.length > 0 ? 15000 : 0;
-  const totalAmount = subtotal + shippingFee;
+  const totalAmount = subtotal - discount + shippingFee;
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -332,6 +341,12 @@ ${
                   <span>Ongkos Kirim</span>
                   <span className="font-semibold text-[#1d1b17]">Rp {shippingFee.toLocaleString('id-ID')}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-green-700">
+                    <span>Diskon Promo ({appliedDiscount}%)</span>
+                    <span className="font-semibold">- Rp {discount.toLocaleString('id-ID')}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center pt-3 border-t border-[#c4c8bc]/40">
                   <span className="font-bold text-sm sm:text-base text-[#162809]">Total Bayar</span>
                   <span className="font-['Playfair_Display'] font-bold text-2xl text-[#1d1b17]">
@@ -340,6 +355,40 @@ ${
                 </div>
               </div>
             </div>
+
+            {/* Promotions Section */}
+            {promoArticles.length > 0 && (
+              <div className="bg-[#fefce8] border border-[#fade88] rounded-2xl p-6 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setPromoExpanded(!promoExpanded)}
+                  className="flex items-center justify-between w-full cursor-pointer"
+                >
+                  <h2 className="font-['Playfair_Display'] text-lg font-bold text-[#715c13] flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xl">local_offer</span>
+                    {t('Promosi & Penawaran', 'Promotions & Offers')}
+                  </h2>
+                  <span className="material-symbols-outlined text-[#715c13]">
+                    {promoExpanded ? 'expand_less' : 'expand_more'}
+                  </span>
+                </button>
+                {promoExpanded && (
+                  <div className="mt-4 space-y-3">
+                    {promoArticles.map((promo) => (
+                      <div key={promo.id} className="bg-white rounded-xl p-4 border border-[#fade88]/60 flex items-start gap-3">
+                        {promo.imageUrl && (
+                          <img src={promo.imageUrl} alt={promo.title} className="w-14 h-14 object-cover rounded-lg flex-shrink-0" />
+                        )}
+                        <div className="flex-grow">
+                          <p className="font-bold text-xs text-[#162809]">{promo.title}</p>
+                          <p className="text-[11px] text-[#44483f] mt-1 line-clamp-2">{promo.snippet}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Payment Method Card */}
             <div className="bg-[#f9f3ec] rounded-2xl p-6 sm:p-8 shadow-sm border border-[#c4c8bc]/30">

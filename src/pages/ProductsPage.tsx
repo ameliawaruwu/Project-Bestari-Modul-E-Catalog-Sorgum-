@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ProductCard } from '../components/ProductCard';
 import { Product } from '../types';
-import { productApi } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface ProductsPageProps {
@@ -15,42 +14,47 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   onClickProduct,
   searchQuery,
 }) => {
-  const { t } = useApp();
+  const { t, products: allProducts } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('semua');
   const [sortBy, setSortBy] = useState('populer');
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Sync parent search query changes (if any)
+  // Sync parent search query changes
   useEffect(() => {
     setLocalSearchQuery(searchQuery || '');
   }, [searchQuery]);
 
+  // Filter and sort products reactively from centralized context
   useEffect(() => {
-    const fetchProducts = async () => {
+    const timer = setTimeout(() => {
       setLoading(true);
-      try {
-        const data = await productApi.getProducts({
-          category: selectedCategory,
-          searchQuery: localSearchQuery,
-          sortBy: sortBy as any,
-        });
-        setProducts(data);
-      } catch (err) {
-        console.error('Failed to load products', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      let result = [...allProducts];
 
-    // Debounce search input typing
-    const delayDebounceFn = setTimeout(() => {
-      fetchProducts();
+      if (selectedCategory && selectedCategory !== 'semua') {
+        result = result.filter((p) => p.category === selectedCategory);
+      }
+
+      if (localSearchQuery.trim()) {
+        const q = localSearchQuery.toLowerCase();
+        result = result.filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            p.description.toLowerCase().includes(q) ||
+            p.categoryLabel.toLowerCase().includes(q)
+        );
+      }
+
+      if (sortBy === 'harga-terendah') result.sort((a, b) => a.price - b.price);
+      else if (sortBy === 'harga-tertinggi') result.sort((a, b) => b.price - a.price);
+
+      setProducts(result);
+      setLoading(false);
     }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [selectedCategory, sortBy, localSearchQuery]);
+    return () => clearTimeout(timer);
+  }, [allProducts, selectedCategory, sortBy, localSearchQuery]);
 
   const categories = [
     { id: 'semua', label: t('Semua', 'All') },

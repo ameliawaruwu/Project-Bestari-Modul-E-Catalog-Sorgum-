@@ -40,8 +40,6 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
   const [isCustomCategoryMode, setIsCustomCategoryMode] = useState(false);
   const [status, setStatus] = useState<'AKTIF' | 'DRAFT'>('AKTIF');
   const [order, setOrder] = useState<number>(1);
-  const [tagInput, setTagInput] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
 
   // Validation Errors State
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -66,7 +64,6 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
 
       setStatus(initialFaq.status || 'AKTIF');
       setOrder(initialFaq.order || 1);
-      setTags(initialFaq.tags || []);
     } else {
       setQuestion('');
       setAnswer('');
@@ -75,24 +72,9 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
       setCustomCategory('');
       setStatus('AKTIF');
       setOrder(1);
-      setTags(['sorgum', 'gluten-free']);
     }
     setErrors({});
   }, [initialFaq]);
-
-  const handleAddTag = (e: React.KeyboardEvent | React.MouseEvent) => {
-    if ('key' in e && e.key !== 'Enter') return;
-    e.preventDefault();
-    const trimmed = tagInput.trim().toLowerCase().replace(/^#/, '');
-    if (trimmed && !tags.includes(trimmed)) {
-      setTags([...tags, trimmed]);
-      setTagInput('');
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((t) => t !== tagToRemove));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +108,6 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
       category: finalCategory,
       status,
       order: Number(order) || 1,
-      tags,
     });
   };
 
@@ -277,53 +258,6 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                 } focus:outline-none focus:ring-2 focus:ring-[#162809] leading-relaxed`}
               />
               {errors.answer && <p className="text-xs text-red-500 mt-1">{errors.answer}</p>}
-            </div>
-
-            {/* Tags / Keywords Input */}
-            <div>
-              <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
-                Tag &amp; Kata Kunci Pencarian (Opsional)
-              </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  placeholder="Ketik tag lalu tekan Enter (misal: gluten-free)"
-                  className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-[#c4c8bc] bg-white focus:outline-none focus:ring-2 focus:ring-[#162809]"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddTag}
-                  className="px-4 py-2 bg-[#f3ede6] hover:bg-[#e2dacd] text-[#162809] text-xs font-bold rounded-xl transition-colors cursor-pointer"
-                >
-                  Tambah Tag
-                </button>
-              </div>
-
-              {/* Tags Display */}
-              <div className="flex flex-wrap gap-1.5 min-h-[28px]">
-                {tags.length === 0 ? (
-                  <span className="text-[11px] text-gray-400 italic">Belum ada tag ditambahkan</span>
-                ) : (
-                  tags.map((t) => (
-                    <span
-                      key={t}
-                      className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#f3ede6] text-[#162809] font-medium text-xs rounded-lg border border-[#c4c8bc]/60"
-                    >
-                      #{t}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(t)}
-                        className="hover:text-red-600 cursor-pointer ml-0.5"
-                      >
-                        &times;
-                      </button>
-                    </span>
-                  ))
-                )}
-              </div>
             </div>
           </div>
 

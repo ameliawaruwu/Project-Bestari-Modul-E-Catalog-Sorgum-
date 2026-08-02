@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { authApi } from '../api';
 import { User } from '../types';
 import { useApp } from '../context/AppContext';
 
@@ -14,7 +13,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onNavigateRegister,
   onNavigateHome,
 }) => {
-  const { t } = useApp();
+  const { t, login } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -30,7 +29,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setLoading(true);
 
     try {
-      const res = await authApi.login({
+      const res = await login({
         email,
         password,
         rememberMe,

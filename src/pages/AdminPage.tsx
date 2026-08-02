@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { User, Order, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
-import { orderApi, productApi, faqApi } from '../api';
+import { useApp } from '../context/AppContext';
 
 import { AdminSidebar } from '../components/admin/AdminSidebar';
 import { AdminHeader } from '../components/admin/AdminHeader';
@@ -35,6 +35,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   onLogout,
   showToast,
 }) => {
+  const {
+    products,
+    saveProduct,
+    deleteProduct,
+    faqs,
+    saveFaq,
+    deleteFaq,
+    toggleFaqStatus,
+    reorderFaq,
+    articles,
+    saveArticle,
+    deleteArticle,
+    banners,
+    saveBanner,
+    deleteBanner,
+    toggleBanner,
+    orders,
+    updateOrderStatus,
+    deleteOrder,
+  } = useApp();
+
   // Main Navigation State
   const [activeNav, setActiveNav] = useState<AdminActiveNav>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -49,36 +70,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null);
   const [deletingArticle, setDeletingArticle] = useState<ArticleItem | null>(null);
 
-  // Real & Mock Data State
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [, setLoading] = useState(true);
-
   // Order selection & Proof Modal State
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [proofModalUrl, setProofModalUrl] = useState<string | null>(null);
-
-  // Banners state for Pengaturan Landing
-  const [banners, setBanners] = useState<BannerSlide[]>([
-    {
-      id: 'b-1',
-      title: 'Panen Raya Sorgum',
-      uploadDate: '12 Okt 2023',
-      targetLink: 'Informasi: Budidaya Lokal',
-      image:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl',
-      active: true,
-    },
-    {
-      id: 'b-2',
-      title: 'Premium Flour Promo',
-      uploadDate: '05 Okt 2023',
-      targetLink: 'Detail Produk: Tepung Sorgum Putih',
-      image:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuA8wY4rl62cbf__Lmm6OcK6rlnQkthCQP-y7zpoy-tBoB5HOLHpQwSJn0cXw3lZWP1Y8xHrsN1V-eWwjfECt57oXWKH3xB_2E0dg47SLfD7yxZcJfcm830KEZ5_aLP4-nh-4UQrLF4hYkurAbuRJyO065v-dquECxPRORXeR5oKsJONK4OD3xskagnGH9TCjYv5a8V9hq0Qxu0Mr4EQv9LftQeAey3sPDBrw5HPD5OCeqEsyZ7pAqdF',
-      active: true,
-    },
-  ]);
 
   // Product Active Status & Stock Maps
   const [productActiveMap, setProductActiveMap] = useState<Record<string, boolean>>({
@@ -103,136 +97,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     'prod-8': 50,
   });
 
-  // Articles state for Kelola Info
-  const [articles, setArticles] = useState<ArticleItem[]>([
-    {
-      id: 'art-1',
-      title: 'Manfaat Bebas Gluten dari Sorghum Lokal',
-      category: 'Kesehatan & Nutrisi',
-      date: '10 Okt 2023',
-      author: 'Tim Nutrisi Bestari',
-      views: 342,
-      content: 'Sorgum merupakan pangan lokal kaya serat yang 100% bebas gluten. Ideal untuk konsumsi harian sehat.',
-    },
-    {
-      id: 'art-2',
-      title: 'Cara Mengolah Tepung Sorgum untuk Kue Kering Premium',
-      category: 'Resep & Kuliner',
-      date: '08 Okt 2023',
-      author: 'Chef Artisan Bestari',
-      views: 512,
-      content: 'Tepung sorgum memiliki tekstur halus dan wangi khas yang sangat cocok untuk kukis dan roti sehat.',
-    },
-  ]);
-
-  // FAQ state for Kelola FAQ
-  const [faqs, setFaqs] = useState<FAQItem[]>([
-    {
-      id: 'faq-1',
-      question: 'Apakah tepung sorgum Bestari 100% Bebas Gluten?',
-      answer: 'Ya, seluruh produk olahan sorgum kami diproses secara khusus tanpa kontaminasi gandum gluten.',
-      category: 'Produk & Nutrisi',
-    },
-    {
-      id: 'faq-2',
-      question: 'Berapa lama estimasi pengiriman pesanan?',
-      answer: 'Estimasi pengiriman 1-3 hari kerja untuk area Jawa & Bali, dan 3-5 hari kerja untuk luar pulau.',
-      category: 'Pengiriman & Layanan',
-    },
-  ]);
-
-  // Load initial orders & products
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const prodData = await productApi.getProducts({});
-        setProducts(prodData);
-
-        const fetchedOrders = await orderApi.getOrders();
-        const fetchedFaqs = await faqApi.getAdminFaqs();
-        if (fetchedFaqs && fetchedFaqs.length > 0) {
-          setFaqs(fetchedFaqs);
-        }
-        if (fetchedOrders.length === 0 && prodData.length > 0) {
-          const defaultOrders: Order[] = [
-            {
-              id: '#BST-001',
-              customerName: 'Budi Darmawan',
-              customerPhone: '+62 812-3456-7890',
-              customerEmail: 'budi.darmawan@gmail.com',
-              paymentMethod: 'qris',
-              totalAmount: 145000,
-              status: 'Pending',
-              createdAt: '24/10 14:20',
-              shippingAddress:
-                'Jl. Mawar Indah No. 42, RT 05/RW 03, Kec. Menteng, Kota Jakarta Pusat, DKI Jakarta, 10310',
-              paymentProofUrl:
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuCPQMsd7Kd_hNj8G033okD79GI3qA_F-i-IYr3c-_e_iUwjXcjhUbUbTVAuqvKmXNxO6wpgRFmXqNpdc97z2TgX4_iwb8mTjWK-LUaOkag6jVb6ZwyOWegGzS0H7euVOucs6DKTNHvWrFAqGbXmus4D8E5zDk_8t-9WTv3yektpmYb7j5kGU-nDR2PIV-UHaWsC6PyDQBJ456LsmzieiGCMQuHxEw5K4YjJLF3nWVlmxUl8QdAWpvA',
-              items: [
-                {
-                  product: prodData[0] || {
-                    id: 'p-1',
-                    name: 'Tepung Sorgum Premium',
-                    unitInfo: 'Kemasan 500g - Organik',
-                    price: 45000,
-                    category: 'tepung',
-                    categoryLabel: 'Tepung Sorgum',
-                    formattedPrice: 'Rp 45.000',
-                    weight: '500g',
-                    glutenFree: true,
-                    organic: true,
-                    image:
-                      'https://lh3.googleusercontent.com/aida-public/AB6AXuB47H8b2Fa-buEzuC_-FL8mqe031hSy0mrqbCVvz3hVuIMFOyIleW4O1rWj9Iwb_CVUasfklXIoNMmi8OtlOGTxhyNmV0SinybJgXsecw0Z-V7aj5LHLaijXUkvBQT5qsi05bxLpfC1NxGTD4HGeRhcu5GvhY46YiepmRP5m5ANcPvvuKI2QG6R3XnnQ149_-vk8QV7QSqKmj5ft033FwqRDcGYkmluzQNTgi1m13-YhUscZVIQnL0',
-                    description: 'Tepung sorgum premium organik.',
-                  },
-                  quantity: 2,
-                },
-                {
-                  product: prodData[1] || {
-                    id: 'p-2',
-                    name: 'Biji Sorgum Utuh',
-                    unitInfo: 'Kemasan 1kg - Grade A',
-                    price: 35000,
-                    category: 'beras',
-                    categoryLabel: 'Beras Sorgum',
-                    formattedPrice: 'Rp 35.000',
-                    weight: '1kg',
-                    glutenFree: true,
-                    organic: true,
-                    image:
-                      'https://lh3.googleusercontent.com/aida-public/AB6AXuAPWNRDFs7qJkAYG-p-Cw4L4TAeekDjtpkTGzPjBCbbthIMsb36yIkCgdw7neRx2r8JJBaJNLt-corzUKx2tozRozMqGOogMGHAWgWDg9RuztAKeCATzvVShwEJdrrI8n0wGZx8NFuFHIerZjm6_1LHV4vMfukyhjBKwxAY3BlQA9eEcN5JmcaM3rBlMxQrp79jy0Qd343F-MBM_Xgi6ogILZZOA3MHNkz5ASJIXjKej-a5yClzixM',
-                    description: 'Biji sorgum utuh berkualitas tinggi.',
-                  },
-                  quantity: 1,
-                },
-              ],
-            },
-          ];
-          setOrders(defaultOrders);
-        } else if (fetchedOrders.length > 0) {
-          setOrders(fetchedOrders);
-        }
-      } catch (err) {
-        console.error('Error loading admin data', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
   // Handlers for Orders
   const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
-    setOrders((prev) =>
-      prev.map((ord) => (ord.id === orderId ? { ...ord, status: newStatus } : ord))
-    );
+    updateOrderStatus(orderId, newStatus);
     showToast(`Status pesanan ${orderId} diperbarui ke ${newStatus}`);
   };
 
   const handleDeleteOrder = (id: string) => {
-    setOrders((prev) => prev.filter((o) => o.id !== id));
+    deleteOrder(id);
     if (selectedOrderId === id) {
       setSelectedOrderId(null);
     }
@@ -264,35 +136,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   // Handlers for Banners
   const handleToggleBanner = (id: string) => {
-    setBanners((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, active: !b.active } : b))
-    );
+    toggleBanner(id);
     showToast('Status keaktifan banner diperbarui.');
   };
 
   const handleDeleteBanner = (id: string) => {
-    setBanners((prev) => prev.filter((b) => b.id !== id));
+    deleteBanner(id);
     showToast('Banner berhasil dihapus.');
   };
 
   const handleSaveBanner = (data: { id?: string; title: string; targetLink: string; image: string }) => {
-    if (data.id) {
-      setBanners((prev) =>
-        prev.map((b) => (b.id === data.id ? { ...b, title: data.title, targetLink: data.targetLink, image: data.image } : b))
-      );
-      showToast('Perubahan banner berhasil disimpan!');
-    } else {
-      const newBanner: BannerSlide = {
-        id: `b-${Date.now()}`,
-        title: data.title,
-        uploadDate: 'Hari Ini',
-        targetLink: data.targetLink,
-        image: data.image,
-        active: true,
-      };
-      setBanners((prev) => [newBanner, ...prev]);
-      showToast('Banner baru berhasil ditambahkan!');
-    }
+    saveBanner(data);
+    showToast(data.id ? 'Perubahan banner berhasil disimpan!' : 'Banner baru berhasil ditambahkan!');
     setEditingBanner(null);
   };
 
@@ -305,191 +160,55 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     showToast('Status keaktifan produk berhasil diperbarui.');
   };
 
-  const handleDeleteProduct = (id: string, name: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const handleDeleteProduct = async (id: string, name: string) => {
+    deleteProduct(id);
     showToast(`Produk "${name}" berhasil dihapus dari katalog.`);
   };
 
-  const handleSaveProduct = (data: {
-    id?: string;
-    name: string;
-    category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
-    price: number;
-    unitInfo: string;
-    weight: string;
-    badge?: 'BEST SELLER' | 'DISKON 15%' | 'BARU' | '';
-    image: string;
-    stock: number;
-    description: string;
-    glutenFree: boolean;
-    organic: boolean;
-    specification?: string;
-    shippingInfo?: string;
-  }) => {
-    const catLabelMap: Record<string, string> = {
-      beras: 'Beras Sorgum',
-      tepung: 'Tepung Sorgum',
-      camilan: 'Camilan Sehat',
-      pemanis: 'Pemanis Alami',
-      benih: 'Benih Sorgum',
-    };
-
+  const handleSaveProduct = async (data: any) => {
+    saveProduct(data);
+    const stockNum = data.stock ?? 100;
     if (data.id) {
-      const exists = products.some((p) => p.id === data.id);
-      if (exists) {
-        setProducts((prev) =>
-          prev.map((p) => {
-            if (p.id === data.id) {
-              return {
-                ...p,
-                name: data.name,
-                category: data.category,
-                categoryLabel: catLabelMap[data.category] || 'Produk Sorgum',
-                price: data.price,
-                formattedPrice: `IDR ${data.price.toLocaleString('id-ID')}`,
-                unitInfo: data.unitInfo,
-                weight: data.weight,
-                badge: (data.badge as any) || undefined,
-                image: data.image,
-                description: data.description,
-                glutenFree: data.glutenFree,
-                organic: data.organic,
-                specification: data.specification,
-                shippingInfo: data.shippingInfo,
-              };
-            }
-            return p;
-          })
-        );
-        setProductStockMap((prev) => ({ ...prev, [data.id!]: data.stock }));
-        showToast(`Katalog produk "${data.name}" berhasil diperbarui!`);
-      } else {
-        const newProd: Product = {
-          id: data.id,
-          name: data.name,
-          category: data.category,
-          categoryLabel: catLabelMap[data.category] || 'Produk Sorgum',
-          price: data.price,
-          formattedPrice: `IDR ${data.price.toLocaleString('id-ID')}`,
-          unitInfo: data.unitInfo,
-          weight: data.weight,
-          badge: (data.badge as any) || undefined,
-          image: data.image,
-          description: data.description || 'Produk olahan sorgum berkualitas tinggi.',
-          glutenFree: data.glutenFree,
-          organic: data.organic,
-          specification: data.specification,
-          shippingInfo: data.shippingInfo,
-        };
-        setProducts((prev) => [newProd, ...prev]);
-        setProductActiveMap((prev) => ({ ...prev, [data.id!]: true }));
-        setProductStockMap((prev) => ({ ...prev, [data.id!]: data.stock || 100 }));
-        showToast(`Produk baru "${data.name}" berhasil ditambahkan!`);
-      }
+      setProductStockMap((prev) => ({ ...prev, [data.id!]: stockNum }));
+      showToast(`Katalog produk "${data.name}" berhasil diperbarui!`);
     } else {
-      const newId = `prod-${Date.now()}`;
-      const newProd: Product = {
-        id: newId,
-        name: data.name,
-        category: data.category,
-        categoryLabel: catLabelMap[data.category] || 'Produk Sorgum',
-        price: data.price,
-        formattedPrice: `IDR ${data.price.toLocaleString('id-ID')}`,
-        unitInfo: data.unitInfo,
-        weight: data.weight,
-        badge: (data.badge as any) || undefined,
-        image: data.image,
-        description: data.description || 'Produk olahan sorgum berkualitas tinggi.',
-        glutenFree: data.glutenFree,
-        organic: data.organic,
-        specification: data.specification,
-        shippingInfo: data.shippingInfo,
-      };
-      setProducts((prev) => [newProd, ...prev]);
-      setProductActiveMap((prev) => ({ ...prev, [newId]: true }));
-      setProductStockMap((prev) => ({ ...prev, [newId]: data.stock || 100 }));
+      setProductStockMap((prev) => ({ ...prev, [`prod-${Date.now()}`]: stockNum }));
       showToast(`Produk baru "${data.name}" berhasil ditambahkan!`);
     }
-
     setEditingProduct(null);
   };
 
   // Handlers for Articles
   const handleDeleteArticle = (id: string) => {
-    setArticles((prev) => prev.filter((a) => a.id !== id));
+    deleteArticle(id);
     showToast('Artikel berhasil dihapus.');
   };
 
-  const handleSaveArticle = (data: {
-    id?: string;
-    title: string;
-    category: string;
-    author: string;
-    date: string;
-    content: string;
-  }) => {
-    if (data.id) {
-      setArticles((prev) =>
-        prev.map((a) => (a.id === data.id ? { ...a, title: data.title, category: data.category, author: data.author, content: data.content } : a))
-      );
-      showToast('Perubahan artikel berhasil disimpan!');
-    } else {
-      const newArt: ArticleItem = {
-        id: `art-${Date.now()}`,
-        title: data.title,
-        category: data.category,
-        date: 'Hari ini',
-        author: data.author,
-        views: 1,
-        content: data.content,
-      };
-      setArticles((prev) => [newArt, ...prev]);
-      showToast('Artikel baru berhasil diterbitkan!');
-    }
+  const handleSaveArticle = (data: any) => {
+    saveArticle(data);
+    showToast(data.id ? 'Perubahan artikel berhasil disimpan!' : 'Artikel baru berhasil diterbitkan!');
     setEditingArticle(null);
   };
 
   // Handlers for FAQs
   const handleDeleteFaq = async (id: string) => {
-    await faqApi.deleteFaq(id);
-    const updated = await faqApi.getAdminFaqs();
-    setFaqs(updated);
+    deleteFaq(id);
     showToast('FAQ berhasil dihapus.');
   };
 
-  const handleSaveFaq = async (data: {
-    id?: string;
-    question: string;
-    answer: string;
-    category: string;
-    status: 'AKTIF' | 'DRAFT';
-    order?: number;
-    tags?: string[];
-  }) => {
-    await faqApi.saveFaq(data);
-    const updated = await faqApi.getAdminFaqs();
-    setFaqs(updated);
-    if (data.id) {
-      showToast('Perubahan FAQ berhasil disimpan!');
-    } else {
-      showToast('FAQ baru berhasil ditambahkan!');
-    }
+  const handleSaveFaq = async (data: any) => {
+    saveFaq(data);
+    showToast(data.id ? 'Perubahan FAQ berhasil disimpan!' : 'FAQ baru berhasil ditambahkan!');
     setEditingFaq(null);
   };
 
   const handleToggleFaqStatus = async (id: string) => {
-    const updatedItem = await faqApi.toggleStatus(id);
-    const updated = await faqApi.getAdminFaqs();
-    setFaqs(updated);
-    if (updatedItem) {
-      const statusText = updatedItem.status === 'AKTIF' ? 'Dipublikasikan (Aktif)' : 'Disembunyikan (Draft)';
-      showToast(`Status FAQ ${updatedItem.id} diubah ke ${statusText}`);
-    }
+    toggleFaqStatus(id);
+    showToast('Status keaktifan FAQ berhasil diperbarui.');
   };
 
   const handleReorderFaq = async (id: string, direction: 'UP' | 'DOWN') => {
-    const updated = await faqApi.reorderFaq(id, direction);
-    setFaqs(updated);
+    reorderFaq(id, direction);
     showToast('Urutan tampilan FAQ berhasil diperbarui!');
   };
 

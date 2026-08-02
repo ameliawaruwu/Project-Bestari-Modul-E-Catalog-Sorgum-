@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Order } from '../types';
-import { orderApi } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface OrdersPageProps {
@@ -8,24 +7,15 @@ interface OrdersPageProps {
 }
 
 export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) => {
-  const { t } = useApp();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { t, orders: allOrders, currentUser } = useApp();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const data = await orderApi.getOrders();
-        setOrders(data);
-      } catch (err) {
-        console.error('Failed to load orders', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
-  }, []);
+  // Show only orders belonging to the current logged-in user
+  const orders = allOrders.filter(
+    (o) => !currentUser || o.customerEmail === currentUser.email || o.userId === currentUser.id
+  );
+
+  const loading = false;
+
 
   return (
     <div className="pt-24 pb-20 px-4 md:px-10 max-w-4xl mx-auto animate-fadeIn min-h-screen">
@@ -84,7 +74,19 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
                     {t('Tanggal:', 'Date:')} {ord.createdAt}
                   </span>
                 </div>
-                <span className="self-start sm:self-auto bg-[#2b3e1d]/10 text-[#162809] border border-[#2b3e1d]/20 px-3 py-1 rounded-full text-xs font-bold">
+                <span
+                  className={`self-start sm:self-auto px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                    ord.status === 'Selesai'
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      : ord.status === 'Dikirim'
+                      ? 'bg-blue-100 text-blue-800 border-blue-300'
+                      : ord.status === 'Diproses'
+                      ? 'bg-purple-100 text-purple-800 border-purple-300'
+                      : ord.status === 'Dibatalkan'
+                      ? 'bg-red-100 text-red-800 border-red-300'
+                      : 'bg-amber-100 text-amber-800 border-amber-300'
+                  }`}
+                >
                   {ord.status}
                 </span>
               </div>

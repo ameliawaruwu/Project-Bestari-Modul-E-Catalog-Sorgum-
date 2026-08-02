@@ -18,7 +18,7 @@ import { QrisPaymentPage } from './pages/QrisPaymentPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { AdminPage } from './pages/AdminPage';
 import { Product, Article, CartItem, User, Order } from './types';
-import { authApi, orderApi, shopSettingsApi } from './api';
+import { useApp } from './context/AppContext';
 
 const PROTECTED_TABS = [
   'keranjang',
@@ -36,30 +36,28 @@ export function App() {
   const [activeTab, setActiveTab] = useState('beranda');
   const [redirectAfterLogin, setRedirectAfterLogin] = useState<string | null>(null);
 
-  // Fetch settings dynamically to build the floating WhatsApp button url
-  const settings = shopSettingsApi.getSettings();
-  const cleanWaNumber = settings.whatsappNumber.replace(/[^0-9]/g, '');
+  const {
+    currentUser: user,
+    cart,
+    addToCart,
+    updateCartQuantity,
+    removeCartItem,
+    clearCart,
+    shopSettings,
+    logout,
+    addOrder,
+    t
+  } = useApp();
+
+  const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '');
   const waUrl = `https://wa.me/${cleanWaNumber || '6281234567890'}`;
-  const [user, setUser] = useState<User | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  // Initialize session & cart from dedicated API services
-  useEffect(() => {
-    const initData = async () => {
-      const currentUser = await authApi.getCurrentUser();
-      setUser(currentUser);
-
-      const cartItems = await orderApi.getCart();
-      setCart(cartItems);
-    };
-    initData();
-  }, []);
 
   // Guard protected routes when user is not logged in
   useEffect(() => {
@@ -77,7 +75,7 @@ export function App() {
     }, 3000);
   };
 
-  const handleAddToCart = async (product: Product, quantity: number = 1) => {
+  const handleAddToCart = (product: Product, quantity: number = 1) => {
     if (!user) {
       showToast('Silakan masuk (login) terlebih dahulu untuk menambahkan produk.');
       setRedirectAfterLogin(activeTab);
@@ -85,40 +83,21 @@ export function App() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    const existingIndex = cart.findIndex((item) => item.product.id === product.id);
-    let updated: CartItem[];
-
-    if (existingIndex > -1) {
-      updated = [...cart];
-      updated[existingIndex].quantity += quantity;
-    } else {
-      updated = [...cart, { product, quantity }];
-    }
-
-    setCart(updated);
-    await orderApi.saveCart(updated);
+    addToCart(product, quantity);
     showToast(`${product.name} ditambahkan ke keranjang.`);
   };
 
-  const handleUpdateCartQuantity = async (productId: string, delta: number) => {
-    const updated = cart
-      .map((item) => (item.product.id === productId ? { ...item, quantity: item.quantity + delta } : item))
-      .filter((item) => item.quantity > 0);
-
-    setCart(updated);
-    await orderApi.saveCart(updated);
+  const handleUpdateCartQuantity = (productId: string, delta: number) => {
+    updateCartQuantity(productId, delta);
   };
 
-  const handleRemoveCartItem = async (productId: string) => {
-    const updated = cart.filter((item) => item.product.id !== productId);
-    setCart(updated);
-    await orderApi.saveCart(updated);
+  const handleRemoveCartItem = (productId: string) => {
+    removeCartItem(productId);
     showToast('Produk dihapus dari keranjang.');
   };
 
-  const handleClearCart = async () => {
-    setCart([]);
-    await orderApi.saveCart([]);
+  const handleClearCart = () => {
+    clearCart();
     showToast('Keranjang telah dikosongkan.');
   };
 
@@ -179,8 +158,8 @@ export function App() {
 
   const handleOrderComplete = async (order: Order, paymentMethod: 'cod' | 'qris') => {
     setCompletedOrder(order);
-    setCart([]);
-    await orderApi.saveCart([]);
+    addOrder(order);
+    clearCart();
 
     setSelectedProduct(null);
 
@@ -195,15 +174,12 @@ export function App() {
   };
 
   const handleLogout = async () => {
-    await authApi.logout();
-    setUser(null);
+    await logout();
     showToast('Anda telah keluar.');
     setActiveTab('beranda');
   };
 
   const handleAuthSuccess = (loggedInUser: User) => {
-    setUser(loggedInUser);
-    showToast(`Selamat datang, ${loggedInUser.name}!`);
     const target = loggedInUser.role === 'admin' ? 'admin' : redirectAfterLogin || 'beranda';
     setRedirectAfterLogin(null);
     setActiveTab(target);
@@ -344,6 +320,7 @@ export function App() {
                 onAddToCart={(p) => handleAddToCart(p, 1)}
                 onSelectProduct={handleSelectProduct}
                 showToast={showToast}
+                onNavigateAdmin={() => setActiveTab('admin')}
               />
             )}
 

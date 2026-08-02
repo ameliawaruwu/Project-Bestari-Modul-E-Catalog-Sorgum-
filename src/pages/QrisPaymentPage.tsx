@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Order } from '../types';
-import { shopSettingsApi, ShopSettings } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface QrisPaymentPageProps {
@@ -14,13 +13,9 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
   onConfirmWhatsApp,
   onCompleteOrder,
 }) => {
-  const { t } = useApp();
+  const { t, shopSettings } = useApp();
   const [hasClickedWa, setHasClickedWa] = useState(false);
-  const [settings, setSettings] = useState<ShopSettings>(shopSettingsApi.getSettings());
 
-  useEffect(() => {
-    setSettings(shopSettingsApi.getSettings());
-  }, []);
 
   const orderId = order?.id || '#BST-99234';
   const totalAmount = order?.totalAmount || 140000;
@@ -36,12 +31,12 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
         .join('\n')
     : '- Whole Sorghum Grains (1kg) x2\n- Premium Sorghum Flour (500g) x1';
 
-  const cleanWaNumber = (settings.whatsappNumber || '6281234567890')
+  const cleanWaNumber = (shopSettings.whatsappNumber || '6281234567890')
     .replace(/[^0-9]/g, '')
     .replace(/^0/, '62');
 
   const waMessage = encodeURIComponent(
-    `Halo Admin ${settings.storeName || 'BESTARI'}, saya ingin konfirmasi pembayaran QRIS untuk pesanan *${orderId}*.\n\n*Detail Pesanan:*\n${itemsSummary}\n*Total Bayar: Rp ${totalAmount.toLocaleString(
+    `Halo Admin ${shopSettings.storeName || 'BESTARI'}, saya ingin konfirmasi pembayaran QRIS untuk pesanan *${orderId}*.\n\n*Detail Pesanan:*\n${itemsSummary}\n*Total Bayar: Rp ${totalAmount.toLocaleString(
       'id-ID'
     )}*\n\nAtas nama: ${order?.customerName || 'Pelanggan'}\nNomor WA: ${
       order?.customerPhone || '-'
@@ -78,10 +73,10 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
         {/* QR Code Card */}
         <div className="relative group my-4">
           <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc]/40 flex flex-col items-center justify-center shadow-sm">
-            {settings.qrisImageUrl ? (
+            {shopSettings.qrisImageUrl ? (
               <img
-                src={settings.qrisImageUrl}
-                alt={`QRIS Code ${settings.storeName}`}
+                src={shopSettings.qrisImageUrl}
+                alt={`QRIS Code ${shopSettings.storeName}`}
                 className="w-56 h-56 object-contain"
               />
             ) : (
@@ -90,11 +85,11 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
               </div>
             )}
             <p className="font-bold text-sm text-[#162809] mt-3 tracking-wide">
-              {settings.storeName || 'BESTARI SORGHUM'}
+              {shopSettings.storeName || 'BESTARI SORGHUM'}
             </p>
-            {settings.qrisNmid && (
+            {shopSettings.qrisNmid && (
               <p className="text-[10px] font-mono text-gray-500 mt-0.5">
-                NMID: {settings.qrisNmid}
+                NMID: {shopSettings.qrisNmid}
               </p>
             )}
           </div>

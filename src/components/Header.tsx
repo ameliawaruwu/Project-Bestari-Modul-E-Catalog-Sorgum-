@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
-import { shopSettingsApi, ShopSettings } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface HeaderProps {
@@ -26,14 +25,9 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   alwaysSolid = false,
 }) => {
-  const { language, theme, toggleLanguage, toggleTheme, t } = useApp();
+  const { language, theme, toggleLanguage, toggleTheme, t, shopSettings } = useApp();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [shopSettings, setShopSettings] = useState<ShopSettings>(shopSettingsApi.getSettings());
-
-  useEffect(() => {
-    setShopSettings(shopSettingsApi.getSettings());
-  }, [activeTab]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -181,6 +175,18 @@ export const Header: React.FC<HeaderProps> = ({
                     <p className="text-xs text-[#44483f] truncate">{user.email}</p>
                   </div>
 
+                  {user.role === 'admin' && (
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        setActiveTab('admin');
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] text-[#162809] flex items-center gap-2 font-bold cursor-pointer transition-colors border-b border-[#c4c8bc]/20"
+                    >
+                      <span className="material-symbols-outlined text-lg text-[#162809]">admin_panel_settings</span>
+                      {t('Halaman Admin', 'Admin Panel')}
+                    </button>
+                  )}
 
                   <button
                     onClick={() => {
