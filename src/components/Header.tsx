@@ -119,19 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           {t('FAQ', 'FAQ')}
         </button>
-        {user?.role === 'admin' && (
-          <button
-            onClick={() => setActiveTab('admin')}
-            className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all duration-200 py-1 focus:outline-none border-b-2 flex items-center gap-1 ${
-              activeTab === 'admin'
-                ? 'text-[#fade88] font-bold border-[#fade88]'
-                : 'text-[#fade88]/80 hover:text-[#fade88] border-transparent'
-            }`}
-          >
-            <span className="material-symbols-outlined text-sm">admin_panel_settings</span>
-            {t('Admin', 'Admin')}
-          </button>
-        )}
+
       </nav>
 
       <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -187,29 +175,12 @@ export const Header: React.FC<HeaderProps> = ({
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-52 bg-[#fff8f2] text-[#1d1b17] rounded-xl shadow-xl border border-[#c4c8bc]/30 py-2 z-50 animate-fadeIn">
                   <div className="px-4 py-2 border-b border-[#c4c8bc]/20">
-                    <p className="font-bold text-sm truncate flex items-center justify-between">
+                    <p className="font-bold text-sm truncate">
                       <span>{user.name}</span>
-                      {user.role === 'admin' && (
-                        <span className="text-[10px] bg-[#2b3e1d] text-[#fde08b] font-extrabold px-1.5 py-0.5 rounded uppercase">
-                          Admin
-                        </span>
-                      )}
                     </p>
                     <p className="text-xs text-[#44483f] truncate">{user.email}</p>
                   </div>
 
-                  {user.role === 'admin' && (
-                    <button
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        setActiveTab('admin');
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-xs font-bold text-[#162809] bg-[#fde08b]/40 hover:bg-[#fde08b] flex items-center gap-2 transition-colors border-b border-[#c4c8bc]/20 cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-lg text-[#2b3e1d]">admin_panel_settings</span>
-                      {t('Dashboard Admin', 'Admin Dashboard')}
-                    </button>
-                  )}
 
                   <button
                     onClick={() => {

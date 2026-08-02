@@ -23,35 +23,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const handleQuickLogin = async (eMail: string, pass: string) => {
-    setEmail(eMail);
-    setPassword(pass);
-    setErrorMsg('');
-    setSuccessMsg('');
-    setLoading(true);
-
-    try {
-      const res = await authApi.login({
-        email: eMail,
-        password: pass,
-        rememberMe: true,
-      });
-
-      if (res.success && res.user) {
-        setSuccessMsg(res.message);
-        setTimeout(() => {
-          onLoginSuccess(res.user!);
-        }, 300);
-      } else {
-        setErrorMsg(res.message || 'Gagal masuk.');
-      }
-    } catch {
-      setErrorMsg('Terjadi kesalahan pada sistem.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -142,30 +113,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             <p className="text-xs sm:text-sm text-[#75786e] font-semibold">
               {t('Masuk untuk melanjutkan belanja sehat Anda', 'Sign in to continue your healthy shopping')}
             </p>
-          </div>
-
-          {/* Quick Demo Access Bar */}
-          <div className="mb-6 p-4 bg-[#faf8f5] rounded-xl border border-[#c4c8bc]/40 text-xs space-y-3">
-            <div className="flex items-center gap-1.5 font-bold text-[#162809]">
-              <span className="material-symbols-outlined text-base text-[#162809]">vpn_key</span>
-              <span>{t('Akses Cepat Demo:', 'Quick Demo Access:')}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('admin@bestari.com', 'admin123')}
-                className="p-2.5 bg-[#2b3e1d] hover:bg-[#162809] text-white rounded-lg text-center transition-all cursor-pointer font-bold text-xs shadow-2xs active:scale-97"
-              >
-                Admin Dashboard
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('pelanggan@bestari.com', 'user123')}
-                className="p-2.5 bg-white hover:bg-[#faf8f5] text-[#162809] border border-[#c4c8bc]/80 rounded-lg text-center transition-all cursor-pointer font-bold text-xs shadow-2xs active:scale-97"
-              >
-                {t('Akun Pelanggan', 'Customer Account')}
-              </button>
-            </div>
           </div>
 
           {errorMsg && (
