@@ -1,0 +1,6 @@
+{
+  "name": "BESTARI Sorgum",
+  "description": "Aplikasi e-commerce produk sorgum berkualitas tinggi dengan UI Google Stitch, responsif 100%, dan arsitektur modular React.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

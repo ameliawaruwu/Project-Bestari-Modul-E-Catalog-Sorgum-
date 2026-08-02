@@ -1,0 +1,240 @@
+import React, { useState, useEffect } from 'react';
+import { BannerSlide } from '../../types/admin';
+
+interface BannerFormViewProps {
+  initialBanner?: BannerSlide | null;
+  onSave: (bannerData: { title: string; targetLink: string; image: string; id?: string }) => void;
+  onCancel: () => void;
+  showToast: (msg: string) => void;
+}
+
+export const BannerFormView: React.FC<BannerFormViewProps> = ({
+  initialBanner,
+  onSave,
+  onCancel,
+  showToast,
+}) => {
+  const [titleInput, setTitleInput] = useState('');
+  const [targetInput, setTargetInput] = useState('');
+  const [imageInput, setImageInput] = useState('');
+
+  useEffect(() => {
+    if (initialBanner) {
+      setTitleInput(initialBanner.title);
+      setTargetInput(initialBanner.targetLink);
+      setImageInput(initialBanner.image);
+    } else {
+      setTitleInput('');
+      setTargetInput('');
+      setImageInput('');
+    }
+  }, [initialBanner]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!titleInput.trim()) {
+      showToast('Masukkan judul banner slide!');
+      return;
+    }
+
+    onSave({
+      id: initialBanner?.id,
+      title: titleInput,
+      targetLink: targetInput || 'Halaman Toko: Semua Produk',
+      image:
+        imageInput ||
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl',
+    });
+  };
+
+  return (
+    <div className="space-y-6 animate-fadeIn max-w-4xl mx-auto">
+      {/* Header & Breadcrumb */}
+      <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+            <ol className="flex items-center space-x-2">
+              <li>
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="hover:text-[#162809] transition-colors cursor-pointer"
+                >
+                  Pengaturan Landing Page
+                </button>
+              </li>
+              <li>
+                <span className="material-symbols-outlined text-xs leading-none">
+                  chevron_right
+                </span>
+              </li>
+              <li className="text-[#162809] font-bold">
+                {initialBanner ? 'Edit Banner Slide' : 'Tambah Banner Baru'}
+              </li>
+            </ol>
+          </nav>
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+            {initialBanner ? 'Edit Banner Slide' : 'Halaman Tambah Banner Slide Baru'}
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className="bg-white border border-[#c4c8bc] text-[#1d1b17] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#f3ede6] transition-all cursor-pointer font-bold text-xs"
+        >
+          <span className="material-symbols-outlined text-lg">arrow_back</span>
+          <span>KEMBALI KE DAFTAR</span>
+        </button>
+      </section>
+
+      {/* Form Card */}
+      <div className="bg-[#f3ede6] rounded-2xl shadow-md border border-[#c4c8bc] overflow-hidden">
+        <div className="p-6 bg-[#2b3e1d] text-white flex justify-between items-center">
+          <div>
+            <h3 className="font-['Playfair_Display'] text-xl font-bold">
+              {initialBanner ? 'Edit Banner' : 'Formulir Banner Beranda'}
+            </h3>
+            <p className="text-[#93a97f] text-xs mt-1">
+              Atur judul promosi, tautan target, dan gambar utama untuk menarik pembeli di halaman depan.
+            </p>
+          </div>
+          <span className="text-xs font-bold uppercase bg-[#fade88] text-[#756118] px-3 py-1 rounded-full">
+            {initialBanner ? 'Mode Edit' : 'Halaman Baru'}
+          </span>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+          {/* Upload Field */}
+          <div className="space-y-3">
+            <label className="block text-sm font-bold text-[#1d1b17]">
+              Upload / URL Gambar Banner
+            </label>
+            <div className="border-2 border-dashed border-[#c4c8bc] rounded-2xl p-8 text-center bg-white hover:border-[#162809] transition-all group relative">
+              <div className="space-y-3">
+                {imageInput ? (
+                  <div className="max-w-md mx-auto aspect-[16/6] rounded-xl overflow-hidden border border-[#c4c8bc] shadow-xs">
+                    <img src={imageInput} alt="Preview Slide" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <span className="material-symbols-outlined text-5xl text-[#93a97f] group-hover:text-[#162809] transition-colors">
+                    cloud_upload
+                  </span>
+                )}
+                <div>
+                  <p className="text-sm font-semibold text-[#1d1b17]">
+                    Seret dan lepas gambar ke sini atau tempel URL publik
+                  </p>
+                  <p className="text-xs text-[#44483f]">
+                    Rasio disarankan: 1920x600 px (Landscape HD)
+                  </p>
+                </div>
+                <input
+                  type="text"
+                  value={imageInput}
+                  onChange={(e) => setImageInput(e.target.value)}
+                  placeholder="Masukkan URL Gambar Banner (https://...)"
+                  className="w-full max-w-md mx-auto h-11 px-3.5 border border-[#c4c8bc] bg-[#fff8f2] rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#162809]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Title Input */}
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1d1b17]">
+                Judul Promosi Banner <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                value={titleInput}
+                onChange={(e) => setTitleInput(e.target.value)}
+                placeholder="Contoh: Panen Raya Sorgum Merah Organik"
+                required
+                className="w-full bg-[#fff8f2] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+              />
+            </div>
+
+            {/* Target Link Select */}
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1d1b17]">
+                Tautan / Destinasi Target Klik
+              </label>
+              <select
+                value={targetInput}
+                onChange={(e) => setTargetInput(e.target.value)}
+                className="w-full bg-[#fff8f2] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer font-medium"
+              >
+                <option value="">Pilih target tautan banner</option>
+                <option value="Detail Produk: Tepung Sorgum Putih">
+                  Detail Produk: Tepung Sorgum Putih
+                </option>
+                <option value="Detail Produk: Beras Sorgum Merah">
+                  Detail Produk: Beras Sorgum Merah
+                </option>
+                <option value="Informasi: Budidaya Lokal">
+                  Informasi: Budidaya Lokal
+                </option>
+                <option value="Informasi: Resep Sorgum Sehat">
+                  Informasi: Resep Sorgum Sehat
+                </option>
+                <option value="Halaman Toko: Semua Produk">
+                  Halaman Toko: Semua Produk
+                </option>
+              </select>
+            </div>
+          </div>
+
+          {/* Preview Section */}
+          <div className="pt-6 border-t border-[#c4c8bc]">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-bold text-[#1d1b17]">Preview Tampilan Live Beranda</h4>
+              <span className="text-[10px] font-bold uppercase bg-[#fade88] text-[#756118] px-2.5 py-1 rounded">
+                Pratinjau Pelanggan
+              </span>
+            </div>
+            <div className="aspect-[16/5] bg-[#dfd9d3] rounded-2xl border border-[#c4c8bc] flex items-center justify-center relative overflow-hidden p-6 shadow-inner">
+              {imageInput && (
+                <img
+                  src={imageInput}
+                  alt="Pratinjau Banner"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+              <div className="relative z-10 w-full text-white space-y-1 max-w-lg">
+                <p className="text-[11px] uppercase tracking-widest text-[#fde08b] font-bold">
+                  BESTARI PREMIUM
+                </p>
+                <h3 className="font-['Playfair_Display'] text-lg sm:text-2xl font-bold leading-tight">
+                  {titleInput || 'Judul Promosi Banner...'}
+                </h3>
+                <p className="text-xs opacity-90">
+                  {targetInput || 'Target tautan...'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-end pt-4 space-x-4">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-6 py-3 rounded-xl border border-[#75786e] text-[#44483f] font-bold text-xs hover:bg-[#e7e2db] transition-all cursor-pointer"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              className="bg-[#2b3e1d] text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-[#162809] shadow-md active:scale-95 transition-all cursor-pointer"
+            >
+              {initialBanner ? 'Simpan Perubahan Banner' : 'Simpan Banner Baru'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
