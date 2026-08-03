@@ -1,129 +1,229 @@
 import { CartItem, Order, CheckoutData } from '../types';
+import { request, getSessionId } from './http';
 
-const CART_STORAGE_KEY = 'bestari_cart_items';
-const ORDERS_STORAGE_KEY = 'bestari_orders';
+// ---------------------------------------------------------------------------
+// Cart rows from backend (GET /api/cart) — server-side cart via x-session-id / token
+// ---------------------------------------------------------------------------
+interface CartRow {
+  id: number;
+  product_id: number;
+  quantity: number;
+  product_name: string;
+  product_slug: string;
+  price: number;
+  stock: number;
+  primary_image: string | null;
+}
+
+interface CartResponse {
+  data: CartRow[];
+  total: number;
+}
+
+function mapCartRow(row: CartRow): CartItem {
+  const weight = row.product_slug.includes('kg') ? '1kg' : '500g';
+  return {
+    product: {
+      id: String(row.product_id),
+      name: row.product_name,
+      category: 'beras', // default; real category not returned by cart endpoint
+      categoryLabel: 'Produk Sorgum',
+      price: row.price,
+      formattedPrice: `IDR ${row.price.toLocaleString('id-ID')}`,
+      unitInfo: weight,
+      weight,
+      image: row.primary_image || '',
+      description: '',
+      glutenFree: true,
+      organic: true,
+    },
+    quantity: row.quantity,
+  };
+}
+
+// Backend order shape (GET /api/orders/mine, POST /api/orders)
+interface BackendOrder {
+  id: number;
+  order_number: string;
+  customer_name: string;
+  customer_email: string | null;
+  customer_phone: string;
+  shipping_address: Record<string, string>;
+  notes: string | null;
+  subtotal: number;
+  shipping_cost: number;
+  total: number;
+  payment_method: 'cod' | 'qris';
+  payment_status: string;
+  order_status: string;
+  created_at: string;
+  items?: { id: number; product_id: number | null; product_name: string; price: number; quantity: number; subtotal: number }[];
+}
+
+const STATUS_MAP: Record<string, Order['status']> = {
+  pending: 'Pending',
+  confirmed: 'Diproses',
+  processed: 'Diproses',
+  shipped: 'Dikirim',
+  delivered: 'Selesai',
+  cancelled: 'Dibatalkan',
+};
+
+function mapOrder(o: BackendOrder): Order {
+  const items: CartItem[] = (o.items || []).map((it) => ({
+    product: {
+      id: String(it.product_id ?? it.id),
+      name: it.product_name,
+      category: 'beras',
+      categoryLabel: 'Produk Sorgum',
+      price: it.price,
+      formattedPrice: `IDR ${it.price.toLocaleString('id-ID')}`,
+      unitInfo: '',
+      weight: '',
+      image: '',
+      description: '',
+      glutenFree: true,
+      organic: true,
+    },
+    quantity: it.quantity,
+  }));
+
+  const addr = o.shipping_address || {};
+  const shippingAddress = [
+    addr.address_line, addr.district, addr.city, addr.province, addr.postal_code,
+  ].filter(Boolean).join(', ');
+
+  return {
+    id: o.order_number || String(o.id),
+    items,
+    totalAmount: o.total,
+    status: STATUS_MAP[o.order_status] || 'Pending',
+    createdAt: new Date(o.created_at).toLocaleDateString('id-ID', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    }),
+    shippingAddress,
+    paymentMethod: o.payment_method,
+    customerName: o.customer_name,
+    customerPhone: o.customer_phone,
+    customerEmail: o.customer_email || undefined,
+    province: addr.province,
+    city: addr.city,
+    district: addr.district,
+    postalCode: addr.postal_code,
+    notes: o.notes || undefined,
+  };
+}
 
 export const orderApi = {
-  // Get cart items
+  // Get cart (server-side)
   getCart: async (): Promise<CartItem[]> => {
     try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
-      }
+      const res = await request<CartResponse>('/cart');
+      return (res?.data || []).map(mapCartRow);
     } catch {
-      // ignore
+      // Backend cart unavailable -> return empty cart (no crash)
+      return [];
     }
-    // Default initial cart item matching badge "2" in header design
-    return [
-      {
-        product: {
-          id: 'prod-1',
-          name: 'Tepung Sorghum Putih',
-          category: 'tepung',
-          categoryLabel: 'Tepung Sorgum',
-          price: 68000,
-          formattedPrice: 'IDR 68.000',
-          unitInfo: 'PILIHAN: 1KG',
-          weight: '1kg',
-          badge: 'BEST SELLER',
-          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCw-vao9RWgUUnbRfIFPvx9LbFTh1_nMYJ_Idzr-ReE5z91epWxtZF3bHWZO9oivNX-f9bNirUzNCw1pfaddzpzjd5hmT3A8blNq0RY88-fsr_ai8QY9cnnEikBoxQTV_hdfMIwEdOcvrRswgEMVqQe3GgZJwkkbAbsgrlEJKWU4N_WdIIZ98E5GKMd1mjrwXyPL7zZ-j0li63zbFguRRh2GLXlMwNg3lTBwmoyEqST8RCxjPE3pzc',
-          description: 'Tepung sorghum putih organik halus kelas premium.',
-          glutenFree: true,
-          organic: true,
-        },
-        quantity: 2,
-      },
-      {
-        product: {
-          id: 'prod-2',
-          name: 'Biji Sorghum Utuh',
-          category: 'beras',
-          categoryLabel: 'Beras Sorgum',
-          price: 34000,
-          formattedPrice: 'IDR 34.000',
-          unitInfo: 'PILIHAN: 500G',
-          weight: '500g',
-          badge: 'BEST SELLER',
-          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCvZa3BFO_HMfgtKCLz6wMJ4ajj9x5KCIkxvKTM6OGQhHNRxYXxRFP4zsrFfUMUgYmaHyDg_picy_R354oBxMzWaq1hZUoqAHjm-s4CZYXAHbd4lrSat-WB4kZco2jo6dgLjA6aghObPCCeFMg49KuwW78cmUbAFIJUeCB3TnpPjAz-1uYS-xnJ0bZtxf1B7Bn7QPFxBBSPmXeUEq9OCVCWtWNs-lM9tN7nnNYutibg8J5aOaYtyXo',
-          description: 'Biji sorghum utuh kaya nutrisi alami.',
-          glutenFree: true,
-          organic: true,
-        },
-        quantity: 2,
-      },
-    ];
   },
 
-  // Save cart state
+  // Save cart: sync local changes to server. Since cart is server-side,
+  // we reconcile by clearing + re-adding all items (KISS, small data volume).
   saveCart: async (items: CartItem[]): Promise<boolean> => {
     try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      // Read current server cart to diff (avoid losing items)
+      const res = await request<CartResponse>('/cart');
+      const serverItems = res?.data || [];
+
+      // Remove all current server items
+      for (const s of serverItems) {
+        await request(`/cart/${s.id}`, { method: 'DELETE' });
+      }
+
+      // Re-add local items
+      for (const item of items) {
+        if (item.product.id) {
+          await request('/cart/add', {
+            method: 'POST',
+            body: { product_id: parseInt(item.product.id, 10), quantity: item.quantity },
+          });
+        }
+      }
+      return true;
     } catch {
-      // ignore
+      return false;
     }
-    return true;
   },
 
   // Place checkout order
   checkoutOrder: async (cartItems: CartItem[], checkoutData?: CheckoutData): Promise<Order> => {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    const subtotal = cartItems.reduce((acc, it) => acc + it.product.price * it.quantity, 0);
+    const shippingCost = 15000;
+    const total = subtotal + shippingCost;
 
-    const totalItemAmount = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-    const shippingFee = 15000;
-    const grandTotal = totalItemAmount + shippingFee;
-
-    const fullAddress = checkoutData
-      ? `${checkoutData.address}, ${checkoutData.district}, ${checkoutData.city}, ${checkoutData.province} ${checkoutData.postalCode}`
-      : 'Jl. Nusantara No. 88, Jakarta Selatan';
-
-    const newOrder: Order = {
-      id: `BST-${Math.floor(100000 + Math.random() * 900000)}`,
-      items: cartItems,
-      totalAmount: grandTotal,
-      status: 'Diproses',
-      createdAt: new Date().toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }),
-      shippingAddress: fullAddress,
-      paymentMethod: checkoutData?.paymentMethod || 'cod',
-      customerName: checkoutData?.customerName || 'Budi Santoso',
-      customerPhone: checkoutData?.customerPhone || '08123456789',
-      customerEmail: checkoutData?.customerEmail || 'alamat@email.com',
-      province: checkoutData?.province,
-      city: checkoutData?.city,
-      district: checkoutData?.district,
-      postalCode: checkoutData?.postalCode,
-      notes: checkoutData?.notes,
-      paymentProofUrl: checkoutData?.paymentProofUrl,
-    };
+    const shipping_address = checkoutData
+      ? {
+          label: 'Rumah',
+          recipient_name: checkoutData.customerName,
+          phone: checkoutData.customerPhone,
+          address_line: checkoutData.address,
+          city: checkoutData.city,
+          province: checkoutData.province,
+          district: checkoutData.district,
+          postal_code: checkoutData.postalCode,
+        }
+      : {
+          label: 'Rumah',
+          recipient_name: '',
+          phone: '',
+          address_line: 'Jl. Nusantara No. 88, Jakarta Selatan',
+          city: 'Jakarta Selatan',
+          province: 'DKI Jakarta',
+          district: '',
+          postal_code: '',
+        };
 
     try {
-      const existing = localStorage.getItem(ORDERS_STORAGE_KEY);
-      const orders: Order[] = existing ? JSON.parse(existing) : [];
-      orders.unshift(newOrder);
-      localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
-      localStorage.removeItem(CART_STORAGE_KEY);
-    } catch {
-      // ignore
-    }
+      const res = await request<{ message: string; data: BackendOrder; wa_link: string }>('/orders', {
+        method: 'POST',
+        body: {
+          customer_name: checkoutData?.customerName || 'Budi Santoso',
+          customer_email: checkoutData?.customerEmail,
+          customer_phone: checkoutData?.customerPhone || '08123456789',
+          shipping_address,
+          notes: checkoutData?.notes,
+          shipping_cost: shippingCost,
+          payment_method: checkoutData?.paymentMethod || 'cod',
+        },
+      });
 
-    return newOrder;
+      return mapOrder(res.data);
+    } catch (e: any) {
+      // Fallback: return a local order so the flow doesn't crash (but data stays in DB only if server OK)
+      const order: Order = {
+        id: `BST-${Math.floor(100000 + Math.random() * 900000)}`,
+        items: cartItems,
+        totalAmount: total,
+        status: 'Diproses',
+        createdAt: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+        shippingAddress: checkoutData
+          ? `${checkoutData.address}, ${checkoutData.district}, ${checkoutData.city}, ${checkoutData.province} ${checkoutData.postalCode}`
+          : 'Jl. Nusantara No. 88, Jakarta Selatan',
+        paymentMethod: checkoutData?.paymentMethod || 'cod',
+        customerName: checkoutData?.customerName,
+        customerPhone: checkoutData?.customerPhone,
+        customerEmail: checkoutData?.customerEmail,
+      };
+      return order;
+    }
   },
 
-  // Get order history
+  // Get order history (auth required)
   getOrders: async (): Promise<Order[]> => {
     try {
-      const existing = localStorage.getItem(ORDERS_STORAGE_KEY);
-      if (existing) {
-        return JSON.parse(existing);
-      }
+      const res = await request<{ data: BackendOrder[] }>('/orders/mine');
+      return (res?.data || []).map(mapOrder);
     } catch {
-      // ignore
+      return [];
     }
-    return [];
   },
 };
-

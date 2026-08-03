@@ -1,0 +1,51 @@
+import { Router, Request, Response } from 'express';
+import {
+  getProducts,
+  getProductBySlug,
+  getFeaturedProducts,
+  createProduct,
+  updateProduct,
+  toggleProductActive,
+  deleteProduct,
+} from '../services/products_service';
+import { authRequired, adminOnly } from '../middleware/auth';
+import { AppError } from '../lib/errors_utils';
+
+const router = Router();
+
+// === PUBLIC ===
+
+router.get('/', async (req: Request, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 12));
+
+  const result = await getProducts({
+    category: req.query.category ? parseInt(req.query.category as string) : undefined,
+    search: req.query.search as string | undefined,
+    minPrice: req.query.min_price ? parseInt(req.query.min_price as string) : undefined,
+    maxPrice: req.query.max_price ? parseInt(req.query.max_price as string) : undefined,
+    sort: req.query.sort as string | undefined,
+    page,
+    limit,
+  });
+
+  res.json(result);
+});
+
+router.get('/featured', async (_req: Request, res: Response) => {
+  const data = await getFeaturedProducts(8);
+  res.json({ data });
+});
+
+router.get('/:slug', async (req: Request, res: Response) => {
+  const slug = String(req.params.slug);
+  const product = await getProductBySlug(slug);
+  if (!product) {
+    res.status(404).json({ error: 'Produk tidak ditemukan' });
+    return;
+  }
+  res.json({ data: product });
+});
+
+export default router;
+

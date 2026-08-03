@@ -1,0 +1,35 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config();
+
+export const config = {
+  port: parseInt(process.env.ECATALOG_BESTARI_PORT || '20203', 10),
+  nodeEnv: process.env.NODE_ENV || 'development',
+
+  db: {
+    host: process.env.ECATALOG_BESTARI_DB_HOST || 'localhost',
+    port: parseInt(process.env.ECATALOG_BESTARI_DB_PORT || '3306', 10),
+    user: process.env.ECATALOG_BESTARI_DB_USER || 'root',
+    password: process.env.ECATALOG_BESTARI_DB_PASSWORD || '',
+    database: process.env.ECATALOG_BESTARI_DB_NAME || 'ecatalog_bestari_db',
+  },
+
+  jwt: {
+    secret: process.env.ECATALOG_BESTARI_JWT_SECRET || '',
+    expiresIn: process.env.ECATALOG_BESTARI_JWT_EXPIRES_IN || '7d',
+  },
+
+  upload: {
+    dir: path.resolve(process.env.ECATALOG_BESTARI_UPLOAD_DIR || 'uploads_ecatalog_bestari'),
+    maxFileSize: parseInt(process.env.ECATALOG_BESTARI_MAX_FILE_SIZE || '5242880', 10),
+  },
+
+  tracking: {
+    pollIntervalHours: parseInt(process.env.ECATALOG_BESTARI_TRACKING_POLL_HOURS || '4', 10),
+  },
+
+  store: {
+    adminWhatsapp: process.env.ECATALOG_BESTARI_ADMIN_WA || '6281234567890',
+  },
+};

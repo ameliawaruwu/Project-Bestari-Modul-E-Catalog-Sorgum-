@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CartItem, CheckoutData, Order } from '../types';
 import { useApp } from '../context/AppContext';
+import { orderApi } from '../api';
 
 interface CheckoutPageProps {
   cart: CartItem[];
@@ -114,7 +115,17 @@ ${
         customerEmail: formData.customerEmail,
       };
 
-      onOrderComplete(mockOrder, formData.paymentMethod);
+      // Try to create the order in the backend first (persists to DB).
+      // If the backend is unavailable, fall back to the local order so the
+      // UI flow (success page / QRIS redirect) still works.
+      let finalOrder: Order = mockOrder;
+      try {
+        finalOrder = await orderApi.checkoutOrder(cart, finalCheckoutData);
+      } catch {
+        // backend unavailable — keep local order
+      }
+
+      onOrderComplete(finalOrder, formData.paymentMethod);
     } catch (err) {
       console.error('Checkout error:', err);
     } finally {

@@ -297,7 +297,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   // Handlers for Products
-  const handleToggleProductStatus = (id: string) => {
+  const handleToggleProductStatus = async (id: string) => {
+    try {
+      const { productAdminApi } = await import('../api/adminApi');
+      await productAdminApi.toggleActive(id);
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengubah status produk.');
+      return;
+    }
     setProductActiveMap((prev) => ({
       ...prev,
       [id]: prev[id] === undefined ? false : !prev[id],
@@ -305,12 +312,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     showToast('Status keaktifan produk berhasil diperbarui.');
   };
 
-  const handleDeleteProduct = (id: string, name: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-    showToast(`Produk "${name}" berhasil dihapus dari katalog.`);
+  const handleDeleteProduct = async (id: string, name: string) => {
+    try {
+      const { productAdminApi } = await import('../api/adminApi');
+      await productAdminApi.deleteProduct(id);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+      showToast(`Produk "${name}" berhasil dihapus dari katalog.`);
+    } catch (e: any) {
+      showToast(e?.message || `Gagal menghapus produk "${name}".`);
+    }
   };
 
-  const handleSaveProduct = (data: {
+  const handleSaveProduct = async (data: {
     id?: string;
     name: string;
     category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
@@ -333,6 +346,46 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       pemanis: 'Pemanis Alami',
       benih: 'Benih Sorgum',
     };
+    const catIdMap: Record<string, number> = {
+      beras: 1,
+      tepung: 2,
+      camilan: 3,
+      pemanis: 4,
+      benih: 5,
+    };
+
+    // Persist to backend first (admin). On failure, show toast but keep UI running.
+    try {
+      const { productAdminApi } = await import('../api/adminApi');
+      if (data.id) {
+        await productAdminApi.updateProduct(data.id, {
+          name: data.name,
+          category_id: catIdMap[data.category],
+          price: data.price,
+          stock: data.stock,
+          weight_spec: data.unitInfo || data.weight,
+          description: data.description,
+          gluten_free: data.glutenFree,
+          organic: data.organic,
+          badge: data.badge || null,
+        });
+      } else {
+        await productAdminApi.createProduct({
+          name: data.name,
+          category_id: catIdMap[data.category],
+          price: data.price,
+          stock: data.stock,
+          weight_spec: data.unitInfo || data.weight,
+          description: data.description,
+          gluten_free: data.glutenFree,
+          organic: data.organic,
+          badge: data.badge || null,
+        });
+      }
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menyimpan produk ke server.');
+      return;
+    }
 
     if (data.id) {
       const exists = products.some((p) => p.id === data.id);
@@ -414,13 +467,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setEditingProduct(null);
   };
 
-  // Handlers for Articles
-  const handleDeleteArticle = (id: string) => {
-    setArticles((prev) => prev.filter((a) => a.id !== id));
-    showToast('Artikel berhasil dihapus.');
+  // Handlers for Articles — sync to backend (admin)
+  const handleDeleteArticle = async (id: string) => {
+    try {
+      const { articleAdminApi } = await import('../api/adminApi');
+      await articleAdminApi.deleteArticle(id);
+      setArticles((prev) => prev.filter((a) => a.id !== id));
+      showToast('Artikel berhasil dihapus.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menghapus artikel.');
+    }
   };
 
-  const handleSaveArticle = (data: {
+  const handleSaveArticle = async (data: {
     id?: string;
     title: string;
     category: string;
@@ -428,23 +487,40 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     date: string;
     content: string;
   }) => {
-    if (data.id) {
-      setArticles((prev) =>
-        prev.map((a) => (a.id === data.id ? { ...a, title: data.title, category: data.category, author: data.author, content: data.content } : a))
-      );
-      showToast('Perubahan artikel berhasil disimpan!');
-    } else {
-      const newArt: ArticleItem = {
-        id: `art-${Date.now()}`,
-        title: data.title,
-        category: data.category,
-        date: 'Hari ini',
-        author: data.author,
-        views: 1,
-        content: data.content,
-      };
-      setArticles((prev) => [newArt, ...prev]);
-      showToast('Artikel baru berhasil diterbitkan!');
+    try {
+      const { articleAdminApi } = await import('../api/adminApi');
+      if (data.id) {
+        await articleAdminApi.updateArticle(data.id, {
+          title: data.title,
+          category: data.category,
+          author: data.author,
+          content: data.content,
+        });
+        setArticles((prev) =>
+          prev.map((a) => (a.id === data.id ? { ...a, title: data.title, category: data.category, author: data.author, content: data.content } : a))
+        );
+        showToast('Perubahan artikel berhasil disimpan!');
+      } else {
+        await articleAdminApi.createArticle({
+          title: data.title,
+          category: data.category,
+          author: data.author,
+          content: data.content,
+        });
+        const newArt: ArticleItem = {
+          id: `art-${Date.now()}`,
+          title: data.title,
+          category: data.category,
+          date: 'Hari ini',
+          author: data.author,
+          views: 1,
+          content: data.content,
+        };
+        setArticles((prev) => [newArt, ...prev]);
+        showToast('Artikel baru berhasil diterbitkan!');
+      }
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menyimpan artikel.');
     }
     setEditingArticle(null);
   };
