@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { shopSettingsApi, ShopSettings, DEFAULT_SHOP_SETTINGS } from '../../api';
+import { useApp, ShopSettings } from '../../context/AppContext';
 
 interface OtherSettingsTabProps {
   showToast: (msg: string) => void;
@@ -36,13 +36,27 @@ const PRESET_QRIS = [
   },
 ];
 
+const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
+  storeName: 'BESTARI Sorghum',
+  logoUrl: '',
+  qrisImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAIKWh-z2qzILYDC9woreBeFgSVM7_5bAXQw5pYZ_WwXgCifGERVX51aW8YsqJjhz82BHNB45qL6bJnxNWBWwpAxsM67_7x2OTYNFuUS0K4XILgSk6ErmPXJ-UP3WMQhaf0M_b3gWRwVKHSZ6kbqzO0x1MUI3RpV0ldxSddeaWujNrHtPTNPk0WLMpMDYC-ht49m3cEFZM04MALEK2_xXvp7VSo9wE4R95RE8g09iTX-hLm7IdsDkg',
+  qrisNmid: 'NMID: ID1029384756382',
+  whatsappNumber: '+62 812-3456-7890',
+  qrisStatus: 'AKTIF',
+  faviconUrl: '',
+  storeAddress: 'Sleman, DI Yogyakarta, Indonesia',
+  storeEmail: 'halo@bestari.id',
+};
+
 export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast }) => {
-  const [settings, setSettings] = useState<ShopSettings>(DEFAULT_SHOP_SETTINGS);
+  const { shopSettings, saveShopSettings } = useApp();
+  const [settings, setSettings] = useState<ShopSettings>(shopSettings || DEFAULT_SETTINGS_FALLBACK);
 
   useEffect(() => {
-    const loaded = shopSettingsApi.getSettings();
-    setSettings(loaded);
-  }, []);
+    if (shopSettings) {
+      setSettings(shopSettings);
+    }
+  }, [shopSettings]);
 
   // Handle local image file upload for Logo
   const handleLogoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,14 +100,14 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
 
   // Save Settings
   const handleSave = () => {
-    shopSettingsApi.saveSettings(settings);
+    saveShopSettings(settings);
     showToast('Pengaturan logo & QRIS pembayaran berhasil disimpan!');
   };
 
   // Reset Settings
   const handleReset = () => {
-    setSettings(DEFAULT_SHOP_SETTINGS);
-    shopSettingsApi.saveSettings(DEFAULT_SHOP_SETTINGS);
+    setSettings(DEFAULT_SETTINGS_FALLBACK);
+    saveShopSettings(DEFAULT_SETTINGS_FALLBACK);
     showToast('Pengaturan berhasil dikembalikan ke standar bawaan.');
   };
 

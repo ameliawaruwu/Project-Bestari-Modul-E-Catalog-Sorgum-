@@ -356,10 +356,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                             type="button"
                             onClick={() => handleOpenEditPage(u)}
                             title="Buka Halaman Edit User"
-                            className="p-1.5 text-[#162809] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer flex items-center gap-1 font-bold text-xs"
+                            className="p-1.5 text-[#162809] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer flex items-center justify-center font-bold text-xs"
                           >
                             <span className="material-symbols-outlined text-lg">edit</span>
-                            <span>Edit</span>
                           </button>
                         </div>
                       </td>

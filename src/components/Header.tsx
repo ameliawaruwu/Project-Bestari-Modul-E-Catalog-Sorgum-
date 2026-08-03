@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
-import { shopSettingsApi, ShopSettings } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface HeaderProps {
@@ -26,14 +25,9 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   alwaysSolid = false,
 }) => {
-  const { language, theme, toggleLanguage, toggleTheme, t } = useApp();
+  const { language, theme, toggleLanguage, toggleTheme, t, shopSettings } = useApp();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [shopSettings, setShopSettings] = useState<ShopSettings>(shopSettingsApi.getSettings());
-
-  useEffect(() => {
-    setShopSettings(shopSettingsApi.getSettings());
-  }, [activeTab]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -119,19 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           {t('FAQ', 'FAQ')}
         </button>
-        {user?.role === 'admin' && (
-          <button
-            onClick={() => setActiveTab('admin')}
-            className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all duration-200 py-1 focus:outline-none border-b-2 flex items-center gap-1 ${
-              activeTab === 'admin'
-                ? 'text-[#fade88] font-bold border-[#fade88]'
-                : 'text-[#fade88]/80 hover:text-[#fade88] border-transparent'
-            }`}
-          >
-            <span className="material-symbols-outlined text-sm">admin_panel_settings</span>
-            {t('Admin', 'Admin')}
-          </button>
-        )}
+
       </nav>
 
       <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -187,13 +169,8 @@ export const Header: React.FC<HeaderProps> = ({
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-52 bg-[#fff8f2] text-[#1d1b17] rounded-xl shadow-xl border border-[#c4c8bc]/30 py-2 z-50 animate-fadeIn">
                   <div className="px-4 py-2 border-b border-[#c4c8bc]/20">
-                    <p className="font-bold text-sm truncate flex items-center justify-between">
+                    <p className="font-bold text-sm truncate">
                       <span>{user.name}</span>
-                      {user.role === 'admin' && (
-                        <span className="text-[10px] bg-[#2b3e1d] text-[#fde08b] font-extrabold px-1.5 py-0.5 rounded uppercase">
-                          Admin
-                        </span>
-                      )}
                     </p>
                     <p className="text-xs text-[#44483f] truncate">{user.email}</p>
                   </div>
@@ -204,10 +181,10 @@ export const Header: React.FC<HeaderProps> = ({
                         setShowUserMenu(false);
                         setActiveTab('admin');
                       }}
-                      className="w-full text-left px-4 py-2.5 text-xs font-bold text-[#162809] bg-[#fde08b]/40 hover:bg-[#fde08b] flex items-center gap-2 transition-colors border-b border-[#c4c8bc]/20 cursor-pointer"
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] text-[#162809] flex items-center gap-2 font-bold cursor-pointer transition-colors border-b border-[#c4c8bc]/20"
                     >
-                      <span className="material-symbols-outlined text-lg text-[#2b3e1d]">admin_panel_settings</span>
-                      {t('Dashboard Admin', 'Admin Dashboard')}
+                      <span className="material-symbols-outlined text-lg text-[#162809]">admin_panel_settings</span>
+                      {t('Halaman Admin', 'Admin Panel')}
                     </button>
                   )}
 

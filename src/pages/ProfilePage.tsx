@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { User, Order, Product } from '../types';
-import { orderApi, productApi } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface ProfilePageProps {
@@ -11,6 +10,7 @@ interface ProfilePageProps {
   onAddToCart: (product: Product) => void;
   onSelectProduct: (product: Product) => void;
   showToast: (msg: string) => void;
+  onNavigateAdmin?: () => void;
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({
@@ -21,8 +21,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   onAddToCart,
   onSelectProduct,
   showToast,
+  onNavigateAdmin,
 }) => {
-  const { t } = useApp();
+  const { t, orders: allOrders, products: allProducts, currentUser } = useApp();
   const [activeTab, setActiveTab] = useState<'profil' | 'pesanan' | 'favorit' | 'pengaturan'>(
     initialTab
   );
@@ -31,14 +32,26 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     setActiveTab(initialTab);
   }, [initialTab]);
 
-  // Orders state
-  const [orders, setOrders] = useState<Order[]>([]);
+  // Orders — filtered for the current user
+  const orders: Order[] = allOrders.filter(
+    (o) =>
+      !currentUser ||
+      o.customerEmail === currentUser.email ||
+      o.userId === currentUser.id
+  );
+
   const [orderFilter, setOrderFilter] = useState<string>('Semua');
   const [selectedOrderDetail, setSelectedOrderDetail] = useState<Order | null>(null);
   const [resiSearch, setResiSearch] = useState<string>('JNE2023882910');
 
-  // Favorite Products state
+  // Favorite Products
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (allProducts.length > 0 && favoriteProducts.length === 0) {
+      setFavoriteProducts(allProducts.slice(0, 4));
+    }
+  }, [allProducts]);
 
   // Profile Form state
   const [profileData, setProfileData] = useState({
@@ -66,139 +79,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     confirmPassword: '',
   });
 
-  // Load orders & products on mount
-  useEffect(() => {
-    const loadOrdersAndFavorites = async () => {
-      const allOrders = await orderApi.getOrders();
-      // Add default dummy orders if none exist so user sees rich data like screenshots
-      const demoOrders: Order[] = [
-        {
-          id: '#BST-882910',
-          createdAt: '12 Okt 2023',
-          totalAmount: 450000,
-          status: 'Selesai',
-          paymentMethod: 'qris',
-          customerName: 'Aruna Bestari',
-          customerPhone: '+6281234567890',
-          shippingAddress: 'Jl. Kebon Jeruk No. 12, Jakarta Barat, DKI Jakarta, 11530',
-          items: [
-            {
-              product: {
-                id: 'p1',
-                name: 'Premium Sorghum Flour',
-                category: 'tepung',
-                categoryLabel: 'Tepung Sorgum',
-                price: 45000,
-                formattedPrice: 'Rp 45.000',
-                unitInfo: '500g',
-                weight: '500g',
-                badge: 'BEST SELLER',
-                image:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuDe28vjbrf_7YAr_gZ6CqOjT-qq_jOCW3mwtlGveXFx_1zGnPv1y8L5GoLlqwwjoEvMbY_cU2feVzDcD6k3-7iCuv7Ui6Dlk-7epl-JXULm1dIZd9JT8we7jKuSfzLlsXFiprWzsnOJJeXRToqzNKbBNg4lB5svn5hg2kBmPftHj-Wjbo4UURf80Xj190MblpAZlMNMMJLNi_a6e9hFq2tn8Zc83WTg7yrdLdDjB0PNJzVxjo80DCM',
-                description: 'Tepung sorgum organik bebas gluten.',
-                glutenFree: true,
-                organic: true,
-              },
-              quantity: 2,
-            },
-            {
-              product: {
-                id: 'p2',
-                name: 'Whole Sorghum Grains',
-                category: 'beras',
-                categoryLabel: 'Beras Sorgum',
-                price: 35000,
-                formattedPrice: 'Rp 35.000',
-                unitInfo: '1kg',
-                weight: '1kg',
-                badge: 'BEST SELLER',
-                image:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuBuJfNjiludIYE3yZTsR2O6RUbed4XyuiS4Xjw0Ldyb7IhOwJCkKWVluSbcm1HtfjgQrn2heCjtq8QvTDmQhOjlLzx-wKOTO28IrE3-UXN0kr52glNbby1H6sAe92VeHFyWGmoEzLAon682Q0nbBkya1rbrCJRz6_1SSckTAlqxbqKzmSkVUk6xyqfVmqw2JUJPGKE0lg-BfFcOLNiSunhTPZCOUkn_a6L5d9jCWqRPyvK1GHvjv8M',
-                description: 'Biji sorgum utuh kualitas terbaik.',
-                glutenFree: true,
-                organic: true,
-              },
-              quantity: 2,
-            },
-          ],
-        },
-        {
-          id: '#BST-883004',
-          createdAt: '24 Okt 2023',
-          totalAmount: 1280000,
-          status: 'Dikirim',
-          paymentMethod: 'qris',
-          customerName: 'Aruna Bestari',
-          customerPhone: '+6281234567890',
-          shippingAddress: 'Jl. Kebon Jeruk No. 12, Jakarta Barat, DKI Jakarta, 11530',
-          items: [
-            {
-              product: {
-                id: 'p3',
-                name: 'Whole Grain Sorghum (5kg)',
-                category: 'beras',
-                categoryLabel: 'Beras Sorgum',
-                price: 1280000,
-                formattedPrice: 'Rp 1.280.000',
-                unitInfo: '5kg',
-                weight: '5kg',
-                image:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuA_K-RgzEE1x-uAPH5J-6ZhQlUcOD40qonQUI3ZsItmZ6eZ4_UrI9SwmmvTE1emnzhgOxpUOtRJtuCFs0wfJcjPu3fuN2-C3EtUYOAcnrcet--NRFrMEnJiLWXnZOVGnZD3sgczf-1pC2oUXMFgjcfmhMfQc9_owdPSJsXs5BGm23gYvQZNpQqUJ2lYyklYvBCSaVegjb7IizIOd5KT70FaeM2flhdOmyPJ339Lm3VpfUof20ihj_c',
-                description: 'Kemasan hemat 5kg sorgum utuh.',
-                glutenFree: true,
-                organic: true,
-              },
-              quantity: 1,
-            },
-          ],
-        },
-        {
-          id: '#BST-883112',
-          createdAt: '28 Okt 2023',
-          totalAmount: 215000,
-          status: 'Diproses',
-          paymentMethod: 'cod',
-          customerName: 'Aruna Bestari',
-          customerPhone: '+6281234567890',
-          shippingAddress: 'Jl. Kebon Jeruk No. 12, Jakarta Barat, DKI Jakarta, 11530',
-          items: [
-            {
-              product: {
-                id: 'p4',
-                name: 'Sorghum Popped Snacks (Bundle of 3)',
-                category: 'camilan',
-                categoryLabel: 'Camilan Sehat',
-                price: 215000,
-                formattedPrice: 'Rp 215.000',
-                unitInfo: 'Bundle',
-                weight: '450g',
-                badge: 'BARU',
-                image:
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuBcG4-HCicNPwg0SlXB4cjwtlsLyvSs7ks8GhiFolDHc-TpKO7mXXw8c8pzY0Wtl0LdX04PyI83Y5b-M4kAFDtRvx7DcrMm2nokzZ_-wU74Hq43-4NBVPmky8NjzovmlSeoEEOLpcQTMEeQIru_4l7aezs1RKEyl_xxR_9Sa-AXKzwpBkUfgPWC4tEJsrL-z_U2taYmofl7zeG06uAFlxmEgax1QiRUPkBs0W0c-fkJZiyDnFZzh0k',
-                description: 'Bundle camilan popping sorghum sehat.',
-                glutenFree: true,
-                organic: true,
-              },
-              quantity: 1,
-            },
-          ],
-        },
-      ];
-
-      setOrders(allOrders.length > 0 ? [...allOrders, ...demoOrders] : demoOrders);
-
-      // Load products for Favorites
-      const allProds = await productApi.getProducts();
-      setFavoriteProducts(allProds.slice(0, 4));
-    };
-
-    loadOrdersAndFavorites();
-  }, []);
-
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     showToast('Profil berhasil diperbarui!');
   };
+
 
   const handleSavePassword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -255,6 +140,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
 
           {/* Nav List */}
           <nav className="space-y-1.5">
+            {currentUser?.role === 'admin' && onNavigateAdmin && (
+              <button
+                onClick={onNavigateAdmin}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-[#44483f] hover:bg-[#ede7e1] transition-all text-left cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-xl text-[#162809]">admin_panel_settings</span>
+                <span>{t('Halaman Admin', 'Admin Panel')}</span>
+              </button>
+            )}
+
             <button
               onClick={() => {
                 setSelectedOrderDetail(null);
@@ -534,13 +429,13 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           {activeTab === 'pesanan' && (
             <div className="animate-fadeIn">
               {selectedOrderDetail ? (
-                /* ORDER DETAIL VIEW (MATCHING SCREENSHOT 3 & 4) */
+                /* ORDER DETAIL VIEW */
                 <div className="space-y-6">
                   {/* Breadcrumb */}
                   <nav className="flex items-center gap-2 text-xs text-[#44483f] mb-2">
                     <button
                       onClick={() => setSelectedOrderDetail(null)}
-                      className="hover:text-[#162809] font-medium"
+                      className="hover:text-[#162809] font-medium cursor-pointer"
                     >
                       Riwayat Pesanan
                     </button>
@@ -560,8 +455,30 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         Pesanan dibuat: {selectedOrderDetail.createdAt}
                       </p>
                     </div>
-                    <span className="bg-[#fade88] text-[#715c13] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider self-start sm:self-auto flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-base">local_shipping</span>
+                    <span
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider self-start sm:self-auto flex items-center gap-1.5 border ${
+                        selectedOrderDetail.status === 'Selesai'
+                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                          : selectedOrderDetail.status === 'Dikirim'
+                          ? 'bg-blue-100 text-blue-800 border-blue-300'
+                          : selectedOrderDetail.status === 'Diproses'
+                          ? 'bg-purple-100 text-purple-800 border-purple-300'
+                          : selectedOrderDetail.status === 'Dibatalkan'
+                          ? 'bg-red-100 text-red-800 border-red-300'
+                          : 'bg-amber-100 text-amber-800 border-amber-300'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-base">
+                        {selectedOrderDetail.status === 'Selesai'
+                          ? 'check_circle'
+                          : selectedOrderDetail.status === 'Dikirim'
+                          ? 'local_shipping'
+                          : selectedOrderDetail.status === 'Diproses'
+                          ? 'inventory_2'
+                          : selectedOrderDetail.status === 'Dibatalkan'
+                          ? 'cancel'
+                          : 'schedule'}
+                      </span>
                       <span>{selectedOrderDetail.status}</span>
                     </span>
                   </div>
@@ -576,51 +493,93 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           Status Pengiriman
                         </h3>
 
-                        {/* Stepper Horizontal */}
-                        <div className="flex justify-between items-center relative text-center">
-                          <div className="flex flex-col items-center z-10">
-                            <div className="w-10 h-10 rounded-full bg-[#162809] text-white flex items-center justify-center font-bold text-sm shadow">
-                              ✓
-                            </div>
-                            <span className="text-[11px] font-bold text-[#162809] mt-2">
-                              Pesanan Dibuat
-                            </span>
+                        {selectedOrderDetail.status === 'Dibatalkan' ? (
+                          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-center">
+                            <span className="material-symbols-outlined text-3xl text-red-600 mb-1">cancel</span>
+                            <p className="font-bold text-sm text-red-700">Pesanan Dibatalkan</p>
+                            <p className="text-xs text-red-600 mt-0.5">Pesanan ini telah dibatalkan. Silakan hubungi admin jika terdapat kendala.</p>
                           </div>
+                        ) : (
+                          <div className="relative py-2">
+                            {/* Connecting Progress Line */}
+                            <div className="absolute top-5 left-[10%] right-[10%] h-1 bg-[#e7e2db] z-0">
+                              <div
+                                className="h-full bg-[#162809] transition-all duration-500"
+                                style={{
+                                  width: `${
+                                    (() => {
+                                      const currentStep =
+                                        selectedOrderDetail.status === 'Pending'
+                                          ? 1
+                                          : selectedOrderDetail.status === 'Diproses'
+                                          ? 3
+                                          : selectedOrderDetail.status === 'Dikirim'
+                                          ? 4
+                                          : selectedOrderDetail.status === 'Selesai'
+                                          ? 5
+                                          : 1;
+                                      return ((currentStep - 1) / 4) * 100;
+                                    })()
+                                  }%`,
+                                }}
+                              />
+                            </div>
 
-                          <div className="flex flex-col items-center z-10">
-                            <div className="w-10 h-10 rounded-full bg-[#162809] text-white flex items-center justify-center font-bold text-sm shadow">
-                              ✓
-                            </div>
-                            <span className="text-[11px] font-bold text-[#162809] mt-2">
-                              Pembayaran Berhasil
-                            </span>
-                          </div>
+                            {/* Stepper Equal 5 Columns Grid */}
+                            <div className="grid grid-cols-5 text-center relative z-10">
+                              {[
+                                { num: 1, label: 'Pesanan Dibuat', icon: 'description' },
+                                { num: 2, label: 'Pembayaran Berhasil', icon: 'payments' },
+                                { num: 3, label: 'Diproses', icon: 'inventory_2' },
+                                { num: 4, label: 'Dikirim', icon: 'local_shipping' },
+                                { num: 5, label: 'Selesai', icon: 'check_circle' },
+                              ].map((s) => {
+                                const currentStep =
+                                  selectedOrderDetail.status === 'Pending'
+                                    ? 1
+                                    : selectedOrderDetail.status === 'Diproses'
+                                    ? 3
+                                    : selectedOrderDetail.status === 'Dikirim'
+                                    ? 4
+                                    : selectedOrderDetail.status === 'Selesai'
+                                    ? 5
+                                    : 1;
 
-                          <div className="flex flex-col items-center z-10">
-                            <div className="w-10 h-10 rounded-full bg-[#162809] text-white flex items-center justify-center font-bold text-sm shadow">
-                              ✓
-                            </div>
-                            <span className="text-[11px] font-bold text-[#162809] mt-2">
-                              Diproses
-                            </span>
-                          </div>
+                                const isDone = s.num < currentStep;
+                                const isActive = s.num === currentStep;
 
-                          <div className="flex flex-col items-center z-10">
-                            <div className="w-10 h-10 rounded-full bg-[#2b3e1d] text-white flex items-center justify-center font-bold text-sm shadow ring-4 ring-[#d2eabb]">
-                              <span className="material-symbols-outlined text-sm">local_shipping</span>
+                                return (
+                                  <div key={s.num} className="flex flex-col items-center px-1">
+                                    <div
+                                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow transition-all ${
+                                        isDone
+                                          ? 'bg-[#162809] text-white'
+                                          : isActive
+                                          ? 'bg-[#2b3e1d] text-white ring-4 ring-[#d2eabb]'
+                                          : 'bg-[#e7e2db] text-[#75786e]'
+                                      }`}
+                                    >
+                                      {isDone ? (
+                                        '✓'
+                                      ) : isActive ? (
+                                        <span className="material-symbols-outlined text-sm">{s.icon}</span>
+                                      ) : (
+                                        s.num
+                                      )}
+                                    </div>
+                                    <span
+                                      className={`text-[11px] leading-tight mt-2.5 max-w-[90px] mx-auto block ${
+                                        isDone || isActive ? 'font-bold text-[#162809]' : 'text-[#75786e]'
+                                      }`}
+                                    >
+                                      {s.label}
+                                    </span>
+                                  </div>
+                                );
+                              })}
                             </div>
-                            <span className="text-[11px] font-bold text-[#162809] mt-2">
-                              Dikirim
-                            </span>
                           </div>
-
-                          <div className="flex flex-col items-center z-10">
-                            <div className="w-10 h-10 rounded-full bg-[#e7e2db] text-[#75786e] flex items-center justify-center font-bold text-sm">
-                              5
-                            </div>
-                            <span className="text-[11px] text-[#75786e] mt-2">Selesai</span>
-                          </div>
-                        </div>
+                        )}
                       </div>
 
                       {/* Lacak Pengiriman */}
@@ -638,7 +597,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           />
                           <button
                             onClick={() => showToast('Memeriksa status resi...')}
-                            className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809] flex items-center gap-1"
+                            className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809] flex items-center gap-1 cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-sm">search</span>
                             <span>Lacak</span>
@@ -651,24 +610,35 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             Riwayat Terbaru
                           </h4>
                           <div className="space-y-3 pl-2 border-l-2 border-[#2b3e1d]">
-                            <div className="pl-3 relative">
-                              <p className="text-xs font-bold text-[#162809]">14 Okt - 14:20</p>
-                              <p className="text-xs text-[#44483f]">
-                                Kurir dalam perjalanan ke alamat tujuan (Surabaya Barat)
-                              </p>
-                            </div>
-                            <div className="pl-3 relative">
-                              <p className="text-xs font-bold text-[#44483f]">13 Okt - 09:15</p>
-                              <p className="text-xs text-[#75786e]">
-                                Pesanan tiba di Sorting Hub Sidoarjo
-                              </p>
-                            </div>
-                            <div className="pl-3 relative">
-                              <p className="text-xs font-bold text-[#44483f]">12 Okt - 18:40</p>
-                              <p className="text-xs text-[#75786e]">
-                                Paket telah diserahkan ke kurir JNE
-                              </p>
-                            </div>
+                            {selectedOrderDetail.status === 'Selesai' && (
+                              <div className="pl-3 relative">
+                                <p className="text-xs font-bold text-emerald-700">{selectedOrderDetail.createdAt}</p>
+                                <p className="text-xs text-[#44483f]">Pesanan telah diterima oleh pembeli. Transaksi selesai.</p>
+                              </div>
+                            )}
+                            {(selectedOrderDetail.status === 'Dikirim' || selectedOrderDetail.status === 'Selesai') && (
+                              <div className="pl-3 relative">
+                                <p className="text-xs font-bold text-[#162809]">{selectedOrderDetail.createdAt}</p>
+                                <p className="text-xs text-[#44483f]">Paket telah diserahkan ke kurir pengiriman dan dalam perjalanan.</p>
+                              </div>
+                            )}
+                            {(selectedOrderDetail.status === 'Diproses' || selectedOrderDetail.status === 'Dikirim' || selectedOrderDetail.status === 'Selesai') && (
+                              <div className="pl-3 relative">
+                                <p className="text-xs font-bold text-[#44483f]">{selectedOrderDetail.createdAt}</p>
+                                <p className="text-xs text-[#75786e]">Pesanan telah diproses dan dikemas di gudang Bestari.</p>
+                              </div>
+                            )}
+                            {selectedOrderDetail.status === 'Dibatalkan' ? (
+                              <div className="pl-3 relative">
+                                <p className="text-xs font-bold text-red-600">{selectedOrderDetail.createdAt}</p>
+                                <p className="text-xs text-[#44483f]">Pesanan telah dibatalkan.</p>
+                              </div>
+                            ) : (
+                              <div className="pl-3 relative">
+                                <p className="text-xs font-bold text-[#75786e]">{selectedOrderDetail.createdAt}</p>
+                                <p className="text-xs text-[#75786e]">Pesanan berhasil dibuat oleh pembeli.</p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -827,12 +797,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                 Rp {ord.totalAmount.toLocaleString('id-ID')}
                               </span>
                               <span
-                                className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
+                                className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border ${
                                   ord.status === 'Selesai'
-                                    ? 'bg-green-100 text-green-800'
+                                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                                     : ord.status === 'Dikirim'
-                                    ? 'bg-[#fade88] text-[#715c13]'
-                                    : 'bg-blue-100 text-blue-800'
+                                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                                    : ord.status === 'Diproses'
+                                    ? 'bg-purple-100 text-purple-800 border-purple-300'
+                                    : ord.status === 'Dibatalkan'
+                                    ? 'bg-red-100 text-red-800 border-red-300'
+                                    : 'bg-amber-100 text-amber-800 border-amber-300'
                                 }`}
                               >
                                 <span className="material-symbols-outlined text-sm">
@@ -840,7 +814,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                     ? 'check_circle'
                                     : ord.status === 'Dikirim'
                                     ? 'local_shipping'
-                                    : 'autorenew'}
+                                    : ord.status === 'Diproses'
+                                    ? 'inventory_2'
+                                    : ord.status === 'Dibatalkan'
+                                    ? 'cancel'
+                                    : 'schedule'}
                                 </span>
                                 <span>{ord.status.toUpperCase()}</span>
                               </span>
@@ -849,31 +827,40 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
 
                           <p className="text-xs text-[#44483f]">Pesanan pada {ord.createdAt}</p>
 
-                          {/* Order items preview row */}
-                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-1">
-                            <div className="flex items-center gap-3">
-                              <img
-                                src={ord.items[0]?.product.image}
-                                alt={ord.items[0]?.product.name}
-                                className="w-14 h-14 object-cover rounded-xl bg-white border border-[#c4c8bc]/30"
-                              />
-                              <div>
-                                <p className="font-bold text-sm text-[#162809]">
-                                  {ord.items[0]?.product.name}
-                                </p>
-                                {ord.items.length > 1 && (
-                                  <p className="text-xs text-[#75786e]">
-                                    + {ord.items.length - 1} produk lainnya
+                          {/* List of checked out items */}
+                          <div className="space-y-3 py-2 border-y border-[#c4c8bc]/20">
+                            {ord.items.map((it, idx) => (
+                              <div key={idx} className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                  <img
+                                    src={it.product.image}
+                                    alt={it.product.name}
+                                    className="w-14 h-14 object-cover rounded-xl bg-white border border-[#c4c8bc]/30 shrink-0"
+                                  />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="font-bold text-sm text-[#162809] truncate">
+                                      {it.product.name}
+                                    </p>
+                                    <p className="text-xs text-[#44483f]">
+                                      {it.product.unitInfo || it.product.weight} • <strong className="text-[#162809] font-bold">{it.quantity}x</strong>
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <p className="font-bold text-xs text-[#162809]">
+                                    Rp {(it.product.price * it.quantity).toLocaleString('id-ID')}
                                   </p>
-                                )}
+                                </div>
                               </div>
-                            </div>
+                            ))}
+                          </div>
 
+                          <div className="flex justify-end pt-1">
                             <button
                               onClick={() => setSelectedOrderDetail(ord)}
-                              className="bg-white border-2 border-[#162809] text-[#162809] hover:bg-[#162809] hover:text-white px-5 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer self-end sm:self-auto"
+                              className="bg-white border-2 border-[#162809] text-[#162809] hover:bg-[#162809] hover:text-white px-5 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer"
                             >
-                              Lihat Detail
+                              Lihat Detail Pesanan
                             </button>
                           </div>
                         </div>

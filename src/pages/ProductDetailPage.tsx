@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
-import { productApi } from '../api';
 import { useApp } from '../context/AppContext';
 
 interface ProductDetailPageProps {
@@ -18,10 +17,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   setActiveTab,
   onBuyNow,
 }) => {
-  const { t } = useApp();
+  const { t, products: allProducts } = useApp();
   const [quantity, setQuantity] = useState(1);
   const [activeInfoTab, setActiveInfoTab] = useState<'spesifikasi' | 'deskripsi' | 'pengiriman'>('spesifikasi');
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
 
   // Gallery thumbnail images
@@ -32,20 +30,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     'https://lh3.googleusercontent.com/aida-public/AB6AXuAXfgzY3a3ytjZ9oN2Thh9dbgQ3O3fVvra6HOUak37j0NzhxCGS-BzYkoDfkscX1gNoVfgUYPdGZzT0Soxp1G8Z5Wr6nPMQDombPoYYX9I1AA_7YgzZ8aTmenwnUfgTTQ7KibDk9a5IPzJupiGe5dq9bhaA3PIcPQgberVoQ6jc4uEVx56LWLS0c-ZpoTflmwEhvwYmISqAY3t_E4YxQvAAHL-BujbrlGXR4vUBH5yWwsUcM9gS9ZM',
   ];
 
+  // Load related products reactively from centralized context
+  const relatedProducts = allProducts.filter((p) => p.id !== product.id).slice(0, 4);
+
   useEffect(() => {
     setSelectedImage(product.image);
     setQuantity(1);
-
-    const loadRelated = async () => {
-      try {
-        const all = await productApi.getProducts();
-        const filtered = all.filter((p) => p.id !== product.id).slice(0, 4);
-        setRelatedProducts(filtered);
-      } catch (err) {
-        console.error('Failed loading related products', err);
-      }
-    };
-    loadRelated();
   }, [product]);
 
   const handleIncrement = () => setQuantity((prev) => prev + 1);

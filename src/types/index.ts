@@ -19,7 +19,7 @@ export interface Product {
 export interface Article {
   id: string;
   title: string;
-  category: 'Nutrisi' | 'Budidaya' | 'Inspirasi' | 'Resep Sehat' | 'Cerita Petani';
+  category: 'Nutrisi' | 'Budidaya' | 'Inspirasi' | 'Resep Sehat' | 'Cerita Petani' | 'Promosi';
   readTime?: string;
   snippet: string;
   content: string;

@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FaqAccordion } from '../components/FaqAccordion';
-import { FaqItem } from '../types';
-import { faqApi } from '../api';
+import { useApp } from '../context/AppContext';
 
 export const FaqPage: React.FC = () => {
-  const [faqs, setFaqs] = useState<FaqItem[]>([]);
+  const { faqs } = useApp();
 
-  useEffect(() => {
-    const fetchFaqs = async () => {
-      try {
-        const data = await faqApi.getFaqs();
-        setFaqs(data);
-      } catch (err) {
-        console.error('Failed to load FAQs', err);
-      }
-    };
-    fetchFaqs();
-  }, []);
+  // Only show active FAQs on the customer page
+  const activeFaqs = faqs.filter((f) => f.status === 'AKTIF' || !f.status);
 
   return (
     <div className="pt-28 sm:pt-32 pb-20 animate-fadeIn min-h-screen">
-      <FaqAccordion faqs={faqs} />
+      <FaqAccordion faqs={activeFaqs} />
     </div>
   );
 };
