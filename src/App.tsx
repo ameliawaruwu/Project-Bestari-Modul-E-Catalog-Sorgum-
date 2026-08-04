@@ -193,7 +193,15 @@ export function App() {
   };
 
   const handleAuthSuccess = (loggedInUser: User) => {
-    const target = loggedInUser.role === 'admin' ? 'admin' : redirectAfterLogin || 'beranda';
+    // User non-admin TIDAK boleh diarahkan ke panel admin meski redirectAfterLogin === 'admin'
+    // (mis. sempat akses tab admin saat logout → guard effect set redirectAfterLogin='admin',
+    // lalu login sebagai user biasa → tanpa guard ini dia kelempark ke admin panel).
+    const target =
+      loggedInUser.role === 'admin'
+        ? 'admin'
+        : redirectAfterLogin && redirectAfterLogin !== 'admin'
+          ? redirectAfterLogin
+          : 'beranda';
     setRedirectAfterLogin(null);
     setActiveTab(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });

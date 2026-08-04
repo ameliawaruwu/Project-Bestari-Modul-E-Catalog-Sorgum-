@@ -57,7 +57,8 @@ router.post('/', authOptional, async (req: Request, res: Response) => {
 router.use(authRequired);
 
 router.get('/mine', async (req: Request, res: Response) => {
-  const orders = await getOrders(req.user!.userId);
+  // Teruskan email (dari JWT) supaya order guest dengan email yang sama ikut tampil
+  const orders = await getOrders(req.user!.userId, req.user!.email);
   res.json({ data: orders });
 });
 

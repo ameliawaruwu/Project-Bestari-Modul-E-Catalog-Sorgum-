@@ -42,7 +42,9 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  // Naik dari 5 → 20 agar user yang lebih lama (mis. dibuat sebelum banyak user test)
+  // tetap terlihat tanpa harus ganti halaman berkali-kali.
+  const itemsPerPage = 20;
 
   // Fetch users dari BE saat mount
   const refreshUsers = async () => {

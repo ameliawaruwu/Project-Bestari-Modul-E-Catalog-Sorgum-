@@ -157,10 +157,16 @@ export async function createOrder(input: CreateOrderInput) {
   }
 }
 
-export async function getOrders(userId: number): Promise<OrderRow[]> {
+export async function getOrders(userId: number, email?: string): Promise<OrderRow[]> {
+  // User melihat order akunnya (user_id) + order guest yang dibuat dengan email yang sama
+  // (order saat belum login — user_id NULL tapi customer_email cocok). Dedupe via DISTINCT.
   const [rows] = await dbPool.query(
-    'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC',
-    [userId],
+    `SELECT DISTINCT o.*
+     FROM orders o
+     WHERE o.user_id = ?
+        OR (o.customer_email IS NOT NULL AND LOWER(o.customer_email) = LOWER(?))
+     ORDER BY o.created_at DESC`,
+    [userId, email || ''],
   );
   return await attachItems(rows as any[]);
 }
