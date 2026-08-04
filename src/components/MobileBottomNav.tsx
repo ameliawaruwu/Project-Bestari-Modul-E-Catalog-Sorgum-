@@ -51,8 +51,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         );
       })}
 
-      {/* Cart Item in Bottom Nav — hidden untuk admin */}
-      {user?.role !== 'admin' && (
+      {/* Cart Item in Bottom Nav — hanya untuk user yang LOGIN & bukan admin */}
+      {user && user.role !== 'admin' && (
         <button
           onClick={onOpenCart}
           className="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-white/70 hover:text-white transition-all active:scale-95 cursor-pointer"

@@ -1,5 +1,5 @@
-import { CartItem, Order, CheckoutData } from '../types';
-import { request, getSessionId } from './http';
+import { CartItem, Order, CheckoutData, Product } from '../types';
+import { request, getSessionId, getToken } from './http';
 
 // ---------------------------------------------------------------------------
 // Cart rows from backend (GET /api/cart) — server-side cart via x-session-id / token
@@ -38,6 +38,8 @@ function mapCartRow(row: CartRow): CartItem {
       organic: true,
     },
     quantity: row.quantity,
+    // Row id cart (server) — dipakai mutasi (update qty / delete).
+    __cartRowId: row.id,
   };
 }
 
@@ -135,7 +137,15 @@ export const orderApi = {
   // Get cart (server-side)
   getCart: async (): Promise<CartItem[]> => {
     try {
-      const res = await request<CartResponse>('/cart');
+      // Snapshot token & session di awal — jangan baca ulang saat request jalan.
+      // Kalau user switch saat request in-flight, cart tetep diambil utk owner yg benar.
+      const token = getToken();
+      const sid = getSessionId();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      headers['x-session-id'] = sid;
+
+      const res = await request<CartResponse>('/cart', { headers });
       return (res?.data || []).map(mapCartRow);
     } catch {
       // Backend cart unavailable -> return empty cart (no crash)
@@ -143,27 +153,85 @@ export const orderApi = {
     }
   },
 
-  // Save cart: sync local changes to server. Since cart is server-side,
-  // we reconcile by clearing + re-adding all items (KISS, small data volume).
-  saveCart: async (items: CartItem[]): Promise<boolean> => {
+  // Merge guest cart (server session) into user's server cart (login/register).
+  // Dipanggil SETELAH token user tersimpan. Pakai endpoint BE POST /cart/merge
+  // yang atomic: add semua item session cart ke user cart (qty di-merge oleh
+  // addToCart), lalu DELETE session cart. Item server user TETAP.
+  mergeCart: async (): Promise<boolean> => {
     try {
-      // Read current server cart to diff (avoid losing items)
-      const res = await request<CartResponse>('/cart');
-      const serverItems = res?.data || [];
+      const token = getToken();
+      if (!token) return false;
 
-      // Remove all current server items
-      for (const s of serverItems) {
-        await request(`/cart/${s.id}`, { method: 'DELETE' });
-      }
+      await request('/cart/merge', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      // Bersihin sisa localStorage guest key (kalau ada dari versi lama)
+      try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
+      return true;
+    } catch {
+      return false;
+    }
+  },
 
-      // Re-add local items
-      for (const item of items) {
-        if (item.product.id) {
-          await request('/cart/add', {
-            method: 'POST',
-            body: { product_id: parseInt(item.product.id, 10), quantity: item.quantity },
-          });
-        }
+  // ─── Server-side cart mutations (server-authoritative, per-owner) ──────
+  // Semua panggil API cart langsung; state FE cuma mirror dari DB.
+
+  // Add product ke cart server (login user via token, guest via x-session-id)
+  addToCartServer: async (product: Product, quantity: number = 1): Promise<boolean> => {
+    try {
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      await request('/cart/add', {
+        method: 'POST',
+        body: { product_id: parseInt(product.id, 10), quantity },
+        headers,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // Update qty item cart (server) — pakai row id yang sudah ada di state cart
+  updateCartQtyServer: async (cartRowId: number, quantity: number): Promise<boolean> => {
+    try {
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      await request(`/cart/${cartRowId}`, { method: 'PUT', body: { quantity }, headers });
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // Hapus item cart (server) — pakai row id yang sudah ada di state cart
+  removeCartItemServer: async (cartRowId: number): Promise<boolean> => {
+    try {
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      await request(`/cart/${cartRowId}`, { method: 'DELETE', headers });
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // Kosongkan cart server (user/guest) — butuh daftar row id dari state cart
+  clearCartServer: async (cartRowIds: number[]): Promise<boolean> => {
+    try {
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      for (const rowId of cartRowIds) {
+        await request(`/cart/${rowId}`, { method: 'DELETE', headers });
       }
       return true;
     } catch {
@@ -172,7 +240,9 @@ export const orderApi = {
   },
 
   // Place checkout order
-  checkoutOrder: async (cartItems: CartItem[], checkoutData?: CheckoutData): Promise<Order> => {
+  checkoutOrder: async (checkoutData?: CheckoutData): Promise<Order> => {
+    // Ambil cart dari SERVER (sumber kebenaran) — bukan dari parameter/localStorage
+    const cartItems = await orderApi.getCart();
     const subtotal = cartItems.reduce((acc, it) => acc + it.product.price * it.quantity, 0);
     // shipping_cost & diskon ditentukan SERVER (BE ambil dari settings + body discount)
     const shippingCost = 0; // BE yang hitung ongkir dari site_settings
@@ -205,8 +275,13 @@ export const orderApi = {
     // JANGAN pakai auth:true — itu BLOKIR guest checkout (guest gak punya token).
     // BE route POST /api/orders pakai authOptional: terima guest + user login.
     // Kalau gagal, throw error — CheckoutPage yang handle & tampilkan pesan ke user.
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const res = await request<{ message: string; data: BackendOrder; wa_link: string }>('/orders', {
       method: 'POST',
+      headers,
       body: {
         customer_name: checkoutData?.customerName || '',
         customer_email: checkoutData?.customerEmail,

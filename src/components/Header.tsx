@@ -142,8 +142,8 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </button>
 
-        {/* Shopping Cart Button — hidden untuk admin */}
-        {user?.role !== 'admin' && (
+        {/* Shopping Cart Button — hanya untuk user yang LOGIN & bukan admin */}
+        {user && user.role !== 'admin' && (
           <button
             onClick={onOpenCart}
             className="relative p-2 hover:bg-[#162809] rounded-lg transition-all active:scale-95 focus:outline-none cursor-pointer"

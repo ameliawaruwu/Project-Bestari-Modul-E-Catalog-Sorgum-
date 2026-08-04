@@ -106,6 +106,7 @@ CREATE TABLE cart_items (
   id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   user_id    INT UNSIGNED NULL,
   session_id VARCHAR(100) NULL COMMENT 'untuk guest user tanpa login',
+  owner_key  VARCHAR(120) NOT NULL COMMENT 'u<userId>: utk login, s<sessionId> utk guest — unik per owner, dipakai UNIQUE (owner_key, product_id) cegah duplikat',
   product_id INT UNSIGNED NOT NULL,
   quantity   INT UNSIGNED NOT NULL DEFAULT 1,
   created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -113,7 +114,8 @@ CREATE TABLE cart_items (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   INDEX idx_cart_user (user_id),
-  INDEX idx_cart_session (session_id)
+  INDEX idx_cart_session (session_id),
+  UNIQUE INDEX uq_cart_owner_product (owner_key, product_id)
 ) ENGINE=InnoDB;
 
 -- ================================================

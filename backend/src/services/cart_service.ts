@@ -35,33 +35,32 @@ export async function getCart(userId?: number, sessionId?: string): Promise<Cart
 }
 
 export async function addToCart(productId: number, quantity: number, userId?: number, sessionId?: string) {
-  const { clause, param } = getOwnerClause(userId, sessionId);
+  // owner_key: unik per owner (user_id XOR session_id) — constraint UNIQUE
+  // (owner_key, product_id) mencegah duplikat baris cart utk produk sama,
+  // termasuk saat race (double-click / request paralel).
+  const ownerKey = userId
+    ? `u${userId}:`
+    : sessionId
+      ? `s${sessionId}`
+      : (() => { throw new AppError('user_id atau session_id diperlukan', 400); })();
 
-  // Check if already in cart -> increase qty
-  const [existing] = await dbPool.query(
-    `SELECT id, quantity FROM cart_items c WHERE ${clause} AND product_id = ?`,
-    [param, productId],
-  );
-  const item = (existing as any[])[0];
-
-  if (item) {
-    await dbPool.query('UPDATE cart_items SET quantity = quantity + ? WHERE id = ?', [quantity, item.id]);
-    return item.id;
-  }
-
+  // Atomic upsert: kalau baris (owner, product) sudah ada, qty ditambah.
+  // ON DUPLICATE KEY UPDATE menjamin tidak ada duplikat walau 2 request paralel.
   const [result] = await dbPool.query(
-    `INSERT INTO cart_items (user_id, session_id, product_id, quantity)
-     VALUES (?, ?, ?, ?)`,
-    [userId || null, sessionId || null, productId, quantity],
+    `INSERT INTO cart_items (user_id, session_id, owner_key, product_id, quantity)
+     VALUES (?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE quantity = quantity + ?`,
+    [userId || null, sessionId || null, ownerKey, productId, quantity, quantity],
   );
   return (result as any).insertId;
 }
 
-export async function updateCartQty(cartId: number, quantity: number) {
+export async function updateCartQty(cartId: number, quantity: number, userId?: number, sessionId?: string) {
   if (quantity < 1) throw new AppError('Quantity minimal 1', 400);
+  const { clause, param } = getOwnerClause(userId, sessionId);
   const [result] = await dbPool.query(
-    'UPDATE cart_items SET quantity = ? WHERE id = ?',
-    [quantity, cartId],
+    `UPDATE cart_items AS c SET quantity = ? WHERE id = ? AND ${clause}`,
+    [quantity, cartId, param],
   );
   return (result as any).affectedRows > 0;
 }

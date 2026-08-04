@@ -114,7 +114,7 @@ ${
       // Kirim order ke backend — TANPA fallback mock.
       // Kalau BE gagal (jaringan, validasi, cart kosong), tampilkan error
       // ke user — jangan diam-diam lanjut ke halaman sukses dengan order fiktif.
-      const finalOrder = await orderApi.checkoutOrder(cart, finalCheckoutData);
+      const finalOrder = await orderApi.checkoutOrder(finalCheckoutData);
       onOrderComplete(finalOrder, formData.paymentMethod);
     } catch (err: any) {
       console.error('Checkout error:', err);

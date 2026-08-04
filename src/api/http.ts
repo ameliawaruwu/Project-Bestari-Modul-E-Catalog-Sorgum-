@@ -50,6 +50,8 @@ export function getSessionId(): string {
 interface RequestOptions {
   method?: string;
   body?: unknown;
+  // Extra headers to merge with defaults (e.g. explicit owner headers snapshot)
+  headers?: Record<string, string>;
   // For FormData uploads: pass raw FormData and skip JSON.stringify
   isFormData?: boolean;
   // Admin-only endpoints will check token presence
@@ -57,7 +59,7 @@ interface RequestOptions {
 }
 
 export async function request<T = any>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, isFormData = false, auth = false } = opts;
+  const { method = 'GET', body, headers: extraHeaders = {}, isFormData = false, auth = false } = opts;
 
   const headers: Record<string, string> = {};
   if (!isFormData) headers['Content-Type'] = 'application/json';
@@ -67,6 +69,9 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
 
   // Always send session id (harmless for logged-in users, required for guest cart)
   headers['x-session-id'] = getSessionId();
+
+  // Explicit owner headers (snapshot from caller) override defaults
+  Object.assign(headers, extraHeaders);
 
   if (auth && !token) {
     throw new ApiError(401, 'Anda harus login sebagai admin untuk melakukan aksi ini.');

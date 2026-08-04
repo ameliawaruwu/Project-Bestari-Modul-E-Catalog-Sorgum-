@@ -277,10 +277,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    const raw = localStorage.getItem('bestari_cart_items');
-    return raw ? JSON.parse(raw) : [];
-  });
+  // ─── Cart = SERVER-AUTHORITATIVE (DB) ──────────────────────────────────
+  // Cart TIDAK disimpan di localStorage lagi — sumber kebenaran = DB (cart_items),
+  // per-user_id (login) / session_id (guest). localStorage cuma nyimpen
+  // session id (bestari_session_id) sebagai identifier guest, bukan data cart.
+  // Guest cart juga server-side (session_id) — login/register merge via
+  // endpoint BE POST /cart/merge (session -> user). Key 'bestari_cart_items_'
+  // di localStorage cuma sisa versi lama, dihapus pas merge (cleanup).
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Load cart dari server (dipakai mount/hydrate, login, register, refresh)
+  const refreshCart = async () => {
+    const serverCart = await orderApi.getCart().catch(() => []);
+    setCart(serverCart);
+    return serverCart;
+  };
 
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
 
@@ -300,6 +311,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         try { localStorage.removeItem('bestari_current_user'); } catch { /* ignore */ }
       }
     });
+
+    // Cart dari SERVER (sumber kebenaran DB) — user login via token,
+    // guest via x-session-id (request() kirim otomatis). Refresh biar
+    // cart muncul walau halaman di-refresh / buka tab baru.
+    refreshCart().catch(() => {});
 
     // Products
     productApi.getProducts().then((list) => {
@@ -435,8 +451,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateCart = (newCart: CartItem[]) => {
+    // Cart server-authoritative: state cuma mirror dari DB, tidak ditulis ke localStorage.
     setCart(newCart);
-    localStorage.setItem('bestari_cart_items', JSON.stringify(newCart));
   };
 
   // Auth Helpers
@@ -450,6 +466,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (res.success && res.user) {
         setCurrentUser(res.user);
         localStorage.setItem('bestari_current_user', JSON.stringify(res.user));
+
+        // ─── Cart di login (server-authoritative) ─────────────────────────
+        // 1) Merge cart guest (localStorage key '') ke server cart user —
+        //    item guest di-add kalau belum ada, item server TETAP.
+        // 2) Refresh cart dari SERVER — sumber kebenaran DB per-user.
+        await orderApi.mergeCart().catch(() => {});
+        await refreshCart();
+
         // Load orders for logged-in user
         orderApi.getOrders().then((list) => {
           setOrders(list);
@@ -475,6 +499,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (res.success && res.user) {
         setCurrentUser(res.user);
         localStorage.setItem('bestari_current_user', JSON.stringify(res.user));
+
+        // ─── Cart di register (server-authoritative) ──────────────────────
+        // User baru: server cart kosong. Merge cart guest (localStorage key '')
+        // ke akun baru biar gak hilang setelah daftar, lalu refresh dari server.
+        await orderApi.mergeCart().catch(() => {});
+        await refreshCart();
       }
       return res;
     } catch (e: any) {
@@ -483,9 +513,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const logout = async () => {
+    // Cart server-authoritative: gak usah simpan ke localStorage — sumber di DB.
+    // Kosongin state — jangan sampai cart user A kebawa ke user B/guest.
     setCurrentUser(null);
-    localStorage.removeItem('bestari_current_user');
-    localStorage.removeItem('bestari_token');
+    setCart([]);
+    setAppliedDiscount(0);
+    try { localStorage.removeItem('bestari_current_user'); } catch { /* ignore */ }
+    try { localStorage.removeItem('bestari_token'); } catch { /* ignore */ }
   };
 
   // Product CRUD
@@ -711,6 +745,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Cart Helpers
   const addToCart = (product: Product, quantity: number = 1) => {
+    // Optimistic UI: tambah ke state dulu, sync ke DB (fire-and-forget).
     const existingIndex = cart.findIndex((item) => item.product.id === product.id);
     let updated: CartItem[];
     if (existingIndex > -1) {
@@ -720,27 +755,46 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updated = [...cart, { product, quantity }];
     }
     updateCart(updated);
-    // Sync ke backend (fire-and-forget; gagal gak ngeblokir UI)
-    orderApi.saveCart(updated).catch(() => {});
+    // Server-authoritative: add via API (snapshot owner di dalam request).
+    orderApi.addToCartServer(product, quantity).catch(() => {
+      // Kalau gagal, refresh dari server biar state konsisten dengan DB.
+      refreshCart();
+    });
   };
 
   const updateCartQuantity = (productId: string, delta: number) => {
+    const target = cart.find((item) => item.product.id === productId);
+    if (!target) return;
+    const newQty = target.quantity + delta;
     const updated = cart
-      .map((item) => (item.product.id === productId ? { ...item, quantity: item.quantity + delta } : item))
+      .map((item) => (item.product.id === productId ? { ...item, quantity: newQty } : item))
       .filter((item) => item.quantity > 0);
     updateCart(updated);
-    orderApi.saveCart(updated).catch(() => {});
+    // API: kalau qty <= 0 hapus item, kalau > 0 update qty.
+    const rowId = target.__cartRowId;
+    if (newQty <= 0) {
+      if (rowId) orderApi.removeCartItemServer(rowId).catch(() => refreshCart());
+    } else if (rowId) {
+      orderApi.updateCartQtyServer(rowId, newQty).catch(() => refreshCart());
+    } else {
+      // Row id belum ada (mis. item baru dari guest merge?) — fallback refresh
+      refreshCart();
+    }
   };
 
   const removeCartItem = (productId: string) => {
+    const target = cart.find((item) => item.product.id === productId);
     const updated = cart.filter((item) => item.product.id !== productId);
     updateCart(updated);
-    orderApi.saveCart(updated).catch(() => {});
+    const rowId = target?.__cartRowId;
+    if (rowId) orderApi.removeCartItemServer(rowId).catch(() => refreshCart());
+    else refreshCart();
   };
 
   const clearCart = () => {
+    const rowIds = cart.map((item) => item.__cartRowId).filter(Boolean) as number[];
     updateCart([]);
-    orderApi.saveCart([]).catch(() => {});
+    if (rowIds.length) orderApi.clearCartServer(rowIds).catch(() => refreshCart());
   };
 
   // Translation helper function

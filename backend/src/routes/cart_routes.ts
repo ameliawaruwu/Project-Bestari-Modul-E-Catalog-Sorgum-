@@ -63,7 +63,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
   if (!quantity || quantity < 1) { res.status(400).json({ error: 'Quantity minimal 1' }); return; }
 
-  const updated = await updateCartQty(id, quantity);
+  const updated = await updateCartQty(id, quantity, owner.userId, owner.sessionId);
   if (!updated) { res.status(404).json({ error: 'Item keranjang tidak ditemukan' }); return; }
 
   const data = await getCart(owner.userId, owner.sessionId);

@@ -48,6 +48,9 @@ export interface FaqItem {
 export interface CartItem {
   product: Product;
   quantity: number;
+  // ID row cart_items di DB (server) — dipakai mutasi (update qty / delete).
+  // Diisi oleh orderApi.getCart() dari backend; item lokal (belum sync) bisa undefined.
+  __cartRowId?: number;
 }
 
 export interface User {
