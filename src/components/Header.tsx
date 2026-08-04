@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="flex items-center shrink-0">
         <button
-          onClick={() => setActiveTab('beranda')}
+          onClick={() => setActiveTab(user?.role === 'admin' ? 'admin' : 'beranda')}
           className="text-left flex items-center gap-2.5 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer"
         >
           {shopSettings.logoUrl ? (
@@ -72,7 +72,8 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
       </div>
 
-      <nav className="hidden md:flex items-center gap-4 lg:gap-8 absolute left-1/2 -translate-x-1/2">
+      {user?.role !== 'admin' && (
+        <nav className="hidden md:flex items-center gap-4 lg:gap-8 absolute left-1/2 -translate-x-1/2">
         <button
           onClick={() => setActiveTab('beranda')}
           className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all duration-200 py-1 focus:outline-none border-b-2 ${
@@ -115,6 +116,7 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
       </nav>
+      )}
 
       <div className="flex items-center gap-1.5 sm:gap-2.5">
         {/* Theme Mode Switcher */}
@@ -140,19 +142,21 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </button>
 
-        {/* Shopping Cart Button */}
-        <button
-          onClick={onOpenCart}
-          className="relative p-2 hover:bg-[#162809] rounded-lg transition-all active:scale-95 focus:outline-none cursor-pointer"
-          aria-label={t('Keranjang Belanja', 'Shopping Cart')}
-        >
-          <span className="material-symbols-outlined text-white text-lg sm:text-xl">shopping_cart</span>
-          {cartCount > 0 && (
-            <span className="absolute top-0.5 right-0.5 bg-[#715c13] text-white text-[9px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold shadow-sm">
-              {cartCount}
-            </span>
-          )}
-        </button>
+        {/* Shopping Cart Button — hidden untuk admin */}
+        {user?.role !== 'admin' && (
+          <button
+            onClick={onOpenCart}
+            className="relative p-2 hover:bg-[#162809] rounded-lg transition-all active:scale-95 focus:outline-none cursor-pointer"
+            aria-label={t('Keranjang Belanja', 'Shopping Cart')}
+          >
+            <span className="material-symbols-outlined text-white text-lg sm:text-xl">shopping_cart</span>
+            {cartCount > 0 && (
+              <span className="absolute top-0.5 right-0.5 bg-[#715c13] text-white text-[9px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold shadow-sm">
+                {cartCount}
+              </span>
+            )}
+          </button>
+        )}
 
         {/* User Account / Auth */}
         <div className="relative">
@@ -198,36 +202,40 @@ export const Header: React.FC<HeaderProps> = ({
                     <span className="material-symbols-outlined text-lg">person</span>
                     {t('Profil Saya', 'My Profile')}
                   </button>
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      setActiveTab('pesanan');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] flex items-center gap-2 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-lg">history</span>
-                    {t('Pesanan Saya', 'My Orders')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      setActiveTab('favorit');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] flex items-center gap-2 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-lg">favorite</span>
-                    {t('Produk Favorit', 'Favorite Products')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      setActiveTab('pengaturan');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] flex items-center gap-2 border-b border-[#c4c8bc]/20 pb-2 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-lg">settings</span>
-                    {t('Pengaturan Akun', 'Account Settings')}
-                  </button>
+                  {user.role !== 'admin' && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setActiveTab('pesanan');
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] flex items-center gap-2 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-lg">history</span>
+                        {t('Pesanan Saya', 'My Orders')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setActiveTab('favorit');
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] flex items-center gap-2 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-lg">favorite</span>
+                        {t('Produk Favorit', 'Favorite Products')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setActiveTab('pengaturan');
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#f3ede6] flex items-center gap-2 border-b border-[#c4c8bc]/20 pb-2 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-lg">settings</span>
+                        {t('Pengaturan Akun', 'Account Settings')}
+                      </button>
+                    </>
+                  )}
                   <button
                     onClick={() => {
                       setShowUserMenu(false);

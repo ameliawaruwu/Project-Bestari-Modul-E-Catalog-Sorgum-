@@ -1,16 +1,33 @@
 import { Router, Request, Response } from 'express';
-import { createOrder, getOrders, getOrderById } from '../services/checkout_service';
-import { authRequired } from '../middleware/auth';
+import { createOrder, getOrders, getOrderById, cancelOrderByUser } from '../services/checkout_service';
+import { authRequired, authOptional } from '../middleware/auth';
 
 const router = Router();
 
-// === PUBLIC ===
-router.post('/', async (req: Request, res: Response) => {
-  const { customer_name, customer_phone, shipping_address, notes, shipping_cost = 0, payment_method } = req.body;
+// === PUBLIC (guest + user login via optional token) ===
+router.post('/', authOptional, async (req: Request, res: Response) => {
+  const { customer_name, customer_phone, shipping_address, notes, payment_method } = req.body;
 
   if (!['cod', 'qris'].includes(payment_method)) {
     res.status(400).json({ error: 'Metode pembayaran: cod atau qris' });
     return;
+  }
+
+  // Validasi required field (DB NOT NULL) — cegah 500 & data sampah
+  if (!customer_name || !customer_phone) {
+    res.status(400).json({ error: 'customer_name dan customer_phone wajib diisi' });
+    return;
+  }
+  if (!shipping_address || typeof shipping_address !== 'object' || Array.isArray(shipping_address)) {
+    res.status(400).json({ error: 'shipping_address wajib berupa objek' });
+    return;
+  }
+  const addrRequired = ['recipient_name', 'phone', 'address_line', 'city', 'province', 'postal_code'];
+  for (const f of addrRequired) {
+    if (!shipping_address[f]) {
+      res.status(400).json({ error: `shipping_address.${f} wajib diisi` });
+      return;
+    }
   }
 
   try {
@@ -22,7 +39,7 @@ router.post('/', async (req: Request, res: Response) => {
       customer_phone,
       shipping_address,
       notes,
-      shipping_cost: parseInt(String(shipping_cost)) || 0,
+      discount: req.body.discount,
       payment_method,
     });
     res.status(201).json({
@@ -42,6 +59,19 @@ router.use(authRequired);
 router.get('/mine', async (req: Request, res: Response) => {
   const orders = await getOrders(req.user!.userId);
   res.json({ data: orders });
+});
+
+// User batalkan order sendiri (hanya yang belum dikirim/dibatalkan)
+router.patch('/:id/cancel', async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id));
+  if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
+
+  try {
+    await cancelOrderByUser(id, req.user!.userId);
+    res.json({ message: 'Pesanan berhasil dibatalkan' });
+  } catch (e: any) {
+    res.status(e.status || 500).json({ error: e.message || 'Gagal membatalkan pesanan' });
+  }
 });
 
 router.get('/:id', async (req: Request, res: Response) => {

@@ -7,17 +7,17 @@ export interface ShopSettings {
   qrisNmid: string;
   whatsappNumber: string;
   qrisStatus: 'AKTIF' | 'NONAKTIF';
+  shippingCost?: number;
 }
 
 const LOCAL_STORAGE_KEY = 'bestari_shop_settings_v1';
 
 export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
-  storeName: 'BESTARI Sorghum',
+  storeName: 'BESTARI',
   logoUrl: '',
-  qrisImageUrl:
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuAIKWh-z2qzILYDC9woreBeFgSVM7_5bAXQw5pYZ_WwXgCifGERVX51aW8YsqJjhz82BHNB45qL6bJnxNWBWwpAxsM67_7x2OTYNFuUS0K4XILgSk6ErmPXJ-UP3WMQhaf0M_b3gWRwVKHSZ6kbqzO0x1MUI3RpV0ldxSddeaWujNrHtPTNPk0WLMpMDYC-ht49m3cEFZM04MALEK2_xXvp7VSo9wE4R95RE8g09iTX-hLm7IdsDkg',
-  qrisNmid: 'ID1029384756382',
-  whatsappNumber: '+62 812-3456-7890',
+  qrisImageUrl: '',
+  qrisNmid: '',
+  whatsappNumber: '',
   qrisStatus: 'AKTIF',
 };
 
@@ -30,6 +30,7 @@ function mapSettings(map: Record<string, string>): ShopSettings {
     qrisNmid: map.qris_nmid || DEFAULT_SHOP_SETTINGS.qrisNmid,
     whatsappNumber: map.whatsapp_number || DEFAULT_SHOP_SETTINGS.whatsappNumber,
     qrisStatus: (map.qris_status === 'NONAKTIF' ? 'NONAKTIF' : 'AKTIF'),
+    shippingCost: map.shipping_cost ? parseInt(String(map.shipping_cost), 10) || 0 : undefined,
   };
 }
 

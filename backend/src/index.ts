@@ -27,10 +27,11 @@ import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminOrdersRoutes from './routes/admin/orders_routes';
 import adminTrackingRoutes from './routes/admin/tracking_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
+import voucherRoutes from './routes/voucher_routes';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: config.corsOrigins }));
 app.use(express.json());
 app.use('/uploads', express.static(path.resolve(config.upload.dir)));
 
@@ -63,6 +64,7 @@ app.use('/api/admin/articles', adminArticlesRoutes);
 app.use('/api/admin/orders', adminOrdersRoutes);
 app.use('/api/admin/tracking', adminTrackingRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
+app.use('/api', voucherRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -74,9 +76,10 @@ app.use((_req, res) => {
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('[Error]', err);
-  res.status(err.status || 500).json({
-    error: err.message || 'Terjadi kesalahan pada server',
-  });
+  const isProd = config.nodeEnv === 'production';
+  // Di prod, jangan bocor pesan error mentah (SQL/stack). Di dev, tampilkan.
+  const message = isProd ? 'Terjadi kesalahan pada server' : (err.message || 'Terjadi kesalahan pada server');
+  res.status(err.status || 500).json({ error: message });
 });
 
 app.listen(config.port, () => {

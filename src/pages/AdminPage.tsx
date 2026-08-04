@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Order, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
@@ -21,6 +21,7 @@ import { UsersTab } from '../components/admin/UsersTab';
 import { FaqTab } from '../components/admin/FaqTab';
 import { FaqFormView } from '../components/admin/FaqFormView';
 import { OtherSettingsTab } from '../components/admin/OtherSettingsTab';
+import { VouchersTab } from '../components/admin/VouchersTab';
 
 interface AdminPageProps {
   user: User | null;
@@ -51,10 +52,30 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     saveBanner,
     deleteBanner,
     toggleBanner,
-    orders,
     updateOrderStatus,
     deleteOrder,
   } = useApp();
+
+  // Orders admin: source of truth = BE /api/admin/orders (SEMUA order, bukan /mine)
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { orderAdminApi } = await import('../api/adminApi');
+        const { mapOrder } = await import('../api/orderApi');
+        const list = await orderAdminApi.listOrders();
+        if (!cancelled) setOrders(list.map((o: any) => mapOrder(o)));
+      } catch {
+        // admin orders unavailable -> keep empty
+      } finally {
+        if (!cancelled) setOrdersLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   // Main Navigation State
   const [activeNav, setActiveNav] = useState<AdminActiveNav>('dashboard');
@@ -98,12 +119,44 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   });
 
   // Handlers for Orders
-  const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
+    try {
+      const { orderAdminApi } = await import('../api/adminApi');
+      const { STATUS_LABEL_TO_ENUM } = await import('../api/orderApi');
+      const beStatus = STATUS_LABEL_TO_ENUM[newStatus] || newStatus.toLowerCase();
+      await orderAdminApi.updateOrderStatus(orderId, beStatus);
+      // Update local state (BE dulu, context kedua — context cuma mirror)
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengupdate status pesanan.');
+      return;
+    }
     updateOrderStatus(orderId, newStatus);
     showToast(`Status pesanan ${orderId} diperbarui ke ${newStatus}`);
   };
 
-  const handleDeleteOrder = (id: string) => {
+  // Verifikasi/ubah status pembayaran (admin) — biar revenue dashboard kebaca
+  const handleUpdatePaymentStatus = async (orderId: string, newPayment: 'unpaid' | 'paid' | 'confirmed') => {
+    try {
+      const { orderAdminApi } = await import('../api/adminApi');
+      await orderAdminApi.updatePaymentStatus(orderId, newPayment);
+      setOrders((prevOrders) => prevOrders.map((o) => (o.id === orderId ? { ...o, paymentStatus: newPayment } : o)));
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengupdate status pembayaran.');
+      return;
+    }
+    showToast(`Status pembayaran ${orderId} diperbarui ke ${newPayment}`);
+  };
+
+  const handleDeleteOrder = async (id: string) => {
+    try {
+      const { orderAdminApi } = await import('../api/adminApi');
+      await orderAdminApi.updateOrderStatus(id, 'cancelled');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menghapus pesanan.');
+      return;
+    }
+    setOrders((prev) => prev.filter((o) => o.id !== id));
     deleteOrder(id);
     if (selectedOrderId === id) {
       setSelectedOrderId(null);
@@ -135,17 +188,51 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   // Handlers for Banners
-  const handleToggleBanner = (id: string) => {
+  const handleToggleBanner = async (id: string) => {
+    try {
+      const { bannerAdminApi } = await import('../api/adminApi');
+      const target = banners.find((b) => b.id === id);
+      await bannerAdminApi.updateBanner(id, { is_active: !(target?.active ?? true) });
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengubah status banner.');
+      return;
+    }
     toggleBanner(id);
     showToast('Status keaktifan banner diperbarui.');
   };
 
-  const handleDeleteBanner = (id: string) => {
+  const handleDeleteBanner = async (id: string) => {
+    try {
+      const { bannerAdminApi } = await import('../api/adminApi');
+      await bannerAdminApi.deleteBanner(id);
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menghapus banner.');
+      return;
+    }
     deleteBanner(id);
     showToast('Banner berhasil dihapus.');
   };
 
-  const handleSaveBanner = (data: { id?: string; title: string; targetLink: string; image: string }) => {
+  const handleSaveBanner = async (data: { id?: string; title: string; targetLink: string; image: string }) => {
+    try {
+      const { bannerAdminApi } = await import('../api/adminApi');
+      if (data.id) {
+        await bannerAdminApi.updateBanner(data.id, {
+          title: data.title,
+          target_link: data.targetLink || null,
+          image_url: data.image,
+        });
+      } else {
+        await bannerAdminApi.createBanner({
+          title: data.title,
+          image_url: data.image,
+          target_link: data.targetLink || null,
+        });
+      }
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menyimpan banner.');
+      return;
+    }
     saveBanner(data);
     showToast(data.id ? 'Perubahan banner berhasil disimpan!' : 'Banner baru berhasil ditambahkan!');
     setEditingBanner(null);
@@ -441,6 +528,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <TransactionsTab
                 orders={orders}
                 onUpdateOrderStatus={handleUpdateOrderStatus}
+                onUpdatePaymentStatus={handleUpdatePaymentStatus}
                 onDeleteOrder={(order) => setDeletingOrder(order)}
                 onSelectOrder={(id) => setSelectedOrderId(id)}
                 onOpenProofModal={(url) => setProofModalUrl(url)}
@@ -470,7 +558,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           {/* TAB 6: KELOLA USER */}
           {activeNav === 'user' && <UsersTab showToast={showToast} />}
 
-          {/* TAB 7: KELOLA FAQ */}
           {activeNav === 'faq' &&
             (editingFaq ? (
               <FaqFormView
@@ -491,7 +578,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ))}
 
-          {/* TAB 8: KELOLA LAIN */}
+          {/* TAB 8: KELOLA VOUCHER */}
+          {activeNav === 'voucher' && <VouchersTab showToast={showToast} />}
+
+          {/* TAB 9: KELOLA LAIN */}
           {activeNav === 'lain' && <OtherSettingsTab showToast={showToast} />}
         </main>
 

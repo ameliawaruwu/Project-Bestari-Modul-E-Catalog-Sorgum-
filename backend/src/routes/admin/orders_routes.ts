@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { getAllOrders, getOrderById, updateOrderStatus, updatePaymentStatus } from '../../services/checkout_service';
+import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
+router.use(authRequired, adminOnly);
 
 router.get('/', async (_req: Request, res: Response) => {
   const orders = await getAllOrders();

@@ -4,6 +4,7 @@ import { ProductCard } from '../components/ProductCard';
 import { BenefitsSection } from '../components/BenefitsSection';
 import { Product, Article } from '../types';
 import { useApp } from '../context/AppContext';
+import { productApi } from '../api/productApi';
 
 interface HomePageProps {
   onAddToCart: (product: Product, e: React.MouseEvent) => void;
@@ -19,43 +20,40 @@ export const HomePage: React.FC<HomePageProps> = ({
   setActiveTab,
   searchQuery,
 }) => {
-  const { t, products: allProducts, landingContent } = useApp();
-  const [selectedCategory] = useState('semua');
-  const [sortBy] = useState('populer');
+  const { t, landingContent } = useApp();
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
 
-  // Filter products reactively from centralized state
+  // Load products from backend (filter by search client-side)
   useEffect(() => {
+    let cancelled = false;
     setLoadingProducts(true);
-    let result = [...allProducts];
-
-    if (selectedCategory && selectedCategory !== 'semua' && selectedCategory !== 'all') {
-      const cat = selectedCategory.toLowerCase();
-      result = result.filter((p) => p.category === cat);
-    }
-
-    if (searchQuery && searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.categoryLabel.toLowerCase().includes(q)
-      );
-    }
-
-    if (sortBy) {
-      if (sortBy === 'harga-terendah') {
-        result.sort((a, b) => a.price - b.price);
-      } else if (sortBy === 'harga-tertinggi') {
-        result.sort((a, b) => b.price - a.price);
-      }
-    }
-
-    setProducts(result);
-    setLoadingProducts(false);
-  }, [allProducts, selectedCategory, sortBy, searchQuery]);
+    productApi
+      .getProducts()
+      .then((list) => {
+        if (cancelled) return;
+        let result = [...list];
+        if (searchQuery && searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase().trim();
+          result = result.filter(
+            (p) =>
+              p.name.toLowerCase().includes(q) ||
+              p.description.toLowerCase().includes(q) ||
+              p.categoryLabel.toLowerCase().includes(q)
+          );
+        }
+        setProducts(result);
+      })
+      .catch(() => {
+        if (!cancelled) setProducts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingProducts(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [searchQuery]);
 
   return (
     <div className="animate-fadeIn bg-[#faf8f5]">

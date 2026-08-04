@@ -2,7 +2,9 @@ import dbPool from '../../lib/db';
 
 export async function getWishlist(userId: number) {
   const [rows] = await dbPool.query(
-    `SELECT w.id AS wishlist_id, p.id, p.name, p.slug, p.price, p.image_url, p.short_desc, w.created_at
+    `SELECT w.id AS wishlist_id, p.id, p.name, p.slug, p.price, p.description AS short_desc,
+            (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) AS image_url,
+            w.created_at
      FROM wishlists w
      JOIN products p ON w.product_id = p.id
      WHERE w.user_id = ?

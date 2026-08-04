@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
+import { productApi } from '../api/productApi';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -17,10 +18,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   setActiveTab,
   onBuyNow,
 }) => {
-  const { t, products: allProducts } = useApp();
+  const { t, shopSettings } = useApp();
   const [quantity, setQuantity] = useState(1);
   const [activeInfoTab, setActiveInfoTab] = useState<'spesifikasi' | 'deskripsi' | 'pengiriman'>('spesifikasi');
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   // Gallery thumbnail images
   const galleryImages = [
@@ -30,8 +32,23 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     'https://lh3.googleusercontent.com/aida-public/AB6AXuAXfgzY3a3ytjZ9oN2Thh9dbgQ3O3fVvra6HOUak37j0NzhxCGS-BzYkoDfkscX1gNoVfgUYPdGZzT0Soxp1G8Z5Wr6nPMQDombPoYYX9I1AA_7YgzZ8aTmenwnUfgTTQ7KibDk9a5IPzJupiGe5dq9bhaA3PIcPQgberVoQ6jc4uEVx56LWLS0c-ZpoTflmwEhvwYmISqAY3t_E4YxQvAAHL-BujbrlGXR4vUBH5yWwsUcM9gS9ZM',
   ];
 
-  // Load related products reactively from centralized context
-  const relatedProducts = allProducts.filter((p) => p.id !== product.id).slice(0, 4);
+  // Load related products from backend (same category, exclude current)
+  useEffect(() => {
+    let cancelled = false;
+    productApi
+      .getProducts({ category: product.category })
+      .then((list) => {
+        if (!cancelled) {
+          setRelatedProducts(list.filter((p) => p.id !== product.id).slice(0, 4));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setRelatedProducts([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [product.id, product.category]);
 
   useEffect(() => {
     setSelectedImage(product.image);
@@ -55,10 +72,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const whatsappMessage = encodeURIComponent(
     `Halo Bestari, saya ingin bertanya mengenai produk: ${product.name} (Rp ${product.price.toLocaleString('id-ID')})`
   );
-  const whatsappUrl = `https://wa.me/6281234567890?text=${whatsappMessage}`;
+  const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
+  const whatsappUrl = `https://wa.me/${waNumber}?text=${whatsappMessage}`;
 
   return (
     <main className="pt-24 pb-16 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
+      {/* Tombol Kembali */}
+      <button
+        onClick={() => setActiveTab('produk')}
+        className="mb-4 flex items-center gap-2 text-sm font-bold text-[#162809] hover:text-[#2b3e1d] transition-colors cursor-pointer"
+      >
+        <span className="material-symbols-outlined text-xl">arrow_back</span>
+        <span>{t('Kembali', 'Back')}</span>
+      </button>
+
       {/* Breadcrumb Navigation */}
       <nav className="mb-8 flex items-center space-x-2 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]">
         <button

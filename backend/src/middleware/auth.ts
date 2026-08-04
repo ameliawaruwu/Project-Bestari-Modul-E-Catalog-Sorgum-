@@ -31,3 +31,17 @@ export function adminOnly(req: Request, res: Response, next: NextFunction): void
   }
   next();
 }
+
+// Parse token jika ada, tapi jangan blokir kalau tidak ada (untuk endpoint yang
+// mendukung guest + user login, misal checkout). Kalau token invalid, ignore.
+export function authOptional(req: Request, _res: Response, next: NextFunction): void {
+  const header = req.headers.authorization;
+  if (header && header.startsWith('Bearer ')) {
+    try {
+      req.user = verifyToken(header.slice(7));
+    } catch {
+      // token invalid — treat as guest
+    }
+  }
+  next();
+}

@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { uploadSingle, uploadMultiple } from '../../lib/upload';
+import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
+router.use(authRequired, adminOnly);
 
 function handleUploadError(err: any, req: Request, res: Response, next: any) {
   if (err) {

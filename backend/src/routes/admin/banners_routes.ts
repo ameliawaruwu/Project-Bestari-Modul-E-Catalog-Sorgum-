@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { getAllBanners, createBanner, updateBanner, deleteBanner } from '../../services/banners_service';
+import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
+router.use(authRequired, adminOnly);
 
 router.get('/', async (_req: Request, res: Response) => {
   const data = await getAllBanners();

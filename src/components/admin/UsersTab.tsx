@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminUser } from '../../types/admin';
-import { initialAdminUsers } from '../../data/mockUsers';
 import { UserFormView } from './UserFormView';
 import { SoftDeleteConfirmModal } from './SoftDeleteConfirmModal';
+import { userAdminApi } from '../../api/adminApi';
 
 interface UsersTabProps {
   showToast: (msg: string) => void;
 }
 
+// BE user row -> AdminUser (FE shape)
+function mapAdminUser(u: { id: number; name: string; email: string; phone: string | null; created_at: string }): AdminUser {
+  return {
+    id: String(u.id),
+    name: u.name,
+    email: u.email,
+    phone: u.phone || '-',
+    joinedDate: new Date(u.created_at).toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }),
+    orderCount: 0,
+    status: 'AKTIF',
+    isDeleted: false,
+    addresses: [],
+  };
+}
+
 export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
-  const [users, setUsers] = useState<AdminUser[]>(initialAdminUsers);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'SEMUA' | 'AKTIF' | 'NONAKTIF'>('SEMUA');
 
@@ -23,6 +43,23 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // Fetch users dari BE saat mount
+  const refreshUsers = async () => {
+    setLoading(true);
+    try {
+      const rows = await userAdminApi.listUsers();
+      setUsers(rows.map(mapAdminUser));
+    } catch {
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshUsers();
+  }, []);
 
   // Filtered Users
   const filteredUsers = users.filter((u) => {
@@ -50,76 +87,56 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
 
-  // CRUD Handlers
-  const handleSaveUserFromPage = (userData: AdminUser) => {
+  // CRUD Handlers — onSave menerima (user, password?)
+  const handleSaveUserFromPage = async (userData: AdminUser, password?: string) => {
     if (viewMode === 'create') {
-      // Create new user
-      const nextNum = users.length + 1;
-      const newId = `USR-${String(nextNum).padStart(3, '0')}`;
-      const todayStr = new Date().toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      });
-
-      const newUser: AdminUser = {
-        ...userData,
-        id: newId,
-        joinedDate: todayStr,
-        orderCount: 0,
-        status: userData.status || 'AKTIF',
-        isDeleted: userData.status === 'NONAKTIF',
-      };
-
-      setUsers([newUser, ...users]);
-      showToast(`User baru ${newUser.name} (${newId}) berhasil didaftarkan!`);
-    } else {
-      // Edit existing user
-      setUsers(users.map((u) => (u.id === userData.id ? userData : u)));
-      showToast(`Data user ${userData.name} (${userData.id}) berhasil diperbarui!`);
+      try {
+        await userAdminApi.createUser({
+          name: userData.name,
+          email: userData.email,
+          password: password || 'bestari123', // default kalau kosong
+          phone: userData.phone !== '-' ? userData.phone : undefined,
+        });
+        showToast(`User baru ${userData.name} berhasil didaftarkan!`);
+      } catch (e: any) {
+        showToast(e?.message || 'Gagal membuat user.');
+      }
+    } else if (selectedUserForEdit) {
+      try {
+        await userAdminApi.updateUser(Number(selectedUserForEdit.id), {
+          name: userData.name,
+          email: userData.email,
+          phone: userData.phone !== '-' ? userData.phone : undefined,
+          ...(password ? { password } : {}),
+        });
+        showToast(`Data user ${userData.name} berhasil diperbarui!`);
+      } catch (e: any) {
+        showToast(e?.message || 'Gagal memperbarui user.');
+      }
     }
+
+    // Refresh list dari BE
+    await refreshUsers();
 
     // Return back to list page view
     setViewMode('list');
     setSelectedUserForEdit(null);
   };
 
-  const handleSoftDelete = (userId: string) => {
-    const targetUser = users.find((u) => u.id === userId);
-    setUsers(
-      users.map((u) =>
-        u.id === userId
-          ? {
-              ...u,
-              status: 'NONAKTIF',
-              isDeleted: true,
-              deletedAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
-            }
-          : u
-      )
-    );
-    if (targetUser) {
-      showToast(`User ${targetUser.name} berhasil dinonaktifkan (Soft Delete).`);
+  const handleSoftDelete = async (userId: string) => {
+    try {
+      await userAdminApi.deleteUser(Number(userId));
+      showToast(`User berhasil dinonaktifkan (Soft Delete).`);
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menonaktifkan user.');
     }
+    await refreshUsers();
   };
 
   const handleRestoreUser = (userId: string) => {
-    const targetUser = users.find((u) => u.id === userId);
-    setUsers(
-      users.map((u) =>
-        u.id === userId
-          ? {
-              ...u,
-              status: 'AKTIF',
-              isDeleted: false,
-              deletedAt: undefined,
-            }
-          : u
-      )
-    );
-    if (targetUser) {
-      showToast(`User ${targetUser.name} berhasil dipulihkan (Status AKTIF kembali).`);
-    }
+    // BE tidak punya endpoint restore — re-create via update (aktifkan lagi)
+    showToast('Restore user belum didukung backend. Buat user baru atau hubungi admin.');
+    refreshUsers();
   };
 
   const handleToggleStatus = (user: AdminUser) => {
@@ -251,7 +268,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#c4c8bc]/30">
-              {paginatedUsers.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                    <p className="font-medium text-xs">Memuat data pengguna...</p>
+                  </td>
+                </tr>
+              ) : paginatedUsers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-gray-500">
                     <span className="material-symbols-outlined text-3xl mb-1 text-gray-300">person_off</span>

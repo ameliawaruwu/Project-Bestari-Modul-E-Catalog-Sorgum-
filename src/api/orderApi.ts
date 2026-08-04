@@ -44,6 +44,7 @@ function mapCartRow(row: CartRow): CartItem {
 // Backend order shape (GET /api/orders/mine, POST /api/orders)
 interface BackendOrder {
   id: number;
+  user_id: number | null;
   order_number: string;
   customer_name: string;
   customer_email: string | null;
@@ -56,6 +57,8 @@ interface BackendOrder {
   payment_method: 'cod' | 'qris';
   payment_status: string;
   order_status: string;
+  courier: string | null;
+  tracking_number: string | null;
   created_at: string;
   items?: { id: number; product_id: number | null; product_name: string; price: number; quantity: number; subtotal: number }[];
 }
@@ -69,7 +72,16 @@ const STATUS_MAP: Record<string, Order['status']> = {
   cancelled: 'Dibatalkan',
 };
 
-function mapOrder(o: BackendOrder): Order {
+// Reverse: label ID -> ENUM BE (dipakai admin update status)
+export const STATUS_LABEL_TO_ENUM: Record<Order['status'], string> = {
+  Pending: 'pending',
+  Diproses: 'processed',
+  Dikirim: 'shipped',
+  Selesai: 'delivered',
+  Dibatalkan: 'cancelled',
+};
+
+export function mapOrder(o: BackendOrder): Order {
   const items: CartItem[] = (o.items || []).map((it) => ({
     product: {
       id: String(it.product_id ?? it.id),
@@ -94,7 +106,9 @@ function mapOrder(o: BackendOrder): Order {
   ].filter(Boolean).join(', ');
 
   return {
-    id: o.order_number || String(o.id),
+    id: String(o.id), // id numerik BE — dipakai buat API call (admin set tracking/status)
+    userId: o.user_id != null ? String(o.user_id) : undefined, // string biar match dgn User.id dari mapUser
+    orderNumber: o.order_number, // nomor pesanan buat tampilan (BST-XXXX)
     items,
     totalAmount: o.total,
     status: STATUS_MAP[o.order_status] || 'Pending',
@@ -103,6 +117,7 @@ function mapOrder(o: BackendOrder): Order {
     }),
     shippingAddress,
     paymentMethod: o.payment_method,
+    paymentStatus: (o.payment_status as Order['paymentStatus']) || undefined,
     customerName: o.customer_name,
     customerPhone: o.customer_phone,
     customerEmail: o.customer_email || undefined,
@@ -111,6 +126,8 @@ function mapOrder(o: BackendOrder): Order {
     district: addr.district,
     postalCode: addr.postal_code,
     notes: o.notes || undefined,
+    courier: o.courier || undefined,
+    trackingNumber: o.tracking_number || undefined,
   };
 }
 
@@ -157,8 +174,10 @@ export const orderApi = {
   // Place checkout order
   checkoutOrder: async (cartItems: CartItem[], checkoutData?: CheckoutData): Promise<Order> => {
     const subtotal = cartItems.reduce((acc, it) => acc + it.product.price * it.quantity, 0);
-    const shippingCost = 15000;
-    const total = subtotal + shippingCost;
+    // shipping_cost & diskon ditentukan SERVER (BE ambil dari settings + body discount)
+    const shippingCost = 0; // BE yang hitung ongkir dari site_settings
+    const discount = checkoutData?.discount || 0;
+    const total = subtotal + shippingCost - discount;
 
     const shipping_address = checkoutData
       ? {
@@ -175,46 +194,31 @@ export const orderApi = {
           label: 'Rumah',
           recipient_name: '',
           phone: '',
-          address_line: 'Jl. Nusantara No. 88, Jakarta Selatan',
-          city: 'Jakarta Selatan',
-          province: 'DKI Jakarta',
+          address_line: '',
+          city: '',
+          province: '',
           district: '',
           postal_code: '',
         };
 
-    try {
-      const res = await request<{ message: string; data: BackendOrder; wa_link: string }>('/orders', {
-        method: 'POST',
-        body: {
-          customer_name: checkoutData?.customerName || 'Budi Santoso',
-          customer_email: checkoutData?.customerEmail,
-          customer_phone: checkoutData?.customerPhone || '08123456789',
-          shipping_address,
-          notes: checkoutData?.notes,
-          shipping_cost: shippingCost,
-          payment_method: checkoutData?.paymentMethod || 'cod',
-        },
-      });
+    // Token dikirim otomatis oleh http.ts kalau ada (line 65-66).
+    // JANGAN pakai auth:true — itu BLOKIR guest checkout (guest gak punya token).
+    // BE route POST /api/orders pakai authOptional: terima guest + user login.
+    // Kalau gagal, throw error — CheckoutPage yang handle & tampilkan pesan ke user.
+    const res = await request<{ message: string; data: BackendOrder; wa_link: string }>('/orders', {
+      method: 'POST',
+      body: {
+        customer_name: checkoutData?.customerName || '',
+        customer_email: checkoutData?.customerEmail,
+        customer_phone: checkoutData?.customerPhone || '',
+        shipping_address,
+        notes: checkoutData?.notes,
+        discount: discount,
+        payment_method: checkoutData?.paymentMethod || 'cod',
+      },
+    });
 
-      return mapOrder(res.data);
-    } catch (e: any) {
-      // Fallback: return a local order so the flow doesn't crash (but data stays in DB only if server OK)
-      const order: Order = {
-        id: `BST-${Math.floor(100000 + Math.random() * 900000)}`,
-        items: cartItems,
-        totalAmount: total,
-        status: 'Diproses',
-        createdAt: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-        shippingAddress: checkoutData
-          ? `${checkoutData.address}, ${checkoutData.district}, ${checkoutData.city}, ${checkoutData.province} ${checkoutData.postalCode}`
-          : 'Jl. Nusantara No. 88, Jakarta Selatan',
-        paymentMethod: checkoutData?.paymentMethod || 'cod',
-        customerName: checkoutData?.customerName,
-        customerPhone: checkoutData?.customerPhone,
-        customerEmail: checkoutData?.customerEmail,
-      };
-      return order;
-    }
+    return mapOrder(res.data);
   },
 
   // Get order history (auth required)
@@ -225,5 +229,14 @@ export const orderApi = {
     } catch {
       return [];
     }
+  },
+
+  // Validate voucher code (public endpoint)
+  validateVoucher: async (code: string, subtotal: number): Promise<{ valid: boolean; discount?: number; message?: string }> => {
+    const res = await request<{ valid: boolean; discount?: number; message?: string }>('/vouchers/validate', {
+      method: 'POST',
+      body: { code, subtotal },
+    });
+    return res;
   },
 };

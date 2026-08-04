@@ -8,6 +8,7 @@ export type AdminActiveNav =
   | 'info'
   | 'user'
   | 'faq'
+  | 'voucher'
   | 'lain';
 
 export interface UserAddress {

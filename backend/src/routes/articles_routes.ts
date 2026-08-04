@@ -13,7 +13,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 router.get('/faq/all', async (_req: Request, res: Response) => {
-  const data = await getFaqs();
+  const data = await getFaqs(); // public: cuma AKTIF
   res.json({ data });
 });
 

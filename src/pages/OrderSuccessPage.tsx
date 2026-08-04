@@ -13,8 +13,17 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   order,
   onNavigateHome,
 }) => {
-  const { t } = useApp();
-  const orderId = order?.id || '#BST-99234';
+  const { t, shopSettings } = useApp();
+  const orderId = order?.orderNumber || order?.id || '(tidak diketahui)';
+
+  const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
+  const waMessage = encodeURIComponent(
+    `Halo Admin ${shopSettings.storeName || 'BESTARI'}, saya ingin konfirmasi pesanan *${orderId}*.\n\n` +
+    `Total: Rp ${(order?.totalAmount || 0).toLocaleString('id-ID')}\n` +
+    `Metode: ${order?.paymentMethod === 'qris' ? 'QRIS' : 'COD'}\n\n` +
+    `Mohon diproses, terima kasih!`
+  );
+  const waUrl = `https://wa.me/${waNumber}?text=${waMessage}`;
 
   useEffect(() => {
     // Fire festive confetti animation on mount
@@ -114,7 +123,17 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
           )}
 
           {/* Primary CTA */}
-          <div className="pt-2">
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            {/* Konfirmasi via WA — penting buat COD: order ke-save sebagai unpaid,
+                user konfirmasi ke admin biar diproses (lihat AUDIT temuan #11) */}
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#25D366] hover:bg-[#1eb958] text-white font-bold text-sm rounded-xl transition-all shadow-md active:scale-95"
+            >
+              <span>{t('Konfirmasi ke Admin via WhatsApp', 'Confirm to Admin via WhatsApp')}</span>
+            </a>
             <button
               onClick={onNavigateHome}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#2b3e1d] hover:bg-[#162809] text-white font-bold text-sm rounded-xl transition-all shadow-md active:scale-95 cursor-pointer group"

@@ -46,6 +46,9 @@ interface CreateProductInput {
   weight_spec: string;
   origin: string;
   is_featured: boolean;
+  gluten_free?: boolean;
+  organic?: boolean;
+  badge?: string | null;
 }
 
 const LIST_SELECT = `
@@ -136,14 +139,15 @@ export async function getFeaturedProducts(limit = 8) {
 export async function createProduct(input: CreateProductInput) {
   const { category_id, name, slug, description, price, stock, weight_spec, origin, is_featured } = input;
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, is_featured)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [category_id, name, slug, description, price, stock, weight_spec, origin, is_featured ? 1 : 0],
+    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, is_featured, gluten_free, organic, badge)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [category_id, name, slug, description, price, stock, weight_spec, origin, is_featured ? 1 : 0,
+     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.badge ?? null],
   );
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'is_featured'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'is_featured', 'gluten_free', 'organic', 'badge'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   const fields: string[] = [];
@@ -152,7 +156,11 @@ export async function updateProduct(id: number, input: Partial<CreateProductInpu
   for (const [key, val] of Object.entries(input)) {
     if (val !== undefined && ALLOWED_COLUMNS.includes(key)) {
       fields.push(`${key} = ?`);
-      params.push(key === 'is_featured' ? (val ? 1 : 0) : val);
+      if (key === 'is_featured' || key === 'gluten_free' || key === 'organic') {
+        params.push(val ? 1 : 0);
+      } else {
+        params.push(val);
+      }
     }
   }
 

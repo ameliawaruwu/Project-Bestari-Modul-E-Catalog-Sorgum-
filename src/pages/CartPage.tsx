@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CartItem, Product } from '../types';
 import { useApp } from '../context/AppContext';
+import { orderApi } from '../api/orderApi';
 
 interface CartPageProps {
   cart: CartItem[];
@@ -21,12 +22,11 @@ export const CartPage: React.FC<CartPageProps> = ({
   onNavigateCheckout,
   onSelectProduct,
 }) => {
-  const { t } = useApp();
+  const { t, appliedDiscount, setAppliedDiscount } = useApp();
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>(
     cart.map((item) => item.product.id)
   );
   const [promoCode, setPromoCode] = useState('');
-  const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [showPromoModal, setShowPromoModal] = useState(false);
   const [promoError, setPromoError] = useState('');
 
@@ -48,16 +48,23 @@ export const CartPage: React.FC<CartPageProps> = ({
   const shippingEstimate = selectedItems.length > 0 ? 15000 : 0;
   const totalPrice = Math.max(0, subtotalPrice + shippingEstimate - appliedDiscount);
 
-  const handleApplyPromo = (code: string) => {
+  const handleApplyPromo = async (code: string) => {
     const cleanCode = code.trim().toUpperCase();
-    if (cleanCode === 'BESTARI10' || cleanCode === 'PROMO') {
-      setAppliedDiscount(15000);
-      setPromoError('');
-      setShowPromoModal(false);
-    } else if (cleanCode === '') {
+    if (!cleanCode) {
       setPromoError(t('Masukkan kode promo terlebih dahulu', 'Please enter a promo code first'));
-    } else {
-      setPromoError(t('Kode promo tidak valid', 'Invalid promo code'));
+      return;
+    }
+    try {
+      const result = await orderApi.validateVoucher(cleanCode, subtotalPrice);
+      if (result.valid && result.discount) {
+        setAppliedDiscount(result.discount);
+        setPromoError('');
+        setShowPromoModal(false);
+      } else {
+        setPromoError(result.message || t('Kode promo tidak valid', 'Invalid promo code'));
+      }
+    } catch {
+      setPromoError(t('Gagal memvalidasi kode promo', 'Failed to validate promo code'));
     }
   };
 

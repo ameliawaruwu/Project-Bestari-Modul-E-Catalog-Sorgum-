@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
 import { Article } from '../types';
 import { useApp } from '../context/AppContext';
+import { articleApi } from '../api/articleApi';
 
 interface ArticlesPageProps {
   selectedArticle?: Article | null;
@@ -12,11 +13,12 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   selectedArticle,
   onClearSelectedArticle,
 }) => {
-  const { t, articles: allArticles } = useApp();
+  const { t } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [activeArticle, setActiveArticle] = useState<Article | null>(selectedArticle || null);
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     if (selectedArticle) {
@@ -24,10 +26,25 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     }
   }, [selectedArticle]);
 
-  // Load articles from context (excludes Promosi/Promotion category)
+  // Load articles from backend
   useEffect(() => {
-    setLoading(false);
-  }, [allArticles]);
+    let cancelled = false;
+    setLoading(true);
+    articleApi
+      .getArticles()
+      .then((list) => {
+        if (!cancelled) setAllArticles(list);
+      })
+      .catch(() => {
+        if (!cancelled) setAllArticles([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Filter out promotional articles — they appear only in Checkout
   const publicArticles = allArticles.filter(
@@ -45,8 +62,10 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     return matchesCategory && matchesSearch;
   });
 
-  const handleCardClick = (article: Article) => {
-    setActiveArticle(article);
+  const handleCardClick = async (article: Article) => {
+    // Fetch full article (content, subImage, quote, facts) from backend by slug
+    const full = await articleApi.getArticleBySlug(article.slug);
+    setActiveArticle(full || article);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

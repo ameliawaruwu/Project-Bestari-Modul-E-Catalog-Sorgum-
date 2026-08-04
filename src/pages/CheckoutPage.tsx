@@ -7,12 +7,14 @@ interface CheckoutPageProps {
   cart: CartItem[];
   onNavigateCart: () => void;
   onOrderComplete: (order: Order, paymentMethod: 'cod' | 'qris') => void;
+  showToast?: (message: string) => void;
 }
 
 export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   cart,
   onNavigateCart,
   onOrderComplete,
+  showToast,
 }) => {
   const { t, shopSettings, articles, appliedDiscount, setAppliedDiscount, currentUser } = useApp();
 
@@ -27,8 +29,8 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     customerPhone: '',
     customerEmail: currentUser?.email || '',
     address: '',
-    province: '',
-    city: '',
+    province: 'Jawa Barat',
+    city: 'Bandung',
     district: '',
     postalCode: '',
     notes: '',
@@ -40,9 +42,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const discount = appliedDiscount > 0 ? Math.round(subtotal * (appliedDiscount / 100)) : 0;
-  const shippingFee = cart.length > 0 ? 15000 : 0;
-  const totalAmount = subtotal - discount + shippingFee;
+  // appliedDiscount = NOMINAL RUPIAH (dari CartPage promo: BESTARI10 = Rp 15.000)
+  const discount = appliedDiscount > 0 ? Math.min(appliedDiscount, subtotal) : 0;
+  // Ongkir dari settings BE (bukan hardcode 15000)
+  const shippingFee = cart.length > 0 ? (shopSettings.shippingCost ?? 15000) : 0;
+  const totalAmount = Math.max(0, subtotal - discount + shippingFee);
 
 
   const handleInputChange = (
@@ -72,6 +76,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       const finalCheckoutData: CheckoutData = {
         ...formData,
         paymentProofUrl: paymentProofPreview || undefined,
+        discount: discount, // kirim ke BE biar total order sesuai tampilan
       };
 
       // Construct items summary string for WhatsApp
@@ -106,37 +111,15 @@ ${
     : 'Metode Pembayaran: Cash on Delivery (COD).'
 }`;
 
-      // Call parent onOrderComplete handler
-      const mockOrder: Order = {
-        id: `BST-${Math.floor(100000 + Math.random() * 900000)}`,
-        items: cart,
-        totalAmount,
-        status: 'Diproses',
-        createdAt: new Date().toLocaleDateString('id-ID', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-        }),
-        shippingAddress: `${formData.address}, ${formData.district}, ${formData.city}, ${formData.province} ${formData.postalCode}`,
-        paymentMethod: formData.paymentMethod,
-        customerName: formData.customerName,
-        customerPhone: formData.customerPhone,
-        customerEmail: formData.customerEmail,
-      };
-
-      // Try to create the order in the backend first (persists to DB).
-      // If the backend is unavailable, fall back to the local order so the
-      // UI flow (success page / QRIS redirect) still works.
-      let finalOrder: Order = mockOrder;
-      try {
-        finalOrder = await orderApi.checkoutOrder(cart, finalCheckoutData);
-      } catch {
-        // backend unavailable — keep local order
-      }
-
+      // Kirim order ke backend — TANPA fallback mock.
+      // Kalau BE gagal (jaringan, validasi, cart kosong), tampilkan error
+      // ke user — jangan diam-diam lanjut ke halaman sukses dengan order fiktif.
+      const finalOrder = await orderApi.checkoutOrder(cart, finalCheckoutData);
       onOrderComplete(finalOrder, formData.paymentMethod);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Checkout error:', err);
+      const msg = err?.message || 'Gagal membuat pesanan. Silakan coba lagi.';
+      showToast(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -354,7 +337,7 @@ ${
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-700">
-                    <span>Diskon Promo ({appliedDiscount}%)</span>
+                    <span>Diskon Promo</span>
                     <span className="font-semibold">- Rp {discount.toLocaleString('id-ID')}</span>
                   </div>
                 )}

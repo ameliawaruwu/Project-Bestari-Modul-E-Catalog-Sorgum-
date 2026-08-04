@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { getAllArticles, createArticle, updateArticle, deleteArticle, getFaqs, createFaq, updateFaq, deleteFaq } from '../../services/articles_service';
+import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
+router.use(authRequired, adminOnly);
 
 // Articles
 router.get('/', async (_req: Request, res: Response) => {
@@ -37,14 +39,14 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
 // FAQ
 router.get('/faq', async (_req: Request, res: Response) => {
-  const data = await getFaqs();
+  const data = await getFaqs(true); // admin: include DRAFT
   res.json({ data });
 });
 
 router.post('/faq', async (req: Request, res: Response) => {
-  const { question, answer, sort_order } = req.body;
+  const { question, answer } = req.body;
   if (!question || !answer) { res.status(400).json({ error: 'question dan answer wajib' }); return; }
-  const id = await createFaq(question, answer, sort_order || 0);
+  const id = await createFaq(req.body);
   res.status(201).json({ message: 'FAQ dibuat', data: { id } });
 });
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Order, Product } from '../types';
 import { useApp } from '../context/AppContext';
+import { wishlistApi } from '../api/wishlistApi';
 
 interface ProfilePageProps {
   user: User | null;
@@ -23,10 +24,22 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   showToast,
   onNavigateAdmin,
 }) => {
-  const { t, orders: allOrders, products: allProducts, currentUser } = useApp();
+  const { t, orders: allOrders, products: allProducts, currentUser, updateOrderStatus } = useApp();
   const [activeTab, setActiveTab] = useState<'profil' | 'pesanan' | 'favorit' | 'pengaturan'>(
     initialTab
   );
+
+  // Cancel order sendiri (user) — panggil BE PATCH /orders/:id/cancel
+  const handleCancelOrder = async (orderId: string) => {
+    try {
+      const { request } = await import('../api/http');
+      await request(`/orders/${orderId}/cancel`, { method: 'PATCH', auth: true });
+      showToast('Pesanan berhasil dibatalkan.');
+      updateOrderStatus(orderId, 'Dibatalkan');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal membatalkan pesanan.');
+    }
+  };
 
   useEffect(() => {
     setActiveTab(initialTab);
@@ -42,35 +55,101 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
 
   const [orderFilter, setOrderFilter] = useState<string>('Semua');
   const [selectedOrderDetail, setSelectedOrderDetail] = useState<Order | null>(null);
-  const [resiSearch, setResiSearch] = useState<string>('JNE2023882910');
 
-  // Favorite Products
+  // Live tracking data (dari BE /api/tracking/:orderId) — untuk order detail view
+  const [trackingData, setTrackingData] = useState<{
+    tracking: {
+      courier: string;
+      tracking_number: string;
+      resi_status: string;
+      pengirim: string;
+      tujuan: string;
+      checked_at: string;
+    } | null;
+    history: { event_date: string; description: string }[];
+  } | null>(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
+
+  // Fetch tracking real setiap ganti selectedOrderDetail yang punya resi
+  useEffect(() => {
+    let cancelled = false;
+    setTrackingData(null);
+    const order = selectedOrderDetail;
+    if (!order || !order.courier || !order.trackingNumber) {
+      setTrackingLoading(false);
+      return;
+    }
+    setTrackingLoading(true);
+    const load = async () => {
+      try {
+        const { request } = await import('../api/http');
+        const res = await request<{ data: typeof trackingData }>(`/tracking/${order.id}`, { auth: true });
+        if (!cancelled) setTrackingData(res.data);
+      } catch {
+        // tracking unavailable
+      } finally {
+        if (!cancelled) setTrackingLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
+  }, [selectedOrderDetail?.id]);
+
+  // Favorite Products — real dari BE wishlist (bukan mock allProducts.slice)
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
+  const [wishlistIds, setWishlistIds] = useState<Record<string, number>>({}); // productId -> wishlist_id
 
   useEffect(() => {
-    if (allProducts.length > 0 && favoriteProducts.length === 0) {
-      setFavoriteProducts(allProducts.slice(0, 4));
+    if (!currentUser) {
+      setFavoriteProducts([]);
+      setWishlistIds({});
+      return;
     }
-  }, [allProducts]);
+    let cancelled = false;
+    wishlistApi.getWishlist().then((items) => {
+      if (cancelled) return;
+      // items dari BE cuma {id, name, price, image...} — lengkapi dengan allProducts by id
+      const enriched = items
+        .map((w) => {
+          const full = allProducts.find((p) => String(p.id) === String(w.id));
+          return full || w;
+        })
+        .filter((p) => p.id);
+      setFavoriteProducts(enriched);
+      const idMap: Record<string, number> = {};
+      // wishlist_id di-map lewat korelasi id product
+      items.forEach((w) => { if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0); });
+      setWishlistIds(idMap);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [currentUser, allProducts]);
 
-  // Profile Form state
+  // Profile Form state — dari user login (bukan mock)
   const [profileData, setProfileData] = useState({
-    fullName: user?.name || 'Aruna Bestari',
-    email: user?.email || 'aruna@sorghum.com',
-    phone: '0812-3456-7890',
-    gender: 'Perempuan',
-    birthDate: '12 Januari 1995',
+    fullName: user?.name || '',
+    email: user?.email || '',
+    phone: '',
+    gender: '',
+    birthDate: '',
   });
 
-  // Shipping Address state
+  // Shipping Address state — dari BE /api/user/ (bukan mock)
+  const [addresses, setAddresses] = useState<Array<{
+    id: string; label: string; recipientName: string; phone: string;
+    addressLine: string; city: string; province: string; postalCode: string; isPrimary: boolean;
+  }>>([]);
   const [addressData, setAddressData] = useState({
-    label: 'Rumah Utama',
-    recipient: 'Aruna Bestari',
-    phone: '+6281234567890',
-    address: 'Jl. Kebon Jeruk No. 12, Jakarta Barat, DKI Jakarta, 11530',
+    label: '',
+    recipient: '',
+    phone: '',
+    address: '',
+    city: '',
+    province: '',
+    postalCode: '',
   });
 
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [addressSaving, setAddressSaving] = useState(false);
 
   // Password state
   const [passwordData, setPasswordData] = useState({
@@ -79,13 +158,47 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     confirmPassword: '',
   });
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  // Load addresses dari BE saat mount (kalau login)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { addressApi } = await import('../api/addressApi');
+        const list = await addressApi.getAddresses();
+        if (cancelled) return;
+        setAddresses(list);
+        const primary = list.find((a) => a.isPrimary) || list[0];
+        if (primary) {
+          setAddressData({
+            label: primary.label,
+            recipient: primary.recipientName,
+            phone: primary.phone,
+            address: primary.addressLine,
+            city: primary.city,
+            province: primary.province,
+            postalCode: primary.postalCode,
+          });
+        }
+      } catch { /* BE unavailable -> tetap kosong */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Profil berhasil diperbarui!');
+    const { authApi } = await import('../api/authApi');
+    const res = await authApi.updateProfile({
+      name: profileData.fullName,
+      email: profileData.email,
+      phone: profileData.phone,
+    });
+    showToast(res.message);
+    if (res.success && res.user) {
+      setProfileData((p) => ({ ...p, fullName: res.user!.name || p.fullName, email: res.user!.email || p.email }));
+    }
   };
 
-
-  const handleSavePassword = (e: React.FormEvent) => {
+  const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passwordData.currentPassword) {
       showToast('Masukkan kata sandi saat ini.');
@@ -95,14 +208,47 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       showToast('Konfirmasi kata sandi tidak cocok.');
       return;
     }
-    showToast('Kata sandi berhasil diperbarui!');
-    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    if (passwordData.newPassword.length < 6) {
+      showToast('Password baru minimal 6 karakter.');
+      return;
+    }
+    const { authApi } = await import('../api/authApi');
+    const res = await authApi.changePassword(passwordData.currentPassword, passwordData.newPassword);
+    showToast(res.message);
+    if (res.success) {
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    }
   };
 
-  const handleSaveAddress = (e: React.FormEvent) => {
+  const handleSaveAddress = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsEditingAddress(false);
-    showToast('Alamat pengiriman berhasil diperbarui!');
+    setAddressSaving(true);
+    try {
+      const { addressApi } = await import('../api/addressApi');
+      const input = {
+        label: addressData.label,
+        recipient_name: addressData.recipient,
+        phone: addressData.phone,
+        address_line: addressData.address,
+        city: addressData.city,
+        province: addressData.province,
+        postal_code: addressData.postalCode,
+        is_primary: addresses.length === 0, // alamat pertama jadi primary
+      };
+      if (addresses.length === 0) {
+        await addressApi.createAddress(input);
+      } else {
+        await addressApi.updateAddress(addresses[0].id, input);
+      }
+      const list = await addressApi.getAddresses();
+      setAddresses(list);
+      setIsEditingAddress(false);
+      showToast('Alamat pengiriman berhasil disimpan!');
+    } catch {
+      showToast('Gagal menyimpan alamat.');
+    } finally {
+      setAddressSaving(false);
+    }
   };
 
   // Filter orders by tab
@@ -113,6 +259,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       return ord.status === 'Diproses';
     if (orderFilter === 'Dikirim') return ord.status === 'Dikirim';
     if (orderFilter === 'Selesai') return ord.status === 'Selesai';
+    if (orderFilter === 'Dibatalkan') return ord.status === 'Dibatalkan';
     return true;
   });
 
@@ -391,34 +538,95 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
                       />
                     </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                          Provinsi
+                        </label>
+                        <input
+                          type="text"
+                          value={addressData.province}
+                          onChange={(e) => setAddressData({ ...addressData, province: e.target.value })}
+                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                          Kota/Kabupaten
+                        </label>
+                        <input
+                          type="text"
+                          value={addressData.city}
+                          onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
+                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                          Kode Pos
+                        </label>
+                        <input
+                          type="text"
+                          value={addressData.postalCode}
+                          onChange={(e) => setAddressData({ ...addressData, postalCode: e.target.value })}
+                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                        />
+                      </div>
+                    </div>
                     <button
                       type="submit"
-                      className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809]"
+                      disabled={addressSaving}
+                      className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Simpan Alamat
+                      {addressSaving ? 'Menyimpan...' : 'Simpan Alamat'}
                     </button>
                   </form>
                 ) : (
-                  <div className="bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 relative">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold text-sm text-[#162809]">{addressData.label}</h4>
-                      <span className="bg-[#2b3e1d] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md tracking-wider">
-                        UTAMA
-                      </span>
-                    </div>
-                    <p className="font-bold text-sm text-[#162809] mb-1">
-                      {addressData.recipient} ({addressData.phone})
-                    </p>
-                    <p className="text-xs text-[#44483f] leading-relaxed mb-4">
-                      {addressData.address}
-                    </p>
-                    <button
-                      onClick={() => setIsEditingAddress(true)}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-[#162809] hover:underline cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-sm">edit</span>
-                      <span>Ubah Alamat</span>
-                    </button>
+                  <div className="space-y-3">
+                    {addresses.length === 0 ? (
+                      <div className="bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 text-center">
+                        <p className="text-sm text-[#44483f]">
+                          Belum ada alamat pengiriman. Tambahkan alamat pertamamu!
+                        </p>
+                      </div>
+                    ) : (
+                      addresses.map((addr) => (
+                        <div key={addr.id} className="bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 relative">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-bold text-sm text-[#162809]">{addr.label}</h4>
+                            {addr.isPrimary && (
+                              <span className="bg-[#2b3e1d] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md tracking-wider">
+                                UTAMA
+                              </span>
+                            )}
+                          </div>
+                          <p className="font-bold text-sm text-[#162809] mb-1">
+                            {addr.recipientName} ({addr.phone})
+                          </p>
+                          <p className="text-xs text-[#44483f] leading-relaxed mb-4">
+                            {addr.addressLine}, {addr.city}, {addr.province} {addr.postalCode}
+                          </p>
+                          <button
+                            onClick={() => {
+                              setAddressData({
+                                label: addr.label,
+                                recipient: addr.recipientName,
+                                phone: addr.phone,
+                                address: addr.addressLine,
+                                city: addr.city,
+                                province: addr.province,
+                                postalCode: addr.postalCode,
+                              });
+                              setIsEditingAddress(true);
+                            }}
+                            className="inline-flex items-center gap-1 text-xs font-bold text-[#162809] hover:underline cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm">edit</span>
+                            <span>Ubah Alamat</span>
+                          </button>
+                        </div>
+                      ))
+                    )}
                   </div>
                 )}
               </div>
@@ -582,64 +790,92 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         )}
                       </div>
 
-                      {/* Lacak Pengiriman */}
+                      {/* Lacak Pengiriman — data REAL dari BE /api/tracking/:orderId */}
                       <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc]/30 shadow-sm space-y-4">
-                        <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809]">
-                          Lacak Pengiriman
-                        </h3>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={resiSearch}
-                            onChange={(e) => setResiSearch(e.target.value)}
-                            className="flex-1 bg-[#f9f3ec] border border-[#c4c8bc]/40 rounded-xl px-4 py-2.5 text-sm"
-                            placeholder="Nomor Resi"
-                          />
-                          <button
-                            onClick={() => showToast('Memeriksa status resi...')}
-                            className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809] flex items-center gap-1 cursor-pointer"
-                          >
-                            <span className="material-symbols-outlined text-sm">search</span>
-                            <span>Lacak</span>
-                          </button>
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809]">
+                            Lacak Pengiriman
+                          </h3>
+                          {trackingData?.tracking?.resi_status && (
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-[#162809] text-white">
+                              {trackingData.tracking.resi_status}
+                            </span>
+                          )}
                         </div>
 
-                        {/* Timeline */}
+                        {/* Info kurir + resi (otomatis dari admin, tanpa input user) */}
+                        {selectedOrderDetail.courier || selectedOrderDetail.trackingNumber ? (
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 bg-[#f9f3ec] rounded-xl px-4 py-2.5 border border-[#c4c8bc]/30 text-xs">
+                            <span className="flex items-center gap-1.5 font-bold text-[#162809]">
+                              <span className="material-symbols-outlined text-sm">local_shipping</span>
+                              {selectedOrderDetail.courier || 'Kurir'}
+                            </span>
+                            {selectedOrderDetail.trackingNumber && (
+                              <span className="font-mono font-bold text-[#162809]">
+                                Resi: {selectedOrderDetail.trackingNumber}
+                              </span>
+                            )}
+                            <a
+                              href={`https://cekresi.com/cek-resi/?courier=${selectedOrderDetail.courier}&awb=${selectedOrderDetail.trackingNumber}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-[#2b3e1d] font-bold hover:underline inline-flex items-center gap-1"
+                            >
+                              <span className="material-symbols-outlined text-sm">open_in_new</span>
+                              Lacak
+                            </a>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-[#75786e]">
+                            Resi belum diinput oleh admin. Pesanan ini belum dikirim.
+                          </p>
+                        )}
+
+                        {/* Info pengirim/tujuan/update */}
+                        {trackingData?.tracking && (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs bg-[#faf8f5] rounded-xl px-4 py-3 border border-[#c4c8bc]/20">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-wide text-[#75786e] font-bold">Pengirim</p>
+                              <p className="font-semibold text-[#1d1b17] mt-0.5">{trackingData.tracking.pengirim || '-'}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] uppercase tracking-wide text-[#75786e] font-bold">Tujuan</p>
+                              <p className="font-semibold text-[#1d1b17] mt-0.5">{trackingData.tracking.tujuan || '-'}</p>
+                            </div>
+                            <div className="col-span-2 sm:col-span-1">
+                              <p className="text-[10px] uppercase tracking-wide text-[#75786e] font-bold">Update Terakhir</p>
+                              <p className="font-semibold text-[#1d1b17] mt-0.5">
+                                {trackingData.tracking.checked_at
+                                  ? new Date(trackingData.tracking.checked_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+                                  : '-'}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Timeline riwayat perjalanan (real dari BE) */}
                         <div className="pt-4 border-t border-[#c4c8bc]/20 space-y-4">
                           <h4 className="font-bold text-xs text-[#44483f] uppercase tracking-wider">
                             Riwayat Terbaru
                           </h4>
-                          <div className="space-y-3 pl-2 border-l-2 border-[#2b3e1d]">
-                            {selectedOrderDetail.status === 'Selesai' && (
-                              <div className="pl-3 relative">
-                                <p className="text-xs font-bold text-emerald-700">{selectedOrderDetail.createdAt}</p>
-                                <p className="text-xs text-[#44483f]">Pesanan telah diterima oleh pembeli. Transaksi selesai.</p>
-                              </div>
-                            )}
-                            {(selectedOrderDetail.status === 'Dikirim' || selectedOrderDetail.status === 'Selesai') && (
-                              <div className="pl-3 relative">
-                                <p className="text-xs font-bold text-[#162809]">{selectedOrderDetail.createdAt}</p>
-                                <p className="text-xs text-[#44483f]">Paket telah diserahkan ke kurir pengiriman dan dalam perjalanan.</p>
-                              </div>
-                            )}
-                            {(selectedOrderDetail.status === 'Diproses' || selectedOrderDetail.status === 'Dikirim' || selectedOrderDetail.status === 'Selesai') && (
-                              <div className="pl-3 relative">
-                                <p className="text-xs font-bold text-[#44483f]">{selectedOrderDetail.createdAt}</p>
-                                <p className="text-xs text-[#75786e]">Pesanan telah diproses dan dikemas di gudang Bestari.</p>
-                              </div>
-                            )}
-                            {selectedOrderDetail.status === 'Dibatalkan' ? (
-                              <div className="pl-3 relative">
-                                <p className="text-xs font-bold text-red-600">{selectedOrderDetail.createdAt}</p>
-                                <p className="text-xs text-[#44483f]">Pesanan telah dibatalkan.</p>
-                              </div>
-                            ) : (
-                              <div className="pl-3 relative">
-                                <p className="text-xs font-bold text-[#75786e]">{selectedOrderDetail.createdAt}</p>
-                                <p className="text-xs text-[#75786e]">Pesanan berhasil dibuat oleh pembeli.</p>
-                              </div>
-                            )}
-                          </div>
+                          {trackingLoading ? (
+                            <p className="text-xs text-[#75786e]">Memuat riwayat pengiriman...</p>
+                          ) : trackingData?.history?.length ? (
+                            <div className="space-y-3 pl-2 border-l-2 border-[#2b3e1d]">
+                              {trackingData.history.map((ev, idx) => (
+                                <div key={idx} className="pl-3 relative">
+                                  <p className="text-xs font-bold text-[#162809]">
+                                    {ev.event_date && ev.event_date !== '-' ? ev.event_date : '—'}
+                                  </p>
+                                  <p className="text-xs text-[#44483f]">{ev.description}</p>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-[#75786e]">
+                              Belum ada riwayat perjalanan dari ekspedisi.
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -686,12 +922,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Pengiriman (JNE Reguler)</span>
-                            <span>Rp 18.000</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Pajak</span>
-                            <span>Rp 1.150</span>
+                            <span>Pengiriman</span>
+                            <span>Rp {((selectedOrderDetail as any).shippingCost ?? 15000).toLocaleString('id-ID')}</span>
                           </div>
                           <div className="flex justify-between font-bold text-sm text-[#162809] pt-2 border-t border-[#c4c8bc]/20">
                             <span>Total Tagihan</span>
@@ -718,12 +950,30 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         </p>
                       </div>
 
-                      <button
-                        onClick={() => setSelectedOrderDetail(null)}
-                        className="w-full bg-[#2b3e1d] text-white py-3 rounded-xl font-bold text-xs hover:bg-[#162809] cursor-pointer"
-                      >
-                        Kembali ke Riwayat Pesanan
-                      </button>
+                      <div className="flex gap-3">
+                        {selectedOrderDetail.status !== 'Dikirim' &&
+                          selectedOrderDetail.status !== 'Selesai' &&
+                          selectedOrderDetail.status !== 'Dibatalkan' && (
+                            <button
+                              onClick={() => handleCancelOrder(selectedOrderDetail.id)}
+                              className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold text-xs hover:bg-red-700 cursor-pointer"
+                            >
+                              Batalkan Pesanan
+                            </button>
+                          )}
+                        <button
+                          onClick={() => setSelectedOrderDetail(null)}
+                          className={`py-3 rounded-xl font-bold text-xs hover:bg-[#162809] cursor-pointer ${
+                            selectedOrderDetail.status !== 'Dikirim' &&
+                            selectedOrderDetail.status !== 'Selesai' &&
+                            selectedOrderDetail.status !== 'Dibatalkan'
+                              ? 'flex-1 bg-[#2b3e1d] text-white'
+                              : 'w-full bg-[#2b3e1d] text-white'
+                          }`}
+                        >
+                          Kembali ke Riwayat Pesanan
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -892,8 +1142,20 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       {/* Heart Button */}
                       <button
                         onClick={() => {
-                          setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
-                          showToast(`${prod.name} dihapus dari favorit.`);
+                          const wid = wishlistIds[String(prod.id)];
+                          if (wid) {
+                            wishlistApi.removeFromWishlist(wid).then((ok) => {
+                              if (ok) {
+                                setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
+                                showToast(`${prod.name} dihapus dari favorit.`);
+                              } else {
+                                showToast('Gagal menghapus favorit.');
+                              }
+                            });
+                          } else {
+                            setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
+                            showToast(`${prod.name} dihapus dari favorit.`);
+                          }
                         }}
                         className="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 text-red-600 flex items-center justify-center shadow-sm hover:scale-110 transition-transform cursor-pointer"
                       >

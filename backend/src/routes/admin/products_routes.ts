@@ -1,8 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { getProducts, createProduct, updateProduct, toggleProductActive, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage } from '../../services/products_service';
 import { AppError } from '../../lib/errors_utils';
+import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
+router.use(authRequired, adminOnly);
 
 router.get('/', async (_req: Request, res: Response) => {
   const result = await getProducts({ page: 1, limit: 1000, includeInactive: true });

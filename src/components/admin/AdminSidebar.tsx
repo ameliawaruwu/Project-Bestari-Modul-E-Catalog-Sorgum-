@@ -30,6 +30,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'info', label: 'Kelola Info', icon: 'info' },
     { id: 'user', label: 'Kelola User', icon: 'group' },
     { id: 'faq', label: 'Kelola FAQ', icon: 'quiz' },
+    { id: 'voucher', label: 'Kelola Voucher', icon: 'confirmation_number' },
     { id: 'lain', label: 'Kelola Lain', icon: 'more_horiz' },
   ];
 

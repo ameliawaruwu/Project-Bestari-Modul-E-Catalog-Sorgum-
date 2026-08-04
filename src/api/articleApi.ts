@@ -16,6 +16,9 @@ interface ArticleRow {
   author?: string | null;
   author_role?: string | null;
   read_time?: string | null;
+  sub_image?: string | null;
+  quote?: string | null;
+  facts?: string | Array<{ title: string; desc: string }> | null;
 }
 
 function mapArticle(a: ArticleRow): Article {
@@ -26,6 +29,7 @@ function mapArticle(a: ArticleRow): Article {
 
   return {
     id: String(a.id),
+    slug: a.slug,
     title: a.title,
     category: (a.category as Article['category']) || 'Nutrisi',
     readTime: a.read_time || undefined,
@@ -35,6 +39,9 @@ function mapArticle(a: ArticleRow): Article {
     date: dateStr,
     author: a.author || 'Tim Bestari',
     authorRole: a.author_role || undefined,
+    subImage: a.sub_image || undefined,
+    quote: a.quote || undefined,
+    facts: a.facts ? (typeof a.facts === 'string' ? JSON.parse(a.facts) : a.facts) : undefined,
   };
 }
 
@@ -48,9 +55,9 @@ export const articleApi = {
     }
   },
 
-  getArticleById: async (id: string): Promise<Article | null> => {
+  getArticleBySlug: async (slug: string): Promise<Article | null> => {
     try {
-      const res = await request<{ data: ArticleRow }>(`/articles/${id}`);
+      const res = await request<{ data: ArticleRow }>(`/articles/${slug}`);
       return res?.data ? mapArticle(res.data) : null;
     } catch {
       return null;

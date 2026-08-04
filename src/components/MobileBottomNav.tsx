@@ -19,11 +19,14 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 }) => {
   const { t } = useApp();
   const navItems = [
-    { id: 'beranda', label: t('Beranda', 'Home'), icon: 'home' },
-    { id: 'produk', label: t('Produk', 'Products'), icon: 'storefront' },
-    ...(user?.role === 'admin' ? [{ id: 'admin', label: t('Admin', 'Admin'), icon: 'admin_panel_settings' }] : []),
-    { id: 'informasi', label: t('Informasi', 'Info'), icon: 'article' },
-    { id: 'faq', label: t('FAQ', 'FAQ'), icon: 'help_outline' },
+    ...(user?.role === 'admin'
+      ? [{ id: 'admin', label: t('Admin', 'Admin'), icon: 'admin_panel_settings' }]
+      : [
+          { id: 'beranda', label: t('Beranda', 'Home'), icon: 'home' },
+          { id: 'produk', label: t('Produk', 'Products'), icon: 'storefront' },
+          { id: 'informasi', label: t('Informasi', 'Info'), icon: 'article' },
+          { id: 'faq', label: t('FAQ', 'FAQ'), icon: 'help_outline' },
+        ]),
   ];
 
   return (
@@ -48,21 +51,23 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         );
       })}
 
-      {/* Cart Item in Bottom Nav */}
-      <button
-        onClick={onOpenCart}
-        className="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-white/70 hover:text-white transition-all active:scale-95 cursor-pointer"
-      >
-        <div className="p-1 rounded-full relative">
-          <span className="material-symbols-outlined text-xl">shopping_cart</span>
-          {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-[#715c13] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
-              {cartCount}
-            </span>
-          )}
-        </div>
-        <span className="text-[11px] font-['Plus_Jakarta_Sans'] font-medium">{t('Troli', 'Cart')}</span>
-      </button>
+      {/* Cart Item in Bottom Nav — hidden untuk admin */}
+      {user?.role !== 'admin' && (
+        <button
+          onClick={onOpenCart}
+          className="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-white/70 hover:text-white transition-all active:scale-95 cursor-pointer"
+        >
+          <div className="p-1 rounded-full relative">
+            <span className="material-symbols-outlined text-xl">shopping_cart</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#715c13] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                {cartCount}
+              </span>
+            )}
+          </div>
+          <span className="text-[11px] font-['Plus_Jakarta_Sans'] font-medium">{t('Troli', 'Cart')}</span>
+        </button>
+      )}
     </div>
   );
 };

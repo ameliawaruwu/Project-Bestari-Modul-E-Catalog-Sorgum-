@@ -98,3 +98,123 @@ export const productAdminApi = {
     await request(`/admin/products/${id}`, { method: 'DELETE', auth: true });
   },
 };
+
+export const orderAdminApi = {
+  // GET /api/admin/orders
+  listOrders: async (): Promise<any[]> => {
+    const res = await request<{ data: any[] }>('/admin/orders', { auth: true });
+    return res?.data || [];
+  },
+
+  // GET /api/admin/orders/:id
+  getOrder: async (id: string) => {
+    const res = await request<{ data: any }>(`/admin/orders/${id}`, { auth: true });
+    return res?.data;
+  },
+
+  // PATCH /api/admin/orders/:id/status
+  updateOrderStatus: async (id: string, status: string) => {
+    await request(`/admin/orders/${id}/status`, { method: 'PATCH', body: { status }, auth: true });
+  },
+
+  // PATCH /api/admin/orders/:id/payment
+  updatePaymentStatus: async (id: string, status: string) => {
+    await request(`/admin/orders/${id}/payment`, { method: 'PATCH', body: { status }, auth: true });
+  },
+};
+
+export const bannerAdminApi = {  // GET /api/admin/banners
+  listBanners: async (): Promise<any[]> => {
+    const res = await request<{ data: any[] }>('/admin/banners', { auth: true });
+    return res?.data || [];
+  },
+
+  // POST /api/admin/banners
+  createBanner: async (fields: { title: string; image_url: string; target_type?: string; target_link?: string }) => {
+    const res = await request<{ data: any }>('/admin/banners', {
+      method: 'POST',
+      body: {
+        title: fields.title,
+        image_url: fields.image_url,
+        target_type: fields.target_type || 'store',
+        target_link: fields.target_link || null,
+      },
+      auth: true,
+    });
+    return res?.data;
+  },
+
+  // PUT /api/admin/banners/:id
+  updateBanner: async (id: string, fields: Record<string, any>) => {
+    await request(`/admin/banners/${id}`, { method: 'PUT', body: fields, auth: true });
+  },
+
+  // DELETE /api/admin/banners/:id
+  deleteBanner: async (id: string) => {
+    await request(`/admin/banners/${id}`, { method: 'DELETE', auth: true });
+  },
+};
+
+export const trackingAdminApi = {
+  // POST /api/admin/tracking/:orderId/set — set kurir + resi (order otomatis jadi 'shipped')
+  setTracking: async (orderId: string, courier: string, trackingNumber: string) => {
+    await request(`/admin/tracking/${orderId}/set`, {
+      method: 'POST',
+      body: { courier, tracking_number: trackingNumber },
+      auth: true,
+    });
+  },
+};
+
+// Backend user row dari /api/admin/dashboard/users (role 'user' hanya)
+export interface AdminUserRow {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  role: string;
+  created_at: string;
+}
+
+export const userAdminApi = {
+  // GET /api/admin/dashboard/users — list semua customer
+  listUsers: async (): Promise<AdminUserRow[]> => {
+    const res = await request<{ data: AdminUserRow[] }>('/admin/dashboard/users', { auth: true });
+    return res?.data || [];
+  },
+
+  // POST /api/admin/dashboard/users — create user baru
+  createUser: async (fields: { name: string; email: string; password: string; phone?: string }) => {
+    await request('/admin/dashboard/users', {
+      method: 'POST',
+      body: fields,
+      auth: true,
+    });
+  },
+
+  // PUT /api/admin/dashboard/users/:id
+  updateUser: async (id: number, fields: { name?: string; email?: string; phone?: string; password?: string }) => {
+    await request(`/admin/dashboard/users/${id}`, { method: 'PUT', body: fields, auth: true });
+  },
+
+  // DELETE /api/admin/dashboard/users/:id
+  deleteUser: async (id: number) => {
+    await request(`/admin/dashboard/users/${id}`, { method: 'DELETE', auth: true });
+  },
+};
+
+export const voucherAdminApi = {
+  list: async (): Promise<any[]> => {
+    const res = await request<{ data: any[] }>('/admin/vouchers', { auth: true });
+    return res?.data || [];
+  },
+  create: async (data: any) => {
+    return await request('/admin/vouchers', { method: 'POST', body: data, auth: true });
+  },
+  update: async (id: number, data: any) => {
+    return await request(`/admin/vouchers/${id}`, { method: 'PUT', body: data, auth: true });
+  },
+  remove: async (id: number) => {
+    return await request(`/admin/vouchers/${id}`, { method: 'DELETE', auth: true });
+  },
+};

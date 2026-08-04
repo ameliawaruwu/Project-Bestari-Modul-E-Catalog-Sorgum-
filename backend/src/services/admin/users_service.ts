@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 export async function getAllUsers() {
   const [rows] = await dbPool.query(
     `SELECT id, name, email, phone, role, created_at
-     FROM users WHERE role = 'customer'
+     FROM users WHERE role = 'user'
      ORDER BY created_at DESC`,
   );
   return rows;
@@ -19,8 +19,8 @@ export async function createUser(name: string, email: string, password: string, 
 
   const hash = await bcrypt.hash(password, 10);
   await dbPool.query(
-    'INSERT INTO users (name, email, password_hash, phone, role) VALUES (?, ?, ?, ?, ?)',
-    [name, email, hash, phone || null, 'customer'],
+    "INSERT INTO users (name, email, password_hash, phone, role) VALUES (?, ?, ?, ?, 'user')",
+    [name, email, hash, phone || null],
   );
 }
 
@@ -38,11 +38,11 @@ export async function updateUserByAdmin(userId: number, fields: Record<string, a
   if (sets.length === 0) return false;
   vals.push(userId);
 
-  const [r] = await dbPool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ? AND role = 'customer'`, vals);
+  const [r] = await dbPool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ? AND role = 'user'`, vals);
   return (r as any).affectedRows > 0;
 }
 
 export async function deleteUserByAdmin(userId: number) {
-  const [r] = await dbPool.query("DELETE FROM users WHERE id = ? AND role = 'customer'", [userId]);
+  const [r] = await dbPool.query("DELETE FROM users WHERE id = ? AND role = 'user'", [userId]);
   return (r as any).affectedRows > 0;
 }

@@ -7,7 +7,7 @@ const router = Router();
 router.use(authRequired, adminOnly);
 
 // Dashboard
-router.get('/dashboard', async (_req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
   const data = await getDashboardMetrics();
   res.json({ data });
 });

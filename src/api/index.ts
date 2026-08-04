@@ -5,3 +5,5 @@ export * from './orderApi';
 export * from './articleApi';
 export * from './faqApi';
 export * from './shopSettingsApi';
+export * from './addressApi';
+export * from './adminApi';

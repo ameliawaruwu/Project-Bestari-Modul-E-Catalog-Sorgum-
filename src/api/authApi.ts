@@ -91,12 +91,25 @@ export const authApi = {
         saveUser(fresh);
         return fresh;
       } catch {
-        // token invalid/expired -> fall back to cache (UI can still render)
-        return cached;
+        // Token invalid/expired — JANGAN fallback ke cache lama (bisa cache admin
+        // yang nyangkut). Bersihin sesi biar user login ulang dengan bersih.
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          setToken(null);
+        } catch {
+          // ignore
+        }
+        return null;
       }
     }
 
-    return cached;
+    // Tidak ada token valid — cache localStorage tidak bisa dipercaya.
+    // Bisa jadi cache admin lama yang nyangkut dari sesi sebelumnya.
+    // Hapus cache basi, return null — user harus login ulang.
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch { /* ignore */ }
+    return null;
   },
 
   // Logout
@@ -108,5 +121,35 @@ export const authApi = {
       // ignore
     }
     return true;
+  },
+
+  // Update profile (PUT /api/user/profile) — name/email/phone
+  updateProfile: async (fields: { name?: string; email?: string; phone?: string }): Promise<{ success: boolean; message: string; user?: User }> => {
+    try {
+      const res = await request<{ message: string; data: BackendUser }>('/user/profile', {
+        method: 'PUT',
+        body: fields,
+        auth: true,
+      });
+      const user = mapUser(res.data);
+      saveUser(user);
+      return { success: true, message: res.message || 'Profil diperbarui', user };
+    } catch (e: any) {
+      return { success: false, message: e?.message || 'Gagal memperbarui profil.' };
+    }
+  },
+
+  // Change password (PUT /api/user/change-password)
+  changePassword: async (old_password: string, new_password: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const res = await request<{ message: string }>('/user/change-password', {
+        method: 'PUT',
+        body: { old_password, new_password },
+        auth: true,
+      });
+      return { success: true, message: res.message || 'Password berhasil diubah' };
+    } catch (e: any) {
+      return { success: false, message: e?.message || 'Gagal mengubah password.' };
+    }
   },
 };

@@ -31,10 +31,14 @@ export async function createBanner(title: string, image_url: string, target_type
   return (result as any).insertId;
 }
 
+const BANNER_ALLOWED_COLUMNS = ['title', 'image_url', 'target_type', 'target_link', 'is_active', 'sort_order'];
+
 export async function updateBanner(id: number, fields: Record<string, any>) {
   const sets: string[] = [];
   const vals: any[] = [];
   for (const [k, v] of Object.entries(fields)) {
+    // Whitelist kolom — cegah SQL injection via dynamic column name
+    if (!BANNER_ALLOWED_COLUMNS.includes(k)) continue;
     if (v !== undefined) { sets.push(`${k} = ?`); vals.push(v); }
   }
   if (sets.length === 0) return false;

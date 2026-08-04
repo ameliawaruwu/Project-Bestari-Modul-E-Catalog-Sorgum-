@@ -18,6 +18,7 @@ export interface Product {
 
 export interface Article {
   id: string;
+  slug?: string;
   title: string;
   category: 'Nutrisi' | 'Budidaya' | 'Inspirasi' | 'Resep Sehat' | 'Cerita Petani' | 'Promosi';
   readTime?: string;
@@ -79,12 +80,15 @@ export interface AuthResponse {
 
 export interface Order {
   id: string;
+  userId?: string;
+  orderNumber?: string;
   items: CartItem[];
   totalAmount: number;
   status: 'Pending' | 'Diproses' | 'Dikirim' | 'Selesai' | 'Dibatalkan';
   createdAt: string;
   shippingAddress?: string;
   paymentMethod?: 'cod' | 'qris';
+  paymentStatus?: 'unpaid' | 'paid' | 'confirmed';
   customerName?: string;
   customerPhone?: string;
   customerEmail?: string;
@@ -94,6 +98,8 @@ export interface Order {
   postalCode?: string;
   notes?: string;
   paymentProofUrl?: string;
+  courier?: string;
+  trackingNumber?: string;
 }
 
 export interface CheckoutData {
@@ -108,4 +114,5 @@ export interface CheckoutData {
   notes?: string;
   paymentMethod: 'cod' | 'qris';
   paymentProofUrl?: string;
+  discount?: number;
 }

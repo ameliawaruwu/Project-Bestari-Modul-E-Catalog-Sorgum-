@@ -17,8 +17,8 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
   const [hasClickedWa, setHasClickedWa] = useState(false);
 
 
-  const orderId = order?.id || '#BST-99234';
-  const totalAmount = order?.totalAmount || 140000;
+  const orderId = order?.orderNumber || order?.id || '(tidak diketahui)';
+  const totalAmount = order?.totalAmount || 0;
 
   const itemsSummary = order?.items
     ? order.items
@@ -29,9 +29,9 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
             } = Rp ${(item.product.price * item.quantity).toLocaleString('id-ID')}`
         )
         .join('\n')
-    : '- Whole Sorghum Grains (1kg) x2\n- Premium Sorghum Flour (500g) x1';
+    : '';
 
-  const cleanWaNumber = (shopSettings.whatsappNumber || '6281234567890')
+  const cleanWaNumber = shopSettings.whatsappNumber
     .replace(/[^0-9]/g, '')
     .replace(/^0/, '62');
 

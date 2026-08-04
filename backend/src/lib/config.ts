@@ -32,4 +32,10 @@ export const config = {
   store: {
     adminWhatsapp: process.env.ECATALOG_BESTARI_ADMIN_WA || '6281234567890',
   },
+
+  // Origin yang di-allow CORS (dipisah koma). Default: FE dev (vite).
+  corsOrigins: (process.env.ECATALOG_BESTARI_CORS_ORIGINS || 'http://localhost:3000')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
 };

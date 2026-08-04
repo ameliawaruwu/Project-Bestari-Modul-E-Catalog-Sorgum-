@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { setTracking, manualPoll } from '../../services/tracking_service';
+import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
+router.use(authRequired, adminOnly);
 
 router.post('/:orderId/set', async (req: Request, res: Response) => {
   const orderId = parseInt(String(req.params.orderId));

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Order } from '../../types';
 
 interface OrderDetailViewProps {
@@ -14,7 +14,28 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
   onUpdateOrderStatus,
   onOpenProofModal,
 }) => {
+  const [courierInput, setCourierInput] = useState('');
+  const [resiInput, setResiInput] = useState('');
+  const [trackingSaving, setTrackingSaving] = useState(false);
+
   if (!order) return null;
+
+  const handleSetTracking = async () => {
+    if (!courierInput.trim() || !resiInput.trim()) return;
+    setTrackingSaving(true);
+    try {
+      const { trackingAdminApi } = await import('../../api/adminApi');
+      await trackingAdminApi.setTracking(order.id, courierInput.trim(), resiInput.trim());
+      // Update status jadi Dikirim (setTracking BE otomatis set order_status=shipped)
+      onUpdateOrderStatus(order.id, 'Dikirim');
+      setCourierInput('');
+      setResiInput('');
+    } catch (e: any) {
+      alert(e?.message || 'Gagal menyimpan resi.');
+    } finally {
+      setTrackingSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -150,6 +171,73 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                 >
                   {order.paymentMethod === 'qris' ? 'QRIS' : 'COD (Bayar di Tempat)'}
                 </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tracking Info — admin set kurir + resi */}
+        <div className="p-8 border-b border-[#c4c8bc]/60 bg-white">
+          <div className="bg-[#faf8f5] p-5 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-3">
+            <div className="flex items-center gap-2 text-[#162809] border-b border-[#c4c8bc]/30 pb-2">
+              <span className="material-symbols-outlined text-lg">local_shipping</span>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#44483f]">
+                Informasi Pengiriman
+              </h4>
+            </div>
+
+            {(order.courier || order.trackingNumber) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1">
+                  <p className="text-[#44483f] font-medium">Kurir</p>
+                  <p className="font-bold text-[#1d1b17]">{order.courier || '-'}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[#44483f] font-medium">Nomor Resi</p>
+                  <p className="font-bold font-mono text-[#162809]">{order.trackingNumber || '-'}</p>
+                </div>
+              </div>
+            )}
+            {order.trackingNumber && order.courier && (
+              <a
+                href={`https://cekresi.com/cek-resi/?courier=${order.courier}&awb=${order.trackingNumber}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-[#2b3e1d] font-bold hover:underline text-xs"
+              >
+                <span className="material-symbols-outlined text-sm">open_in_new</span>
+                Lacak di CekResi
+              </a>
+            )}
+
+            {/* Form set resi */}
+            <div className="pt-3 border-t border-[#c4c8bc]/30">
+              <p className="text-[11px] text-[#44483f] font-semibold mb-2">
+                Set Kurir & Nomor Resi (order otomatis jadi Dikirim):
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  value={courierInput}
+                  onChange={(e) => setCourierInput(e.target.value)}
+                  placeholder="Kurir (JNE, J&T, SiCepat...)"
+                  className="px-3 py-2 rounded-lg border border-[#c4c8bc] bg-white text-xs text-[#1d1b17] outline-none focus:border-[#2b3e1d] flex-1"
+                />
+                <input
+                  type="text"
+                  value={resiInput}
+                  onChange={(e) => setResiInput(e.target.value)}
+                  placeholder="Nomor Resi"
+                  className="px-3 py-2 rounded-lg border border-[#c4c8bc] bg-white text-xs text-[#1d1b17] outline-none focus:border-[#2b3e1d] flex-1 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={handleSetTracking}
+                  disabled={trackingSaving || !courierInput.trim() || !resiInput.trim()}
+                  className="px-4 py-2 rounded-lg bg-[#162809] text-white text-xs font-bold hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {trackingSaving ? 'Menyimpan...' : 'Simpan Resi'}
+                </button>
               </div>
             </div>
           </div>

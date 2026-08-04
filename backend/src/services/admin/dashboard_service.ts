@@ -21,7 +21,7 @@ export async function getDashboardMetrics() {
   const totalProducts = (productRows as any[])[0].total;
 
   // Users
-  const [userRows] = await dbPool.query("SELECT COUNT(*) AS total FROM users WHERE role = 'customer'");
+  const [userRows] = await dbPool.query("SELECT COUNT(*) AS total FROM users WHERE role = 'user'");
   const totalUsers = (userRows as any[])[0].total;
 
   // Top products

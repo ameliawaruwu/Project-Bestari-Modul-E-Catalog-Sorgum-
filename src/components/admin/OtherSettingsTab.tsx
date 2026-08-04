@@ -37,15 +37,15 @@ const PRESET_QRIS = [
 ];
 
 const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
-  storeName: 'BESTARI Sorghum',
+  storeName: 'BESTARI',
   logoUrl: '',
-  qrisImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAIKWh-z2qzILYDC9woreBeFgSVM7_5bAXQw5pYZ_WwXgCifGERVX51aW8YsqJjhz82BHNB45qL6bJnxNWBWwpAxsM67_7x2OTYNFuUS0K4XILgSk6ErmPXJ-UP3WMQhaf0M_b3gWRwVKHSZ6kbqzO0x1MUI3RpV0ldxSddeaWujNrHtPTNPk0WLMpMDYC-ht49m3cEFZM04MALEK2_xXvp7VSo9wE4R95RE8g09iTX-hLm7IdsDkg',
-  qrisNmid: 'NMID: ID1029384756382',
-  whatsappNumber: '+62 812-3456-7890',
+  qrisImageUrl: '',
+  qrisNmid: '',
+  whatsappNumber: '',
   qrisStatus: 'AKTIF',
   faviconUrl: '',
-  storeAddress: 'Sleman, DI Yogyakarta, Indonesia',
-  storeEmail: 'halo@bestari.id',
+  storeAddress: '',
+  storeEmail: '',
 };
 
 export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast }) => {

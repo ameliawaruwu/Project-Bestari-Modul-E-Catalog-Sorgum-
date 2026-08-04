@@ -39,7 +39,7 @@ export const OrderDeleteConfirmModal: React.FC<OrderDeleteConfirmModalProps> = (
           <div className="p-4 bg-[#fdfbf7] rounded-xl border border-[#c4c8bc]/60 space-y-3">
             <div className="flex items-center justify-between">
               <span className="px-2.5 py-0.5 text-[10px] font-bold bg-[#162809] text-white rounded-md font-mono">
-                {order.id}
+                {order.orderNumber || order.id}
               </span>
               <span className="text-xs text-[#44483f] font-medium">
                 {order.createdAt}
