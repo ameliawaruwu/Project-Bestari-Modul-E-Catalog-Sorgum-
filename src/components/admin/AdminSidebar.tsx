@@ -36,7 +36,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   return (
     <aside
-      className={`h-screen fixed left-0 top-0 admin-sidebar-bg border-r border-white/10 flex flex-col py-4 z-[100] transition-all duration-300 ${
+      className={`h-screen fixed left-0 top-0 bg-white dark:bg-[#1a1815] border-r border-[#c4c8bc]/40 dark:border-white/10 flex flex-col py-4 z-[100] transition-all duration-300 ${
         isCollapsed ? 'lg:w-20' : 'lg:w-64'
       } ${
         isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'
@@ -50,22 +50,22 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <button
               type="button"
               onClick={onToggleCollapse}
-              className="p-1.5 text-white/60 hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 text-[#75786e] dark:text-[#b8bcb4] hover:text-[#162809] dark:hover:text-white rounded-lg transition-colors cursor-pointer"
               title="Buka Menu"
             >
               <span className="material-symbols-outlined text-lg">menu</span>
             </button>
-            <span className="font-['Playfair_Display'] text-xl text-white font-extrabold bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-white/15 shadow-2xs">
+            <span className="font-['Playfair_Display'] text-xl text-[#162809] dark:text-[#fde08b] font-extrabold bg-[#2b3e1d]/10 dark:bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-[#2b3e1d]/20 dark:border-white/15 shadow-2xs">
               B
             </span>
           </div>
         ) : null}
 
         <div className={isCollapsed ? 'lg:hidden block' : 'block'}>
-          <h1 className="font-['Playfair_Display'] text-xl text-white font-bold tracking-wider">
+          <h1 className="font-['Playfair_Display'] text-xl text-[#162809] dark:text-[#fde08b] font-bold tracking-wider">
             BESTARI
           </h1>
-          <p className="text-white/60 text-[9px] font-bold uppercase tracking-widest mt-0.5">
+          <p className="text-[#715c13] dark:text-[#8a8e86] text-[9px] font-extrabold uppercase tracking-widest mt-0.5">
             Admin Console
           </p>
         </div>
@@ -75,7 +75,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden lg:block p-1 text-white/60 hover:text-white rounded-lg transition-colors cursor-pointer"
+            className="hidden lg:block p-1 text-[#75786e] dark:text-[#b8bcb4] hover:text-[#162809] dark:hover:text-white hover:bg-[#faf8f5] dark:hover:bg-[#252320] rounded-lg transition-colors cursor-pointer"
             title="Sembunyikan Menu"
           >
             <span className="material-symbols-outlined text-lg">menu_open</span>
@@ -86,7 +86,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="lg:hidden p-1 text-white/60 hover:text-white rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-1 text-[#75786e] dark:text-[#b8bcb4] hover:text-[#162809] dark:hover:text-white rounded-lg transition-colors cursor-pointer"
           title="Tutup Menu"
         >
           <span className="material-symbols-outlined text-lg">close</span>
@@ -94,14 +94,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-2.5">
+      <nav className="flex-1 space-y-1.5 overflow-y-auto px-3">
         {navItems.map((item) => {
           const isActive = activeNav === item.id;
           return (
-            <div key={item.id} className="relative w-full flex items-center px-1">
-              {/* Flat yellow bar on the left edge for active button */}
+            <div key={item.id} className="relative w-full flex items-center">
+              {/* Gold Indicator Pill on the left edge for active item */}
               {isActive && (
-                <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#fade88] rounded-full z-10" />
+                <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-[#fade88] rounded-full z-10 shadow-2xs" />
               )}
               <button
                 type="button"
@@ -109,10 +109,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   setActiveNav(item.id);
                   onClose(); // Close mobile drawer
                 }}
-                className={`w-full flex items-center py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer border ${
+                className={`w-full flex items-center py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 cursor-pointer border group ${
                   isActive
-                    ? 'bg-white/10 text-white border-white/20 shadow-none'
-                    : 'text-white/70 border-transparent hover:text-white hover:bg-white/5'
+                    ? 'bg-[#2b3e1d] text-white border-[#2b3e1d] font-bold shadow-sm pl-4'
+                    : 'text-[#44483f] dark:text-[#b8bcb4] border-transparent hover:bg-[#faf8f5] dark:hover:bg-[#252320] hover:text-[#162809] dark:hover:text-white font-medium'
                 } ${
                   isCollapsed
                     ? 'lg:justify-center lg:px-0 px-3.5 justify-start'
@@ -120,9 +120,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 }`}
                 title={item.label}
               >
-                <span className="material-symbols-outlined text-base flex-shrink-0">{item.icon}</span>
+                <span className={`material-symbols-outlined text-base flex-shrink-0 ${isActive ? 'text-[#fade88]' : 'text-[#75786e] dark:text-[#8a8e86] group-hover:text-[#162809] dark:group-hover:text-white'}`}>
+                  {item.icon}
+                </span>
                 <span
-                  className={`ml-2.5 font-bold tracking-wide truncate transition-opacity duration-200 ${
+                  className={`ml-2.5 tracking-wide truncate transition-opacity duration-200 ${
                     isCollapsed ? 'lg:hidden inline' : 'inline'
                   }`}
                 >
@@ -135,7 +137,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </nav>
 
       {/* Logout Bottom */}
-      <div className="px-3 pt-3 mt-auto border-t border-white/10">
+      <div className="px-3 pt-3 mt-auto border-t border-[#c4c8bc]/30 dark:border-white/10">
         <button
           type="button"
           onClick={() => {
@@ -143,7 +145,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             else onNavigateHome();
             onClose();
           }}
-          className={`w-full flex items-center py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-all border border-transparent text-xs sm:text-sm font-medium cursor-pointer ${
+          className={`w-full flex items-center py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-all border border-transparent text-xs sm:text-sm font-semibold cursor-pointer ${
             isCollapsed
               ? 'lg:justify-center lg:px-0 px-3.5 justify-start'
               : 'px-3.5 justify-start'
@@ -152,7 +154,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         >
           <span className="material-symbols-outlined text-base flex-shrink-0">logout</span>
           <span
-            className={`ml-2.5 font-bold tracking-wide transition-opacity duration-200 ${
+            className={`ml-2.5 tracking-wide transition-opacity duration-200 ${
               isCollapsed ? 'lg:hidden inline' : 'inline'
             }`}
           >

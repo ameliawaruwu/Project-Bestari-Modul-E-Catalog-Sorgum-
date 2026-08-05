@@ -123,6 +123,11 @@ interface AppContextProps {
   clearCart: () => void;
   appliedDiscount: number;
   setAppliedDiscount: (val: number) => void;
+
+  // Favorites
+  favorites: string[];
+  toggleFavorite: (productId: string) => void;
+  isFavorite: (productId: string) => boolean;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -233,10 +238,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     storyDesc2Id: 'Kami bekerja langsung dengan petani lokal untuk menghadirkan produk berkualitas dan berkelanjutan.',
     storyDesc2En: 'We work directly with local farmers to deliver quality, sustainable products.',
     storyImageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80',
-    benefitsTitleId: 'Mengapa Memilih BESTARI?',
-    benefitsTitleEn: 'Why Choose BESTARI?',
-    benefitsDescId: 'Produk sorgum berkualitas tinggi yang baik untuk Anda dan lingkungan.',
-    benefitsDescEn: 'High-quality sorghum products, good for you and the environment.',
+    benefitsTitleId: 'Mengapa Memilih Sorgum?',
+    benefitsTitleEn: 'Why Choose Sorghum?',
+    benefitsDescId: 'Sorgum adalah superfood murni kaya nutrisi, bebas gluten, dan ramah lingkungan yang ideal untuk gaya hidup sehat keluarga Anda.',
+    benefitsDescEn: 'Sorghum is a nutrient-dense, gluten-free, and eco-friendly superfood ideal for your family\'s healthy lifestyle.',
     benefit1TitleId: '100% Alami',
     benefit1TitleEn: '100% Natural',
     benefit1DescId: 'Sorgum ditanam tanpa bahan kimia berbahaya.',
@@ -294,6 +299,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
+
+  // Favorites state
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const raw = localStorage.getItem('bestari_favorites');
+    return raw ? JSON.parse(raw) : [];
+  });
+
+  const toggleFavorite = (productId: string) => {
+    setFavorites((prev) => {
+      const exists = prev.includes(productId);
+      const updated = exists ? prev.filter((id) => id !== productId) : [...prev, productId];
+      localStorage.setItem('bestari_favorites', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const isFavorite = (productId: string) => favorites.includes(productId);
 
   // ============================================================
   // HYDRATE FROM BACKEND — ganti data mock/localStorage dengan data BE
@@ -852,6 +874,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         clearCart,
         appliedDiscount,
         setAppliedDiscount,
+        favorites,
+        toggleFavorite,
+        isFavorite,
       }}
     >
       {children}

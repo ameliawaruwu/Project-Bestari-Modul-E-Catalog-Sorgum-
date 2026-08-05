@@ -96,11 +96,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <button
             type="button"
             onClick={onNavigateHome}
-            className="mb-8 inline-flex items-center gap-1.5 text-xs font-bold text-[#75786e] hover:text-[#162809] transition-colors cursor-pointer group"
+            className="mb-8 inline-flex items-center text-xs font-bold text-[#75786e] hover:text-[#162809] transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1">
-              arrow_back
-            </span>
             <span>Kembali ke Beranda</span>
           </button>
 
@@ -128,21 +125,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Input 1: Email / WhatsApp */}
+            {/* Input 1: Email */}
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-[#44483f] ml-0.5" htmlFor="email">
-                {t('Email / No. WhatsApp', 'Email / WhatsApp No.')}
+                {t('Email', 'Email')}
               </label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#75786e] text-lg select-none">
-                  person
+                  mail
                 </span>
                 <input
                   id="email"
-                  type="text"
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('Email atau Nomor WhatsApp', 'Email or WhatsApp Number')}
+                  placeholder={t('Masukkan Email Anda', 'Enter your email')}
                   required
                   className="w-full h-12 pl-12 pr-4 bg-white border border-[#c4c8bc]/60 rounded-xl text-xs sm:text-sm text-[#1d1b17] placeholder-[#75786e]/60 focus:outline-none focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                 />
@@ -207,10 +204,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-[#2b3e1d] hover:bg-[#162809] text-white rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-2xs mt-4 disabled:opacity-70 cursor-pointer active:scale-98"
+              className="w-full h-12 bg-[#2b3e1d] hover:bg-[#162809] text-white rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center shadow-2xs mt-4 disabled:opacity-70 cursor-pointer active:scale-98"
             >
               <span>{loading ? 'Memproses...' : 'Masuk'}</span>
-              {!loading && <span className="material-symbols-outlined text-base">arrow_forward</span>}
             </button>
           </form>
 
@@ -225,11 +221,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               >
                 Daftar Sekarang
               </button>
-            </p>
-
-            {/* Redirect Notice */}
-            <p className="text-[10px] text-[#75786e]/80 leading-relaxed px-3 py-2 bg-[#faf8f5] rounded-xl border border-[#c4c8bc]/30">
-              💡 <span className="font-semibold">Smart Redirect:</span> Sistem akan otomatis mengarahkan Anda ke dashboard admin atau beranda sesuai status akun.
             </p>
           </div>
         </div>

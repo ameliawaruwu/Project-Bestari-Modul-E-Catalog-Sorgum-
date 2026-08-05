@@ -108,7 +108,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     let cancelled = false;
     wishlistApi.getWishlist().then((items) => {
       if (cancelled) return;
-      // items dari BE cuma {id, name, price, image...} — lengkapi dengan allProducts by id
       const enriched = items
         .map((w) => {
           const full = allProducts.find((p) => String(p.id) === String(w.id));
@@ -117,7 +116,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         .filter((p) => p.id);
       setFavoriteProducts(enriched);
       const idMap: Record<string, number> = {};
-      // wishlist_id di-map lewat korelasi id product
       items.forEach((w) => { if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0); });
       setWishlistIds(idMap);
     }).catch(() => {});
@@ -233,7 +231,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         city: addressData.city,
         province: addressData.province,
         postal_code: addressData.postalCode,
-        is_primary: addresses.length === 0, // alamat pertama jadi primary
+        is_primary: addresses.length === 0,
       };
       if (addresses.length === 0) {
         await addressApi.createAddress(input);
@@ -264,13 +262,13 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   });
 
   return (
-    <div className="pt-24 pb-20 px-4 md:px-10 max-w-7xl mx-auto font-['Plus_Jakarta_Sans'] text-[#1d1b17] animate-fadeIn min-h-screen">
+    <div className="pt-24 pb-20 px-4 md:px-10 max-w-7xl mx-auto font-['Plus_Jakarta_Sans'] text-[#1d1b17] dark:text-[#f5f3f0] animate-fadeIn min-h-screen bg-[#faf8f5] dark:bg-[#14120e]">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Left Sidebar Navigation */}
-        <aside className="w-full md:w-72 bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 shadow-sm h-fit shrink-0">
+        <aside className="w-full md:w-72 bg-white dark:bg-[#1a1815] rounded-2xl p-6 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm h-fit shrink-0">
           {/* User Profile Header */}
-          <div className="flex items-center gap-4 pb-6 mb-6 border-b border-[#c4c8bc]/30">
-            <div className="w-14 h-14 rounded-full overflow-hidden bg-[#2b3e1d] text-white flex items-center justify-center font-bold text-xl shadow-md shrink-0">
+          <div className="flex items-center gap-4 pb-6 mb-6 border-b border-[#c4c8bc]/30 dark:border-white/10">
+            <div className="w-14 h-14 rounded-full overflow-hidden bg-[#2b3e1d] text-white flex items-center justify-center font-bold text-xl shadow-md shrink-0 border-2 border-[#fade88]/30">
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwdVH1D5ecKN62Wytyzaw1zN_anZ6YtNQZI2I9valVfVT8BbPHgEDivkiq7r8VIE0aHXv86yS8zeF5QfJj_0L_IIsCASNCylrKt5ow0HmPn512vfiNzr61kbCEhlGx3eUmV2EdSD3ydd7ugNg7-TlFnzJ1-lqbuN_P1y4bfpY1RYTVehJ7wIy14Vyd4Y28PUfj2wA_C8c6qiehT3XeyMFQSoV21lv59c1n896hUIDtC3ajIL00VFE"
                 alt={profileData.fullName}
@@ -278,10 +276,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               />
             </div>
             <div className="overflow-hidden">
-              <h2 className="font-['Playfair_Display'] font-bold text-lg text-[#162809] truncate">
+              <h2 className="font-['Playfair_Display'] font-bold text-lg text-[#162809] dark:text-[#fde08b] truncate">
                 {profileData.fullName}
               </h2>
-              <p className="text-xs text-[#44483f] truncate">{profileData.email}</p>
+              <p className="text-xs text-[#75786e] dark:text-[#8a8e86] truncate">{profileData.email}</p>
             </div>
           </div>
 
@@ -290,9 +288,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             {currentUser?.role === 'admin' && onNavigateAdmin && (
               <button
                 onClick={onNavigateAdmin}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-[#44483f] hover:bg-[#ede7e1] transition-all text-left cursor-pointer"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-[#44483f] dark:text-[#b8bcb4] hover:bg-[#faf8f5] dark:hover:bg-[#252320] hover:text-[#162809] dark:hover:text-white transition-all text-left cursor-pointer"
               >
-                <span className="material-symbols-outlined text-xl text-[#162809]">admin_panel_settings</span>
+                <span className="material-symbols-outlined text-xl text-[#162809] dark:text-[#fde08b]">admin_panel_settings</span>
                 <span>{t('Halaman Admin', 'Admin Panel')}</span>
               </button>
             )}
@@ -302,10 +300,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 setSelectedOrderDetail(null);
                 setActiveTab('profil');
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left cursor-pointer ${
                 activeTab === 'profil'
-                  ? 'bg-[#2b3e1d] text-white shadow-md font-bold'
-                  : 'text-[#44483f] hover:bg-[#ede7e1]'
+                  ? 'bg-[#2b3e1d] text-white shadow-sm font-bold'
+                  : 'text-[#44483f] dark:text-[#b8bcb4] hover:bg-[#faf8f5] dark:hover:bg-[#252320] hover:text-[#162809] dark:hover:text-white'
               }`}
             >
               <span className="material-symbols-outlined text-xl">person</span>
@@ -317,10 +315,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 setSelectedOrderDetail(null);
                 setActiveTab('pesanan');
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left cursor-pointer ${
                 activeTab === 'pesanan'
-                  ? 'bg-[#2b3e1d] text-white shadow-md font-bold'
-                  : 'text-[#44483f] hover:bg-[#ede7e1]'
+                  ? 'bg-[#2b3e1d] text-white shadow-sm font-bold'
+                  : 'text-[#44483f] dark:text-[#b8bcb4] hover:bg-[#faf8f5] dark:hover:bg-[#252320] hover:text-[#162809] dark:hover:text-white'
               }`}
             >
               <span className="material-symbols-outlined text-xl">history</span>
@@ -332,10 +330,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 setSelectedOrderDetail(null);
                 setActiveTab('favorit');
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left cursor-pointer ${
                 activeTab === 'favorit'
-                  ? 'bg-[#2b3e1d] text-white shadow-md font-bold'
-                  : 'text-[#44483f] hover:bg-[#ede7e1]'
+                  ? 'bg-[#2b3e1d] text-white shadow-sm font-bold'
+                  : 'text-[#44483f] dark:text-[#b8bcb4] hover:bg-[#faf8f5] dark:hover:bg-[#252320] hover:text-[#162809] dark:hover:text-white'
               }`}
             >
               <span className="material-symbols-outlined text-xl">favorite</span>
@@ -347,20 +345,20 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 setSelectedOrderDetail(null);
                 setActiveTab('pengaturan');
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left cursor-pointer ${
                 activeTab === 'pengaturan'
-                  ? 'bg-[#2b3e1d] text-white shadow-md font-bold'
-                  : 'text-[#44483f] hover:bg-[#ede7e1]'
+                  ? 'bg-[#2b3e1d] text-white shadow-sm font-bold'
+                  : 'text-[#44483f] dark:text-[#b8bcb4] hover:bg-[#faf8f5] dark:hover:bg-[#252320] hover:text-[#162809] dark:hover:text-white'
               }`}
             >
               <span className="material-symbols-outlined text-xl">settings</span>
               <span>Pengaturan Akun</span>
             </button>
 
-            <div className="pt-4 mt-4 border-t border-[#c4c8bc]/30">
+            <div className="pt-4 mt-4 border-t border-[#c4c8bc]/30 dark:border-white/10">
               <button
                 onClick={onLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-red-700 hover:bg-red-50 transition-all text-left"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all text-left cursor-pointer"
               >
                 <span className="material-symbols-outlined text-xl">logout</span>
                 <span>Keluar</span>
@@ -375,12 +373,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           {activeTab === 'profil' && (
             <div className="space-y-8 animate-fadeIn">
               {/* Informasi Pribadi */}
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/30 shadow-sm">
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#c4c8bc]/30">
-                  <span className="material-symbols-outlined text-2xl text-[#162809]">
+              <div className="bg-white dark:bg-[#1a1815] rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#c4c8bc]/30 dark:border-white/10">
+                  <span className="material-symbols-outlined text-2xl text-[#162809] dark:text-[#fde08b]">
                     badge
                   </span>
-                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809]">
+                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809] dark:text-[#fde08b]">
                     Informasi Pribadi
                   </h3>
                 </div>
@@ -388,7 +386,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 <form onSubmit={handleSaveProfile} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                         NAMA LENGKAP
                       </label>
                       <input
@@ -397,12 +395,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         onChange={(e) =>
                           setProfileData({ ...profileData, fullName: e.target.value })
                         }
-                        className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                        className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                         EMAIL
                       </label>
                       <input
@@ -411,12 +409,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         onChange={(e) =>
                           setProfileData({ ...profileData, email: e.target.value })
                         }
-                        className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                        className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                         NOMOR TELEPON
                       </label>
                       <input
@@ -425,12 +423,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         onChange={(e) =>
                           setProfileData({ ...profileData, phone: e.target.value })
                         }
-                        className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                        className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                         JENIS KELAMIN
                       </label>
                       <select
@@ -438,7 +436,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         onChange={(e) =>
                           setProfileData({ ...profileData, gender: e.target.value })
                         }
-                        className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                        className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                       >
                         <option value="Perempuan">Perempuan</option>
                         <option value="Laki-laki">Laki-laki</option>
@@ -446,7 +444,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] mb-1.5">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                         TANGGAL LAHIR
                       </label>
                       <input
@@ -455,7 +453,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         onChange={(e) =>
                           setProfileData({ ...profileData, birthDate: e.target.value })
                         }
-                        className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                        className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                       />
                     </div>
                   </div>
@@ -463,7 +461,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+                      className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-sm active:scale-95 cursor-pointer"
                     >
                       Simpan Perubahan
                     </button>
@@ -472,111 +470,111 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               </div>
 
               {/* Alamat Pengiriman */}
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/30 shadow-sm">
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#c4c8bc]/30">
+              <div className="bg-white dark:bg-[#1a1815] rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#c4c8bc]/30 dark:border-white/10">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-2xl text-[#162809]">
+                    <span className="material-symbols-outlined text-2xl text-[#162809] dark:text-[#fde08b]">
                       location_on
                     </span>
-                    <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809]">
+                    <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809] dark:text-[#fde08b]">
                       Alamat Pengiriman
                     </h3>
                   </div>
                   <button
                     onClick={() => setIsEditingAddress(!isEditingAddress)}
-                    className="text-xs font-bold text-[#2b3e1d] hover:underline cursor-pointer border border-[#2b3e1d]/30 px-4 py-2 rounded-xl"
+                    className="text-xs font-bold text-[#2b3e1d] dark:text-[#fde08b] hover:underline cursor-pointer border border-[#2b3e1d]/30 dark:border-[#fde08b]/30 px-4 py-2 rounded-xl transition-all"
                   >
                     {isEditingAddress ? 'Batal Edit' : 'Tambah Alamat Baru'}
                   </button>
                 </div>
 
                 {isEditingAddress ? (
-                  <form onSubmit={handleSaveAddress} className="space-y-4 bg-[#f9f3ec] p-5 rounded-2xl border border-[#c4c8bc]/40">
+                  <form onSubmit={handleSaveAddress} className="space-y-4 bg-[#faf8f5] dark:bg-[#201e1a] p-6 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10">
                     <div>
-                      <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                      <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                         Label Alamat
                       </label>
                       <input
                         type="text"
                         value={addressData.label}
                         onChange={(e) => setAddressData({ ...addressData, label: e.target.value })}
-                        className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                        className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                        <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                           Nama Penerima
                         </label>
                         <input
                           type="text"
                           value={addressData.recipient}
                           onChange={(e) => setAddressData({ ...addressData, recipient: e.target.value })}
-                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                          className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                        <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                           Nomor HP
                         </label>
                         <input
                           type="text"
                           value={addressData.phone}
                           onChange={(e) => setAddressData({ ...addressData, phone: e.target.value })}
-                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                          className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                      <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                         Alamat Lengkap
                       </label>
                       <textarea
                         rows={3}
                         value={addressData.address}
                         onChange={(e) => setAddressData({ ...addressData, address: e.target.value })}
-                        className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                        className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                        <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                           Provinsi
                         </label>
                         <input
                           type="text"
                           value={addressData.province}
                           onChange={(e) => setAddressData({ ...addressData, province: e.target.value })}
-                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                          className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                        <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                           Kota/Kabupaten
                         </label>
                         <input
                           type="text"
                           value={addressData.city}
                           onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
-                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                          className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase text-[#44483f] mb-1">
+                        <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1">
                           Kode Pos
                         </label>
                         <input
                           type="text"
                           value={addressData.postalCode}
                           onChange={(e) => setAddressData({ ...addressData, postalCode: e.target.value })}
-                          className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
+                          className="w-full bg-white dark:bg-[#1a1815] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm"
                         />
                       </div>
                     </div>
                     <button
                       type="submit"
                       disabled={addressSaving}
-                      className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#162809] disabled:opacity-50 cursor-pointer shadow-sm"
                     >
                       {addressSaving ? 'Menyimpan...' : 'Simpan Alamat'}
                     </button>
@@ -584,26 +582,26 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 ) : (
                   <div className="space-y-3">
                     {addresses.length === 0 ? (
-                      <div className="bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 text-center">
-                        <p className="text-sm text-[#44483f]">
+                      <div className="bg-[#faf8f5] dark:bg-[#201e1a] rounded-2xl p-6 border border-[#c4c8bc]/30 dark:border-white/10 text-center">
+                        <p className="text-sm text-[#44483f] dark:text-[#b8bcb4]">
                           Belum ada alamat pengiriman. Tambahkan alamat pertamamu!
                         </p>
                       </div>
                     ) : (
                       addresses.map((addr) => (
-                        <div key={addr.id} className="bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 relative">
+                        <div key={addr.id} className="bg-[#faf8f5] dark:bg-[#201e1a] rounded-2xl p-6 border border-[#c4c8bc]/40 dark:border-white/10 relative">
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-sm text-[#162809]">{addr.label}</h4>
+                            <h4 className="font-bold text-sm text-[#162809] dark:text-[#fde08b]">{addr.label}</h4>
                             {addr.isPrimary && (
                               <span className="bg-[#2b3e1d] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md tracking-wider">
                                 UTAMA
                               </span>
                             )}
                           </div>
-                          <p className="font-bold text-sm text-[#162809] mb-1">
+                          <p className="font-bold text-sm text-[#162809] dark:text-[#f5f3f0] mb-1">
                             {addr.recipientName} ({addr.phone})
                           </p>
-                          <p className="text-xs text-[#44483f] leading-relaxed mb-4">
+                          <p className="text-xs text-[#44483f] dark:text-[#b8bcb4] leading-relaxed mb-4">
                             {addr.addressLine}, {addr.city}, {addr.province} {addr.postalCode}
                           </p>
                           <button
@@ -619,7 +617,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                               });
                               setIsEditingAddress(true);
                             }}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-[#162809] hover:underline cursor-pointer"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-[#162809] dark:text-[#fde08b] hover:underline cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-sm">edit</span>
                             <span>Ubah Alamat</span>
@@ -640,40 +638,40 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 /* ORDER DETAIL VIEW */
                 <div className="space-y-6">
                   {/* Breadcrumb */}
-                  <nav className="flex items-center gap-2 text-xs text-[#44483f] mb-2">
+                  <nav className="flex items-center gap-2 text-xs text-[#44483f] dark:text-[#b8bcb4] mb-2">
                     <button
                       onClick={() => setSelectedOrderDetail(null)}
-                      className="hover:text-[#162809] font-medium cursor-pointer"
+                      className="hover:text-[#162809] dark:hover:text-[#fde08b] font-medium cursor-pointer"
                     >
                       Riwayat Pesanan
                     </button>
                     <span>/</span>
-                    <span className="font-bold text-[#162809]">
+                    <span className="font-bold text-[#162809] dark:text-[#fde08b]">
                       Detail Pesanan {selectedOrderDetail.id}
                     </span>
                   </nav>
 
                   {/* Header Title */}
-                  <div className="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-6 rounded-2xl border border-[#c4c8bc]/30 shadow-sm gap-4">
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-center bg-white dark:bg-[#1a1815] p-6 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm gap-4">
                     <div>
-                      <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#162809]">
+                      <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#162809] dark:text-[#fde08b]">
                         Order {selectedOrderDetail.id}
                       </h2>
-                      <p className="text-xs text-[#44483f] mt-1">
+                      <p className="text-xs text-[#75786e] dark:text-[#8a8e86] mt-1">
                         Pesanan dibuat: {selectedOrderDetail.createdAt}
                       </p>
                     </div>
                     <span
                       className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider self-start sm:self-auto flex items-center gap-1.5 border ${
                         selectedOrderDetail.status === 'Selesai'
-                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                          ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800/50'
                           : selectedOrderDetail.status === 'Dikirim'
-                          ? 'bg-blue-100 text-blue-800 border-blue-300'
+                          ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800/50'
                           : selectedOrderDetail.status === 'Diproses'
-                          ? 'bg-purple-100 text-purple-800 border-purple-300'
+                          ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-800/50'
                           : selectedOrderDetail.status === 'Dibatalkan'
-                          ? 'bg-red-100 text-red-800 border-red-300'
-                          : 'bg-amber-100 text-amber-800 border-amber-300'
+                          ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800/50'
+                          : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800/50'
                       }`}
                     >
                       <span className="material-symbols-outlined text-base">
@@ -696,23 +694,23 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     {/* Left Column: Tracking & Stepper */}
                     <div className="lg:col-span-2 space-y-6">
                       {/* Stepper Card */}
-                      <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc]/30 shadow-sm">
-                        <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] mb-6">
+                      <div className="bg-white dark:bg-[#1a1815] p-6 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm">
+                        <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] dark:text-[#fde08b] mb-6">
                           Status Pengiriman
                         </h3>
 
                         {selectedOrderDetail.status === 'Dibatalkan' ? (
-                          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-center">
-                            <span className="material-symbols-outlined text-3xl text-red-600 mb-1">cancel</span>
-                            <p className="font-bold text-sm text-red-700">Pesanan Dibatalkan</p>
-                            <p className="text-xs text-red-600 mt-0.5">Pesanan ini telah dibatalkan. Silakan hubungi admin jika terdapat kendala.</p>
+                          <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 rounded-xl text-center">
+                            <span className="material-symbols-outlined text-3xl text-red-600 dark:text-red-400 mb-1">cancel</span>
+                            <p className="font-bold text-sm text-red-700 dark:text-red-300">Pesanan Dibatalkan</p>
+                            <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">Pesanan ini telah dibatalkan. Silakan hubungi admin jika terdapat kendala.</p>
                           </div>
                         ) : (
                           <div className="relative py-2">
                             {/* Connecting Progress Line */}
-                            <div className="absolute top-5 left-[10%] right-[10%] h-1 bg-[#e7e2db] z-0">
+                            <div className="absolute top-5 left-[10%] right-[10%] h-1 bg-[#c4c8bc]/30 dark:bg-white/10 z-0">
                               <div
-                                className="h-full bg-[#162809] transition-all duration-500"
+                                className="h-full bg-[#162809] dark:bg-[#fde08b] transition-all duration-500"
                                 style={{
                                   width: `${
                                     (() => {
@@ -763,8 +761,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                         isDone
                                           ? 'bg-[#162809] text-white'
                                           : isActive
-                                          ? 'bg-[#2b3e1d] text-white ring-4 ring-[#d2eabb]'
-                                          : 'bg-[#e7e2db] text-[#75786e]'
+                                          ? 'bg-[#2b3e1d] text-white ring-4 ring-[#fade88]/40'
+                                          : 'bg-[#faf8f5] dark:bg-[#252320] text-[#75786e] border border-[#c4c8bc]/40 dark:border-white/10'
                                       }`}
                                     >
                                       {isDone ? (
@@ -777,7 +775,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                     </div>
                                     <span
                                       className={`text-[11px] leading-tight mt-2.5 max-w-[90px] mx-auto block ${
-                                        isDone || isActive ? 'font-bold text-[#162809]' : 'text-[#75786e]'
+                                        isDone || isActive ? 'font-bold text-[#162809] dark:text-[#fde08b]' : 'text-[#75786e] dark:text-[#8a8e86]'
                                       }`}
                                     >
                                       {s.label}
@@ -790,10 +788,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         )}
                       </div>
 
-                      {/* Lacak Pengiriman — data REAL dari BE /api/tracking/:orderId */}
-                      <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc]/30 shadow-sm space-y-4">
+                      {/* Lacak Pengiriman */}
+                      <div className="bg-white dark:bg-[#1a1815] p-6 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809]">
+                          <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] dark:text-[#fde08b]">
                             Lacak Pengiriman
                           </h3>
                           {trackingData?.tracking?.resi_status && (
@@ -803,15 +801,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           )}
                         </div>
 
-                        {/* Info kurir + resi (otomatis dari admin, tanpa input user) */}
                         {selectedOrderDetail.courier || selectedOrderDetail.trackingNumber ? (
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 bg-[#f9f3ec] rounded-xl px-4 py-2.5 border border-[#c4c8bc]/30 text-xs">
-                            <span className="flex items-center gap-1.5 font-bold text-[#162809]">
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 bg-[#faf8f5] dark:bg-[#201e1a] rounded-xl px-4 py-2.5 border border-[#c4c8bc]/30 dark:border-white/10 text-xs">
+                            <span className="flex items-center gap-1.5 font-bold text-[#162809] dark:text-[#fde08b]">
                               <span className="material-symbols-outlined text-sm">local_shipping</span>
                               {selectedOrderDetail.courier || 'Kurir'}
                             </span>
                             {selectedOrderDetail.trackingNumber && (
-                              <span className="font-mono font-bold text-[#162809]">
+                              <span className="font-mono font-bold text-[#162809] dark:text-[#f5f3f0]">
                                 Resi: {selectedOrderDetail.trackingNumber}
                               </span>
                             )}
@@ -819,7 +816,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                               href={`https://cekresi.com/cek-resi/?courier=${selectedOrderDetail.courier}&awb=${selectedOrderDetail.trackingNumber}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-[#2b3e1d] font-bold hover:underline inline-flex items-center gap-1"
+                              className="text-[#2b3e1d] dark:text-[#fde08b] font-bold hover:underline inline-flex items-center gap-1"
                             >
                               <span className="material-symbols-outlined text-sm">open_in_new</span>
                               Lacak
@@ -831,20 +828,19 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           </p>
                         )}
 
-                        {/* Info pengirim/tujuan/update */}
                         {trackingData?.tracking && (
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs bg-[#faf8f5] rounded-xl px-4 py-3 border border-[#c4c8bc]/20">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs bg-[#faf8f5] dark:bg-[#201e1a] rounded-xl px-4 py-3 border border-[#c4c8bc]/20 dark:border-white/10">
                             <div>
                               <p className="text-[10px] uppercase tracking-wide text-[#75786e] font-bold">Pengirim</p>
-                              <p className="font-semibold text-[#1d1b17] mt-0.5">{trackingData.tracking.pengirim || '-'}</p>
+                              <p className="font-semibold text-[#1d1b17] dark:text-[#f5f3f0] mt-0.5">{trackingData.tracking.pengirim || '-'}</p>
                             </div>
                             <div>
                               <p className="text-[10px] uppercase tracking-wide text-[#75786e] font-bold">Tujuan</p>
-                              <p className="font-semibold text-[#1d1b17] mt-0.5">{trackingData.tracking.tujuan || '-'}</p>
+                              <p className="font-semibold text-[#1d1b17] dark:text-[#f5f3f0] mt-0.5">{trackingData.tracking.tujuan || '-'}</p>
                             </div>
                             <div className="col-span-2 sm:col-span-1">
                               <p className="text-[10px] uppercase tracking-wide text-[#75786e] font-bold">Update Terakhir</p>
-                              <p className="font-semibold text-[#1d1b17] mt-0.5">
+                              <p className="font-semibold text-[#1d1b17] dark:text-[#f5f3f0] mt-0.5">
                                 {trackingData.tracking.checked_at
                                   ? new Date(trackingData.tracking.checked_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
                                   : '-'}
@@ -853,9 +849,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           </div>
                         )}
 
-                        {/* Timeline riwayat perjalanan (real dari BE) */}
-                        <div className="pt-4 border-t border-[#c4c8bc]/20 space-y-4">
-                          <h4 className="font-bold text-xs text-[#44483f] uppercase tracking-wider">
+                        <div className="pt-4 border-t border-[#c4c8bc]/20 dark:border-white/10 space-y-4">
+                          <h4 className="font-bold text-xs text-[#44483f] dark:text-[#b8bcb4] uppercase tracking-wider">
                             Riwayat Terbaru
                           </h4>
                           {trackingLoading ? (
@@ -864,10 +859,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             <div className="space-y-3 pl-2 border-l-2 border-[#2b3e1d]">
                               {trackingData.history.map((ev, idx) => (
                                 <div key={idx} className="pl-3 relative">
-                                  <p className="text-xs font-bold text-[#162809]">
+                                  <p className="text-xs font-bold text-[#162809] dark:text-[#fde08b]">
                                     {ev.event_date && ev.event_date !== '-' ? ev.event_date : '—'}
                                   </p>
-                                  <p className="text-xs text-[#44483f]">{ev.description}</p>
+                                  <p className="text-xs text-[#44483f] dark:text-[#b8bcb4]">{ev.description}</p>
                                 </div>
                               ))}
                             </div>
@@ -883,8 +878,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     {/* Right Column: Order Summary & Shipping Info */}
                     <div className="space-y-6">
                       {/* Ringkasan Pesanan */}
-                      <div className="bg-[#f9f3ec] p-6 rounded-2xl border border-[#c4c8bc]/30 shadow-sm space-y-4">
-                        <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] border-b border-[#c4c8bc]/30 pb-3">
+                      <div className="bg-white dark:bg-[#1a1815] p-6 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm space-y-4">
+                        <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] dark:text-[#fde08b] border-b border-[#c4c8bc]/30 dark:border-white/10 pb-3">
                           Ringkasan Pesanan
                         </h3>
 
@@ -894,16 +889,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                               <img
                                 src={it.product.image}
                                 alt={it.product.name}
-                                className="w-14 h-14 object-cover rounded-xl bg-white border border-[#c4c8bc]/30"
+                                className="w-14 h-14 object-cover rounded-xl bg-[#faf8f5] dark:bg-[#201e1a] border border-[#c4c8bc]/30 dark:border-white/10"
                               />
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-bold text-xs text-[#162809] truncate">
+                                <h4 className="font-bold text-xs text-[#162809] dark:text-[#f5f3f0] truncate">
                                   {it.product.name}
                                 </h4>
-                                <p className="text-[11px] text-[#44483f]">
+                                <p className="text-[11px] text-[#75786e] dark:text-[#8a8e86]">
                                   {it.product.unitInfo || it.product.weight} x {it.quantity}
                                 </p>
-                                <p className="font-bold text-xs text-[#162809]">
+                                <p className="font-bold text-xs text-[#162809] dark:text-[#fde08b]">
                                   Rp {(it.product.price * it.quantity).toLocaleString('id-ID')}
                                 </p>
                               </div>
@@ -911,7 +906,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           ))}
                         </div>
 
-                        <div className="border-t border-[#c4c8bc]/30 pt-3 space-y-1.5 text-xs text-[#44483f]">
+                        <div className="border-t border-[#c4c8bc]/30 dark:border-white/10 pt-3 space-y-1.5 text-xs text-[#44483f] dark:text-[#b8bcb4]">
                           <div className="flex justify-between">
                             <span>Subtotal</span>
                             <span>
@@ -925,7 +920,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             <span>Pengiriman</span>
                             <span>Rp {((selectedOrderDetail as any).shippingCost ?? 15000).toLocaleString('id-ID')}</span>
                           </div>
-                          <div className="flex justify-between font-bold text-sm text-[#162809] pt-2 border-t border-[#c4c8bc]/20">
+                          <div className="flex justify-between font-bold text-sm text-[#162809] dark:text-[#fde08b] pt-2 border-t border-[#c4c8bc]/20 dark:border-white/10">
                             <span>Total Tagihan</span>
                             <span>Rp {selectedOrderDetail.totalAmount.toLocaleString('id-ID')}</span>
                           </div>
@@ -933,18 +928,18 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       </div>
 
                       {/* Informasi Pengiriman */}
-                      <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc]/30 shadow-sm space-y-2">
-                        <div className="flex items-center gap-1.5 text-[#162809] font-bold text-sm">
+                      <div className="bg-white dark:bg-[#1a1815] p-6 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm space-y-2">
+                        <div className="flex items-center gap-1.5 text-[#162809] dark:text-[#fde08b] font-bold text-sm">
                           <span className="material-symbols-outlined text-lg">location_on</span>
                           <span>Informasi Pengiriman</span>
                         </div>
-                        <p className="text-xs font-bold text-[#162809]">
+                        <p className="text-xs font-bold text-[#162809] dark:text-[#f5f3f0]">
                           {selectedOrderDetail.customerName || 'Aruna Bestari'}
                         </p>
-                        <p className="text-xs text-[#44483f]">
+                        <p className="text-xs text-[#44483f] dark:text-[#b8bcb4]">
                           {selectedOrderDetail.customerPhone || '+62 812-3456-7890'}
                         </p>
-                        <p className="text-xs text-[#44483f] leading-relaxed pt-1">
+                        <p className="text-xs text-[#44483f] dark:text-[#b8bcb4] leading-relaxed pt-1">
                           {selectedOrderDetail.shippingAddress ||
                             'Jl. Kebon Jeruk No. 12, Jakarta Barat, DKI Jakarta, 11530'}
                         </p>
@@ -956,14 +951,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           selectedOrderDetail.status !== 'Dibatalkan' && (
                             <button
                               onClick={() => handleCancelOrder(selectedOrderDetail.id)}
-                              className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold text-xs hover:bg-red-700 cursor-pointer"
+                              className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold text-xs cursor-pointer shadow-sm"
                             >
                               Batalkan Pesanan
                             </button>
                           )}
                         <button
                           onClick={() => setSelectedOrderDetail(null)}
-                          className={`py-3 rounded-xl font-bold text-xs hover:bg-[#162809] cursor-pointer ${
+                          className={`py-3 rounded-xl font-bold text-xs hover:bg-[#162809] cursor-pointer shadow-sm ${
                             selectedOrderDetail.status !== 'Dikirim' &&
                             selectedOrderDetail.status !== 'Selesai' &&
                             selectedOrderDetail.status !== 'Dibatalkan'
@@ -978,10 +973,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   </div>
                 </div>
               ) : (
-                /* MAIN ORDERS LIST WITH FILTER TABS (MATCHING SCREENSHOT 2) */
+                /* MAIN ORDERS LIST WITH FILTER TABS */
                 <div className="space-y-6">
                   {/* Status Filter Tabs */}
-                  <div className="bg-white p-3 rounded-2xl border border-[#c4c8bc]/30 shadow-sm flex gap-2 overflow-x-auto no-scrollbar">
+                  <div className="bg-white dark:bg-[#1a1815] p-3 rounded-2xl border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm flex gap-2 overflow-x-auto no-scrollbar">
                     {[
                       'Semua',
                       'Belum Bayar',
@@ -997,7 +992,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                           orderFilter === tabName
                             ? 'bg-[#162809] text-white shadow-sm'
-                            : 'text-[#44483f] hover:bg-[#f9f3ec]'
+                            : 'text-[#44483f] dark:text-[#b8bcb4] hover:bg-[#faf8f5] dark:hover:bg-[#252320]'
                         }`}
                       >
                         {tabName}
@@ -1007,19 +1002,19 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
 
                   {/* Order List Cards */}
                   {filteredOrders.length === 0 ? (
-                    <div className="bg-white rounded-2xl p-12 text-center border border-[#c4c8bc]/30">
+                    <div className="bg-white dark:bg-[#1a1815] rounded-2xl p-12 text-center border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm">
                       <span className="material-symbols-outlined text-5xl text-[#75786e] mb-2">
                         receipt_long
                       </span>
-                      <h3 className="font-['Playfair_Display'] font-bold text-lg text-[#162809]">
+                      <h3 className="font-['Playfair_Display'] font-bold text-lg text-[#162809] dark:text-[#fde08b]">
                         Belum ada pesanan pada kategori ini
                       </h3>
-                      <p className="text-xs text-[#44483f] mt-1 mb-4">
+                      <p className="text-xs text-[#44483f] dark:text-[#b8bcb4] mt-1 mb-4">
                         Jelajahi berbagai produk sorgum terbaik BESTARI dan buat pesanan pertama Anda.
                       </p>
                       <button
                         onClick={onNavigateProducts}
-                        className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-xs hover:bg-[#162809]"
+                        className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-xl font-bold text-xs hover:bg-[#162809] cursor-pointer shadow-sm"
                       >
                         Lihat Katalog Produk
                       </button>
@@ -1029,34 +1024,34 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       {filteredOrders.map((ord) => (
                         <div
                           key={ord.id}
-                          className="bg-[#f9f3ec] rounded-2xl p-6 border border-[#c4c8bc]/30 shadow-sm space-y-4 hover:shadow-md transition-shadow"
+                          className="bg-white dark:bg-[#1a1815] rounded-2xl p-6 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm space-y-4 hover:shadow-md transition-all"
                         >
-                          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-[#c4c8bc]/30 pb-3">
+                          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-[#c4c8bc]/30 dark:border-white/10 pb-3">
                             <div className="flex items-center gap-3">
-                              <span className="font-['Playfair_Display'] font-bold text-lg text-[#162809]">
+                              <span className="font-['Playfair_Display'] font-bold text-lg text-[#162809] dark:text-[#fde08b]">
                                 {ord.id}
                               </span>
                               {ord.items[0]?.product.badge && (
-                                <span className="bg-[#162809] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase">
+                                <span className="bg-[#fade88] text-[#162809] text-[10px] font-bold px-2.5 py-0.5 rounded tracking-wider uppercase border border-[#162809]/10">
                                   {ord.items[0].product.badge}
                                 </span>
                               )}
                             </div>
                             <div className="flex items-center gap-3">
-                              <span className="font-['Playfair_Display'] font-bold text-base text-[#162809]">
+                              <span className="font-['Playfair_Display'] font-bold text-base text-[#162809] dark:text-[#fde08b]">
                                 Rp {ord.totalAmount.toLocaleString('id-ID')}
                               </span>
                               <span
                                 className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border ${
                                   ord.status === 'Selesai'
-                                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800/50'
                                     : ord.status === 'Dikirim'
-                                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                                    ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800/50'
                                     : ord.status === 'Diproses'
-                                    ? 'bg-purple-100 text-purple-800 border-purple-300'
+                                    ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-800/50'
                                     : ord.status === 'Dibatalkan'
-                                    ? 'bg-red-100 text-red-800 border-red-300'
-                                    : 'bg-amber-100 text-amber-800 border-amber-300'
+                                    ? 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800/50'
+                                    : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800/50'
                                 }`}
                               >
                                 <span className="material-symbols-outlined text-sm">
@@ -1075,29 +1070,29 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             </div>
                           </div>
 
-                          <p className="text-xs text-[#44483f]">Pesanan pada {ord.createdAt}</p>
+                          <p className="text-xs text-[#75786e] dark:text-[#8a8e86]">Pesanan pada {ord.createdAt}</p>
 
                           {/* List of checked out items */}
-                          <div className="space-y-3 py-2 border-y border-[#c4c8bc]/20">
+                          <div className="space-y-3 py-2 border-y border-[#c4c8bc]/20 dark:border-white/10">
                             {ord.items.map((it, idx) => (
                               <div key={idx} className="flex items-center justify-between gap-3">
                                 <div className="flex items-center gap-3 min-w-0 flex-1">
                                   <img
                                     src={it.product.image}
                                     alt={it.product.name}
-                                    className="w-14 h-14 object-cover rounded-xl bg-white border border-[#c4c8bc]/30 shrink-0"
+                                    className="w-14 h-14 object-cover rounded-xl bg-[#faf8f5] dark:bg-[#201e1a] border border-[#c4c8bc]/30 dark:border-white/10 shrink-0"
                                   />
                                   <div className="min-w-0 flex-1">
-                                    <p className="font-bold text-sm text-[#162809] truncate">
+                                    <p className="font-bold text-sm text-[#162809] dark:text-[#f5f3f0] truncate">
                                       {it.product.name}
                                     </p>
-                                    <p className="text-xs text-[#44483f]">
-                                      {it.product.unitInfo || it.product.weight} • <strong className="text-[#162809] font-bold">{it.quantity}x</strong>
+                                    <p className="text-xs text-[#44483f] dark:text-[#b8bcb4]">
+                                      {it.product.unitInfo || it.product.weight} • <strong className="text-[#162809] dark:text-[#fde08b] font-bold">{it.quantity}x</strong>
                                     </p>
                                   </div>
                                 </div>
                                 <div className="text-right shrink-0">
-                                  <p className="font-bold text-xs text-[#162809]">
+                                  <p className="font-bold text-xs text-[#162809] dark:text-[#fde08b]">
                                     Rp {(it.product.price * it.quantity).toLocaleString('id-ID')}
                                   </p>
                                 </div>
@@ -1108,7 +1103,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           <div className="flex justify-end pt-1">
                             <button
                               onClick={() => setSelectedOrderDetail(ord)}
-                              className="bg-white border-2 border-[#162809] text-[#162809] hover:bg-[#162809] hover:text-white px-5 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer"
+                              className="bg-[#faf8f5] dark:bg-[#252320] border border-[#2b3e1d] text-[#162809] dark:text-[#fde08b] hover:bg-[#2b3e1d] hover:text-white dark:hover:bg-[#2b3e1d] dark:hover:text-white px-5 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-2xs"
                             >
                               Lihat Detail Pesanan
                             </button>
@@ -1122,112 +1117,121 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
           )}
 
-          {/* TAB 3: PRODUK FAVORIT (MATCHING SCREENSHOT 6) */}
+          {/* TAB 3: PRODUK FAVORIT */}
           {activeTab === 'favorit' && (
             <div className="space-y-6 animate-fadeIn">
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/30 shadow-sm">
-                <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#162809] mb-1">
+              <div className="bg-white dark:bg-[#1a1815] rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm">
+                <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#162809] dark:text-[#fde08b] mb-1">
                   Produk Favorit Anda
                 </h2>
-                <p className="text-xs sm:text-sm text-[#44483f] mb-6">
+                <p className="text-xs sm:text-sm text-[#44483f] dark:text-[#b8bcb4] mb-6">
                   Koleksi kurasi sorghum pilihan Anda, siap untuk menyempurnakan hidangan sehat keluarga.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                  {favoriteProducts.map((prod) => (
-                    <div
-                      key={prod.id}
-                      className="bg-[#f9f3ec] rounded-2xl p-4 border border-[#c4c8bc]/30 relative flex flex-col justify-between group hover:shadow-md transition-shadow"
-                    >
-                      {/* Heart Button */}
-                      <button
-                        onClick={() => {
-                          const wid = wishlistIds[String(prod.id)];
-                          if (wid) {
-                            wishlistApi.removeFromWishlist(wid).then((ok) => {
-                              if (ok) {
-                                setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
-                                showToast(`${prod.name} dihapus dari favorit.`);
-                              } else {
-                                showToast('Gagal menghapus favorit.');
-                              }
-                            });
-                          } else {
-                            setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
-                            showToast(`${prod.name} dihapus dari favorit.`);
-                          }
-                        }}
-                        className="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 text-red-600 flex items-center justify-center shadow-sm hover:scale-110 transition-transform cursor-pointer"
+                {favoriteProducts.length === 0 ? (
+                  <div className="text-center py-10 bg-[#faf8f5] dark:bg-[#201e1a] rounded-2xl border border-[#c4c8bc]/30 dark:border-white/10 p-6">
+                    <span className="material-symbols-outlined text-4xl text-[#75786e] mb-2">favorite_border</span>
+                    <p className="text-xs sm:text-sm font-bold text-[#162809] dark:text-[#fde08b]">Belum ada produk favorit</p>
+                    <p className="text-xs text-[#75786e] mt-1">Klik ikon hati pada produk di katalog untuk menyimpannya di sini.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                    {favoriteProducts.map((prod) => (
+                      <div
+                        key={prod.id}
+                        className="bg-white dark:bg-[#1a1815] rounded-2xl p-5 border border-[#c4c8bc]/40 dark:border-white/10 relative flex flex-col justify-between group hover:shadow-md transition-all"
                       >
-                        ♥
-                      </button>
+                        {/* Heart Remove Button */}
+                        <button
+                          onClick={() => {
+                            const wid = wishlistIds[String(prod.id)];
+                            if (wid) {
+                              wishlistApi.removeFromWishlist(wid).then((ok) => {
+                                if (ok) {
+                                  setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
+                                  showToast(`${prod.name} dihapus dari favorit.`);
+                                } else {
+                                  showToast('Gagal menghapus favorit.');
+                                }
+                              });
+                            } else {
+                              setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
+                              showToast(`${prod.name} dihapus dari favorit.`);
+                            }
+                          }}
+                          className="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-[#252320] text-red-600 dark:text-red-400 flex items-center justify-center shadow-sm hover:scale-110 transition-transform cursor-pointer border border-[#c4c8bc]/30 dark:border-white/10"
+                          title="Hapus dari Favorit"
+                        >
+                          ♥
+                        </button>
 
-                      <div>
-                        {/* Image */}
-                        <div className="relative rounded-xl overflow-hidden mb-3 bg-white h-48 flex items-center justify-center border border-[#c4c8bc]/20">
-                          <img
-                            src={prod.image}
-                            alt={prod.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          {prod.badge && (
-                            <span className="absolute top-2 left-2 bg-[#2b3e1d] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
-                              {prod.badge}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Title & info */}
-                        <span className="text-[10px] font-bold uppercase text-[#75786e] tracking-wider block">
-                          {prod.categoryLabel}
-                        </span>
-                        <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] mb-1">
-                          {prod.name}
-                        </h3>
-                        <p className="text-xs text-[#44483f] line-clamp-2 mb-3">
-                          {prod.description}
-                        </p>
-                      </div>
-
-                      {/* Price & Action */}
-                      <div className="pt-3 border-t border-[#c4c8bc]/30 flex items-center justify-between">
                         <div>
-                          <span className="text-[10px] text-[#75786e] block">{prod.unitInfo}</span>
-                          <span className="font-bold text-sm text-[#162809]">
-                            {prod.formattedPrice}
+                          {/* Image */}
+                          <div className="relative rounded-xl overflow-hidden mb-3 bg-[#faf8f5] dark:bg-[#201e1a] h-48 flex items-center justify-center border border-[#c4c8bc]/30 dark:border-white/10">
+                            <img
+                              src={prod.image}
+                              alt={prod.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            {prod.badge && (
+                              <span className="absolute top-2 left-2 bg-[#fade88] text-[#162809] text-[10px] font-bold px-2.5 py-0.5 rounded tracking-wider border border-[#162809]/10">
+                                {prod.badge}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Title & info */}
+                          <span className="text-[10px] font-bold uppercase text-[#75786e] dark:text-[#8a8e86] tracking-wider block">
+                            {prod.categoryLabel}
                           </span>
+                          <h3 className="font-['Playfair_Display'] font-bold text-base text-[#162809] dark:text-[#f5f3f0] mb-1">
+                            {prod.name}
+                          </h3>
+                          <p className="text-xs text-[#44483f] dark:text-[#b8bcb4] line-clamp-2 mb-3">
+                            {prod.description}
+                          </p>
                         </div>
 
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => onSelectProduct(prod)}
-                            className="p-2 border border-[#c4c8bc] rounded-xl hover:bg-white text-[#162809] transition-colors"
-                            title="Detail Produk"
-                          >
-                            <span className="material-symbols-outlined text-lg">visibility</span>
-                          </button>
-                          <button
-                            onClick={() => onAddToCart(prod)}
-                            className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all"
-                          >
-                            + Tambah
-                          </button>
+                        {/* Price & Action */}
+                        <div className="pt-3 border-t border-[#c4c8bc]/30 dark:border-white/10 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-[#75786e] dark:text-[#8a8e86] block">{prod.unitInfo}</span>
+                            <span className="font-bold text-sm text-[#162809] dark:text-[#fde08b]">
+                              {prod.formattedPrice}
+                            </span>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => onSelectProduct(prod)}
+                              className="p-2 border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl hover:bg-[#faf8f5] dark:hover:bg-[#252320] text-[#162809] dark:text-[#fde08b] transition-colors cursor-pointer"
+                              title="Detail Produk"
+                            >
+                              <span className="material-symbols-outlined text-lg">visibility</span>
+                            </button>
+                            <button
+                              onClick={() => onAddToCart(prod)}
+                              className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                            >
+                              + Tambah
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Banner CTA */}
-                <div className="mt-8 bg-[#fff8f2] rounded-2xl p-6 border-2 border-dashed border-[#c4c8bc] text-center space-y-3">
-                  <span className="material-symbols-outlined text-3xl text-[#715c13]">add_circle</span>
-                  <p className="font-bold text-sm text-[#162809]">Ingin menambah lebih banyak?</p>
-                  <p className="text-xs text-[#44483f]">
+                <div className="mt-8 bg-gradient-to-r from-[#2b3e1d]/5 via-[#fade88]/10 to-[#2b3e1d]/5 dark:from-[#fade88]/5 dark:to-[#2b3e1d]/5 rounded-2xl p-6 border border-dashed border-[#2b3e1d]/30 dark:border-white/20 text-center space-y-3">
+                  <span className="material-symbols-outlined text-3xl text-[#162809] dark:text-[#fde08b]">add_circle</span>
+                  <p className="font-bold text-sm text-[#162809] dark:text-[#fde08b]">Ingin menambah lebih banyak?</p>
+                  <p className="text-xs text-[#44483f] dark:text-[#b8bcb4]">
                     Jelajahi katalog kami untuk menemukan produk sorghum terbaik lainnya.
                   </p>
                   <button
                     onClick={onNavigateProducts}
-                    className="bg-[#715c13] hover:bg-[#574500] text-white px-6 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer"
+                    className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer"
                   >
                     Buka Katalog Produk
                   </button>
@@ -1236,21 +1240,21 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
           )}
 
-          {/* TAB 4: PENGATURAN AKUN (MATCHING SCREENSHOT 5) */}
+          {/* TAB 4: PENGATURAN AKUN */}
           {activeTab === 'pengaturan' && (
             <div className="space-y-6 animate-fadeIn">
               {/* Ubah Kata Sandi */}
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/30 shadow-sm max-w-xl">
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#c4c8bc]/30">
-                  <span className="material-symbols-outlined text-2xl text-[#162809]">lock</span>
-                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809]">
+              <div className="bg-white dark:bg-[#1a1815] rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm max-w-xl">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#c4c8bc]/30 dark:border-white/10">
+                  <span className="material-symbols-outlined text-2xl text-[#162809] dark:text-[#fde08b]">lock</span>
+                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809] dark:text-[#fde08b]">
                     Ubah Kata Sandi
                   </h3>
                 </div>
 
                 <form onSubmit={handleSavePassword} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-[#44483f] mb-1.5">
+                    <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                       Kata Sandi Saat Ini
                     </label>
                     <input
@@ -1260,12 +1264,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         setPasswordData({ ...passwordData, currentPassword: e.target.value })
                       }
                       placeholder="••••••••"
-                      className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                      className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase text-[#44483f] mb-1.5">
+                    <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                       Kata Sandi Baru
                     </label>
                     <input
@@ -1275,12 +1279,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         setPasswordData({ ...passwordData, newPassword: e.target.value })
                       }
                       placeholder="Min. 8 karakter"
-                      className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                      className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase text-[#44483f] mb-1.5">
+                    <label className="block text-xs font-bold uppercase text-[#44483f] dark:text-[#b8bcb4] mb-1.5">
                       Konfirmasi Kata Sandi Baru
                     </label>
                     <input
@@ -1290,14 +1294,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         setPasswordData({ ...passwordData, confirmPassword: e.target.value })
                       }
                       placeholder="Ulangi kata sandi baru"
-                      className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                      className="w-full bg-[#faf8f5] dark:bg-[#242220] border border-[#c4c8bc]/60 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-[#1d1b17] dark:text-[#f5f3f0] placeholder-[#75786e]/60 focus:outline-none focus:bg-white dark:focus:bg-[#1c1a16] focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
                     />
                   </div>
 
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+                      className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-sm active:scale-95 cursor-pointer"
                     >
                       Perbarui Kata Sandi
                     </button>
@@ -1306,18 +1310,18 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               </div>
 
               {/* Privasi & Data */}
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/30 shadow-sm max-w-xl space-y-4">
-                <div className="flex items-center gap-3 mb-2 pb-4 border-b border-[#c4c8bc]/30">
-                  <span className="material-symbols-outlined text-2xl text-[#162809]">
+              <div className="bg-white dark:bg-[#1a1815] rounded-2xl p-6 sm:p-8 border border-[#c4c8bc]/40 dark:border-white/10 shadow-sm max-w-xl space-y-4">
+                <div className="flex items-center gap-3 mb-2 pb-4 border-b border-[#c4c8bc]/30 dark:border-white/10">
+                  <span className="material-symbols-outlined text-2xl text-[#162809] dark:text-[#fde08b]">
                     visibility
                   </span>
-                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809]">
+                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809] dark:text-[#fde08b]">
                     Privasi & Data
                   </h3>
                 </div>
 
-                <div className="bg-red-50 rounded-2xl p-5 border border-red-200 flex items-center justify-between">
-                  <span className="text-xs font-bold text-red-800">Hapus Akun Permanen</span>
+                <div className="bg-[#fff5f5] dark:bg-[#3c1719]/40 rounded-2xl p-5 border border-red-200/80 dark:border-red-900/40 flex items-center justify-between shadow-2xs">
+                  <span className="text-xs font-bold text-red-700 dark:text-red-400">Hapus Akun Permanen</span>
                   <button
                     onClick={() => {
                       if (confirm('Apakah Anda yakin ingin menghapus akun secara permanen?')) {
@@ -1325,7 +1329,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         showToast('Akun telah dihapus.');
                       }
                     }}
-                    className="p-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-xl transition-colors cursor-pointer"
+                    className="p-2 bg-red-100 dark:bg-red-900/60 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800/80 rounded-xl transition-colors cursor-pointer"
                     title="Hapus Akun"
                   >
                     <span className="material-symbols-outlined text-lg">delete_forever</span>

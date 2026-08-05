@@ -104,18 +104,15 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           <button
             type="button"
             onClick={onNavigateHome}
-            className="mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#75786e] hover:text-[#162809] transition-colors cursor-pointer group"
+            className="mb-6 inline-flex items-center text-xs font-bold text-[#75786e] hover:text-[#162809] transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1">
-              arrow_back
-            </span>
             <span>{t('Kembali ke Beranda', 'Back to Home')}</span>
           </button>
 
           {/* Form Header */}
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-[#162809] mb-1">
-              {t('Bergabung dengan Bestari', 'Join Bestari')}
+              {t('Selamat Datang', 'Welcome')}
             </h1>
             <p className="text-xs sm:text-sm text-[#75786e] font-semibold">
               {t('Mulai belanja sehat produk sorgum organik pilihan Anda', 'Start shopping for your choice of organic sorghum products')}
@@ -237,10 +234,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-[#2b3e1d] hover:bg-[#162809] text-white rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 mt-2 active:scale-98 disabled:opacity-70 shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full h-12 bg-[#2b3e1d] hover:bg-[#162809] text-white rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 mt-2 active:scale-98 disabled:opacity-70 shadow-2xs cursor-pointer flex items-center justify-center"
             >
               <span>{loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}</span>
-              {!loading && <span className="material-symbols-outlined text-base">arrow_forward</span>}
             </button>
           </form>
 
