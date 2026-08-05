@@ -49,7 +49,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <button
               type="button"
               onClick={onToggleCollapse}
-              className="p-1.5 text-white/60 hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 text-white hover:text-white rounded-lg transition-colors cursor-pointer"
               title="Buka Menu"
             >
               <span className="material-symbols-outlined text-lg">menu</span>
@@ -74,7 +74,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden lg:block p-1 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+            className="hidden lg:block p-1 text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
             title="Sembunyikan Menu"
           >
             <span className="material-symbols-outlined text-lg">menu_open</span>
@@ -85,7 +85,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="lg:hidden p-1 text-white/60 hover:text-white rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-1 text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
           title="Tutup Menu"
         >
           <span className="material-symbols-outlined text-lg">close</span>
@@ -108,10 +108,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   setActiveNav(item.id);
                   onClose(); // Close mobile drawer
                 }}
-                className={`w-full flex items-center py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer border group ${
+                className={`w-full flex items-center py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 cursor-pointer border group ${
                   isActive
                     ? 'bg-white/12 text-white border-[#fade88]/40 font-bold shadow-xs pl-4'
-                    : 'text-white/75 border-transparent hover:text-white hover:bg-white/10 font-medium'
+                    : 'text-white border-transparent hover:bg-white/10 font-semibold'
                 } ${
                   isCollapsed
                     ? 'lg:justify-center lg:px-0 px-3.5 justify-start'
@@ -119,7 +119,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 }`}
                 title={item.label}
               >
-                <span className={`material-symbols-outlined text-base flex-shrink-0 ${isActive ? 'text-[#fade88]' : 'text-white/70 group-hover:text-white'}`}>
+                <span className={`material-symbols-outlined text-base flex-shrink-0 ${isActive ? 'text-[#fade88]' : 'text-white'}`}>
                   {item.icon}
                 </span>
                 <span
@@ -144,7 +144,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             else onNavigateHome();
             onClose();
           }}
-          className={`w-full flex items-center py-2.5 text-white/75 hover:text-white hover:bg-white/10 rounded-xl transition-all border border-transparent text-xs sm:text-sm font-semibold cursor-pointer ${
+          className={`w-full flex items-center py-2.5 text-white hover:bg-white/10 rounded-xl transition-all border border-transparent text-xs sm:text-sm font-semibold cursor-pointer ${
             isCollapsed
               ? 'lg:justify-center lg:px-0 px-3.5 justify-start'
               : 'px-3.5 justify-start'
