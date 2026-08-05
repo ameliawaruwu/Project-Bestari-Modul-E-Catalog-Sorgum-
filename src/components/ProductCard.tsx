@@ -57,12 +57,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </span>
 
           <button
-            onClick={(e) => onAddToCart(product, e)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClickProduct(product);
+            }}
             className="w-9 h-9 rounded-lg bg-[#2b3e1d] text-white flex items-center justify-center hover:bg-[#162809] hover:scale-105 active:scale-95 transition-all shadow-2xs focus:outline-none cursor-pointer"
-            title={t('Tambah ke Keranjang', 'Add to Cart')}
-            aria-label={`${t('Tambah', 'Add')} ${product.name} ${t('ke keranjang', 'to cart')}`}
+            title={t('Lihat Detail', 'View Details')}
+            aria-label={`${t('Lihat', 'View')} ${product.name}`}
           >
-            <span className="material-symbols-outlined text-base">add_shopping_cart</span>
+            <span className="material-symbols-outlined text-base">visibility</span>
           </button>
         </div>
       </div>

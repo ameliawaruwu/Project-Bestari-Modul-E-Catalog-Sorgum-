@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.env
+uploads_ecatalog_bestari/*
+!uploads_ecatalog_bestari/.gitkeep

@@ -86,18 +86,6 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                 <span className="material-symbols-outlined text-base text-gray-500">person</span>
                 <span>Lihat Profil</span>
               </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  onNavigateHome();
-                  setIsDropdownOpen(false);
-                }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer font-semibold"
-              >
-                <span className="material-symbols-outlined text-base text-gray-500">storefront</span>
-                <span>Halaman Utama (Katalog)</span>
-              </button>
             </div>
           )}
         </div>

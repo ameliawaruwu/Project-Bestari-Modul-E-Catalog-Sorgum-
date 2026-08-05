@@ -50,7 +50,7 @@ export function App() {
   } = useApp();
 
   const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '');
-  const waUrl = `https://wa.me/${cleanWaNumber || '6281234567890'}`;
+  const waUrl = `https://wa.me/${cleanWaNumber}`;
   
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -114,6 +114,19 @@ export function App() {
   };
 
   const handleTabChange = (tab: string) => {
+    // Non-admin user: gak boleh akses halaman admin
+    if (tab === 'admin' && user?.role !== 'admin') {
+      setActiveTab('beranda');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    // Admin: gak boleh akses halaman user (beranda/produk/dll) — kunci di admin
+    if (user?.role === 'admin' && tab !== 'admin' && tab !== 'profil') {
+      setActiveTab('admin');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (!user && PROTECTED_TABS.includes(tab)) {
       setRedirectAfterLogin(tab);
       setActiveTab('login');
@@ -180,7 +193,15 @@ export function App() {
   };
 
   const handleAuthSuccess = (loggedInUser: User) => {
-    const target = loggedInUser.role === 'admin' ? 'admin' : redirectAfterLogin || 'beranda';
+    // User non-admin TIDAK boleh diarahkan ke panel admin meski redirectAfterLogin === 'admin'
+    // (mis. sempat akses tab admin saat logout → guard effect set redirectAfterLogin='admin',
+    // lalu login sebagai user biasa → tanpa guard ini dia kelempark ke admin panel).
+    const target =
+      loggedInUser.role === 'admin'
+        ? 'admin'
+        : redirectAfterLogin && redirectAfterLogin !== 'admin'
+          ? redirectAfterLogin
+          : 'beranda';
     setRedirectAfterLogin(null);
     setActiveTab(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -282,6 +303,7 @@ export function App() {
                 cart={cart}
                 onNavigateCart={() => handleTabChange('keranjang')}
                 onOrderComplete={handleOrderComplete}
+                showToast={showToast}
               />
             )}
 

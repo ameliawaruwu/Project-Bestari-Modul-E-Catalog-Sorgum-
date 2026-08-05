@@ -65,7 +65,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setSpecificationInput(initialProduct.specification || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
     } else {
-      setIdInput(`prod-${Date.now()}`);
+      setIdInput('');
       setNameInput('');
       setCategoryInput('beras');
       setPriceInput('');

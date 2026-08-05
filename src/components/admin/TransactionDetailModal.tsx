@@ -30,7 +30,7 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
             Rincian Transaksi
           </span>
           <h3 className="font-['Playfair_Display'] text-2xl font-bold text-[#1d1b17] mt-2">
-            Pesanan {order.id}
+            Pesanan {order.orderNumber || order.id}
           </h3>
           <p className="text-xs text-[#44483f]">Dibuat pada {order.createdAt}</p>
         </div>

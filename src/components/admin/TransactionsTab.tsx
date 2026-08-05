@@ -4,6 +4,7 @@ import { Order } from '../../types';
 interface TransactionsTabProps {
   orders: Order[];
   onUpdateOrderStatus: (orderId: string, newStatus: Order['status']) => void;
+  onUpdatePaymentStatus?: (orderId: string, newPayment: 'unpaid' | 'paid' | 'confirmed') => void;
   onDeleteOrder: (order: Order) => void;
   onSelectOrder: (id: string) => void;
   onOpenProofModal: (url: string) => void;
@@ -13,6 +14,7 @@ interface TransactionsTabProps {
 export const TransactionsTab: React.FC<TransactionsTabProps> = ({
   orders,
   onUpdateOrderStatus,
+  onUpdatePaymentStatus,
   onDeleteOrder,
   onSelectOrder,
   onOpenProofModal,
@@ -111,7 +113,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                 filteredOrders.map((ord) => (
                   <tr key={ord.id} className="hover:bg-[#f9f3ec]/60 transition-colors">
                     <td className="p-4 font-bold font-mono text-[#162809]">
-                      <div className="text-sm">{ord.id}</div>
+                      <div className="text-sm">{ord.orderNumber || ord.id}</div>
                       <div className="text-[11px] font-normal text-[#44483f] mt-0.5">
                         {ord.createdAt}
                       </div>
@@ -155,6 +157,26 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         >
                           {ord.paymentMethod === 'qris' ? 'QRIS' : 'COD (Bayar di Tempat)'}
                         </span>
+                        {onUpdatePaymentStatus && (
+                          <select
+                            value={ord.paymentStatus || 'unpaid'}
+                            onChange={(e) =>
+                              onUpdatePaymentStatus(ord.id, e.target.value as 'unpaid' | 'paid' | 'confirmed')
+                            }
+                            className={`block w-full px-2 py-1 rounded-lg text-[10px] font-bold border outline-none cursor-pointer ${
+                              (ord.paymentStatus || 'unpaid') === 'confirmed'
+                                ? 'bg-green-50 border-green-300 text-green-800'
+                                : (ord.paymentStatus || 'unpaid') === 'paid'
+                                ? 'bg-blue-50 border-blue-300 text-blue-800'
+                                : 'bg-gray-50 border-gray-300 text-gray-600'
+                            }`}
+                            title="Verifikasi pembayaran (unpaid/paid/confirmed)"
+                          >
+                            <option value="unpaid">Belum Bayar</option>
+                            <option value="paid">Sudah Bayar</option>
+                            <option value="confirmed">Terverifikasi</option>
+                          </select>
+                        )}
                       </div>
                     </td>
                     <td className="p-4 font-bold text-[#162809] font-mono text-sm">

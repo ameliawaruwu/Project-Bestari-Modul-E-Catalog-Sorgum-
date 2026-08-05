@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ProductCard } from '../components/ProductCard';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
+import { productApi } from '../api/productApi';
 
 interface ProductsPageProps {
   onAddToCart: (product: Product, e: React.MouseEvent) => void;
@@ -14,7 +15,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   onClickProduct,
   searchQuery,
 }) => {
-  const { t, products: allProducts } = useApp();
+  const { t } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('semua');
   const [sortBy, setSortBy] = useState('populer');
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
@@ -26,35 +27,25 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     setLocalSearchQuery(searchQuery || '');
   }, [searchQuery]);
 
-  // Filter and sort products reactively from centralized context
+  // Load products from backend
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(true);
-      let result = [...allProducts];
-
-      if (selectedCategory && selectedCategory !== 'semua') {
-        result = result.filter((p) => p.category === selectedCategory);
-      }
-
-      if (localSearchQuery.trim()) {
-        const q = localSearchQuery.toLowerCase();
-        result = result.filter(
-          (p) =>
-            p.name.toLowerCase().includes(q) ||
-            p.description.toLowerCase().includes(q) ||
-            p.categoryLabel.toLowerCase().includes(q)
-        );
-      }
-
-      if (sortBy === 'harga-terendah') result.sort((a, b) => a.price - b.price);
-      else if (sortBy === 'harga-tertinggi') result.sort((a, b) => b.price - a.price);
-
-      setProducts(result);
-      setLoading(false);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [allProducts, selectedCategory, sortBy, localSearchQuery]);
+    let cancelled = false;
+    setLoading(true);
+    productApi
+      .getProducts({ category: selectedCategory, searchQuery: localSearchQuery, sortBy })
+      .then((list) => {
+        if (!cancelled) setProducts(list);
+      })
+      .catch(() => {
+        if (!cancelled) setProducts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCategory, localSearchQuery, sortBy]);
 
   const categories = [
     { id: 'semua', label: t('Semua', 'All') },
