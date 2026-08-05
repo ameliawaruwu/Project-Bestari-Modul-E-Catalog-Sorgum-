@@ -13,6 +13,7 @@ import trackingRoutes from './routes/tracking_routes';
 import bannerRoutes from './routes/banners_routes';
 import articleRoutes from './routes/articles_routes';
 import settingsRoutes from './routes/settings_routes';
+import landingContentRoutes from './routes/landing_content_routes';
 import userRoutes from './routes/user/profile_routes';
 import addressRoutes from './routes/user/addresses_routes';
 import wishlistRoutes from './routes/user/wishlist_routes';
@@ -27,6 +28,7 @@ import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminOrdersRoutes from './routes/admin/orders_routes';
 import adminTrackingRoutes from './routes/admin/tracking_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
+import adminBadgesRoutes from './routes/admin/badges_routes';
 import voucherRoutes from './routes/voucher_routes';
 
 const app = express();
@@ -50,6 +52,7 @@ app.use('/api/tracking', trackingRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/landing-content', landingContentRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/user', addressRoutes);
 app.use('/api/wishlist', wishlistRoutes);
@@ -64,6 +67,7 @@ app.use('/api/admin/articles', adminArticlesRoutes);
 app.use('/api/admin/orders', adminOrdersRoutes);
 app.use('/api/admin/tracking', adminTrackingRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
+app.use('/api/admin/badges', adminBadgesRoutes);
 app.use('/api', voucherRoutes);
 
 app.get('/api/health', (_req, res) => {

@@ -43,13 +43,39 @@ function normalizeEventDate(d: string | null | undefined): string | null {
 }
 
 export async function setTracking(orderId: number, courier: string, trackingNumber: string) {
-  const [orderResult] = await dbPool.query(
-    'UPDATE orders SET courier = ?, tracking_number = ?, order_status = ?, shipped_at = COALESCE(shipped_at, NOW()) WHERE id = ?',
-    [courier, trackingNumber, 'shipped', orderId],
-  );
+  // Validasi state machine: hanya order yang BELUM dikirim yang boleh di-set resi.
+  // Tolak mundur dari shipped/delivered/cancelled (konsisten dgn ALLOWED_ORDER_TRANSITIONS).
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [rows] = await conn.query(
+      'SELECT order_status FROM orders WHERE id = ? FOR UPDATE',
+      [orderId],
+    );
+    const order = (rows as any[])[0];
+    if (!order) {
+      await conn.rollback();
+      throw new AppError('Pesanan tidak ditemukan', 404);
+    }
+    const allowedBeforeShip = ['pending', 'confirmed', 'processed'];
+    if (!allowedBeforeShip.includes(order.order_status)) {
+      await conn.rollback();
+      throw new AppError(
+        `Tidak bisa set nomor resi: status pesanan saat ini "${order.order_status}" (sudah dikirim/dibatalkan)`,
+        400,
+      );
+    }
 
-  if ((orderResult as any).affectedRows === 0) {
-    throw new AppError('Pesanan tidak ditemukan', 404);
+    await conn.query(
+      'UPDATE orders SET courier = ?, tracking_number = ?, order_status = ?, shipped_at = COALESCE(shipped_at, NOW()) WHERE id = ?',
+      [courier, trackingNumber, 'shipped', orderId],
+    );
+    await conn.commit();
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
   }
 
   await fetchTrackingStatus(orderId, courier, trackingNumber);

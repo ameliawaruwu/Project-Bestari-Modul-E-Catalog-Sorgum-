@@ -10,9 +10,14 @@ interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
+  original_price: number | null;
+  discount_percent: number;
   stock: number;
   weight_spec: string | null;
   origin: string | null;
+  composition: string | null;
+  shelf_life: string | null;
+  attributes: string | null;
   is_active: number | boolean;
   is_featured: number | boolean;
   category_id: number;
@@ -44,6 +49,7 @@ function formatRupiah(value: number): string {
 
 function mapProduct(row: ProductRow): Product {
   const weight = row.weight_spec || '1kg';
+  const originalPrice = row.original_price ?? null;
   return {
     id: String(row.id),
     name: row.name,
@@ -51,6 +57,8 @@ function mapProduct(row: ProductRow): Product {
     categoryLabel: row.category_name || 'Produk Sorgum',
     price: row.price,
     formattedPrice: formatRupiah(row.price),
+    originalPrice: originalPrice && originalPrice > row.price ? originalPrice : undefined,
+    discountPercent: row.discount_percent || (originalPrice && originalPrice > row.price ? Math.round(((originalPrice - row.price) / originalPrice) * 100) : undefined),
     unitInfo: row.weight_spec || weight,
     weight,
     badge: (row.badge as Product['badge']) || undefined,
@@ -58,8 +66,11 @@ function mapProduct(row: ProductRow): Product {
     description: row.description || '',
     glutenFree: !!row.gluten_free,
     organic: !!row.organic,
-    specification: row.origin ? `Asal: ${row.origin}` : undefined,
+    composition: row.composition || undefined,
+    shelfLife: row.shelf_life || undefined,
+    attributes: row.attributes || undefined,
     shippingInfo: 'Dikirim dari Yogyakarta.',
+    stock: row.stock,
   };
 }
 

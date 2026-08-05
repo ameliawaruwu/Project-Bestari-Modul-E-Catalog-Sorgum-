@@ -11,11 +11,10 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
 
   const activeBanners = banners.filter((b) => b.active);
-  const slides = activeBanners.length > 0 ? activeBanners.map(b => b.image) : [
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuAMcn2APMEfhH2pPwdjiofzevuFQSUfE1GzUpDVCOaRDdTNVQuqTVJc3HjkxHjgakIQ_1uq9d4TUdcKegU3B04cDr9Mjjis_scQLe_pETtAfvQDWYJiiCrb2RL4iJnp7q7Fra1_gFPivtw6XB_06PlKuM2ITfUAMpJ7YaeJTm1Yd2eLR1kE0KEh5SqytKxI0JEwt2BOG1K2OyMB_9U1UNFbiLcKMaJxWCyENe7xX6OxuGYvMFF1ptY',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuA8wY4rl62cbf__Lmm6OcK6rlnQkthCQP-y7zpoy-tBoB5HOLHpQwSJn0cXw3lZWP1Y8xHrsN1V-eWwjfECt57oXWKH3xB_2E0dg47SLfD7yxZcJfcm830KEZ5_aLP4-nh-4UQrLF4hYkurAbuRJyO065v-dquECxPRORXeR5oKsJONK4OD3xskagnGH9TCjYv5a8V9hq0Qxu0Mr4EQv9LftQeAey3sPDBrw5HPD5OCeqEsyZ7pAqdF'
-  ];
+  // Fallback: kalau tidak ada banner aktif, tampilkan gradient solid saja —
+  // JANGAN hardcoded image (dulu memakai gambar banner lama → muncul "2 gambar").
+  const slides = activeBanners.map(b => b.image);
+  const hasSlides = slides.length > 0;
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -33,20 +32,27 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
     <section className="relative min-h-[75vh] md:min-h-[85vh] flex items-center overflow-hidden pt-20">
       {/* Background Image Carousel with Overlay */}
       <div className="absolute inset-0 overflow-hidden">
-        {slides.map((imgUrl, index) => {
-          const isActive = currentIdx === index;
-          return (
-            <div
-              key={index}
-              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-100 scale-100 animate-zoomSlow' : 'opacity-0 pointer-events-none'
-              }`}
-              style={{
-                backgroundImage: `url('${imgUrl}')`,
-              }}
-            />
-          );
-        })}
+        {hasSlides ? (
+          <>
+            {slides.map((imgUrl, index) => {
+              const isActive = currentIdx === index;
+              return (
+                <div
+                  key={index}
+                  className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
+                    isActive ? 'opacity-100 scale-100 animate-zoomSlow' : 'opacity-0 pointer-events-none'
+                  }`}
+                  style={{
+                    backgroundImage: `url('${imgUrl}')`,
+                  }}
+                />
+              );
+            })}
+          </>
+        ) : (
+          /* Fallback tanpa banner aktif: gradient solid + pattern halus */
+          <div className="absolute inset-0 bg-gradient-to-br from-[#2b3e1d] via-[#162809] to-[#0d1406]" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-r from-[#162809]/75 via-[#162809]/40 to-black/35 backdrop-brightness-[0.85] z-10"></div>
       </div>
 

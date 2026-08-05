@@ -13,7 +13,10 @@ interface WishlistRow {
   created_at?: string;
 }
 
-function mapWishlistRow(r: WishlistRow): Product {
+// Product + wishlist_id (row id di tabel wishlists — dipakai untuk hapus)
+export type WishlistProduct = Product & { wishlist_id?: number };
+
+function mapWishlistRow(r: WishlistRow): WishlistProduct {
   return {
     id: String(r.id),
     name: r.name,
@@ -23,13 +26,15 @@ function mapWishlistRow(r: WishlistRow): Product {
     image: r.image_url || '',
     categoryId: '',
     stock: 0,
+    // Pertahankan wishlist_id — krusial untuk hapus dari favorit
+    wishlist_id: Number(r.wishlist_id || 0),
     // ProductDetailPage butuh field optional lain — default aman
-  } as unknown as Product;
+  } as unknown as WishlistProduct;
 }
 
 export const wishlistApi = {
   // Get my wishlist (auth required)
-  getWishlist: async (): Promise<Product[]> => {
+  getWishlist: async (): Promise<WishlistProduct[]> => {
     try {
       const res = await request<{ data: WishlistRow[] }>('/wishlist', { auth: true });
       return (res?.data || []).map(mapWishlistRow);

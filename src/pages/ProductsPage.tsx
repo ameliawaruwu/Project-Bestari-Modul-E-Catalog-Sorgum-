@@ -8,12 +8,14 @@ interface ProductsPageProps {
   onAddToCart: (product: Product, e: React.MouseEvent) => void;
   onClickProduct: (product: Product) => void;
   searchQuery: string;
+  onRequireLogin?: () => void;
 }
 
 export const ProductsPage: React.FC<ProductsPageProps> = ({
   onAddToCart,
   onClickProduct,
   searchQuery,
+  onRequireLogin,
 }) => {
   const { t } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('semua');
@@ -149,6 +151,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               product={p}
               onAddToCart={onAddToCart}
               onClickProduct={onClickProduct}
+              onRequireLogin={onRequireLogin}
             />
           ))}
         </div>

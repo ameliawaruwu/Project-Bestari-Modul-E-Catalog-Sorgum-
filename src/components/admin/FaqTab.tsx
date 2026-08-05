@@ -31,7 +31,9 @@ export const FaqTab: React.FC<FaqTabProps> = ({
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 10;
+  // Maks 10 tombol halaman yang tampil sekaligus (window)
+  const MAX_PAGE_BUTTONS = 10;
 
 
 
@@ -281,20 +283,57 @@ export const FaqTab: React.FC<FaqTabProps> = ({
               <span className="material-symbols-outlined text-sm">chevron_left</span>
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                type="button"
-                onClick={() => setCurrentPage(page)}
-                className={`w-7 h-7 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
-                  currentPage === page
-                    ? 'bg-[#162809] text-white'
-                    : 'bg-white border border-[#c4c8bc] text-[#44483f] hover:bg-gray-50'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+            {(() => {
+              // Window pagination: tampilkan maks 10 tombol, posisi halaman aktif di tengah
+              const half = Math.floor(MAX_PAGE_BUTTONS / 2);
+              let start = Math.max(1, currentPage - half);
+              const end = Math.min(totalPages, start + MAX_PAGE_BUTTONS - 1);
+              start = Math.max(1, end - MAX_PAGE_BUTTONS + 1);
+              const pages = [];
+              if (start > 1) {
+                pages.push(
+                  <button
+                    key="first"
+                    type="button"
+                    onClick={() => setCurrentPage(1)}
+                    className="w-7 h-7 rounded-lg text-xs font-bold cursor-pointer bg-white border border-[#c4c8bc] text-[#44483f] hover:bg-gray-50"
+                  >
+                    1
+                  </button>,
+                  <span key="ellipsis-l" className="px-1 text-[#44483f] text-xs">…</span>,
+                );
+              }
+              for (let p = start; p <= end; p++) {
+                pages.push(
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setCurrentPage(p)}
+                    className={`w-7 h-7 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                      currentPage === p
+                        ? 'bg-[#162809] text-white'
+                        : 'bg-white border border-[#c4c8bc] text-[#44483f] hover:bg-gray-50'
+                    }`}
+                  >
+                    {p}
+                  </button>,
+                );
+              }
+              if (end < totalPages) {
+                pages.push(
+                  <span key="ellipsis-r" className="px-1 text-[#44483f] text-xs">…</span>,
+                  <button
+                    key="last"
+                    type="button"
+                    onClick={() => setCurrentPage(totalPages)}
+                    className="w-7 h-7 rounded-lg text-xs font-bold cursor-pointer bg-white border border-[#c4c8bc] text-[#44483f] hover:bg-gray-50"
+                  >
+                    {totalPages}
+                  </button>,
+                );
+              }
+              return pages;
+            })()}
 
             <button
               type="button"

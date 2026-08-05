@@ -7,11 +7,12 @@ interface BannerRow {
   target_type: string;
   target_link: string | null;
   sort_order: number;
+  is_active: number;
 }
 
 export async function getActiveBanners(): Promise<BannerRow[]> {
   const [rows] = await dbPool.query(
-    'SELECT id, title, image_url, target_type, target_link, sort_order FROM banners WHERE is_active = 1 ORDER BY sort_order ASC',
+    'SELECT id, title, image_url, target_type, target_link, sort_order, is_active FROM banners WHERE is_active = 1 ORDER BY sort_order ASC',
   );
   return rows as BannerRow[];
 }

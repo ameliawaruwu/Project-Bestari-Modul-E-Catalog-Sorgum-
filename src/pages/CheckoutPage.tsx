@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { CartItem, CheckoutData, Order } from '../types';
 import { useApp } from '../context/AppContext';
 import { orderApi } from '../api';
@@ -16,7 +16,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   onOrderComplete,
   showToast,
 }) => {
-  const { t, shopSettings, articles, appliedDiscount, setAppliedDiscount, currentUser } = useApp();
+  const { t, shopSettings, articles, appliedDiscount, setAppliedDiscount, appliedVoucherCode, currentUser } = useApp();
 
   // Promotional articles for the checkout promotions section
   const promoArticles = articles.filter(
@@ -38,6 +38,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   });
 
   const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
+  // Idempotency key per checkout session: retry/submit ulang (mis. double-click)
+  // pakai key SAMA → BE replay order yang sama, bukan bikin order baru.
+  const idempotencyRef = useRef<string>(
+    (crypto?.randomUUID ? crypto.randomUUID() : `order-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+  );
   const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,7 +81,8 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       const finalCheckoutData: CheckoutData = {
         ...formData,
         paymentProofUrl: paymentProofPreview || undefined,
-        discount: discount, // kirim ke BE biar total order sesuai tampilan
+        voucherCode: appliedVoucherCode || undefined, // kirim KODE voucher (BE verifikasi & hitung diskon)
+        idempotencyKey: idempotencyRef.current,
       };
 
       // Construct items summary string for WhatsApp

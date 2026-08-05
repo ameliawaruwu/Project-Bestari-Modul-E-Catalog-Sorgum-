@@ -10,8 +10,6 @@ export interface ShopSettings {
   shippingCost?: number;
 }
 
-const LOCAL_STORAGE_KEY = 'bestari_shop_settings_v1';
-
 export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
   storeName: 'BESTARI',
   logoUrl: '',
@@ -34,39 +32,16 @@ function mapSettings(map: Record<string, string>): ShopSettings {
   };
 }
 
-function readCache(): ShopSettings | null {
-  try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as ShopSettings) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeCache(s: ShopSettings) {
-  try {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(s));
-  } catch {
-    // ignore
-  }
-}
-
 export const shopSettingsApi = {
-  getSettings: (): ShopSettings => {
-    // Try backend first (public endpoint). Sync — but we can't await here (FE expects sync).
-    // Fallback: use cache or defaults. Server fetch happens in getSettingsAsync.
-    return readCache() || DEFAULT_SHOP_SETTINGS;
-  },
+  // Sync variant — return default; state di-hydrate via getSettingsAsync di AppContext mount.
+  getSettings: (): ShopSettings => DEFAULT_SHOP_SETTINGS,
 
-  // Async variant — used at app startup to hydrate from backend
+  // Async variant — hydrate from backend (public endpoint)
   getSettingsAsync: async (): Promise<ShopSettings> => {
     try {
-      // Public settings endpoint (admin fallback if token present)
       const res = await request<{ data: Record<string, string> }>('/settings');
       if (res?.data) {
-        const mapped = mapSettings(res.data);
-        writeCache(mapped);
-        return mapped;
+        return mapSettings(res.data);
       }
     } catch {
       // ignore — fallback below
@@ -77,41 +52,30 @@ export const shopSettingsApi = {
       try {
         const res = await request<{ data: Record<string, string> }>('/admin/settings');
         if (res?.data) {
-          const mapped = mapSettings(res.data);
-          writeCache(mapped);
-          return mapped;
+          return mapSettings(res.data);
         }
       } catch {
         // ignore
       }
     }
 
-    return readCache() || DEFAULT_SHOP_SETTINGS;
+    return DEFAULT_SHOP_SETTINGS;
   },
 
   saveSettings: (settings: Partial<ShopSettings>): ShopSettings => {
-    // Save locally immediately (optimistic)
-    const current = shopSettingsApi.getSettings();
-    const updated = { ...current, ...settings };
-    writeCache(updated);
-
-    // Persist to backend (admin). Fire-and-forget; failure stays local.
-    const keyMap: Record<string, string> = {
-      storeName: 'store_name',
-      logoUrl: 'store_logo',
-      qrisImageUrl: 'qris_image_url',
-      qrisNmid: 'qris_nmid',
-      whatsappNumber: 'whatsapp_number',
-      qrisStatus: 'qris_status',
+    // Persist to backend (admin). Tidak ada cache localStorage.
+    const body: Record<string, string> = {
+      store_name: settings.storeName || DEFAULT_SHOP_SETTINGS.storeName,
+      store_logo: settings.logoUrl || '',
+      qris_image_url: settings.qrisImageUrl || '',
+      qris_nmid: settings.qrisNmid || '',
+      whatsapp_number: settings.whatsappNumber || '',
+      qris_status: settings.qrisStatus || 'AKTIF',
     };
-    const body: Record<string, string> = {};
-    for (const [k, v] of Object.entries(updated)) {
-      const key = keyMap[k];
-      if (key) body[key] = String(v);
-    }
+    if (settings.shippingCost !== undefined) body.shipping_cost = String(settings.shippingCost);
     if (getToken()) {
       request('/admin/settings', { method: 'PUT', body, auth: true }).catch(() => {});
     }
-    return updated;
+    return { ...DEFAULT_SHOP_SETTINGS, ...settings };
   },
 };

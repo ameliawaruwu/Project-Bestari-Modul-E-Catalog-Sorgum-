@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
 import { useApp } from '../context/AppContext';
 
@@ -28,6 +28,22 @@ export const Header: React.FC<HeaderProps> = ({
   const { language, theme, toggleLanguage, toggleTheme, t, shopSettings } = useApp();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Tutup dropdown profil saat klik di luar
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -159,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({
         )}
 
         {/* User Account / Auth */}
-        <div className="relative">
+        <div className="relative" ref={userMenuRef}>
           {user ? (
             <div className="relative">
               <button

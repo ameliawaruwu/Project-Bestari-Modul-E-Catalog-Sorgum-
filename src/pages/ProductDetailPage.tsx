@@ -18,11 +18,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   setActiveTab,
   onBuyNow,
 }) => {
-  const { t, shopSettings } = useApp();
+  const { t, shopSettings, currentUser, isFavorite, toggleWishlist } = useApp();
   const [quantity, setQuantity] = useState(1);
   const [activeInfoTab, setActiveInfoTab] = useState<'spesifikasi' | 'deskripsi' | 'pengiriman'>('spesifikasi');
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const favorite = isFavorite(product.id);
+
+  const handleToggleFavorite = () => {
+    if (!currentUser) {
+      setActiveTab('login');
+      return;
+    }
+    toggleWishlist(product.id);
+  };
 
   // Gallery thumbnail images
   const galleryImages = [
@@ -160,10 +169,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </h1>
 
             {/* Price & Stock */}
-            <div className="flex items-center gap-4 mb-6">
-              <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#162809]">
-                Rp {product.price.toLocaleString('id-ID')}
-              </span>
+            <div className="flex items-center gap-4 mb-6 flex-wrap">
+              {product.originalPrice ? (
+                <div className="flex items-center gap-2">
+                  <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#162809]">
+                    Rp {product.price.toLocaleString('id-ID')}
+                  </span>
+                  <span className="font-['Playfair_Display'] text-lg text-gray-400 line-through">
+                    Rp {product.originalPrice.toLocaleString('id-ID')}
+                  </span>
+                </div>
+              ) : (
+                <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#162809]">
+                  Rp {product.price.toLocaleString('id-ID')}
+                </span>
+              )}
               <span className="bg-[#d2eabb] text-[#0e2004] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-[#0e2004] inline-block animate-pulse"></span>
                 {t('Stok Tersedia', 'In Stock')}
@@ -188,13 +208,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 >
                   <span className="material-symbols-outlined text-xl">remove</span>
                 </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 h-12 text-center bg-[#e7e2db] border-none rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-base text-[#1d1b17] focus:ring-2 focus:ring-[#162809]"
-                  min="1"
-                />
+                <span className="w-16 h-12 flex items-center justify-center bg-[#e7e2db] rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-base text-[#1d1b17] select-none">
+                  {quantity}
+                </span>
                 <button
                   onClick={handleIncrement}
                   className="w-12 h-12 flex items-center justify-center border border-[#75786e]/40 rounded-xl hover:bg-[#e7e2db] active:scale-95 transition-all text-[#1d1b17] cursor-pointer"
@@ -208,6 +224,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Action Buttons */}
           <div className="space-y-3 pt-4 border-t border-[#c4c8bc]/30">
+            {/* Favorite Button — HANYA icon hati yg berubah (fill merah saat favorit),
+                button & teks TETAP sama. */}
+            <button
+              onClick={handleToggleFavorite}
+              className="w-full flex items-center justify-center gap-2 border-2 h-12 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer border-[#75786e]/40 text-[#44483f] hover:border-red-400 hover:text-red-500"
+            >
+              <span className={`material-symbols-outlined text-xl ${favorite ? 'text-red-500' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
+              <span>
+                {favorite
+                  ? t('Hapus dari Favorit', 'Remove from Favorites')
+                  : t('Tambah ke Favorit', 'Add to Favorites')}
+              </span>
+            </button>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={handleAddToCartClick}
@@ -276,58 +306,42 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </button>
         </div>
 
-        {/* Tab 1: Spesifikasi */}
+        {/* Tab 1: Spesifikasi — dari DB (admin Kelola Produk) */}
         {activeInfoTab === 'spesifikasi' && (
           <div className="animate-fadeIn font-['Plus_Jakarta_Sans']">
-            {product.specification ? (
-              <p className="bg-white/45 p-4 rounded-xl border border-[#c4c8bc]/40 shadow-2xs text-[#44483f] text-sm sm:text-base leading-relaxed">
-                {product.specification}
-              </p>
-            ) : (
-              <dl className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                  <dt className="text-[#44483f] text-sm sm:text-base">Berat Bersih</dt>
-                  <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
-                    {product.weight || '1kg'}
-                  </dd>
-                </div>
-                <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                  <dt className="text-[#44483f] text-sm sm:text-base">Komposisi</dt>
-                  <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
-                    {product.name.toLowerCase().includes('merah')
-                      ? '100% Sorghum Merah'
-                      : '100% Sorghum Putih'}
-                  </dd>
-                </div>
-                <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                  <dt className="text-[#44483f] text-sm sm:text-base">Sertifikasi</dt>
-                  <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
-                    Gluten-Free, Organik
-                  </dd>
-                </div>
-                <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                  <dt className="text-[#44483f] text-sm sm:text-base">Masa Simpan</dt>
-                  <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">12 Bulan</dd>
-                </div>
-              </dl>
-            )}
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
+                <dt className="text-[#44483f] text-sm sm:text-base">Kemasan / Berat</dt>
+                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+                  {product.unitInfo || product.weight || '1kg'}
+                </dd>
+              </div>
+              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
+                <dt className="text-[#44483f] text-sm sm:text-base">Komposisi</dt>
+                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+                  {product.composition || '100% Sorgum'}
+                </dd>
+              </div>
+              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
+                <dt className="text-[#44483f] text-sm sm:text-base">Atribut Produk</dt>
+                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+                  {product.attributes || '-'}
+                </dd>
+              </div>
+              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
+                <dt className="text-[#44483f] text-sm sm:text-base">Masa Simpan</dt>
+                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+                  {product.shelfLife || '12 Bulan'}
+                </dd>
+              </div>
+            </dl>
           </div>
         )}
 
-        {/* Tab 2: Deskripsi */}
+        {/* Tab 2: Deskripsi — dari DB (admin Kelola Produk) */}
         {activeInfoTab === 'deskripsi' && (
           <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#44483f] space-y-4 leading-relaxed max-w-4xl font-normal">
-            <p>
-              {product.name} diproses dengan standar kualitas tertinggi melalui metode penggilingan
-              tradisional. Proses ini menjaga integritas nutrisi alami dan menghasilkan tekstur produk
-              yang sangat halus, menjadikannya pilihan utama bagi pecinta kuliner sehat.
-            </p>
-            <p>
-              Produk ini secara alami bebas gluten (Gluten-Free) and kaya akan serat pangan serta
-              antioksidan. Sangat ideal untuk mendukung gaya hidup sehat dan aman dikonsumsi bagi
-              penderita celiac maupun Anda yang menjaga nutrisi harian keluarga tanpa mengorbankan
-              kelezatan rasa.
-            </p>
+            <p>{product.description || `Deskripsi produk ${product.name} belum diisi.`}</p>
           </div>
         )}
 

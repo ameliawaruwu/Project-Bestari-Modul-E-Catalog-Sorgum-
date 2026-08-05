@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { User, Order, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
@@ -40,6 +40,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     products,
     saveProduct,
     deleteProduct,
+    refreshProducts,
     faqs,
     saveFaq,
     deleteFaq,
@@ -82,9 +83,128 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  // Badge & Category options (dari Kelola Badge / Kelola Kategori — sinkron ke dropdown produk)
+  const [badgeOptions, setBadgeOptions] = useState<string[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<{ id: number; name: string; slug: string }[]>([]);
+
+  const loadBadgeCategoryOptions = async () => {
+    try {
+      const { badgeAdminApi, categoryAdminApi } = await import('../api/adminApi');
+      const badges = await badgeAdminApi.list();
+      setBadgeOptions(badges.filter((b) => b.is_active).map((b) => b.name));
+      const cats = await categoryAdminApi.list();
+      setCategoryOptions(cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug })));
+    } catch {
+      // fallback: biarkan kosong (ProductFormView pakai default hardcode)
+    }
+  };
+
+  useEffect(() => {
+    loadBadgeCategoryOptions();
+  }, []);
+
+  // Banner ADMIN: fetch dari /api/admin/banners (semua, termasuk nonaktif).
+  // State global `banners` (dari AppContext) hanya berisi banner AKTIF (API public),
+  // jadi panel admin butuh sumber sendiri supaya banner nonaktif tetap terlihat & bisa di-toggle.
+  const [adminBanners, setAdminBanners] = useState<BannerSlide[]>([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { bannerAdminApi } = await import('../api/adminApi');
+        const list = await bannerAdminApi.listBanners();
+        const mapped: BannerSlide[] = (list || []).map((b: any) => ({
+          id: String(b.id),
+          title: b.title,
+          uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          targetLink: b.target_link || '',
+          image: b.image_url || '',
+          active: !!b.is_active,
+        }));
+        setAdminBanners(mapped);
+      } catch {
+        // Fallback: state global (bisa kosong kalau tak ada banner aktif)
+        setAdminBanners(banners);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Sub-view Form States for Create/Edit Pages
   const [editingBanner, setEditingBanner] = useState<{ isEditing: boolean; banner?: BannerSlide | null } | null>(null);
   const [editingProduct, setEditingProduct] = useState<{ isEditing: boolean; product?: Product | null } | null>(null);
+
+  // Artikel ADMIN: fetch dari /api/admin/articles (SEMUA, termasuk draft & field lengkap).
+  // State global `articles` (dari AppContext) hanya berisi PUBLISHED dari API public,
+  // jadi panel admin butuh sumber sendiri supaya draft terlihat & isi konten sinkron.
+  const [adminArticles, setAdminArticles] = useState<ArticleItem[]>([]);
+  const refreshAdminArticles = useCallback(async () => {
+    try {
+      const { articleAdminApi } = await import('../api/adminApi');
+      const list = await articleAdminApi.listArticles();
+      const mapped: ArticleItem[] = (list || []).map((a: any) => ({
+        id: String(a.id),
+        title: a.title,
+        category: a.category,
+        date: a.published_at || a.created_at
+          ? new Date(a.published_at || a.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+          : '',
+        createdAt: a.created_at ? new Date(a.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '',
+        author: a.author || 'Tim Bestari',
+        views: 0,
+        content: a.content || '',
+        contentBlocks: a.content_blocks && typeof a.content_blocks === 'string'
+          ? (() => { try { return JSON.parse(a.content_blocks); } catch { return undefined; } })()
+          : a.content_blocks,
+        image: a.image_url || '',
+        subImage: a.sub_image || '',
+        quote: a.quote || '',
+        facts: a.facts ? (typeof a.facts === 'string' ? JSON.parse(a.facts) : a.facts) : undefined,
+        isPublished: !!a.is_published,
+      }));
+      setAdminArticles(mapped);
+    } catch {
+      // fallback: state global (published only)
+      setAdminArticles(articles.map((a) => ({
+        id: a.id,
+        title: a.title,
+        category: a.category,
+        date: a.date,
+        author: a.author,
+        views: 0,
+        content: a.content,
+        contentBlocks: a.contentBlocks,
+        image: a.image,
+        subImage: a.subImage,
+        quote: a.quote,
+        facts: a.facts,
+        isPublished: true,
+      })));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    refreshAdminArticles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // FAQ ADMIN: fetch dari /api/admin/articles/faq (SEMUA, termasuk DRAFT).
+  // State global `faqs` (dari AppContext) hanya berisi AKTIF dari API public,
+  // jadi FAQ yang di-DRAFT-kan akan hilang dari panel admin setelah refresh — bug.
+  const [adminFaqs, setAdminFaqs] = useState<FAQItem[]>([]);
+  const refreshAdminFaqs = useCallback(async () => {
+    try {
+      const { faqApi } = await import('../api/faqApi');
+      const list = await faqApi.getAdminFaqs();
+      setAdminFaqs(list);
+    } catch {
+      setAdminFaqs(faqs);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    refreshAdminFaqs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [editingArticle, setEditingArticle] = useState<{ isEditing: boolean; article?: ArticleItem | null } | null>(null);
   const [editingFaq, setEditingFaq] = useState<{ isEditing: boolean; faq?: FAQItem | null } | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
@@ -94,29 +214,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // Order selection & Proof Modal State
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [proofModalUrl, setProofModalUrl] = useState<string | null>(null);
-
-  // Product Active Status & Stock Maps
-  const [productActiveMap, setProductActiveMap] = useState<Record<string, boolean>>({
-    'prod-1': true,
-    'prod-2': true,
-    'prod-3': true,
-    'prod-4': true,
-    'prod-5': true,
-    'prod-6': true,
-    'prod-7': true,
-    'prod-8': true,
-  });
-
-  const [productStockMap, setProductStockMap] = useState<Record<string, number>>({
-    'prod-1': 142,
-    'prod-2': 88,
-    'prod-3': 65,
-    'prod-4': 30,
-    'prod-5': 94,
-    'prod-6': 120,
-    'prod-7': 15,
-    'prod-8': 50,
-  });
 
   // Handlers for Orders
   const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
@@ -191,8 +288,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const handleToggleBanner = async (id: string) => {
     try {
       const { bannerAdminApi } = await import('../api/adminApi');
-      const target = banners.find((b) => b.id === id);
-      await bannerAdminApi.updateBanner(id, { is_active: !(target?.active ?? true) });
+      const target = adminBanners.find((b) => b.id === id);
+      const newActive = !(target?.active ?? true);
+      await bannerAdminApi.updateBanner(id, { is_active: newActive });
+      // Update state admin lokal langsung (UI toggle sinkron tanpa reload)
+      setAdminBanners((prev) => prev.map((b) => (b.id === id ? { ...b, active: newActive } : b)));
     } catch (e: any) {
       showToast(e?.message || 'Gagal mengubah status banner.');
       return;
@@ -205,6 +305,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     try {
       const { bannerAdminApi } = await import('../api/adminApi');
       await bannerAdminApi.deleteBanner(id);
+      setAdminBanners((prev) => prev.filter((b) => b.id !== id));
     } catch (e: any) {
       showToast(e?.message || 'Gagal menghapus banner.');
       return;
@@ -235,6 +336,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
     saveBanner(data);
     showToast(data.id ? 'Perubahan banner berhasil disimpan!' : 'Banner baru berhasil ditambahkan!');
+    // Re-fetch daftar banner admin (biar id asli & urutan fresh)
+    try {
+      const { bannerAdminApi } = await import('../api/adminApi');
+      const list = await bannerAdminApi.listBanners();
+      setAdminBanners((list || []).map((b: any) => ({
+        id: String(b.id),
+        title: b.title,
+        uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+        targetLink: b.target_link || '',
+        image: b.image_url || '',
+        active: !!b.is_active,
+      })));
+    } catch { /* ignore — list lama masih valid */ }
     setEditingBanner(null);
   };
 
@@ -243,14 +357,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     try {
       const { productAdminApi } = await import('../api/adminApi');
       await productAdminApi.toggleActive(id);
+      // Re-fetch produk dari BE supaya is_active & stock sinkron (bukan map mock)
+      await refreshProducts();
     } catch (e: any) {
       showToast(e?.message || 'Gagal mengubah status produk.');
       return;
     }
-    setProductActiveMap((prev) => ({
-      ...prev,
-      [id]: prev[id] === undefined ? false : !prev[id],
-    }));
     showToast('Status keaktifan produk berhasil diperbarui.');
   };
 
@@ -267,27 +379,31 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   const handleSaveProduct = async (data: {
     id?: string;
+    categoryId?: number;
     name: string;
     category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
     price: number;
     unitInfo: string;
     weight: string;
-    badge?: 'BEST SELLER' | 'DISKON 15%' | 'BARU' | '';
+    badge?: string | '';
     image: string;
     stock: number;
     description: string;
+    originalPrice?: number;
+    discountPercent?: number;
+    composition?: string;
+    shelfLife?: string;
+    attributes?: string;
     glutenFree: boolean;
     organic: boolean;
     specification?: string;
     shippingInfo?: string;
   }) => {
-    const catLabelMap: Record<string, string> = {
-      beras: 'Beras Sorgum',
-      tepung: 'Tepung Sorgum',
-      camilan: 'Camilan Sehat',
-      pemanis: 'Pemanis Alami',
-      benih: 'Benih Sorgum',
-    };
+    // Sinkron: kalau kategoriOptions dari Kelola Kategori tersedia, pakai id asli BE.
+    // Fallback: map key FE -> id (perilaku lama, aman kalau BE kategori default).
+    const catIdFromOptions =
+      data.categoryId ??
+      categoryOptions.find((c) => c.name.toLowerCase() === data.category.replace(/-/g, ' '))?.id;
     const catIdMap: Record<string, number> = {
       beras: 1,
       tepung: 2,
@@ -295,6 +411,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       pemanis: 4,
       benih: 5,
     };
+    const categoryId = catIdFromOptions ?? catIdMap[data.category] ?? 1;
+
+    // Hitung harga jual final: originalPrice × (1 - diskon%)
+    const basePrice = data.originalPrice ?? data.price;
+    const pct = Math.max(0, Math.min(90, data.discountPercent || 0));
+    const finalPrice = pct > 0 ? Math.round((basePrice * (100 - pct)) / 100 / 50) * 50 : basePrice;
 
     // Persist to backend first (admin). On failure, show toast but keep UI running.
     try {
@@ -302,27 +424,52 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       if (data.id) {
         await productAdminApi.updateProduct(data.id, {
           name: data.name,
-          category_id: catIdMap[data.category],
-          price: data.price,
+          category_id: categoryId,
+          price: finalPrice,
+          original_price: basePrice,
+          discount_percent: data.discountPercent || 0,
           stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
+          composition: data.composition || null,
+          shelf_life: data.shelfLife || null,
+          attributes: data.attributes || null,
           gluten_free: data.glutenFree,
           organic: data.organic,
           badge: data.badge || null,
         });
+        // Gambar baru (URL hasil upload) → daftarkan ke product_images.
+        // Hanya kalau image BERUBAH dari produk existing (hindari duplikat tiap save).
+        const existingImage = products.find((p) => p.id === data.id)?.image;
+        if (data.image && !data.image.startsWith('data:') && data.image !== existingImage) {
+          await productAdminApi.addImage(data.id, data.image, true);
+        }
       } else {
-        await productAdminApi.createProduct({
+        const created = await productAdminApi.createProduct({
           name: data.name,
-          category_id: catIdMap[data.category],
-          price: data.price,
+          category_id: categoryId,
+          price: finalPrice,
+          original_price: basePrice,
+          discount_percent: data.discountPercent || 0,
           stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
+          composition: data.composition || null,
+          shelf_life: data.shelfLife || null,
+          attributes: data.attributes || null,
           gluten_free: data.glutenFree,
           organic: data.organic,
           badge: data.badge || null,
         });
+        // Gambar baru → daftarkan sebagai primary image produk baru
+        if (data.image && !data.image.startsWith('data:')) {
+          await productAdminApi.addImage(String(created?.id || data.id), data.image, true);
+        }
+        // Penting: pakai id ASLI dari BE (bukan prod-<timestamp>) supaya edit/delete
+        // produk baru jalan (id string palsu → parseInt NaN → 400/404)
+        if (created?.id) {
+          data.id = String(created.id);
+        }
       }
     } catch (e: any) {
       showToast(e?.message || 'Gagal menyimpan produk ke server.');
@@ -330,14 +477,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
 
     saveProduct(data);
-    const stockNum = data.stock ?? 100;
-    if (data.id) {
-      setProductStockMap((prev) => ({ ...prev, [data.id!]: stockNum }));
-      showToast(`Katalog produk "${data.name}" berhasil diperbarui!`);
-    } else {
-      setProductStockMap((prev) => ({ ...prev, [`prod-${Date.now()}`]: stockNum }));
-      showToast(`Produk baru "${data.name}" berhasil ditambahkan!`);
-    }
+    showToast(data.id
+      ? `Katalog produk "${data.name}" berhasil diperbarui!`
+      : `Produk baru "${data.name}" berhasil ditambahkan!`);
     setEditingProduct(null);
   };
 
@@ -347,6 +489,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       const { articleAdminApi } = await import('../api/adminApi');
       await articleAdminApi.deleteArticle(id);
       deleteArticle(id);
+      refreshAdminArticles();
       showToast('Artikel berhasil dihapus.');
     } catch (e: any) {
       showToast(e?.message || 'Gagal menghapus artikel.');
@@ -359,7 +502,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     category: string;
     author: string;
     date: string;
+    createdAt?: string;
     content: string;
+    contentBlocks?: any[];
+    image?: string;
+    subImage?: string;
+    quote?: string;
+    excerpt?: string;
   }) => {
     try {
       const { articleAdminApi } = await import('../api/adminApi');
@@ -369,18 +518,30 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           category: data.category,
           author: data.author,
           content: data.content,
+          content_blocks: data.contentBlocks,
+          image_url: data.image,
+          sub_image: data.subImage,
+          quote: data.quote,
+          excerpt: data.excerpt,
         });
         saveArticle(data);
         showToast('Perubahan artikel berhasil disimpan!');
+        refreshAdminArticles();
       } else {
         await articleAdminApi.createArticle({
           title: data.title,
           category: data.category,
           author: data.author,
           content: data.content,
+          content_blocks: data.contentBlocks,
+          image_url: data.image,
+          sub_image: data.subImage,
+          quote: data.quote,
+          excerpt: data.excerpt,
         });
         saveArticle(data);
         showToast('Artikel baru berhasil diterbitkan!');
+        refreshAdminArticles();
       }
     } catch (e: any) {
       showToast(e?.message || 'Gagal menyimpan artikel.');
@@ -390,23 +551,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   // Handlers for FAQs
   const handleDeleteFaq = async (id: string) => {
-    deleteFaq(id);
+    await deleteFaq(id);
+    refreshAdminFaqs();
     showToast('FAQ berhasil dihapus.');
   };
 
   const handleSaveFaq = async (data: any) => {
-    saveFaq(data);
+    await saveFaq(data);
+    refreshAdminFaqs();
     showToast(data.id ? 'Perubahan FAQ berhasil disimpan!' : 'FAQ baru berhasil ditambahkan!');
     setEditingFaq(null);
   };
 
   const handleToggleFaqStatus = async (id: string) => {
-    toggleFaqStatus(id);
+    await toggleFaqStatus(id);
+    refreshAdminFaqs();
     showToast('Status keaktifan FAQ berhasil diperbarui.');
   };
 
   const handleReorderFaq = async (id: string, direction: 'UP' | 'DOWN') => {
-    reorderFaq(id, direction);
+    await reorderFaq(id, direction);
+    refreshAdminFaqs();
     showToast('Urutan tampilan FAQ berhasil diperbarui!');
   };
 
@@ -467,7 +632,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             <DashboardTab
               orders={orders}
               products={products}
-              productStockMap={productStockMap}
               setActiveNav={handleNavChange}
               handleUpdateOrderStatus={handleUpdateOrderStatus}
             />
@@ -484,7 +648,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ) : (
               <LandingSettingsTab
-                banners={banners}
+                banners={adminBanners}
+                products={products}
                 onToggleBanner={handleToggleBanner}
                 onDeleteBanner={handleDeleteBanner}
                 onOpenCreateBanner={() => setEditingBanner({ isEditing: true, banner: null })}
@@ -498,16 +663,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             (editingProduct ? (
               <ProductFormView
                 initialProduct={editingProduct.product}
-                initialStock={editingProduct.product ? (productStockMap[editingProduct.product.id] ?? 50) : 100}
+                initialStock={editingProduct.product?.stock ?? 0}
                 onSave={handleSaveProduct}
                 onCancel={() => setEditingProduct(null)}
                 showToast={showToast}
+                badgeOptions={badgeOptions}
+                categoryOptions={categoryOptions}
               />
             ) : (
               <ProductsTab
                 products={products}
-                productActiveMap={productActiveMap}
-                productStockMap={productStockMap}
                 onToggleProductStatus={handleToggleProductStatus}
                 onDeleteProduct={(product) => setDeletingProduct(product)}
                 onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
@@ -548,7 +713,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ) : (
               <InfoTab
-                articles={articles}
+                articles={adminArticles}
                 onDeleteArticle={(article) => setDeletingArticle(article)}
                 onOpenCreateArticle={() => setEditingArticle({ isEditing: true, article: null })}
                 onOpenEditArticle={(article) => setEditingArticle({ isEditing: true, article })}
@@ -568,7 +733,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ) : (
               <FaqTab
-                faqs={faqs}
+                faqs={adminFaqs}
                 onDeleteFaq={handleDeleteFaq}
                 onOpenCreateFaq={() => setEditingFaq({ isEditing: true, faq: null })}
                 onOpenEditFaq={(faq) => setEditingFaq({ isEditing: true, faq })}
@@ -582,7 +747,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           {activeNav === 'voucher' && <VouchersTab showToast={showToast} />}
 
           {/* TAB 9: KELOLA LAIN */}
-          {activeNav === 'lain' && <OtherSettingsTab showToast={showToast} />}
+          {activeNav === 'lain' && (
+            <OtherSettingsTab
+              showToast={showToast}
+              onBadgesChange={(badges) => setBadgeOptions(badges.filter((b) => b.is_active).map((b) => b.name))}
+              onCategoriesChange={(cats) => setCategoryOptions(cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug })))}
+            />
+          )}
         </main>
 
         {/* FOOTER / BRANDING BOTTOM */}

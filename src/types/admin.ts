@@ -56,9 +56,23 @@ export interface ArticleItem {
   title: string;
   category: string;
   date: string;
+  createdAt?: string;
   author: string;
   views: number;
   content?: string;
+  contentBlocks?: Array<{
+    type: string;
+    content?: string;
+    image_url?: string;
+    alt?: string;
+    caption?: string;
+    author?: string;
+  }>;
+  image?: string;
+  subImage?: string;
+  quote?: string;
+  facts?: Array<{ title: string; desc: string }>;
+  isPublished?: boolean;
 }
 
 export interface FAQItem {

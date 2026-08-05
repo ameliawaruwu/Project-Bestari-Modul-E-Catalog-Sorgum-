@@ -13,7 +13,18 @@ export const articleAdminApi = {
   },
 
   // POST /api/admin/articles
-  createArticle: async (fields: { title: string; category: string; author?: string; content: string }) => {
+  createArticle: async (fields: {
+    title: string;
+    category: string;
+    author?: string;
+    content: string;
+    content_blocks?: Array<Record<string, any>>;
+    image_url?: string;
+    excerpt?: string;
+    sub_image?: string;
+    quote?: string;
+    facts?: Array<{ title: string; desc: string }>;
+  }) => {
     // Backend expects slug too — generate from title
     const slug = fields.title
       .toLowerCase()
@@ -28,6 +39,12 @@ export const articleAdminApi = {
         slug,
         category: fields.category,
         content: fields.content,
+        content_blocks: fields.content_blocks,
+        image_url: fields.image_url,
+        excerpt: fields.excerpt,
+        sub_image: fields.sub_image,
+        quote: fields.quote,
+        facts: fields.facts,
         author: fields.author,
         is_published: true,
       },
@@ -96,6 +113,28 @@ export const productAdminApi = {
   // DELETE /api/admin/products/:id
   deleteProduct: async (id: string) => {
     await request(`/admin/products/${id}`, { method: 'DELETE', auth: true });
+  },
+
+  // POST /api/admin/upload — upload file gambar, dapat URL
+  uploadImage: async (file: File | Blob): Promise<string> => {
+    const form = new FormData();
+    form.append('image', file, (file as File).name || 'image.jpg');
+    const res = await request<{ data: { url: string } }>('/admin/upload', {
+      method: 'POST',
+      body: form,
+      isFormData: true,
+      auth: true,
+    });
+    return res?.data?.url || '';
+  },
+
+  // POST /api/admin/products/:id/images — daftarkan gambar ke produk
+  addImage: async (productId: string, imageUrl: string, isPrimary = false) => {
+    await request(`/admin/products/${productId}/images`, {
+      method: 'POST',
+      body: { image_url: imageUrl, is_primary: isPrimary },
+      auth: true,
+    });
   },
 };
 
@@ -216,5 +255,53 @@ export const voucherAdminApi = {
   },
   remove: async (id: number) => {
     return await request(`/admin/vouchers/${id}`, { method: 'DELETE', auth: true });
+  },
+};
+
+// ─── Badge management (Kelola Badge) ───────────────────────────────────────
+export interface BadgeItem {
+  id: number;
+  name: string;
+  is_active: number | boolean;
+}
+
+export const badgeAdminApi = {
+  list: async (): Promise<BadgeItem[]> => {
+    const res = await request<{ data: BadgeItem[] }>('/admin/badges', { auth: true });
+    return res?.data || [];
+  },
+  create: async (name: string) => {
+    await request('/admin/badges', { method: 'POST', body: { name }, auth: true });
+  },
+  update: async (id: number, name: string, isActive: boolean) => {
+    await request(`/admin/badges/${id}`, { method: 'PUT', body: { name, is_active: isActive }, auth: true });
+  },
+  remove: async (id: number) => {
+    await request(`/admin/badges/${id}`, { method: 'DELETE', auth: true });
+  },
+};
+
+// ─── Category management (Kelola Kategori) ────────────────────────────────
+export interface CategoryItem {
+  id: number;
+  name: string;
+  slug: string;
+  image_url?: string | null;
+  sort_order?: number;
+}
+
+export const categoryAdminApi = {
+  list: async (): Promise<CategoryItem[]> => {
+    const res = await request<{ data: CategoryItem[] }>('/admin/categories', { auth: true });
+    return res?.data || [];
+  },
+  create: async (name: string, slug: string) => {
+    await request('/admin/categories', { method: 'POST', body: { name, slug }, auth: true });
+  },
+  update: async (id: number, name: string, slug: string) => {
+    await request(`/admin/categories/${id}`, { method: 'PUT', body: { name, slug }, auth: true });
+  },
+  remove: async (id: number) => {
+    await request(`/admin/categories/${id}`, { method: 'DELETE', auth: true });
   },
 };

@@ -1,6 +1,7 @@
 import dbPool from '../lib/db';
 import { AppError } from '../lib/errors_utils';
-import { getCart, clearCart } from './cart_service';
+import { getCart } from './cart_service';
+import { voucherService } from './voucher_service';
 import { config } from '../lib/config';
 
 interface ShippingAddress {
@@ -21,8 +22,8 @@ interface CreateOrderInput {
   customer_phone: string;
   shipping_address: ShippingAddress;
   notes?: string;
-  shipping_cost?: number;
-  discount?: number;
+  voucher_code?: string;
+  idempotency_key?: string;
   payment_method: 'cod' | 'qris';
 }
 
@@ -70,6 +71,19 @@ function generateWALink(phone: string, message: string): string {
 }
 
 export async function createOrder(input: CreateOrderInput) {
+  // 0. Idempotency: kalau key sudah pernah dipakai → replay order yang ada (cegah double-submit).
+  //    Race 2 request dengan key sama: UNIQUE index akan tolak insert ke-2 → rollback → replay.
+  if (input.idempotency_key) {
+    const [existing] = await dbPool.query(
+      'SELECT * FROM orders WHERE idempotency_key = ? LIMIT 1',
+      [input.idempotency_key],
+    );
+    const existingOrder = (existing as any[])[0];
+    if (existingOrder) {
+      return { order: existingOrder, wa_link: null, replay: true };
+    }
+  }
+
   // 1. Get cart items
   const cartItems = await getCart(input.userId, input.sessionId);
   if (cartItems.length === 0) {
@@ -83,9 +97,19 @@ export async function createOrder(input: CreateOrderInput) {
   const settingsRow = (settingsRows as any[])[0];
   const shippingCost = Math.max(0, parseInt(String(settingsRow?.setting_value || '0'), 10) || 0);
 
-  // Diskon: clamp 0..subtotal, cuma sekali pakai (tidak ada endpoint promo terpisah)
+  // Diskon: HANYA dari voucher yang DIVERIFIKASI server-side.
+  // JANGAN pernah percaya input.discount client (bisa dimanipulasi).
   const subtotal = cartItems.reduce((sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity, 0);
-  const discount = Math.min(Math.max(0, Math.round(input.discount || 0)), subtotal);
+  let discount = 0;
+  let voucherId: number | null = null;
+  if (input.voucher_code) {
+    const vResult = await voucherService.validate(input.voucher_code, subtotal);
+    if (!vResult.valid || !vResult.voucher) {
+      throw new AppError(vResult.message || 'Kode voucher tidak valid', 400);
+    }
+    discount = Math.min(vResult.voucher.discount_amount, subtotal);
+    voucherId = vResult.voucher.id;
+  }
   const total = subtotal + shippingCost - discount;
   const orderNumber = await generateUniqueOrderNumber();
 
@@ -94,26 +118,45 @@ export async function createOrder(input: CreateOrderInput) {
   try {
     await conn.beginTransaction();
 
-    const [orderResult] = await conn.query(
-      `INSERT INTO orders (order_number, user_id, customer_name, customer_email, customer_phone,
-        shipping_address, notes, subtotal, shipping_cost, discount, total, payment_method)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        orderNumber,
-        input.userId || null,
-        input.customer_name,
-        input.customer_email || null,
-        input.customer_phone,
-        JSON.stringify(input.shipping_address),
-        input.notes || null,
-        subtotal,
-        shippingCost,
-        discount,
-        total,
-        input.payment_method,
-      ],
-    );
-    const orderId = (orderResult as any).insertId;
+    let orderId: number;
+    try {
+      const [orderResult] = await conn.query(
+        `INSERT INTO orders (order_number, idempotency_key, user_id, customer_name, customer_email, customer_phone,
+          shipping_address, notes, subtotal, shipping_cost, discount, total, payment_method)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          orderNumber,
+          input.idempotency_key || null,
+          input.userId || null,
+          input.customer_name,
+          input.customer_email || null,
+          input.customer_phone,
+          JSON.stringify(input.shipping_address),
+          input.notes || null,
+          subtotal,
+          shippingCost,
+          discount,
+          total,
+          input.payment_method,
+        ],
+      );
+      orderId = (orderResult as any).insertId;
+    } catch (e: any) {
+      // Race double-submit: 2 request dengan idempotency_key SAMA masuk paralel.
+      // Yang ke-2 kena UNIQUE constraint → replay order yang sudah ada.
+      if (input.idempotency_key && e?.code === 'ER_DUP_ENTRY') {
+        const [existing] = await conn.query(
+          'SELECT * FROM orders WHERE idempotency_key = ? LIMIT 1',
+          [input.idempotency_key],
+        );
+        const existingOrder = (existing as any[])[0];
+        if (existingOrder) {
+          await conn.rollback();
+          return { order: existingOrder, wa_link: null, replay: true };
+        }
+      }
+      throw e;
+    }
 
     // 4. Insert order items (snapshot) + decrement stock
     for (const item of cartItems) {
@@ -131,10 +174,21 @@ export async function createOrder(input: CreateOrderInput) {
       await conn.query('UPDATE products SET stock = stock - ? WHERE id = ?', [item.quantity, item.product_id]);
     }
 
-    await conn.commit();
+    // Voucher terpakai: naikkan used_count dalam transaksi yang sama (konsisten dengan order)
+    if (voucherId !== null) {
+      await conn.query('UPDATE vouchers SET used_count = used_count + 1 WHERE id = ?', [voucherId]);
+    }
 
-    // 5. Clear cart
-    await clearCart(input.userId, input.sessionId);
+    // 5. Clear cart — DALAM transaksi yang sama (sebelum commit), biar order + cart
+    //    selalu konsisten. Kalau clear gagal → rollback seluruh order (tidak ada order
+    //    tanpa cart bersih, dan tidak ada stok terdecrement tanpa order).
+    if (input.userId) {
+      await conn.query('DELETE FROM cart_items WHERE user_id = ?', [input.userId]);
+    } else if (input.sessionId) {
+      await conn.query('DELETE FROM cart_items WHERE session_id = ?', [input.sessionId]);
+    }
+
+    await conn.commit();
 
     // 6. Generate WA link
     const waPhone = config.store.adminWhatsapp;
@@ -188,7 +242,14 @@ export async function getOrderById(orderId: number, userId?: number) {
     : order.shipping_address;
 
   const [items] = await dbPool.query(
-    'SELECT * FROM order_items WHERE order_id = ?',
+    `SELECT oi.*,
+            pi.image_url AS image_url
+     FROM order_items oi
+     LEFT JOIN (
+       SELECT product_id, MIN(image_url) AS image_url
+       FROM product_images WHERE is_primary = 1 GROUP BY product_id
+     ) pi ON pi.product_id = oi.product_id
+     WHERE oi.order_id = ?`,
     [orderId],
   );
 
@@ -201,7 +262,14 @@ async function attachItems(orders: any[]): Promise<any[]> {
   const ids = orders.map(o => o.id);
   const placeholders = ids.map(() => '?').join(',');
   const [rows] = await dbPool.query(
-    `SELECT * FROM order_items WHERE order_id IN (${placeholders})`,
+    `SELECT oi.*,
+            pi.image_url AS image_url
+     FROM order_items oi
+     LEFT JOIN (
+       SELECT product_id, MIN(image_url) AS image_url
+       FROM product_images WHERE is_primary = 1 GROUP BY product_id
+     ) pi ON pi.product_id = oi.product_id
+     WHERE oi.order_id IN (${placeholders})`,
     ids,
   );
   const itemsByOrder = new Map<number, any[]>();
@@ -228,6 +296,17 @@ export async function getAllOrders() {
 const VALID_ORDER_STATUS = ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'];
 const VALID_PAYMENT_STATUS = ['unpaid', 'paid', 'confirmed'];
 
+// State machine transisi status order (maju saja + cancel dari status belum dikirim).
+// delivered TIDAK bisa mundur; cancelled TIDAK bisa dari shipped/delivered.
+const ALLOWED_ORDER_TRANSITIONS: Record<string, string[]> = {
+  pending: ['confirmed', 'cancelled'],
+  confirmed: ['processed', 'cancelled'],
+  processed: ['shipped', 'cancelled'],
+  shipped: ['delivered'],
+  delivered: [],
+  cancelled: [],
+};
+
 export async function updateOrderStatus(orderId: number, status: string) {
   if (!VALID_ORDER_STATUS.includes(status)) {
     throw new AppError(`Status order tidak valid. Gunakan: ${VALID_ORDER_STATUS.join(', ')}`, 400);
@@ -235,6 +314,27 @@ export async function updateOrderStatus(orderId: number, status: string) {
   const conn = await dbPool.getConnection();
   try {
     await conn.beginTransaction();
+    // Cek status sekarang (FOR UPDATE biar race aman)
+    const [rows] = await conn.query(
+      'SELECT order_status FROM orders WHERE id = ? FOR UPDATE',
+      [orderId],
+    );
+    const order = (rows as any[])[0];
+    if (!order) {
+      await conn.rollback();
+      return false;
+    }
+    const current = order.order_status;
+    // Transisi sama dengan sekarang → idempotent sukses (return true, jangan UPDATE —
+    // kalau UPDATE dengan nilai sama, MySQL affectedRows=0 → keliru dianggap gagal/404).
+    if (status === current) {
+      await conn.rollback();
+      return true;
+    }
+    const allowed = ALLOWED_ORDER_TRANSITIONS[current] || [];
+    if (!allowed.includes(status)) {
+      throw new AppError(`Transisi status tidak valid: ${current} → ${status}`, 400);
+    }
     const [result] = await conn.query(
       'UPDATE orders SET order_status = ? WHERE id = ?',
       [status, orderId],
@@ -242,9 +342,9 @@ export async function updateOrderStatus(orderId: number, status: string) {
     const affected = (result as any).affectedRows > 0;
     if (affected) {
       // Kalau order di-cancel, balikin stok produk yang udah dikurang
-      if (status === 'cancelled') {
-        const [rows] = await conn.query('SELECT product_id, quantity FROM order_items WHERE order_id = ?', [orderId]);
-        for (const item of rows as any[]) {
+      if (status === 'cancelled' && current !== 'cancelled') {
+        const [items] = await conn.query('SELECT product_id, quantity FROM order_items WHERE order_id = ?', [orderId]);
+        for (const item of items as any[]) {
           await conn.query('UPDATE products SET stock = stock + ? WHERE id = ?', [item.quantity, item.product_id]);
         }
       }
@@ -298,13 +398,50 @@ export async function cancelOrderByUser(orderId: number, userId: number) {
   }
 }
 
+// State machine transisi status pembayaran (maju saja).
+// unpaid → paid → confirmed; tidak boleh mundur.
+const ALLOWED_PAYMENT_TRANSITIONS: Record<string, string[]> = {
+  unpaid: ['paid'],
+  paid: ['confirmed'],
+  confirmed: [],
+};
+
 export async function updatePaymentStatus(orderId: number, status: string) {
   if (!VALID_PAYMENT_STATUS.includes(status)) {
     throw new AppError(`Status pembayaran tidak valid. Gunakan: ${VALID_PAYMENT_STATUS.join(', ')}`, 400);
   }
-  const [result] = await dbPool.query(
-    'UPDATE orders SET payment_status = ? WHERE id = ?',
-    [status, orderId],
-  );
-  return (result as any).affectedRows > 0;
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [rows] = await conn.query(
+      'SELECT payment_status FROM orders WHERE id = ? FOR UPDATE',
+      [orderId],
+    );
+    const order = (rows as any[])[0];
+    if (!order) {
+      await conn.rollback();
+      return false;
+    }
+    const current = order.payment_status;
+    // Transisi sama → idempotent sukses (return true tanpa UPDATE, hindari affectedRows=0 → 404)
+    if (status === current) {
+      await conn.rollback();
+      return true;
+    }
+    const allowed = ALLOWED_PAYMENT_TRANSITIONS[current] || [];
+    if (!allowed.includes(status)) {
+      throw new AppError(`Transisi status pembayaran tidak valid: ${current} → ${status}`, 400);
+    }
+    const [result] = await conn.query(
+      'UPDATE orders SET payment_status = ? WHERE id = ?',
+      [status, orderId],
+    );
+    await conn.commit();
+    return (result as any).affectedRows > 0;
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
 }

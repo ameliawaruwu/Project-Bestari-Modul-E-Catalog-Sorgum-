@@ -7,6 +7,8 @@ import { faqApi } from '../api/faqApi';
 import { shopSettingsApi, ShopSettings as ApiShopSettings } from '../api/shopSettingsApi';
 import { orderApi } from '../api/orderApi';
 import { authApi } from '../api/authApi';
+import { wishlistApi } from '../api/wishlistApi';
+import { landingContentApi } from '../api/landingContentApi';
 import { request, getToken } from '../api/http';
 
 export interface ShopSettings {
@@ -60,6 +62,8 @@ export interface LandingContent {
   featuredTitleEn: string;
   featuredDescId: string;
   featuredDescEn: string;
+  // JSON array of product ids untuk section "Koleksi Produk Pilihan" (diatur admin)
+  featuredProductIds: string;
 }
 
 type Language = 'id' | 'en';
@@ -76,6 +80,11 @@ interface AppContextProps {
   products: Product[];
   saveProduct: (productData: any) => void;
   deleteProduct: (id: string) => void;
+
+  // Wishlist / Favorit
+  wishlistIds: Record<string, number>; // productId -> wishlist_id
+  toggleWishlist: (productId: string) => Promise<boolean>;
+  isFavorite: (productId: string) => boolean;
 
   // FAQs
   faqs: FaqItem[];
@@ -123,6 +132,9 @@ interface AppContextProps {
   clearCart: () => void;
   appliedDiscount: number;
   setAppliedDiscount: (val: number) => void;
+  appliedVoucherCode: string | null;
+  setAppliedVoucherCode: (val: string | null) => void;
+  refreshProducts: () => Promise<Product[]>;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -172,6 +184,7 @@ const DEFAULT_LANDING_CONTENT: LandingContent = {
   featuredTitleEn: 'Featured Product Collection',
   featuredDescId: 'Temukan berbagai olahan sorgum organik berkualitas tinggi, mulai dari beras sehat, tepung serbaguna, hingga camilan bergizi',
   featuredDescEn: 'Discover a variety of high-quality organic sorghum products, ranging from healthy rice, all-purpose flour, to nutritious snacks.',
+  featuredProductIds: '',
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -189,29 +202,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   // Data States
-  const [products, setProducts] = useState<Product[]>(() => {
-    const raw = localStorage.getItem('bestari_products_v1');
-    return raw ? JSON.parse(raw) : [];
-  });
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const [faqs, setFaqs] = useState<FaqItem[]>(() => {
-    const raw = localStorage.getItem('bestari_faqs_v1');
-    return raw ? JSON.parse(raw) : [];
-  });
+  // Wishlist / Favorit — productId -> wishlist_id (row id di tabel wishlists).
+  // Di-load dari BE saat mount kalau login; dipakai ProductCard & Detail.
+  const [wishlistIds, setWishlistIds] = useState<Record<string, number>>({});
 
-  const [articles, setArticles] = useState<Article[]>(() => {
-    const raw = localStorage.getItem('bestari_articles_v1');
-    return raw ? JSON.parse(raw) : [];
-  });
+  const [faqs, setFaqs] = useState<FaqItem[]>([]);
 
-  const [banners, setBanners] = useState<BannerSlide[]>(() => {
-    const raw = localStorage.getItem('bestari_banners_v1');
-    return raw ? JSON.parse(raw) : [];
-  });
+  const [articles, setArticles] = useState<Article[]>([]);
 
-  const [shopSettings, setShopSettings] = useState<ShopSettings>(() => {
-    const raw = localStorage.getItem('bestari_shop_settings_v1');
-    return raw ? JSON.parse(raw) : { storeName: 'BESTARI', logoUrl: '', qrisImageUrl: '', qrisNmid: '', whatsappNumber: '', qrisStatus: 'AKTIF' };
+  const [banners, setBanners] = useState<BannerSlide[]>([]);
+
+  const [shopSettings, setShopSettings] = useState<ShopSettings>({
+    storeName: 'BESTARI', logoUrl: '', qrisImageUrl: '', qrisNmid: '', whatsappNumber: '', qrisStatus: 'AKTIF',
   });
 
   // Default konten landing page — data UI saja (disimpan di localStorage,
@@ -256,24 +260,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     featuredTitleEn: 'Featured Products',
     featuredDescId: 'Jelajahi produk sorgum terbaik pilihan kami.',
     featuredDescEn: 'Explore our best-selected sorghum products.',
+    featuredProductIds: '',
   };
 
-  const [landingContent, setLandingContent] = useState<LandingContent>(() => {
-    const raw = localStorage.getItem('bestari_landing_content_v1');
-    if (!raw) return DEFAULT_LANDING_CONTENT;
-    try {
-      // Merge: konten yang sudah disimpan admin menang, tapi key kosong
-      // diisi default biar beranda tidak pernah kosong.
-      return { ...DEFAULT_LANDING_CONTENT, ...JSON.parse(raw) };
-    } catch {
-      return DEFAULT_LANDING_CONTENT;
-    }
-  });
+  const [landingContent, setLandingContent] = useState<LandingContent>(DEFAULT_LANDING_CONTENT);
 
-  const [orders, setOrders] = useState<Order[]>(() => {
-    const raw = localStorage.getItem('bestari_orders');
-    return raw ? JSON.parse(raw) : [];
-  });
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -293,7 +285,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return serverCart;
   };
 
+  // Load products dari server (dipakai admin toggle status / setelah edit)
+  const refreshProducts = async () => {
+    const list = await productApi.getProducts().catch(() => []);
+    setProducts(list);
+    return list;
+  };
+
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
+  const [appliedVoucherCode, setAppliedVoucherCode] = useState<string | null>(null);
 
   // ============================================================
   // HYDRATE FROM BACKEND — ganti data mock/localStorage dengan data BE
@@ -321,7 +321,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     productApi.getProducts().then((list) => {
       if (!cancelled) {
         setProducts(list);
-        localStorage.setItem('bestari_products_v1', JSON.stringify(list));
       }
     }).catch(() => {});
 
@@ -329,7 +328,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     articleApi.getArticles().then((list) => {
       if (!cancelled) {
         setArticles(list);
-        localStorage.setItem('bestari_articles_v1', JSON.stringify(list));
       }
     }).catch(() => {});
 
@@ -337,7 +335,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     faqApi.getFaqs().then((list) => {
       if (!cancelled) {
         setFaqs(list);
-        localStorage.setItem('bestari_faqs_v1', JSON.stringify(list));
       }
     }).catch(() => {});
 
@@ -345,12 +342,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     shopSettingsApi.getSettingsAsync().then((s) => {
       if (!cancelled) {
         setShopSettings(s as unknown as ShopSettings);
-        localStorage.setItem('bestari_shop_settings_v1', JSON.stringify(s));
       }
     }).catch(() => {});
 
-    // Banners (via /api/banners public — map ke BannerSlide)
-    // TODO: bannerApi belum ada di src/api; fetch langsung
+    // Banners (via /api/banners public — map ke BannerSlide).
+    // JANGAN cache ke localStorage — banner yang di-nonaktifkan di admin
+    // harus langsung hilang dari beranda (bukan snapshot basi).
     request('/banners').then((res: any) => {
       if (!cancelled && res?.data) {
         const mapped: BannerSlide[] = (res.data as any[]).map((b: any) => ({
@@ -362,7 +359,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           active: !!b.is_active,
         }));
         setBanners(mapped);
-        localStorage.setItem('bestari_banners_v1', JSON.stringify(mapped));
+      }
+    }).catch(() => {});
+
+    // Landing content (konten beranda) — dari BE, bukan localStorage
+    landingContentApi.getLandingContent().then((content) => {
+      if (!cancelled) {
+        // Merge: konten dari server menang, key yang belum ada diisi default
+        setLandingContent((prev) => ({ ...prev, ...content }));
       }
     }).catch(() => {});
 
@@ -371,8 +375,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       orderApi.getOrders().then((list) => {
         if (!cancelled) {
           setOrders(list);
-          localStorage.setItem('bestari_orders', JSON.stringify(list));
         }
+      }).catch(() => {});
+
+      // Wishlist (auth required) — load favorit user
+      wishlistApi.getWishlist().then((items) => {
+        if (cancelled) return;
+        const idMap: Record<string, number> = {};
+        items.forEach((w) => {
+          if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0);
+        });
+        setWishlistIds(idMap);
       }).catch(() => {});
     }
 
@@ -416,22 +429,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Save state helpers to sync automatically
   const updateProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-    localStorage.setItem('bestari_products_v1', JSON.stringify(newProducts));
   };
 
   const updateFaqs = (newFaqs: FaqItem[]) => {
     setFaqs(newFaqs);
-    localStorage.setItem('bestari_faqs_v1', JSON.stringify(newFaqs));
   };
 
   const updateArticles = (newArticles: Article[]) => {
     setArticles(newArticles);
-    localStorage.setItem('bestari_articles_v1', JSON.stringify(newArticles));
   };
 
   const updateBanners = (newBanners: BannerSlide[]) => {
     setBanners(newBanners);
-    localStorage.setItem('bestari_banners_v1', JSON.stringify(newBanners));
+    // Tidak di-cache ke localStorage — sumber kebenaran = server.
+    // Banner yang dinonaktifkan/dihapus di admin harus langsung hilang
+    // dari beranda setelah reload (fetch ulang dari /api/banners).
   };
 
   const saveShopSettings = (settings: Partial<ShopSettings>) => {
@@ -442,12 +454,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const saveLandingContent = (content: LandingContent) => {
     setLandingContent(content);
-    localStorage.setItem('bestari_landing_content_v1', JSON.stringify(content));
+    // Simpan ke BE (admin only) — localStorage TIDAK dipakai lagi.
+    landingContentApi.saveLandingContent(content as unknown as Record<string, string>);
   };
 
   const updateOrders = (newOrders: Order[]) => {
     setOrders(newOrders);
-    localStorage.setItem('bestari_orders', JSON.stringify(newOrders));
   };
 
   const updateCart = (newCart: CartItem[]) => {
@@ -477,7 +489,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // Load orders for logged-in user
         orderApi.getOrders().then((list) => {
           setOrders(list);
-          localStorage.setItem('bestari_orders', JSON.stringify(list));
         }).catch(() => {});
       }
       return res;
@@ -517,13 +528,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Kosongin state — jangan sampai cart user A kebawa ke user B/guest.
     setCurrentUser(null);
     setCart([]);
+    setWishlistIds({});
     setAppliedDiscount(0);
     try { localStorage.removeItem('bestari_current_user'); } catch { /* ignore */ }
     try { localStorage.removeItem('bestari_token'); } catch { /* ignore */ }
   };
 
+  // Wishlist / Favorit helpers
+  const isFavorite = (productId: string) => String(productId) in wishlistIds;
+
+  const toggleWishlist = async (productId: string): Promise<boolean> => {
+    const pid = String(productId);
+    const existingId = wishlistIds[pid];
+    if (existingId) {
+      // Hapus dari favorit
+      const ok = await wishlistApi.removeFromWishlist(existingId);
+      if (ok) {
+        const next = { ...wishlistIds };
+        delete next[pid];
+        setWishlistIds(next);
+        return true;
+      }
+      return false;
+    }
+    // Tambah ke favorit
+    const ok = await wishlistApi.addToWishlist(pid);
+    if (ok) {
+      // Dapatkan wishlist_id dari server (untuk bisa hapus nanti)
+      const list = await wishlistApi.getWishlist().catch(() => null);
+      const row = list?.find((w) => String(w.id) === pid);
+      setWishlistIds((prev) => ({
+        ...prev,
+        [pid]: Number(row?.wishlist_id || 0),
+      }));
+      return true;
+    }
+    return false;
+  };
+
   // Product CRUD
   const saveProduct = (productData: any) => {
+    // Harga jual final = harga asli × (1 - diskon%)
+    const baseP = Number(productData.price) || 0;
+    const pctP = Math.max(0, Math.min(90, Number(productData.discountPercent) || 0));
+    const finalPrice = pctP > 0 ? Math.round((baseP * (100 - pctP)) / 100 / 50) * 50 : baseP;
+    const payload = { ...productData, price: finalPrice, originalPrice: baseP };
+    // Pakai payload (price final) untuk semua referensi di bawah
+    productData = payload;
     const catLabelMap: Record<string, string> = {
       beras: 'Beras Sorgum',
       tepung: 'Tepung Sorgum',
@@ -545,6 +596,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               categoryLabel: catLabelMap[productData.category] || 'Produk Sorgum',
               price: Number(productData.price),
               formattedPrice: `IDR ${Number(productData.price).toLocaleString('id-ID')}`,
+              originalPrice: productData.originalPrice,
+              discountPercent: productData.discountPercent,
+              composition: productData.composition,
+              shelfLife: productData.shelfLife,
+              attributes: productData.attributes,
               unitInfo: productData.unitInfo,
               weight: productData.weight,
               badge: productData.badge || undefined,
@@ -552,8 +608,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               description: productData.description,
               glutenFree: !!productData.glutenFree,
               organic: !!productData.organic,
-              specification: productData.specification,
               shippingInfo: productData.shippingInfo,
+              stock: Number(productData.stock) || undefined,
             };
           }
           return p;
@@ -572,15 +628,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           badge: productData.badge || undefined,
           image: productData.image,
           description: productData.description || 'Produk olahan sorgum berkualitas tinggi.',
+          originalPrice: productData.originalPrice,
+          discountPercent: productData.discountPercent,
+          composition: productData.composition,
+          shelfLife: productData.shelfLife,
+          attributes: productData.attributes,
           glutenFree: !!productData.glutenFree,
           organic: !!productData.organic,
-          specification: productData.specification,
           shippingInfo: productData.shippingInfo,
+          stock: Number(productData.stock) || undefined,
         };
         updateProducts([newProd, ...products]);
       }
     } else {
-      const newId = `prod-${Date.now()}`;
+      // Produk baru: id ASLI dari BE sudah di-set oleh caller (AdminPage) —
+      // jangan generate id palsu `prod-<timestamp>` (bikin edit/delete 404).
+      const newId = productData.id || `prod-${Date.now()}`;
       const newProd: Product = {
         id: newId,
         name: productData.name,
@@ -593,9 +656,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         badge: productData.badge || undefined,
         image: productData.image,
         description: productData.description || 'Produk olahan sorgum berkualitas tinggi.',
+        originalPrice: productData.originalPrice,
+        discountPercent: productData.discountPercent,
+        composition: productData.composition,
+        shelfLife: productData.shelfLife,
+        attributes: productData.attributes,
         glutenFree: !!productData.glutenFree,
         organic: !!productData.organic,
-        specification: productData.specification,
         shippingInfo: productData.shippingInfo,
       };
       updateProducts([newProd, ...products]);
@@ -661,6 +728,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             category: articleData.category,
             author: articleData.author,
             content: articleData.content,
+            contentBlocks: articleData.contentBlocks || a.contentBlocks,
             snippet: articleData.content ? articleData.content.substring(0, 150) + '...' : a.snippet,
             image: articleData.image || a.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
           };
@@ -676,6 +744,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         readTime: '5 Menit Baca',
         snippet: articleData.content ? articleData.content.substring(0, 150) + '...' : '',
         content: articleData.content,
+        contentBlocks: articleData.contentBlocks,
         image: articleData.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
         date: dateStr,
         author: articleData.author || 'Tim Bestari',
@@ -784,11 +853,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const removeCartItem = (productId: string) => {
     const target = cart.find((item) => item.product.id === productId);
+    if (!target) return;
     const updated = cart.filter((item) => item.product.id !== productId);
     updateCart(updated);
-    const rowId = target?.__cartRowId;
-    if (rowId) orderApi.removeCartItemServer(rowId).catch(() => refreshCart());
-    else refreshCart();
+    // Server-authoritative: hapus dari DB kalau rowId ada.
+    // Kalau rowId undefined (item baru, belum sync dari server), hapus dari
+    // state saja — jangan refreshCart() karena item masih ada di server
+    // dan akan balik lagi (ghosting).
+    const rowId = target.__cartRowId;
+    if (rowId) {
+      orderApi.removeCartItemServer(rowId).catch(() => refreshCart());
+    }
+    // no rowId: item belum di server, tidak perlu aksi
   };
 
   const clearCart = () => {
@@ -821,6 +897,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         products,
         saveProduct,
         deleteProduct,
+        wishlistIds,
+        toggleWishlist,
+        isFavorite,
         faqs,
         saveFaq,
         deleteFaq,
@@ -852,6 +931,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         clearCart,
         appliedDiscount,
         setAppliedDiscount,
+        appliedVoucherCode,
+        setAppliedVoucherCode,
+        refreshProducts,
       }}
     >
       {children}

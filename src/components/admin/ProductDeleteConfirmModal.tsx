@@ -46,9 +46,6 @@ export const ProductDeleteConfirmModal: React.FC<ProductDeleteConfirmModalProps>
             </div>
             <div className="flex-1 min-w-0 space-y-1">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 text-[10px] font-bold bg-[#162809] text-white rounded-md font-mono">
-                  {product.id}
-                </span>
                 <span className="px-2.5 py-0.5 text-[10px] font-bold bg-[#f3ede6] text-[#44483f] rounded-md uppercase">
                   {product.categoryLabel || product.category}
                 </span>

@@ -1,9 +1,14 @@
 import { Router, Request, Response } from 'express';
-import { createCategory, updateCategory, deleteCategory } from '../../services/categories_service';
+import { getCategories, createCategory, updateCategory, deleteCategory } from '../../services/categories_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
 router.use(authRequired, adminOnly);
+
+router.get('/', async (_req: Request, res: Response) => {
+  const data = await getCategories();
+  res.json({ data });
+});
 
 router.post('/', async (req: Request, res: Response) => {
   const { name, slug } = req.body;

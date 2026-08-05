@@ -22,7 +22,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   onNavigateCheckout,
   onSelectProduct,
 }) => {
-  const { t, appliedDiscount, setAppliedDiscount } = useApp();
+  const { t, appliedDiscount, setAppliedDiscount, setAppliedVoucherCode } = useApp();
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>(
     cart.map((item) => item.product.id)
   );
@@ -58,6 +58,7 @@ export const CartPage: React.FC<CartPageProps> = ({
       const result = await orderApi.validateVoucher(cleanCode, subtotalPrice);
       if (result.valid && result.discount) {
         setAppliedDiscount(result.discount);
+        setAppliedVoucherCode(cleanCode);
         setPromoError('');
         setShowPromoModal(false);
       } else {

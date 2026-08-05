@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, ShopSettings } from '../../context/AppContext';
+import BadgeManagement from './BadgeManagement';
+import CategoryManagement from './CategoryManagement';
 
 interface OtherSettingsTabProps {
   showToast: (msg: string) => void;
+  onBadgesChange?: (badges: { id: number; name: string; is_active: number | boolean }[]) => void;
+  onCategoriesChange?: (categories: { id: number; name: string; slug: string }[]) => void;
 }
 
 const PRESET_LOGOS = [
@@ -48,7 +52,7 @@ const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
   storeEmail: '',
 };
 
-export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast }) => {
+export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, onBadgesChange, onCategoriesChange }) => {
   const { shopSettings, saveShopSettings } = useApp();
   const [settings, setSettings] = useState<ShopSettings>(shopSettings || DEFAULT_SETTINGS_FALLBACK);
 
@@ -360,6 +364,12 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Section: Kelola Badge & Kelola Kategori */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BadgeManagement showToast={showToast} onBadgesChange={onBadgesChange} />
+          <CategoryManagement showToast={showToast} onCategoriesChange={onCategoriesChange} />
         </div>
       </div>
     </div>
