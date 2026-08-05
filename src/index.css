@@ -526,15 +526,15 @@ textarea {
   background-color: #faf8f5 !important;
 }
 
-/* Admin Sidebar specific premium overrides */
+/* Admin Sidebar specific premium overrides (Option 1: Dark Green + Gold Accent) */
 .admin-sidebar-bg {
-  background-color: #ffffff !important; /* Clean Light Background */
-  border-right: 1px solid rgba(196, 200, 188, 0.4) !important;
+  background-color: #162809 !important; /* Hijau Tua Utama Bestari */
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .dark .admin-sidebar-bg {
-  background-color: #1a1815 !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: #0d1705 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Compact specific metric styling */
