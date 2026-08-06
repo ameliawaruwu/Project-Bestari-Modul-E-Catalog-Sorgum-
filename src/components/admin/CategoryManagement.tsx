@@ -94,10 +94,10 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-4">
-      <div className="flex items-center gap-2.5 border-b border-[#e2e8f0] pb-3">
-        <span className="material-symbols-outlined text-xl text-[#162809]">category</span>
-        <h3 className="font-['Roboto'] text-lg font-bold text-[#1d1b17]">Kelola Kategori</h3>
+    <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
+      <div className="flex items-center gap-2.5 border-b border-[#E0E0E0] pb-3">
+        <span className="material-symbols-outlined text-xl text-[#1B5E20]">category</span>
+        <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">Kelola Kategori</h3>
       </div>
 
       {/* Form tambah kategori */}
@@ -108,13 +108,13 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
           onChange={(e) => setNewName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
           placeholder="Nama kategori baru (misal: Minuman Sorgum)"
-          className="flex-1 px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#c4c8bc] bg-white focus:outline-none focus:ring-2 focus:ring-[#162809]"
+          className="flex-1 px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] font-medium"
         />
         <button
           type="button"
           onClick={handleCreate}
           disabled={saving}
-          className="px-4 py-2.5 text-xs font-bold text-white bg-[#162809] rounded-xl hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+          className="px-4 py-2.5 text-xs font-bold text-white bg-[#2E7D32] rounded-xl hover:bg-[#1B5E20] transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
         >
           + Tambah
         </button>
@@ -122,15 +122,15 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
 
       {/* Daftar kategori */}
       {loading ? (
-        <p className="text-xs text-gray-400">Memuat...</p>
+        <p className="text-xs text-[#555555]">Memuat...</p>
       ) : categories.length === 0 ? (
-        <p className="text-xs text-gray-400">Belum ada kategori. Tambahkan di atas.</p>
+        <p className="text-xs text-[#555555]">Belum ada kategori. Tambahkan di atas.</p>
       ) : (
         <div className="space-y-2">
           {categories.map((cat) => (
             <div
               key={cat.id}
-              className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border border-[#e2e8f0] bg-[#faf9f6]"
+              className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border border-[#E0E0E0] bg-[#F7F8F6]"
             >
               {editingId === cat.id ? (
                 <div className="flex-1 flex gap-2">
@@ -140,19 +140,19 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
                     onChange={(e) => setEditName(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleUpdate(cat.id)}
                     autoFocus
-                    className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-[#c4c8bc] focus:outline-none focus:ring-2 focus:ring-[#162809]"
+                    className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] focus:outline-none focus:ring-1 focus:ring-[#2E7D32]"
                   />
                   <button
                     type="button"
                     onClick={() => handleUpdate(cat.id)}
-                    className="px-2.5 py-1.5 text-xs font-bold text-white bg-[#162809] rounded-lg hover:opacity-90 cursor-pointer"
+                    className="px-2.5 py-1.5 text-xs font-bold text-white bg-[#2E7D32] hover:bg-[#1B5E20] rounded-lg cursor-pointer"
                   >
                     Simpan
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditingId(null)}
-                    className="px-2.5 py-1.5 text-xs font-bold text-[#44483f] border border-[#c4c8bc] rounded-lg hover:bg-[#e7e2db] cursor-pointer"
+                    className="px-2.5 py-1.5 text-xs font-bold text-[#555555] border border-[#E0E0E0] bg-[#FFFFFF] hover:bg-[#F7F8F6] rounded-lg cursor-pointer"
                   >
                     Batal
                   </button>
@@ -160,10 +160,10 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
               ) : (
                 <>
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide bg-[#162809]/10 text-[#162809] rounded-lg truncate">
+                    <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide bg-[#E8F5E9] text-[#1B5E20] border border-[#C8E6C9] rounded-lg truncate">
                       {cat.name}
                     </span>
-                    <span className="text-[10px] font-mono text-gray-400 truncate">/{cat.slug}</span>
+                    <span className="text-[10px] font-mono text-[#555555] truncate">/{cat.slug}</span>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
@@ -172,7 +172,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
                         setEditingId(cat.id);
                         setEditName(cat.name);
                       }}
-                      className="p-1.5 text-xs text-[#162809] hover:bg-[#e7e2db] rounded-lg cursor-pointer"
+                      className="p-1.5 text-xs text-[#1B5E20] hover:bg-[#E8F5E9] rounded-lg cursor-pointer"
                       title="Edit kategori"
                     >
                       <span className="material-symbols-outlined text-base">edit</span>
@@ -180,7 +180,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
                     <button
                       type="button"
                       onClick={() => handleDelete(cat)}
-                      className="p-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg cursor-pointer"
+                      className="p-1.5 text-xs text-[#D32F2F] hover:bg-[#FFEBEE] rounded-lg cursor-pointer"
                       title="Hapus kategori"
                     >
                       <span className="material-symbols-outlined text-base">delete</span>
@@ -193,8 +193,8 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
         </div>
       )}
 
-      <p className="text-[10px] text-gray-400">
-        Kategori tampil di dropdown kategori pada form Kelola Produk & filter kategori di toko.
+      <p className="text-[10px] text-[#555555]">
+        Kategori tampil di dropdown kategori pada form Kelola Produk &amp; filter kategori di toko.
       </p>
     </div>
   );

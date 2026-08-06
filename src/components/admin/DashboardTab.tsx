@@ -57,21 +57,21 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
       </div>
 
-      {/* KPI Grid - Elegant Clean Cards */}
+      {/* KPI Grid - Clean White Cards & Sorghum Palette */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Penjualan */}
-        <div className="bg-white p-4.5 flex flex-col justify-between min-h-[125px] transition-all duration-200 hover:translate-y-[-2px]">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[130px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#1B5E20]/40">
           <div className="flex justify-between items-start">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Total Penjualan</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-[#162809]">
-              <span className="material-symbols-outlined text-base">payments</span>
+            <span className="text-[#555555] text-[10px] font-extrabold uppercase tracking-wider">Total Penjualan</span>
+            <div className="w-9 h-9 rounded-xl bg-[#E8F5E9] border border-[#C8E6C9] flex items-center justify-center text-[#2E7D32] shadow-2xs">
+              <span className="material-symbols-outlined text-xl text-[#2E7D32]">payments</span>
             </div>
           </div>
-          <div className="mt-2.5">
-            <h3 className="text-lg sm:text-xl font-bold text-[#162809] font-mono-custom leading-none">
+          <div className="mt-3">
+            <h3 className="text-lg sm:text-xl font-bold text-[#1B5E20] font-mono-custom leading-none">
               Rp {totalSalesAmount.toLocaleString('id-ID')}
             </h3>
-            <div className="flex items-center gap-1 mt-1.5 text-[9px] text-[#162809] font-semibold">
+            <div className="flex items-center gap-1 mt-2 text-[10px] text-[#2E7D32] font-bold">
               <span className="material-symbols-outlined text-xs leading-none">trending_up</span>
               <span>+15% vs bulan lalu</span>
             </div>
@@ -79,19 +79,19 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* Total Pesanan */}
-        <div className="bg-white p-4.5 flex flex-col justify-between min-h-[125px] transition-all duration-200 hover:translate-y-[-2px]">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[130px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#1976D2]/40">
           <div className="flex justify-between items-start">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Total Pesanan</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-[#162809]">
-              <span className="material-symbols-outlined text-base">shopping_cart</span>
+            <span className="text-[#555555] text-[10px] font-extrabold uppercase tracking-wider">Total Pesanan</span>
+            <div className="w-9 h-9 rounded-xl bg-[#E3F2FD] border border-[#BBDEFB] flex items-center justify-center text-[#1976D2] shadow-2xs">
+              <span className="material-symbols-outlined text-xl text-[#1976D2]">shopping_cart</span>
             </div>
           </div>
-          <div className="mt-2.5">
-            <h3 className="text-lg sm:text-xl font-bold text-slate-800 font-mono-custom leading-none">
+          <div className="mt-3">
+            <h3 className="text-lg sm:text-xl font-bold text-[#1B5E20] font-mono-custom leading-none">
               {orders.length} Transaksi
             </h3>
-            <div className="flex items-center gap-1.5 mt-1.5 text-[9px] text-slate-500 font-medium">
-              <span className="px-1.5 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-[8px] font-bold">
+            <div className="flex items-center gap-1.5 mt-2 text-[10px] text-[#555555] font-medium">
+              <span className="px-2 py-0.5 bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2] rounded-md text-[9px] font-bold">
                 {pendingOrdersCount} Pending
               </span>
               <span>QRIS &amp; COD</span>
@@ -100,39 +100,39 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* Katalog Produk */}
-        <div className="bg-white p-4.5 flex flex-col justify-between min-h-[125px] transition-all duration-200 hover:translate-y-[-2px]">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[130px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#C89B3C]/40">
           <div className="flex justify-between items-start">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Katalog Produk</span>
+            <span className="text-[#555555] text-[10px] font-extrabold uppercase tracking-wider">Katalog Produk</span>
             <button
               type="button"
               onClick={() => setActiveNav('produk')}
-              className="w-7 h-7 rounded-lg bg-emerald-50 hover:bg-emerald-100 flex items-center justify-center text-[#162809] transition-colors cursor-pointer"
+              className="w-9 h-9 rounded-xl bg-[#FFF8E1] border border-[#FFE082] hover:bg-[#FFECB3] flex items-center justify-center text-[#C89B3C] transition-colors cursor-pointer shadow-2xs"
               title="Kelola Produk"
             >
-              <span className="material-symbols-outlined text-base">inventory_2</span>
+              <span className="material-symbols-outlined text-xl text-[#C89B3C]">inventory_2</span>
             </button>
           </div>
-          <div className="mt-2.5">
-            <h3 className="text-lg sm:text-xl font-bold text-slate-800 font-mono-custom leading-none">
+          <div className="mt-3">
+            <h3 className="text-lg sm:text-xl font-bold text-[#1B5E20] font-mono-custom leading-none">
               {totalProductsCount} Produk
             </h3>
-            <p className="text-[9px] text-slate-400 mt-1.5 font-medium">Varietas Olahan Sorgum</p>
+            <p className="text-[10px] text-[#555555] mt-2 font-medium">Varietas Olahan Sorgum</p>
           </div>
         </div>
 
         {/* Stok Menipis */}
-        <div className="bg-white p-4.5 flex flex-col justify-between min-h-[125px] transition-all duration-200 hover:translate-y-[-2px]">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[130px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#D32F2F]/40">
           <div className="flex justify-between items-start">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Stok Menipis</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-[#162809]">
-              <span className="material-symbols-outlined text-base">warning</span>
+            <span className="text-[#555555] text-[10px] font-extrabold uppercase tracking-wider">Stok Menipis</span>
+            <div className="w-9 h-9 rounded-xl bg-[#FFEBEE] border border-[#FFCDD2] flex items-center justify-center text-[#D32F2F] shadow-2xs">
+              <span className="material-symbols-outlined text-xl text-[#D32F2F]">warning</span>
             </div>
           </div>
-          <div className="mt-2.5">
-            <h3 className="text-lg sm:text-xl font-bold text-slate-800 font-mono-custom leading-none">
+          <div className="mt-3">
+            <h3 className="text-lg sm:text-xl font-bold text-[#1B5E20] font-mono-custom leading-none">
               Perlu Restock
             </h3>
-            <p className="text-[9px] text-slate-400 font-semibold mt-1.5 flex items-center gap-1 uppercase tracking-wider">
+            <p className="text-[10px] text-[#D32F2F] font-semibold mt-2 flex items-center gap-1 uppercase tracking-wider">
               {lowStockProducts.length} Produk Dibawah Limit
             </p>
           </div>
@@ -142,18 +142,17 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       {/* Main Content Grid: Recent Transactions & Quick Inventory */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Recent Orders */}
-        <div className="lg:col-span-2 bg-white overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-white">
+        <div className="lg:col-span-2 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] shadow-2xs overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#E0E0E0] flex justify-between items-center bg-[#F7F8F6]">
             <div>
-              <h3 className="font-bold text-xs text-slate-800 uppercase tracking-wider">
+              <h3 className="font-extrabold text-sm text-[#1B5E20] uppercase tracking-wider">
                 Transaksi Terkini
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">Pesanan masuk terbaru dari toko online</p>
             </div>
             <button
               type="button"
               onClick={() => setActiveNav('transaksi')}
-              className="text-xs font-bold text-white bg-[#162809] hover:bg-[#2b3e1d] px-4 py-2 rounded-lg transition-all cursor-pointer shadow-2xs"
+              className="text-xs font-bold text-white bg-[#2E7D32] hover:bg-[#1B5E20] px-4 py-2 rounded-xl transition-all cursor-pointer shadow-2xs"
             >
               Lihat Semua
             </button>
@@ -161,36 +160,38 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-[#fcfaf6] text-[#44483f] font-bold uppercase tracking-wider border-b border-[#c4c8bc]/30">
-                <tr>
-                  <th className="px-6 py-4">ID Pesanan</th>
-                  <th className="px-6 py-4">Pelanggan</th>
-                  <th className="px-6 py-4">Waktu</th>
-                  <th className="px-6 py-4">Total</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Aksi</th>
+              <thead>
+                <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-y border-[#C8E6C9]">
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">ID PESANAN</strong></th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">PELANGGAN</strong></th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">WAKTU</strong></th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">TOTAL</strong></th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">STATUS</strong></th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-right text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">AKSI</strong></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#c4c8bc]/20">
+              <tbody className="divide-y divide-[#E0E0E0]">
                 {orders.slice(0, 5).map((ord) => (
-                  <tr key={ord.id} className="hover:bg-[#fcfaf6] transition-colors">
-                    <td className="px-6 py-4 font-bold font-mono-custom text-[#162809]">{ord.id}</td>
+                  <tr key={ord.id} className="bg-[#FFFFFF] hover:bg-[#E8F5E9]/60 transition-colors">
+                    <td className="px-6 py-4 font-bold font-mono-custom text-[#1B5E20]">{ord.id}</td>
                     <td className="px-6 py-4">
-                      <p className="font-bold text-[#1d1b17]">{ord.customerName || 'Pelanggan'}</p>
-                      <p className="text-[10px] font-mono-custom text-[#44483f]/80 mt-0.5">{ord.paymentMethod?.toUpperCase()}</p>
+                      <p className="font-bold text-[#1B5E20]">{ord.customerName || 'Pelanggan'}</p>
+                      <p className="text-[10px] font-mono-custom text-[#555555] mt-0.5">{ord.paymentMethod?.toUpperCase()}</p>
                     </td>
-                    <td className="px-6 py-4 text-[#44483f]">{ord.createdAt}</td>
-                    <td className="px-6 py-4 font-bold text-[#1d1b17] font-mono-custom">
+                    <td className="px-6 py-4 text-[#555555]">{ord.createdAt}</td>
+                    <td className="px-6 py-4 font-bold text-[#1B5E20] font-mono-custom">
                       Rp {ord.totalAmount.toLocaleString('id-ID')}
                     </td>
                     <td className="px-6 py-4">
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold inline-block border ${
                           ord.status === 'Selesai'
-                            ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                            ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#1B5E20]'
                             : ord.status === 'Diproses' || ord.status === 'Dikirim'
-                            ? 'bg-slate-100 border-slate-200 text-slate-700'
-                            : 'bg-slate-50 border-slate-100 text-slate-400'
+                            ? 'bg-[#E8F5E9] border-[#C8E6C9] text-[#2E7D32]'
+                            : ord.status === 'Dibatalkan'
+                            ? 'bg-[#FFEBEE] border-[#FFCDD2] text-[#C62828]'
+                            : 'bg-[#FFF3E0] border-[#FFE0B2] text-[#E65100]'
                         }`}
                       >
                         {ord.status}
@@ -202,7 +203,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                         onChange={(e) =>
                           handleUpdateOrderStatus(ord.id, e.target.value as Order['status'])
                         }
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-700 outline-none cursor-pointer hover:bg-slate-50 transition-colors focus:ring-1 focus:ring-[#162809]"
+                        className="bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl px-2.5 py-1 text-xs font-bold text-[#1B5E20] outline-none cursor-pointer hover:bg-[#E8F5E9] transition-colors focus:ring-1 focus:ring-[#2E7D32]"
                       >
                         <option value="Pending">Pending</option>
                         <option value="Diproses">Diproses</option>
@@ -219,44 +220,44 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* Right Column: Low Stock Alert Card */}
-        <div className="bg-white p-5 space-y-4">
-          <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-xs text-slate-800 uppercase tracking-wider">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-6 space-y-4 shadow-2xs">
+          <div className="flex justify-between items-center border-b border-[#E0E0E0] pb-3">
+            <h3 className="font-extrabold text-sm text-[#1B5E20] uppercase tracking-wider">
               Peringatan Stok Low
             </h3>
-            <span className="material-symbols-outlined text-slate-400 text-lg">inventory</span>
+            <span className="material-symbols-outlined text-[#555555] text-lg">inventory</span>
           </div>
 
           <div className="space-y-2.5">
             {lowStockProducts.length === 0 ? (
-              <p className="text-xs text-slate-400">Seluruh stok produk berada dalam tingkat aman.</p>
+              <p className="text-xs text-[#555555] font-medium">Seluruh stok produk berada dalam tingkat aman.</p>
             ) : (
               lowStockProducts.map((p) => {
                 const stock = p.stock ?? 0;
                 return (
                   <div
                     key={p.id}
-                    className="p-2.5 bg-slate-50/50 rounded-lg border border-slate-100 flex items-center justify-between transition-all hover:bg-slate-50"
+                    className="p-3 bg-[#F7F8F6] rounded-xl border border-[#E0E0E0] flex items-center justify-between transition-all hover:bg-[#E8F5E9]/60"
                   >
-                    <div className="flex items-center space-x-2.5">
+                    <div className="flex items-center space-x-3">
                       <img
                         src={p.image}
                         alt={p.name}
-                        className="w-8 h-8 rounded object-cover border border-slate-200/60"
+                        className="w-9 h-9 rounded-lg object-cover border border-[#E0E0E0]"
                       />
                       <div>
-                        <p className="font-semibold text-xs text-slate-800 line-clamp-1">{p.name}</p>
-                        <p className="text-[9px] text-slate-400 font-medium">{p.categoryLabel}</p>
+                        <p className="font-semibold text-xs text-[#1B5E20] line-clamp-1">{p.name}</p>
+                        <p className="text-[9px] text-[#555555] font-medium">{p.categoryLabel}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="font-bold text-xs text-slate-700 font-mono-custom block">
+                      <span className="font-bold text-xs text-[#1B5E20] font-mono-custom block">
                         {stock} Unit
                       </span>
                       <button
                         type="button"
                         onClick={() => setActiveNav('produk')}
-                        className="text-[9px] bg-[#162809] hover:bg-[#2b3e1d] text-white px-2 py-0.5 rounded transition-all cursor-pointer font-bold inline-block mt-0.5 text-center shadow-3xs"
+                        className="text-[9px] bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-2.5 py-0.5 rounded-lg transition-all cursor-pointer font-bold inline-block mt-1 text-center shadow-3xs"
                       >
                         Restock
                       </button>

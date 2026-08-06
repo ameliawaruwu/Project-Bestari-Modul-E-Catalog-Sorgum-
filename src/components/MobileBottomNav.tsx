@@ -30,7 +30,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#2b3e1d] text-white border-t border-[#c4c8bc]/20 shadow-2xl px-2 py-1.5 flex justify-around items-center">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1B5E20] text-white border-t border-[#A5D6A7]/20 shadow-2xl px-2 py-1.5 flex justify-around items-center">
       {navItems.map((item) => {
         const isActive = activeTab === item.id;
         return (
@@ -38,10 +38,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 active:scale-95 ${
-              isActive ? 'text-[#fde08b]' : 'text-white/70 hover:text-white'
+              isActive ? 'text-[#C89B3C]' : 'text-white/70 hover:text-white'
             }`}
           >
-            <div className={`p-1 rounded-full ${isActive ? 'bg-[#162809]' : ''}`}>
+            <div className={`p-1 rounded-full ${isActive ? 'bg-[#2E7D32]' : ''}`}>
               <span className="material-symbols-outlined text-xl">{item.icon}</span>
             </div>
             <span className={`text-[11px] font-['Plus_Jakarta_Sans'] ${isActive ? 'font-bold' : 'font-medium'}`}>
@@ -60,7 +60,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           <div className="p-1 rounded-full relative">
             <span className="material-symbols-outlined text-xl">shopping_cart</span>
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#715c13] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+              <span className="absolute -top-1 -right-1 bg-[#C89B3C] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-2xs">
                 {cartCount}
               </span>
             )}

@@ -38,7 +38,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
       {/* Header & Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
@@ -46,13 +46,13 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#162809] font-bold">Kelola Transaksi</li>
+              <li className="text-[#1B5E20] font-bold">Kelola Transaksi</li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
             Kelola Transaksi Pelanggan
           </h2>
-          <p className="text-xs text-[#44483f] mt-1">
+          <p className="text-xs text-[#555555] mt-1">
             Pantau pesanan masuk, verifikasi bukti pembayaran QRIS, dan perbarui status pengiriman.
           </p>
         </div>
@@ -61,7 +61,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
           <button
             type="button"
             onClick={onExportCSV}
-            className="flex items-center gap-2 bg-[#2b3e1d] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#162809] transition-colors shadow-xs cursor-pointer"
+            className="flex items-center gap-2 bg-[#2E7D32] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#1B5E20] transition-colors shadow-2xs cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">download</span>
             <span>Ekspor Data (CSV)</span>
@@ -70,20 +70,20 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
       </div>
 
       {/* Transactions Table Section */}
-      <div className="bg-white rounded-2xl border border-[#c4c8bc] shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-[#c4c8bc] bg-[#f9f3ec] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center bg-white rounded-xl px-4 py-2 border border-[#c4c8bc] w-full sm:w-80 shadow-xs">
-            <span className="material-symbols-outlined text-[#44483f] mr-2">search</span>
+      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] shadow-2xs overflow-hidden">
+        <div className="p-6 border-b border-[#E0E0E0] bg-[#FFFFFF] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center bg-[#F7F8F6] rounded-xl px-4 py-2 border border-[#E0E0E0] w-full sm:w-80 shadow-2xs">
+            <span className="material-symbols-outlined text-[#555555] mr-2">search</span>
             <input
               type="text"
               value={searchOrder}
               onChange={(e) => setSearchOrder(e.target.value)}
               placeholder="Cari ID, Nama, Telepon..."
-              className="bg-transparent border-none outline-none text-xs text-[#1d1b17] w-full"
+              className="bg-transparent border-none outline-none text-xs text-[#1B5E20] w-full placeholder:text-[#555555] font-medium"
             />
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#44483f] font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <div className="flex items-center gap-2 text-xs text-[#555555] font-semibold">
+            <span className="w-2 h-2 rounded-full bg-[#2E7D32]"></span>
             <span>
               Menampilkan {filteredOrders.length} dari {orders.length} Transaksi
             </span>
@@ -92,40 +92,40 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
-            <thead className="bg-[#f3ede6] text-[#44483f] font-bold uppercase tracking-wider border-b border-[#c4c8bc]">
-              <tr>
-                <th className="p-4">ID &amp; Tanggal</th>
-                <th className="p-4">Pelanggan</th>
-                <th className="p-4">Produk Dipesan</th>
-                <th className="p-4">Metode Bayar</th>
-                <th className="p-4">Total</th>
-                <th className="p-4">Kurir / Resi</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-center">Aksi</th>
+            <thead>
+              <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-y border-[#C8E6C9]">
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">ID &amp; TANGGAL</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">PELANGGAN</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">PRODUK DIPESAN</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">METODE BAYAR</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">TOTAL</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">KURIR / RESI</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">STATUS</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-center text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">AKSI</strong></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#c4c8bc]/30">
+            <tbody className="divide-y divide-[#E0E0E0]">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-[#44483f]">
+                  <td colSpan={8} className="p-8 text-center text-[#555555]">
                     Tidak ada transaksi yang cocok dengan pencarian.
                   </td>
                 </tr>
               ) : (
                 filteredOrders.map((ord) => (
-                  <tr key={ord.id} className="hover:bg-[#f9f3ec]/60 transition-colors">
-                    <td className="p-4 font-bold font-mono text-[#162809]">
+                  <tr key={ord.id} className="hover:bg-[#E8F5E9]/60 transition-colors">
+                    <td className="p-4 font-bold font-mono text-[#1B5E20]">
                       <div className="text-sm font-bold">{ord.orderNumber || '-'}</div>
-                      <div className="text-[11px] font-normal text-[#44483f] mt-0.5">
+                      <div className="text-[11px] font-normal text-[#555555] mt-0.5">
                         {ord.createdAt}
                       </div>
                     </td>
                     <td className="p-4">
-                      <p className="font-bold text-[#1d1b17]">
+                      <p className="font-bold text-[#1B5E20]">
                         {ord.customerName || 'Pelanggan Sorgum'}
                       </p>
-                      <p className="text-xs text-[#44483f]">{ord.customerPhone}</p>
-                      <p className="text-[11px] text-[#44483f]/80 truncate max-w-[160px]">
+                      <p className="text-xs text-[#555555]">{ord.customerPhone}</p>
+                      <p className="text-[11px] text-[#555555] truncate max-w-[160px]">
                         {ord.customerEmail}
                       </p>
                     </td>
@@ -136,12 +136,12 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             <img
                               src={it.product.image}
                               alt={it.product.name}
-                              className="w-7 h-7 rounded-md object-cover border border-[#c4c8bc]"
+                              className="w-7 h-7 rounded-md object-cover border border-[#E0E0E0]"
                             />
-                            <span className="text-xs font-medium text-[#1d1b17] truncate max-w-[160px]">
+                            <span className="text-xs font-medium text-[#1B5E20] truncate max-w-[160px]">
                               {it.product.name}
                             </span>
-                            <span className="text-xs font-bold text-[#2b3e1d]">
+                            <span className="text-xs font-bold text-[#2E7D32]">
                               x{it.quantity}
                             </span>
                           </div>
@@ -153,8 +153,8 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         <span
                           className={`inline-block px-2.5 py-1 text-[10px] font-bold uppercase rounded ${
                             ord.paymentMethod === 'qris'
-                              ? 'bg-purple-100 text-purple-800 border border-purple-200'
-                              : 'bg-amber-100 text-amber-800 border border-amber-200'
+                              ? 'bg-[#E3F2FD] text-[#1976D2] border border-[#BBDEFB]'
+                              : 'bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]'
                           }`}
                         >
                           {ord.paymentMethod === 'qris' ? 'QRIS' : 'COD (Bayar di Tempat)'}
@@ -167,10 +167,10 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             }
                             className={`block w-full px-2 py-1 rounded-lg text-[10px] font-bold border outline-none cursor-pointer ${
                               (ord.paymentStatus || 'unpaid') === 'confirmed'
-                                ? 'bg-green-50 border-green-300 text-green-800'
+                                ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
                                 : (ord.paymentStatus || 'unpaid') === 'paid'
-                                ? 'bg-blue-50 border-blue-300 text-blue-800'
-                                : 'bg-gray-50 border-gray-300 text-gray-600'
+                                ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
+                                : 'bg-[#F7F8F6] border-[#E0E0E0] text-[#555555]'
                             }`}
                             title="Verifikasi pembayaran (unpaid/paid/confirmed)"
                           >
@@ -188,17 +188,17 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         )}
                       </div>
                     </td>
-                    <td className="p-4 font-bold text-[#162809] font-mono text-sm">
+                    <td className="p-4 font-bold text-[#1B5E20] font-mono text-sm">
                       Rp {ord.totalAmount.toLocaleString('id-ID')}
                     </td>
                     <td className="p-4">
                       {ord.courier || ord.trackingNumber ? (
                         <div>
-                          <p className="font-bold text-[#1d1b17] text-xs">{ord.courier || '-'}</p>
-                          <p className="text-[11px] font-mono text-[#44483f]">{ord.trackingNumber || '-'}</p>
+                          <p className="font-bold text-[#1B5E20] text-xs">{ord.courier || '-'}</p>
+                          <p className="text-[11px] font-mono text-[#555555]">{ord.trackingNumber || '-'}</p>
                         </div>
                       ) : (
-                        <span className="text-[#c4c8bc]">-</span>
+                        <span className="text-[#999999]">-</span>
                       )}
                     </td>
                     <td className="p-4">
@@ -209,21 +209,21 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         }
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-colors ${
                           ord.status === 'Selesai'
-                            ? 'bg-green-50 border-green-300 text-green-800'
+                            ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
                             : ord.status === 'Diproses'
-                            ? 'bg-yellow-50 border-yellow-300 text-yellow-800'
+                            ? 'bg-[#FFF8E1] border-[#FFE082] text-[#C89B3C]'
                             : ord.status === 'Dikirim'
-                            ? 'bg-blue-50 border-blue-300 text-blue-800'
+                            ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
                             : ord.status === 'Pending'
-                            ? 'bg-amber-50 border-amber-300 text-amber-800'
-                            : 'bg-red-50 border-red-300 text-red-800'
+                            ? 'bg-[#FFF3E0] border-[#FFCC80] text-[#E65100]'
+                            : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
                         }`}
                       >
                         {getOrderTransitionLabels(ord.statusRaw || 'pending').map((s) => (
-                          <option key={s} value={s} className="text-[#1d1b17] bg-white">{s}</option>
+                          <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
                         ))}
                         {getOrderTransitionLabels(ord.statusRaw || 'pending').length === 0 && (
-                          <option value={ord.status} className="text-[#1d1b17] bg-white">{ord.status}</option>
+                          <option value={ord.status} className="text-[#1B5E20] bg-white">{ord.status}</option>
                         )}
                       </select>
                     </td>
@@ -232,7 +232,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         <button
                           type="button"
                           onClick={() => onSelectOrder(ord.id)}
-                          className="p-1.5 bg-[#f3ede6] hover:bg-[#e7dfd5] text-[#162809] rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20] rounded-lg transition-colors cursor-pointer"
                           title="Lihat Detail Transaksi"
                         >
                           <span className="material-symbols-outlined text-sm">visibility</span>
@@ -240,7 +240,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         <button
                           type="button"
                           onClick={() => onDeleteOrder(ord)}
-                          className="p-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 bg-[#FFEBEE] hover:bg-[#FFCDD2] text-[#D32F2F] rounded-lg transition-colors cursor-pointer"
                           title="Hapus Transaksi"
                         >
                           <span className="material-symbols-outlined text-sm">delete</span>

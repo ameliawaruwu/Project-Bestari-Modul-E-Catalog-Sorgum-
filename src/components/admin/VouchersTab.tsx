@@ -92,10 +92,10 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-[#1d1b17]">Kelola Voucher</h2>
-          <p className="text-xs text-[#44483f] mt-1">Buat & atur kode voucher diskon untuk pelanggan.</p>
+          <h2 className="text-2xl font-bold text-[#1B5E20]">Kelola Voucher</h2>
+          <p className="text-xs text-[#555555] mt-1">Buat &amp; atur kode voucher diskon untuk pelanggan.</p>
         </div>
-        <button onClick={openCreate} className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-4 py-2 rounded-xl font-bold text-sm cursor-pointer">
+        <button onClick={openCreate} className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-4 py-2 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-2xs">
           + Tambah Voucher
         </button>
       </div>
@@ -103,46 +103,46 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
       {/* FORM MODAL */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white max-w-md w-full rounded-2xl p-6 shadow-xl border border-[#c4c8bc]/30">
-            <h3 className="font-bold text-lg mb-4">{editingId ? 'Edit Voucher' : 'Voucher Baru'}</h3>
+          <div className="bg-[#FFFFFF] max-w-md w-full rounded-2xl p-6 shadow-xl border border-[#E0E0E0]">
+            <h3 className="font-bold text-lg text-[#1B5E20] mb-4">{editingId ? 'Edit Voucher' : 'Voucher Baru'}</h3>
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-[#44483f]">Kode Voucher</label>
+                <label className="text-xs font-bold text-[#555555]">Kode Voucher</label>
                 <input required value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                  className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" placeholder="SORGUM10" />
+                  className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" placeholder="SORGUM10" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-[#44483f]">Diskon (Rp)</label>
+                  <label className="text-xs font-bold text-[#555555]">Diskon (Rp)</label>
                   <input required type="number" min={0} value={form.discount_amount} onChange={e => setForm({ ...form, discount_amount: parseInt(e.target.value) || 0 })}
-                    className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" />
+                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#44483f]">Min. Belanja (Rp)</label>
+                  <label className="text-xs font-bold text-[#555555]">Min. Belanja (Rp)</label>
                   <input required type="number" min={0} value={form.min_purchase} onChange={e => setForm({ ...form, min_purchase: parseInt(e.target.value) || 0 })}
-                    className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" />
+                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-[#44483f]">Maks. Penggunaan</label>
+                  <label className="text-xs font-bold text-[#555555]">Maks. Penggunaan</label>
                   <input type="number" min={1} value={form.max_uses} onChange={e => setForm({ ...form, max_uses: e.target.value })}
-                    className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" placeholder="Kosong = unlimited" />
+                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" placeholder="Kosong = unlimited" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#44483f]">Kadaluarsa</label>
+                  <label className="text-xs font-bold text-[#555555]">Kadaluarsa</label>
                   <input type="datetime-local" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })}
-                    className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" />
+                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
                 </div>
               </div>
               <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} className="w-4 h-4" />
-                <span className="font-bold text-[#44483f]">Aktif</span>
+                <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} className="w-4 h-4 accent-[#2E7D32]" />
+                <span className="font-bold text-[#555555]">Aktif</span>
               </label>
               <div className="flex gap-3 pt-3">
                 <button type="button" onClick={() => { setShowForm(false); resetForm(); }}
-                  className="flex-1 border border-[#c4c8bc] text-[#44483f] py-2.5 rounded-xl font-bold text-sm cursor-pointer">Batal</button>
-                <button type="submit" className="flex-1 bg-[#2b3e1d] text-white py-2.5 rounded-xl font-bold text-sm cursor-pointer hover:bg-[#162809]">Simpan</button>
+                  className="flex-1 border border-[#E0E0E0] text-[#555555] py-2.5 rounded-xl font-bold text-sm cursor-pointer hover:bg-[#F7F8F6]">Batal</button>
+                <button type="submit" className="flex-1 bg-[#2E7D32] text-white py-2.5 rounded-xl font-bold text-sm cursor-pointer hover:bg-[#1B5E20] transition-colors">Simpan</button>
               </div>
             </form>
           </div>
@@ -151,12 +151,39 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
 
       {/* DELETE CONFIRM */}
       {deletingId && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white max-w-sm w-full rounded-2xl p-6 shadow-xl text-center">
-            <p className="font-bold mb-4">Hapus voucher ini?</p>
-            <div className="flex gap-3">
-              <button onClick={() => setDeletingId(null)} className="flex-1 border border-[#c4c8bc] py-2 rounded-xl font-bold text-sm cursor-pointer">Batal</button>
-              <button onClick={handleDelete} className="flex-1 bg-red-700 text-white py-2 rounded-xl font-bold text-sm cursor-pointer">Hapus</button>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-[#FFFFFF] max-w-sm w-full rounded-2xl p-6 shadow-2xl border border-[#E0E0E0] text-center space-y-4">
+            {/* Icon Tong Sampah */}
+            <div className="w-16 h-16 rounded-full bg-[#FFEBEE] text-[#D32F2F] flex items-center justify-center mx-auto shadow-2xs">
+              <span className="material-symbols-outlined text-3xl">delete_forever</span>
+            </div>
+
+            {/* Judul & Subtitle */}
+            <div className="space-y-1">
+              <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
+                Hapus voucher ini?
+              </h3>
+              <p className="text-xs text-[#555555]">
+                Voucher akan dihapus secara permanen.
+              </p>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeletingId(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[#E0E0E0] bg-[#FFFFFF] text-[#555555] font-bold text-xs hover:bg-[#F7F8F6] transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="flex-1 py-2.5 rounded-xl bg-[#D32F2F] hover:bg-[#C62828] text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer"
+              >
+                Ya
+              </button>
             </div>
           </div>
         </div>
@@ -164,35 +191,49 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
 
       {/* TABLE */}
       {vouchers.length === 0 ? (
-        <div className="text-center py-12 text-[#44483f]">Belum ada voucher.</div>
+        <div className="text-center py-12 text-[#555555]">Belum ada voucher.</div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-xl border border-[#c4c8bc]/30 shadow-sm">
+        <div className="overflow-x-auto bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] shadow-2xs">
           <table className="w-full text-xs">
-            <thead className="bg-[#f9f3ec] text-[#44483f] font-bold uppercase">
+            <thead style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
               <tr>
-                <th className="p-3 text-left">Kode</th>
-                <th className="p-3 text-left">Diskon</th>
-                <th className="p-3 text-left">Min. Belanja</th>
-                <th className="p-3 text-left">Digunakan</th>
-                <th className="p-3 text-left">Status</th>
-                <th className="p-3 text-right">Aksi</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 text-left font-black uppercase text-[#1B5E20]">Kode</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 text-left font-black uppercase text-[#1B5E20]">Diskon</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 text-left font-black uppercase text-[#1B5E20]">Min. Belanja</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 text-left font-black uppercase text-[#1B5E20]">Digunakan</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 text-left font-black uppercase text-[#1B5E20]">Status</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 text-right font-black uppercase text-[#1B5E20]">Aksi</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[#e4dfd5]/60">
               {vouchers.map((v) => (
-                <tr key={v.id} className="border-t border-[#c4c8bc]/20 hover:bg-[#faf8f5]">
-                  <td className="p-3 font-bold">{v.code}</td>
-                  <td className="p-3">Rp {v.discount_amount.toLocaleString('id-ID')}</td>
-                  <td className="p-3">Rp {v.min_purchase.toLocaleString('id-ID')}</td>
-                  <td className="p-3">{v.used_count}{v.max_uses ? `/${v.max_uses}` : ''}</td>
-                  <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${v.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
+                <tr key={v.id} className="hover:bg-[#f5efe6] transition-colors">
+                  <td className="p-3.5 font-bold text-[#162809]">{v.code}</td>
+                  <td className="p-3.5 font-bold font-mono-custom text-[#1d1b17]">Rp {v.discount_amount.toLocaleString('id-ID')}</td>
+                  <td className="p-3.5 font-mono-custom text-[#44483f]">Rp {v.min_purchase.toLocaleString('id-ID')}</td>
+                  <td className="p-3.5 text-[#44483f] font-mono-custom">{v.used_count}{v.max_uses ? `/${v.max_uses}` : ''}</td>
+                  <td className="p-3.5">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${v.is_active ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-gray-100 text-gray-500'}`}>
                       {v.is_active ? 'Aktif' : 'Nonaktif'}
                     </span>
                   </td>
-                  <td className="p-3 text-right space-x-2">
-                    <button onClick={() => openEdit(v)} className="text-[#2b3e1d] hover:underline font-bold cursor-pointer">Edit</button>
-                    <button onClick={() => setDeletingId(v.id)} className="text-red-700 hover:underline font-bold cursor-pointer">Hapus</button>
+                  <td className="p-3.5 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => openEdit(v)}
+                        className="w-9 h-9 rounded-xl bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20] inline-flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+                        title="Edit voucher"
+                      >
+                        <span className="material-symbols-outlined text-lg">edit</span>
+                      </button>
+                      <button
+                        onClick={() => setDeletingId(v.id)}
+                        className="w-9 h-9 rounded-xl bg-[#FFEBEE] hover:bg-[#FFCDD2] text-[#D32F2F] inline-flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+                        title="Hapus voucher"
+                      >
+                        <span className="material-symbols-outlined text-lg">delete</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

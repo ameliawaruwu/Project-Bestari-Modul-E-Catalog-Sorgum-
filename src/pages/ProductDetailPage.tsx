@@ -89,29 +89,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       {/* Tombol Kembali */}
       <button
         onClick={() => setActiveTab('produk')}
-        className="mb-4 flex items-center gap-2 text-sm font-bold text-[#162809] hover:text-[#2b3e1d] transition-colors cursor-pointer"
+        className="mb-4 flex items-center gap-2 text-sm font-bold text-[#1B5E20] hover:text-[#2E7D32] transition-colors cursor-pointer"
       >
         <span className="material-symbols-outlined text-xl">arrow_back</span>
         <span>{t('Kembali', 'Back')}</span>
       </button>
 
       {/* Breadcrumb Navigation */}
-      <nav className="mb-8 flex items-center space-x-2 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]">
+      <nav className="mb-8 flex items-center space-x-2 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555]">
         <button
           onClick={() => setActiveTab('beranda')}
-          className="hover:underline text-[#162809] font-medium cursor-pointer"
+          className="hover:underline text-[#1B5E20] font-medium cursor-pointer"
         >
           Beranda
         </button>
         <span className="material-symbols-outlined text-[16px]">chevron_right</span>
         <button
           onClick={() => setActiveTab('produk')}
-          className="hover:underline text-[#162809] font-medium cursor-pointer"
+          className="hover:underline text-[#1B5E20] font-medium cursor-pointer"
         >
           Produk
         </button>
         <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-        <span className="font-semibold text-[#1d1b17] truncate max-w-[200px] sm:max-w-none">
+        <span className="font-semibold text-[#1B5E20] truncate max-w-[200px] sm:max-w-none">
           {product.name}
         </span>
       </nav>
@@ -120,7 +120,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 mb-16">
         {/* Left: Product Gallery */}
         <div className="md:col-span-5 space-y-6 max-w-md w-full mx-auto md:mx-0">
-          <div className="aspect-square bg-[#e7e2db] rounded-2xl overflow-hidden shadow-sm border border-[#c4c8bc]/30 relative">
+          <div className="aspect-square bg-[#F7F8F6] rounded-2xl overflow-hidden shadow-2xs border border-[#E0E0E0] relative">
             <img
               src={selectedImage}
               alt={product.name}
@@ -136,9 +136,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`aspect-square rounded-xl bg-[#e7e2db] overflow-hidden cursor-pointer transition-all duration-200 ${
+                  className={`aspect-square rounded-xl bg-[#F7F8F6] overflow-hidden cursor-pointer transition-all duration-200 ${
                     isSelected
-                      ? 'ring-2 ring-[#162809] ring-offset-2 scale-[1.02]'
+                      ? 'ring-2 ring-[#1B5E20] ring-offset-2 scale-[1.02]'
                       : 'opacity-70 hover:opacity-100'
                   }`}
                 >
@@ -158,13 +158,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div>
             {/* Category / Badge Label */}
             <div className="mb-3">
-              <span className="bg-[#fade88] text-[#756118] font-['Plus_Jakarta_Sans'] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+              <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] font-['Plus_Jakarta_Sans'] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
                 {product.badge || 'PREMIUM FINE GRADE'}
               </span>
             </div>
 
             {/* Product Title */}
-            <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1d1b17] mb-4">
+            <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] mb-4">
               {product.name}
             </h1>
 
@@ -172,7 +172,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="flex items-center gap-4 mb-6 flex-wrap">
               {product.originalPrice ? (
                 <div className="flex items-center gap-2">
-                  <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#162809]">
+                  <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#1B5E20]">
                     Rp {product.price.toLocaleString('id-ID')}
                   </span>
                   <span className="font-['Playfair_Display'] text-lg text-gray-400 line-through">
@@ -180,40 +180,40 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </span>
                 </div>
               ) : (
-                <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#162809]">
+                <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#1B5E20]">
                   Rp {product.price.toLocaleString('id-ID')}
                 </span>
               )}
-              <span className="bg-[#d2eabb] text-[#0e2004] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#0e2004] inline-block animate-pulse"></span>
+              <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-[#2E7D32] inline-block animate-pulse"></span>
                 {t('Stok Tersedia', 'In Stock')}
               </span>
             </div>
 
             {/* Description */}
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#44483f] mb-8 leading-relaxed font-normal">
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#555555] mb-8 leading-relaxed font-normal">
               {product.description}
             </p>
 
             {/* Quantity Selector */}
             <div className="mb-8">
-              <label className="block text-xs font-bold text-[#44483f] mb-3 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-[#555555] mb-3 uppercase tracking-wider">
                 {t('JUMLAH', 'QUANTITY')}
               </label>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handleDecrement}
-                  className="w-12 h-12 flex items-center justify-center border border-[#75786e]/40 rounded-xl hover:bg-[#e7e2db] active:scale-95 transition-all text-[#1d1b17] cursor-pointer"
+                  className="w-12 h-12 flex items-center justify-center border border-[#E0E0E0] rounded-xl hover:bg-[#E8F5E9] active:scale-95 transition-all text-[#1B5E20] cursor-pointer"
                   aria-label={t('Kurangi jumlah', 'Decrease quantity')}
                 >
                   <span className="material-symbols-outlined text-xl">remove</span>
                 </button>
-                <span className="w-16 h-12 flex items-center justify-center bg-[#e7e2db] rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-base text-[#1d1b17] select-none">
+                <span className="w-16 h-12 flex items-center justify-center bg-[#E8F5E9] border border-[#A5D6A7] rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-base text-[#1B5E20] select-none">
                   {quantity}
                 </span>
                 <button
                   onClick={handleIncrement}
-                  className="w-12 h-12 flex items-center justify-center border border-[#75786e]/40 rounded-xl hover:bg-[#e7e2db] active:scale-95 transition-all text-[#1d1b17] cursor-pointer"
+                  className="w-12 h-12 flex items-center justify-center border border-[#E0E0E0] rounded-xl hover:bg-[#E8F5E9] active:scale-95 transition-all text-[#1B5E20] cursor-pointer"
                   aria-label={t('Tambah jumlah', 'Increase quantity')}
                 >
                   <span className="material-symbols-outlined text-xl">add</span>
@@ -223,14 +223,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3 pt-4 border-t border-[#c4c8bc]/30">
-            {/* Favorite Button — HANYA icon hati yg berubah (fill merah saat favorit),
-                button & teks TETAP sama. */}
+          <div className="space-y-3 pt-4 border-t border-[#E0E0E0]">
             <button
               onClick={handleToggleFavorite}
-              className="w-full flex items-center justify-center gap-2 border-2 h-12 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer border-[#75786e]/40 text-[#44483f] hover:border-red-400 hover:text-red-500"
+              className={`w-full flex items-center justify-center gap-2 border h-12 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer ${
+                favorite
+                  ? 'border-[#D32F2F] bg-[#FFEBEE] text-[#D32F2F]'
+                  : 'border-[#E0E0E0] text-[#555555] hover:border-[#D32F2F] hover:text-[#D32F2F]'
+              }`}
             >
-              <span className={`material-symbols-outlined text-xl ${favorite ? 'text-red-500' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
+              <span className={`material-symbols-outlined text-xl ${favorite ? 'text-[#D32F2F]' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
               <span>
                 {favorite
                   ? t('Hapus dari Favorit', 'Remove from Favorites')
@@ -241,7 +243,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={handleAddToCartClick}
-                className="bg-[#2b3e1d] hover:bg-[#162809] text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 btn-hover-effect cursor-pointer"
+                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-xl">shopping_cart</span>
                 <span>{t('Tambah ke Keranjang', 'Add to Cart')}</span>
@@ -249,7 +251,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
               <button
                 onClick={handleBuyNowClick}
-                className="bg-[#715c13] hover:bg-[#574500] text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 btn-hover-effect cursor-pointer"
+                className="bg-[#C89B3C] hover:bg-[#B38728] text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-xl">bolt</span>
                 <span>{t('Beli Sekarang', 'Buy Now')}</span>
@@ -260,7 +262,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 border-2 border-[#2b3e1d] text-[#2b3e1d] hover:bg-[#2b3e1d] hover:text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 border border-[#1B5E20] text-[#1B5E20] hover:bg-[#1B5E20] hover:text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base transition-all active:scale-[0.98] cursor-pointer"
             >
               <span className="material-symbols-outlined text-2xl" style={{ color: '#25D366' }}>
                 chat
@@ -272,14 +274,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       </div>
 
       {/* Info Tabs Section (Spesifikasi, Deskripsi, Pengiriman) */}
-      <section className="bg-[#e7e2db] rounded-2xl p-6 sm:p-10 mb-16 shadow-sm border border-[#c4c8bc]/30">
-        <div className="flex space-x-6 sm:space-x-10 border-b border-[#c4c8bc]/50 mb-8 overflow-x-auto pb-1">
+      <section className="bg-[#FFFFFF] rounded-2xl p-6 sm:p-10 mb-16 shadow-2xs border border-[#E0E0E0]">
+        <div className="flex space-x-6 sm:space-x-10 border-b border-[#E0E0E0] mb-8 overflow-x-auto pb-1">
           <button
             onClick={() => setActiveInfoTab('spesifikasi')}
             className={`pb-4 font-['Playfair_Display'] text-lg sm:text-xl font-bold border-b-2 transition-all cursor-pointer ${
               activeInfoTab === 'spesifikasi'
-                ? 'border-[#162809] text-[#162809]'
-                : 'border-transparent text-[#44483f] hover:text-[#162809]'
+                ? 'border-[#1B5E20] text-[#1B5E20]'
+                : 'border-transparent text-[#555555] hover:text-[#1B5E20]'
             }`}
           >
             Spesifikasi
@@ -288,8 +290,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             onClick={() => setActiveInfoTab('deskripsi')}
             className={`pb-4 font-['Playfair_Display'] text-lg sm:text-xl font-bold border-b-2 transition-all cursor-pointer ${
               activeInfoTab === 'deskripsi'
-                ? 'border-[#162809] text-[#162809]'
-                : 'border-transparent text-[#44483f] hover:text-[#162809]'
+                ? 'border-[#1B5E20] text-[#1B5E20]'
+                : 'border-transparent text-[#555555] hover:text-[#1B5E20]'
             }`}
           >
             Deskripsi
@@ -298,39 +300,39 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             onClick={() => setActiveInfoTab('pengiriman')}
             className={`pb-4 font-['Playfair_Display'] text-lg sm:text-xl font-bold border-b-2 transition-all cursor-pointer ${
               activeInfoTab === 'pengiriman'
-                ? 'border-[#162809] text-[#162809]'
-                : 'border-transparent text-[#44483f] hover:text-[#162809]'
+                ? 'border-[#1B5E20] text-[#1B5E20]'
+                : 'border-transparent text-[#555555] hover:text-[#1B5E20]'
             }`}
           >
             Pengiriman
           </button>
         </div>
 
-        {/* Tab 1: Spesifikasi — dari DB (admin Kelola Produk) */}
+        {/* Tab 1: Spesifikasi */}
         {activeInfoTab === 'spesifikasi' && (
           <div className="animate-fadeIn font-['Plus_Jakarta_Sans']">
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                <dt className="text-[#44483f] text-sm sm:text-base">Kemasan / Berat</dt>
-                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
+                <dt className="text-[#555555] text-sm sm:text-base">Kemasan / Berat</dt>
+                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
                   {product.unitInfo || product.weight || '1kg'}
                 </dd>
               </div>
-              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                <dt className="text-[#44483f] text-sm sm:text-base">Komposisi</dt>
-                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
+                <dt className="text-[#555555] text-sm sm:text-base">Komposisi</dt>
+                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
                   {product.composition || '100% Sorgum'}
                 </dd>
               </div>
-              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                <dt className="text-[#44483f] text-sm sm:text-base">Atribut Produk</dt>
-                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
+                <dt className="text-[#555555] text-sm sm:text-base">Atribut Produk</dt>
+                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
                   {product.attributes || '-'}
                 </dd>
               </div>
-              <div className="flex justify-between border-b border-[#c4c8bc]/30 py-3">
-                <dt className="text-[#44483f] text-sm sm:text-base">Masa Simpan</dt>
-                <dd className="font-semibold text-[#1d1b17] text-sm sm:text-base">
+              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
+                <dt className="text-[#555555] text-sm sm:text-base">Masa Simpan</dt>
+                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
                   {product.shelfLife || '12 Bulan'}
                 </dd>
               </div>
@@ -338,55 +340,55 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
         )}
 
-        {/* Tab 2: Deskripsi — dari DB (admin Kelola Produk) */}
+        {/* Tab 2: Deskripsi */}
         {activeInfoTab === 'deskripsi' && (
-          <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#44483f] space-y-4 leading-relaxed max-w-4xl font-normal">
+          <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#555555] space-y-4 leading-relaxed max-w-4xl font-normal">
             <p>{product.description || `Deskripsi produk ${product.name} belum diisi.`}</p>
           </div>
         )}
 
         {/* Tab 3: Pengiriman */}
         {activeInfoTab === 'pengiriman' && (
-          <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#44483f] space-y-6 font-normal">
+          <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#555555] space-y-6 font-normal">
             {product.shippingInfo ? (
-              <div className="bg-white/45 p-4 rounded-xl border border-[#c4c8bc]/40 shadow-2xs flex items-start gap-4">
-                <span className="material-symbols-outlined text-[#162809] text-2xl mt-0.5">
+              <div className="bg-[#F7F8F6] p-4 rounded-xl border border-[#E0E0E0] shadow-2xs flex items-start gap-4">
+                <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
                   local_shipping
                 </span>
                 <div>
-                  <h4 className="font-bold text-[#1d1b17] mb-0.5 font-['Playfair_Display'] text-base">Informasi Pengiriman</h4>
-                  <p className="text-[#44483f] mt-1 leading-relaxed">{product.shippingInfo}</p>
+                  <h4 className="font-bold text-[#1B5E20] mb-0.5 font-['Playfair_Display'] text-base">Informasi Pengiriman</h4>
+                  <p className="text-[#555555] mt-1 leading-relaxed">{product.shippingInfo}</p>
                 </div>
               </div>
             ) : (
               <>
                 <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#162809] text-2xl mt-0.5">
+                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
                     location_on
                   </span>
                   <div>
-                    <h4 className="font-bold text-[#1d1b17] mb-0.5">Asal Pengiriman</h4>
-                    <p className="text-[#44483f]">Yogyakarta, Indonesia</p>
+                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Asal Pengiriman</h4>
+                    <p className="text-[#555555]">Yogyakarta, Indonesia</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#162809] text-2xl mt-0.5">
+                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
                     local_shipping
                   </span>
                   <div>
-                    <h4 className="font-bold text-[#1d1b17] mb-0.5">Kurir Terpercaya</h4>
-                    <p className="text-[#44483f]">JNE, J&amp;T Express, SiCepat, Anteraja</p>
+                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Kurir Terpercaya</h4>
+                    <p className="text-[#555555]">JNE, J&amp;T Express, SiCepat, Anteraja</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#162809] text-2xl mt-0.5">
+                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
                     schedule
                   </span>
                   <div>
-                    <h4 className="font-bold text-[#1d1b17] mb-0.5">Estimasi Pengiriman</h4>
-                    <p className="text-[#44483f]">
+                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Estimasi Pengiriman</h4>
+                    <p className="text-[#555555]">
                       Pesanan sebelum jam 15:00 WIB diproses di hari yang sama.
                       <br />
                       Estimasi: Jabodetabek (1-2 hari kerja), Luar Jabodetabek (3-5 hari kerja).
@@ -395,12 +397,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#162809] text-2xl mt-0.5">
+                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
                     inventory_2
                   </span>
                   <div>
-                    <h4 className="font-bold text-[#1d1b17] mb-0.5">Standar Packing</h4>
-                    <p className="text-[#44483f]">
+                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Standar Packing</h4>
+                    <p className="text-[#555555]">
                       Kemasan ekstra aman dengan bubble wrap tebal dan dus ramah lingkungan.
                     </p>
                   </div>
@@ -416,10 +418,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <section className="mb-16">
           <div className="flex justify-between items-end mb-8">
             <div>
-              <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-[#1d1b17] mb-1">
+              <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-[#1B5E20] mb-1">
                 Produk Terkait
               </h2>
-              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]">
+              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555]">
                 Lengkapi kebutuhan nutrisi harian Anda
               </p>
             </div>
@@ -433,31 +435,31 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onSelectProduct(rel);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="bg-white rounded-2xl p-4 border border-[#c4c8bc]/30 shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer flex flex-col justify-between btn-hover-effect"
+                className="bg-[#FFFFFF] rounded-2xl p-4 border border-[#E0E0E0] shadow-2xs hover:shadow-md hover:border-[#2E7D32]/50 transition-all duration-300 group cursor-pointer flex flex-col justify-between"
               >
                 <div>
-                  <div className="aspect-square bg-[#e7e2db] rounded-xl overflow-hidden mb-4 relative">
+                  <div className="aspect-square bg-[#F7F8F6] rounded-xl overflow-hidden mb-4 relative">
                     <img
                       src={rel.image}
                       alt={rel.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {rel.badge && (
-                      <span className="absolute top-2 right-2 bg-[#fade88] text-[#756118] px-2 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[10px] font-bold">
+                      <span className="absolute top-2 right-2 bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] px-2 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[10px] font-bold">
                         {rel.badge}
                       </span>
                     )}
                   </div>
-                  <h3 className="font-['Playfair_Display'] font-bold text-base text-[#1d1b17] mb-1 group-hover:text-[#162809] transition-colors">
+                  <h3 className="font-['Playfair_Display'] font-bold text-base text-[#1B5E20] mb-1 group-hover:text-[#2E7D32] transition-colors">
                     {rel.name}
                   </h3>
-                  <p className="font-['Plus_Jakarta_Sans'] text-xs text-[#75786e] mb-3 font-medium">
+                  <p className="font-['Plus_Jakarta_Sans'] text-xs text-[#555555] mb-3 font-medium">
                     {rel.unitInfo}
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center pt-2 border-t border-[#c4c8bc]/20">
-                  <span className="font-['Plus_Jakarta_Sans'] font-bold text-sm text-[#162809]">
+                <div className="flex justify-between items-center pt-2 border-t border-[#E0E0E0]">
+                  <span className="font-['Plus_Jakarta_Sans'] font-bold text-sm text-[#1B5E20]">
                     Rp {rel.price.toLocaleString('id-ID')}
                   </span>
                   <button
@@ -465,7 +467,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       e.stopPropagation();
                       onAddToCart(rel, 1);
                     }}
-                    className="w-9 h-9 rounded-xl bg-[#2b3e1d] text-white flex items-center justify-center hover:bg-[#162809] transition-colors cursor-pointer"
+                    className="w-9 h-9 rounded-xl bg-[#2E7D32] text-white flex items-center justify-center hover:bg-[#1B5E20] transition-colors cursor-pointer shadow-2xs"
                   >
                     <span className="material-symbols-outlined text-lg">shopping_cart</span>
                   </button>

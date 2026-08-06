@@ -201,7 +201,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
               <li className="text-[#162809] font-bold">Kelola User</li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
             Daftar Konsumen &amp; Pengguna
           </h2>
         </div>
@@ -209,15 +209,15 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
         <button
           type="button"
           onClick={handleOpenCreatePage}
-          className="px-4 py-2.5 bg-[#162809] hover:bg-[#233e0e] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto"
         >
           <span className="material-symbols-outlined text-sm">person_add</span>
-          + Tambah User Baru
+          Tambah User Baru
         </button>
       </div>
 
       {/* Filter & Action Toolbar */}
-      <div className="bg-white p-4 rounded-2xl border border-[#c4c8bc] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E0E0E0] shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
           <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
@@ -231,21 +231,21 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
               setCurrentPage(1);
             }}
             placeholder="Cari nama konsumen, email, atau No. WA..."
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#c4c8bc] bg-[#fdfbf7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#162809]"
+            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] focus:bg-[#FFFFFF] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] font-medium"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Status Select */}
-          <div className="flex items-center gap-1.5 bg-[#fdfbf7] border border-[#c4c8bc] px-3 py-1.5 rounded-xl">
-            <span className="text-xs font-medium text-[#44483f]">Status:</span>
+          <div className="flex items-center gap-1.5 bg-[#F7F8F6] border border-[#E0E0E0] px-3 py-1.5 rounded-xl">
+            <span className="text-xs font-medium text-[#555555]">Status:</span>
             <select
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value as any);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-xs font-bold text-[#1d1b17] focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs font-bold text-[#1B5E20] focus:outline-none cursor-pointer"
             >
               <option value="SEMUA">Semua Status ({totalUsers})</option>
               <option value="AKTIF">Aktif ({activeUsers})</option>
@@ -256,20 +256,20 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
       </div>
 
       {/* Main Users Table */}
-      <div className="bg-white rounded-2xl border border-[#c4c8bc] shadow-xs overflow-hidden">
+      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-[#f3ede6] text-[#44483f] font-bold uppercase tracking-wider border-b border-[#c4c8bc]">
-                <th className="p-3.5 pl-5">ID User</th>
-                <th className="p-3.5">Nama Konsumen</th>
-                <th className="p-3.5">No. WhatsApp</th>
-                <th className="p-3.5">Bergabung</th>
-                <th className="p-3.5">Status</th>
-                <th className="p-3.5 pr-5 text-right">Aksi</th>
+              <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pl-5 font-black uppercase tracking-wider text-[#1B5E20]">ID User</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Nama Konsumen</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">No. WhatsApp</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Bergabung</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Status</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pr-5 text-right font-black uppercase tracking-wider text-[#1B5E20]">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#c4c8bc]/30">
+            <tbody className="divide-y divide-[#E0E0E0]">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-gray-500">
@@ -297,9 +297,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                   return (
                     <tr
                       key={u.id}
-                      className={`hover:bg-[#f9f3ec]/60 transition-colors ${
-                        isSoftDeleted ? 'bg-gray-50/80 opacity-75' : ''
-                      }`}
+                      className={`hover:bg-[#f5efe6] transition-colors ${isSoftDeleted ? 'bg-[#f4efe8]/80 opacity-75' : ''
+                        }`}
                     >
                       {/* ID User */}
                       <td className="p-3.5 pl-5 font-mono font-bold text-[#162809]">{u.id}</td>
@@ -308,11 +307,10 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                       <td className="p-3.5">
                         <div className="flex items-center gap-2.5">
                           <div
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${
-                              isSoftDeleted
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${isSoftDeleted
                                 ? 'bg-gray-200 text-gray-600'
                                 : 'bg-[#162809] text-white shadow-2xs'
-                            }`}
+                              }`}
                           >
                             {initials}
                           </div>
@@ -365,14 +363,12 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                             type="button"
                             title={isSoftDeleted ? 'Aktifkan Kembali' : 'Nonaktifkan (Soft Delete)'}
                             onClick={() => handleToggleStatus(u)}
-                            className={`w-8 h-4 rounded-full transition-colors relative p-0.5 cursor-pointer ${
-                              isSoftDeleted ? 'bg-gray-300' : 'bg-[#162809]'
-                            }`}
+                            className={`w-8 h-4 rounded-full transition-colors relative p-0.5 cursor-pointer ${isSoftDeleted ? 'bg-gray-300' : 'bg-[#162809]'
+                              }`}
                           >
                             <div
-                              className={`w-3 h-3 rounded-full bg-white transition-transform ${
-                                isSoftDeleted ? 'translate-x-0' : 'translate-x-4'
-                              }`}
+                              className={`w-3 h-3 rounded-full bg-white transition-transform ${isSoftDeleted ? 'translate-x-0' : 'translate-x-4'
+                                }`}
                             />
                           </button>
 
@@ -381,7 +377,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                             type="button"
                             onClick={() => handleOpenEditPage(u)}
                             title="Buka Halaman Edit User"
-                            className="p-1.5 text-[#162809] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer flex items-center justify-center font-bold text-xs"
+                            className="w-8 h-8 rounded-xl bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20] flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
                           >
                             <span className="material-symbols-outlined text-lg">edit</span>
                           </button>
@@ -420,11 +416,10 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                 key={page}
                 type="button"
                 onClick={() => setCurrentPage(page)}
-                className={`w-7 h-7 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
-                  currentPage === page
+                className={`w-7 h-7 rounded-lg text-xs font-bold cursor-pointer transition-colors ${currentPage === page
                     ? 'bg-[#162809] text-white'
                     : 'bg-white border border-[#c4c8bc] text-[#44483f] hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 {page}
               </button>

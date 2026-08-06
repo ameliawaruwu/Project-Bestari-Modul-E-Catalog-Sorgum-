@@ -52,13 +52,13 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
       {/* Header & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="hover:text-[#162809] transition-colors cursor-pointer"
+                  className="hover:text-[#1B5E20] transition-colors cursor-pointer"
                 >
                   Pengaturan Landing Page
                 </button>
@@ -68,12 +68,12 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#162809] font-bold">
+              <li className="text-[#1B5E20] font-bold">
                 {initialBanner ? 'Edit Banner Slide' : 'Tambah Banner Baru'}
               </li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
             {initialBanner ? 'Edit Banner Slide' : 'Halaman Tambah Banner Slide Baru'}
           </h2>
         </div>
@@ -81,7 +81,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="bg-white border border-[#c4c8bc] text-[#1d1b17] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#f3ede6] transition-all cursor-pointer font-bold text-xs"
+          className="bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#E8F5E9] transition-all cursor-pointer font-bold text-xs shadow-2xs"
         >
           <span className="material-symbols-outlined text-lg">arrow_back</span>
           <span>KEMBALI KE DAFTAR</span>
@@ -89,17 +89,17 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
       </section>
 
       {/* Form Card */}
-      <div className="bg-[#f3ede6] rounded-2xl shadow-md border border-[#c4c8bc] overflow-hidden">
-        <div className="p-6 bg-[#2b3e1d] text-white flex justify-between items-center">
+      <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
+        <div className="p-6 bg-[#1B5E20] text-white flex justify-between items-center">
           <div>
             <h3 className="font-['Playfair_Display'] text-xl font-bold">
               {initialBanner ? 'Edit Banner' : 'Formulir Banner Beranda'}
             </h3>
-            <p className="text-[#93a97f] text-xs mt-1">
+            <p className="text-[#E8F5E9] text-xs mt-1">
               Atur judul promosi, tautan target, dan gambar utama untuk menarik pembeli di halaman depan.
             </p>
           </div>
-          <span className="text-xs font-bold uppercase bg-[#fade88] text-[#756118] px-3 py-1 rounded-full">
+          <span className="text-xs font-bold uppercase bg-[#E8F5E9] text-[#1B5E20] px-3 py-1 rounded-full">
             {initialBanner ? 'Mode Edit' : 'Halaman Baru'}
           </span>
         </div>
@@ -107,25 +107,25 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
           {/* Upload Field */}
           <div className="space-y-3">
-            <label className="block text-sm font-bold text-[#1d1b17]">
+            <label className="block text-sm font-bold text-[#1B5E20]">
               Upload / URL Gambar Banner
             </label>
-            <div className="border-2 border-dashed border-[#c4c8bc] rounded-2xl p-8 text-center bg-white hover:border-[#162809] transition-all group relative">
+            <div className="border-2 border-dashed border-[#E0E0E0] rounded-2xl p-8 text-center bg-[#F7F8F6] hover:border-[#2E7D32] transition-all group relative">
               <div className="space-y-3">
                 {imageInput ? (
-                  <div className="max-w-md mx-auto aspect-[16/6] rounded-xl overflow-hidden border border-[#c4c8bc] shadow-xs">
+                  <div className="max-w-md mx-auto aspect-[16/6] rounded-xl overflow-hidden border border-[#E0E0E0] shadow-xs">
                     <img src={imageInput} alt="Preview Slide" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <span className="material-symbols-outlined text-5xl text-[#93a97f] group-hover:text-[#162809] transition-colors">
+                  <span className="material-symbols-outlined text-5xl text-[#2E7D32] group-hover:text-[#1B5E20] transition-colors">
                     cloud_upload
                   </span>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-[#1d1b17]">
+                  <p className="text-sm font-semibold text-[#1B5E20]">
                     Seret dan lepas gambar ke sini atau tempel URL publik
                   </p>
-                  <p className="text-xs text-[#44483f]">
+                  <p className="text-xs text-[#555555]">
                     Rasio disarankan: 1920x600 px (Landscape HD)
                   </p>
                 </div>
@@ -134,7 +134,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                   value={imageInput}
                   onChange={(e) => setImageInput(e.target.value)}
                   placeholder="Masukkan URL Gambar Banner (https://...)"
-                  className="w-full max-w-md mx-auto h-11 px-3.5 border border-[#c4c8bc] bg-[#fff8f2] rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#162809]"
+                  className="w-full max-w-md mx-auto h-11 px-3.5 border border-[#E0E0E0] bg-[#FFFFFF] rounded-xl text-xs outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20]"
                 />
               </div>
             </div>
@@ -143,7 +143,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Title Input */}
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Judul Promosi Banner <span className="text-red-600">*</span>
               </label>
               <input
@@ -152,19 +152,19 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                 onChange={(e) => setTitleInput(e.target.value)}
                 placeholder="Contoh: Panen Raya Sorgum Merah Organik"
                 required
-                className="w-full bg-[#fff8f2] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
               />
             </div>
 
             {/* Target Link Select */}
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Tautan / Destinasi Target Klik
               </label>
               <select
                 value={targetInput}
                 onChange={(e) => setTargetInput(e.target.value)}
-                className="w-full bg-[#fff8f2] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer font-medium"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none cursor-pointer font-medium"
               >
                 <option value="">Pilih target tautan banner</option>
                 <option value="Detail Produk: Tepung Sorgum Putih">
@@ -187,14 +187,14 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
           </div>
 
           {/* Preview Section */}
-          <div className="pt-6 border-t border-[#c4c8bc]">
+          <div className="pt-6 border-t border-[#E0E0E0]">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-bold text-[#1d1b17]">Preview Tampilan Live Beranda</h4>
-              <span className="text-[10px] font-bold uppercase bg-[#fade88] text-[#756118] px-2.5 py-1 rounded">
+              <h4 className="text-sm font-bold text-[#1B5E20]">Preview Tampilan Live Beranda</h4>
+              <span className="text-[10px] font-bold uppercase bg-[#E8F5E9] text-[#1B5E20] px-2.5 py-1 rounded">
                 Pratinjau Pelanggan
               </span>
             </div>
-            <div className="aspect-[16/5] bg-[#dfd9d3] rounded-2xl border border-[#c4c8bc] flex items-center justify-center relative overflow-hidden p-6 shadow-inner">
+            <div className="aspect-[16/5] bg-[#F7F8F6] rounded-2xl border border-[#E0E0E0] flex items-center justify-center relative overflow-hidden p-6 shadow-inner">
               {imageInput && (
                 <img
                   src={imageInput}
@@ -204,7 +204,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
               )}
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
               <div className="relative z-10 w-full text-white space-y-1 max-w-lg">
-                <p className="text-[11px] uppercase tracking-widest text-[#fde08b] font-bold">
+                <p className="text-[11px] uppercase tracking-widest text-[#C89B3C] font-bold">
                   SORGUM PREMIUM
                 </p>
                 <h3 className="font-['Playfair_Display'] text-lg sm:text-2xl font-bold leading-tight">
@@ -222,13 +222,13 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-3 rounded-xl border border-[#75786e] text-[#44483f] font-bold text-xs hover:bg-[#e7e2db] transition-all cursor-pointer"
+              className="px-6 py-3 rounded-xl border border-[#E0E0E0] text-[#555555] font-bold text-xs hover:bg-[#F7F8F6] transition-all cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="bg-[#2b3e1d] text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-[#162809] shadow-md active:scale-95 transition-all cursor-pointer"
+              className="bg-[#2E7D32] text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-[#1B5E20] shadow-2xs active:scale-95 transition-all cursor-pointer"
             >
               {initialBanner ? 'Simpan Perubahan Banner' : 'Simpan Banner Baru'}
             </button>

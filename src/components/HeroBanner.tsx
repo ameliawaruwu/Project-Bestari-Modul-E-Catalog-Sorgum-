@@ -51,25 +51,25 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
           </>
         ) : (
           /* Fallback tanpa banner aktif: gradient solid + pattern halus */
-          <div className="absolute inset-0 bg-gradient-to-br from-[#2b3e1d] via-[#162809] to-[#0d1406]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1B5E20] via-[#2E7D32] to-[#134417]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#162809]/75 via-[#162809]/40 to-black/35 backdrop-brightness-[0.85] z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1B5E20]/80 via-[#1B5E20]/45 to-black/40 backdrop-brightness-[0.9] z-10"></div>
       </div>
 
       {/* Hero Content */}
       <div className="relative z-20 max-w-[1280px] mx-auto w-full px-4 md:px-10 pt-10 pb-20 md:pt-14 md:pb-28 flex flex-col justify-center items-start text-white">
-        <h1 className="font-['Roboto'] text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold max-w-2xl mb-4 leading-tight drop-shadow-md animate-slideUp">
+        <h1 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-2xl mb-4 leading-tight drop-shadow-md animate-slideUp">
           {currentTitle}
         </h1>
 
-        <p className="font-['Roboto'] text-xs sm:text-sm md:text-base max-w-xl mb-6 text-white/90 leading-relaxed font-normal drop-shadow animate-slideUp animation-delay-400">
+        <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base max-w-xl mb-6 text-white/90 leading-relaxed font-normal drop-shadow animate-slideUp animation-delay-400">
           {t(landingContent.heroDescId, landingContent.heroDescEn)}
         </p>
 
         <div className="flex flex-wrap gap-3 animate-slideUp animation-delay-600">
           <button
             onClick={onShopNow}
-            className="bg-[#2b3e1d] text-white px-6 py-2.5 rounded-lg font-['Roboto'] font-bold text-xs sm:text-sm hover:bg-[#162809] hover:border-[#162809] border border-[#2b3e1d] transition-all active:scale-95 shadow-md btn-hover-effect cursor-pointer"
+            className="bg-[#2E7D32] text-white px-6 py-3 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm hover:bg-[#1B5E20] border border-[#2E7D32] transition-all active:scale-95 shadow-2xs cursor-pointer"
           >
             <span>{t(landingContent.heroBtnId, landingContent.heroBtnEn)}</span>
           </button>

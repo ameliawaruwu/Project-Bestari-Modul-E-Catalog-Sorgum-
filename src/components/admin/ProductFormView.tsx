@@ -165,13 +165,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       {/* Header & Breadcrumbs */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="hover:text-[#162809] transition-colors cursor-pointer"
+                  className="hover:text-[#1B5E20] transition-colors cursor-pointer"
                 >
                   Kelola Produk
                 </button>
@@ -181,12 +181,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#162809] font-bold">
+              <li className="text-[#1B5E20] font-bold">
                 {initialProduct ? 'Edit Katalog Produk' : 'Tambah Produk Baru'}
               </li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
             {initialProduct ? 'Edit Produk' : 'Halaman Tambah Produk Baru'}
           </h2>
         </div>
@@ -194,7 +194,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="bg-white border border-[#c4c8bc] text-[#1d1b17] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 hover:bg-[#f3ede6] transition-all cursor-pointer font-bold text-xs"
+          className="bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 hover:bg-[#E8F5E9] transition-all cursor-pointer font-bold text-xs shadow-2xs"
         >
           <span className="material-symbols-outlined text-base">arrow_back</span>
           <span>Kembali</span>
@@ -202,24 +202,24 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       </section>
 
       {/* Form Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-[#c4c8bc] overflow-hidden">
+      <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
           {/* ID Produk (Read-Only) */}
           <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1d1b17]">
+            <label className="block text-sm font-bold text-[#1B5E20]">
               ID Produk <span className="text-gray-500 font-normal">(Otomatis Terisi)</span>
             </label>
             <input
               type="text"
               value={idInput}
               disabled
-              className="w-full bg-[#e7e2db]/50 border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#44483f] font-mono outline-none cursor-not-allowed"
+              className="w-full bg-[#E8F5E9]/50 border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] font-mono-custom outline-none cursor-not-allowed font-bold"
             />
           </div>
 
           {/* Upload Gambar Field (Local Device Upload Only) */}
           <div className="space-y-3">
-            <label className="block text-sm font-bold text-[#1d1b17]">
+            <label className="block text-sm font-bold text-[#1B5E20]">
               Foto &amp; Visual Produk
             </label>
             <input
@@ -231,26 +231,26 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             />
             <label
               htmlFor="image-file-input"
-              className="block border-2 border-dashed border-[#c4c8bc] rounded-2xl p-6 text-center bg-[#faf8f5] hover:border-[#162809] transition-all group relative cursor-pointer"
+              className="block border-2 border-dashed border-[#E0E0E0] rounded-2xl p-6 text-center bg-[#F7F8F6] hover:border-[#2E7D32] transition-all group relative cursor-pointer"
             >
               <div className="space-y-3">
                 {imageInput ? (
-                  <div className="relative w-28 h-28 mx-auto rounded-xl overflow-hidden border border-[#c4c8bc] shadow-xs">
+                  <div className="relative w-28 h-28 mx-auto rounded-xl overflow-hidden border border-[#E0E0E0] shadow-2xs">
                     <img src={imageInput} alt="Preview Produk" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <span className="text-white text-xs font-bold">Pilih Gambar Baru</span>
                     </div>
                   </div>
                 ) : (
-                  <span className="material-symbols-outlined text-5xl text-[#93a97f] group-hover:text-[#162809] transition-colors">
+                  <span className="material-symbols-outlined text-5xl text-[#2E7D32] group-hover:text-[#1B5E20] transition-colors">
                     cloud_upload
                   </span>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-[#1d1b17]">
+                  <p className="text-sm font-semibold text-[#1B5E20]">
                     Klik untuk memilih foto produk dari perangkat Anda
                   </p>
-                  <p className="text-xs text-[#44483f]">Format JPG/PNG, rekomendasi 800x800 px</p>
+                  <p className="text-xs text-[#555555]">Format JPG/PNG, rekomendasi 800x800 px</p>
                 </div>
               </div>
             </label>
@@ -259,7 +259,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
           {/* Row 1: Nama & Kategori */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Nama Produk <span className="text-red-600">*</span>
               </label>
               <input
@@ -268,12 +268,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 onChange={(e) => setNameInput(e.target.value)}
                 placeholder="Contoh: Sorgum Putih Organic 1kg"
                 required
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Kategori Produk
               </label>
               <select
@@ -295,7 +295,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                     setCategoryInput(v as any);
                   }
                 }}
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer font-medium"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none cursor-pointer font-medium"
               >
                 {categoryOptions && categoryOptions.length > 0 ? (
                   <>
@@ -319,7 +319,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
           {/* Row 2: Harga & Diskon */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Harga Satuan (Rp) <span className="text-red-600">*</span>
               </label>
               <input
@@ -328,13 +328,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 onChange={(e) => setPriceInput(e.target.value ? Number(e.target.value) : '')}
                 placeholder="45000"
                 required
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-mono"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
-              <p className="text-[10px] text-gray-400">Harga asli sebelum diskon. Harga jual dihitung otomatis dari diskon.</p>
+              <p className="text-[10px] text-[#555555]">Harga asli sebelum diskon. Harga jual dihitung otomatis dari diskon.</p>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Diskon (%)
               </label>
               <input
@@ -344,9 +344,9 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 value={discountInput}
                 onChange={(e) => setDiscountInput(e.target.value ? Math.max(0, Math.min(90, Number(e.target.value))) : '')}
                 placeholder="0"
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-mono"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
-              <p className="text-[10px] text-gray-400">
+              <p className="text-[10px] text-[#555555]">
                 {priceInput && discountInput
                   ? `Harga jual: Rp ${(Number(priceInput) * (100 - Number(discountInput)) / 100).toLocaleString('id-ID')}`
                   : 'Isi 0 atau kosongkan jika tidak ada diskon.'}
@@ -357,7 +357,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
           {/* Row 3: Stok & Badge */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Jumlah Stok (Unit)
               </label>
               <input
@@ -365,18 +365,18 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 value={stockInput}
                 onChange={(e) => setStockInput(e.target.value ? Number(e.target.value) : '')}
                 placeholder="100"
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-mono"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Badge Highlight Produk
               </label>
               <select
                 value={badgeInput}
                 onChange={(e) => setBadgeInput(e.target.value)}
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none cursor-pointer"
               >
                 <option value="">Tidak Ada Badge</option>
                 {(badgeOptions && badgeOptions.length > 0 ? badgeOptions : ['BEST SELLER', 'DISKON 15%', 'BARU']).map((b) => (
@@ -388,7 +388,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
           {/* Row 4: Deskripsi */}
           <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1d1b17]">
+            <label className="block text-sm font-bold text-[#1B5E20]">
               Deskripsi Produk
             </label>
             <textarea
@@ -396,20 +396,20 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
               value={descInput}
               onChange={(e) => setDescInput(e.target.value)}
               placeholder="Tuliskan deskripsi ringkas mengenai nutrisi, pengolahan, dan manfaat produk..."
-              className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+              className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
             />
           </div>
 
           {/* Section: Spesifikasi Produk */}
-          <div className="space-y-5 border-t border-[#c4c8bc]/50 pt-5">
+          <div className="space-y-5 border-t border-[#E0E0E0] pt-5">
             <div>
-              <h4 className="font-['Playfair_Display'] text-base font-bold text-[#1d1b17]">Spesifikasi Produk</h4>
-              <p className="text-[10px] text-gray-400">Informasi teknis produk yang tampil di halaman detail.</p>
+              <h4 className="font-['Playfair_Display'] text-base font-extrabold text-[#1B5E20]">Spesifikasi Produk</h4>
+              <p className="text-[10px] text-[#555555]">Informasi teknis produk yang tampil di halaman detail.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-[#1d1b17]">
+                <label className="block text-sm font-bold text-[#1B5E20]">
                   Kemasan / Berat (Info Unit)
                 </label>
                 <input
@@ -417,12 +417,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   value={unitInput}
                   onChange={(e) => setUnitInput(e.target.value)}
                   placeholder="Contoh: 1kg / Kemasan Vacuum"
-                  className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-bold text-[#1d1b17]">
+                <label className="block text-sm font-bold text-[#1B5E20]">
                   Masa Simpan
                 </label>
                 <input
@@ -430,13 +430,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   value={shelfLifeInput}
                   onChange={(e) => setShelfLifeInput(e.target.value)}
                   placeholder="Contoh: 12 bulan sejak produksi"
-                  className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Komposisi
               </label>
               <textarea
@@ -444,12 +444,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 value={compositionInput}
                 onChange={(e) => setCompositionInput(e.target.value)}
                 placeholder="Contoh: 100% biji sorgum merah organik"
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Atribut Produk
               </label>
               <input
@@ -457,16 +457,16 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 value={attributesInput}
                 onChange={(e) => setAttributesInput(e.target.value)}
                 placeholder="Contoh: Gluten-Free, Organik"
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
               />
-              <p className="text-[10px] text-gray-400">Tulis atribut bebas, pisahkan dengan koma.</p>
+              <p className="text-[10px] text-[#555555]">Tulis atribut bebas, pisahkan dengan koma.</p>
             </div>
           </div>
 
           {/* Row: Informasi Pengiriman */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Informasi Pengiriman
               </label>
               <textarea
@@ -474,25 +474,23 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 value={shippingInfoInput}
                 onChange={(e) => setShippingInfoInput(e.target.value)}
                 placeholder="Contoh: Dikirim dari Yogyakarta. Diproses sebelum jam 15:00 WIB."
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
               />
             </div>
           </div>
-
-
 
           {/* Actions */}
           <div className="flex justify-end pt-4 space-x-4">
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2.5 rounded-xl border border-[#75786e] text-[#44483f] font-bold text-xs hover:bg-[#e7e2db] transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl border border-[#E0E0E0] text-[#555555] font-bold text-xs hover:bg-[#F7F8F6] transition-all cursor-pointer"
             >
               Batalkan
             </button>
             <button
               type="submit"
-              className="bg-[#162809] text-white px-8 py-2.5 rounded-xl font-bold text-xs hover:opacity-90 shadow-sm active:scale-95 transition-all cursor-pointer"
+              className="bg-[#2E7D32] text-white px-8 py-2.5 rounded-xl font-bold text-xs hover:bg-[#1B5E20] shadow-2xs active:scale-95 transition-all cursor-pointer"
             >
               {initialProduct ? 'Simpan Perubahan Produk' : 'Simpan Produk Baru'}
             </button>

@@ -149,21 +149,21 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn pb-12 max-w-4xl mx-auto">
       {/* Top Header & Breadcrumbs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#c4c8bc]/60 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E0E0E0] pb-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="cursor-pointer hover:underline" onClick={onCancel}>
+              <li className="cursor-pointer hover:underline hover:text-[#1B5E20]" onClick={onCancel}>
                 Kelola User
               </li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#162809] font-bold">
+              <li className="text-[#1B5E20] font-bold">
                 {isEditing ? `Edit User: ${initialUser?.name}` : 'Tambah User Baru'}
               </li>
             </ol>
@@ -172,12 +172,12 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="p-2 rounded-xl bg-white border border-[#c4c8bc] text-[#162809] hover:bg-[#f3ede6] transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] hover:bg-[#E8F5E9] transition-colors cursor-pointer shadow-2xs"
               title="Kembali"
             >
               <span className="material-symbols-outlined text-lg">arrow_back</span>
             </button>
-            <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+            <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
               {isEditing ? 'Halaman Edit Data User' : 'Halaman Tambah User Baru'}
             </h2>
           </div>
@@ -188,14 +188,14 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 bg-white hover:bg-gray-100 border border-[#c4c8bc] text-[#44483f] text-xs font-bold rounded-xl transition-colors cursor-pointer"
+            className="px-4 py-2.5 bg-[#FFFFFF] hover:bg-[#F7F8F6] border border-[#E0E0E0] text-[#555555] text-xs font-bold rounded-xl transition-colors cursor-pointer"
           >
             Batal
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2.5 bg-[#162809] hover:bg-[#233e0e] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+            className="px-5 py-2.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">save</span>
             {isEditing ? 'Simpan Perubahan' : 'Tambah User Baru'}
@@ -208,16 +208,16 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
         {/* Left 2 Columns: User Info & Addresses */}
         <div className="space-y-6">
           {/* Card 1: Informasi Utama */}
-          <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-5">
-            <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-5">
+            <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-xl text-[#162809]">person</span>
-                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1d1b17]">
+                <span className="material-symbols-outlined text-xl text-[#1B5E20]">person</span>
+                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
                   Informasi Utama Akun
                 </h3>
               </div>
               {isEditing && (
-                <span className="px-3 py-1 bg-[#f3ede6] text-[#44483f] font-mono text-xs font-bold rounded-lg border border-[#c4c8bc]/60">
+                <span className="px-3 py-1 bg-[#E8F5E9] text-[#1B5E20] font-mono text-xs font-bold rounded-lg border border-[#A5D6A7]">
                   {initialUser?.id}
                 </span>
               )}
@@ -226,7 +226,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Nama Lengkap */}
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                   Nama Lengkap <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -235,15 +235,15 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Contoh: Aruna Sorgum"
                   className={`w-full px-4 py-2.5 text-sm rounded-xl border ${
-                    errors.name ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
-                  } focus:outline-none focus:ring-2 focus:ring-[#162809]`}
+                    errors.name ? 'border-red-500 bg-red-50 text-red-900' : 'border-[#E0E0E0] bg-[#F7F8F6] text-[#1B5E20]'
+                  } focus:outline-none focus:ring-1 focus:ring-[#2E7D32] font-medium`}
                 />
                 {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -252,19 +252,19 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nama@domain.com"
                   className={`w-full px-4 py-2.5 text-sm rounded-xl border ${
-                    errors.email ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
-                  } focus:outline-none focus:ring-2 focus:ring-[#162809]`}
+                    errors.email ? 'border-red-500 bg-red-50 text-red-900' : 'border-[#E0E0E0] bg-[#F7F8F6] text-[#1B5E20]'
+                  } focus:outline-none focus:ring-1 focus:ring-[#2E7D32] font-medium`}
                 />
                 {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
               </div>
 
               {/* No. WhatsApp */}
               <div>
-                <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                   No. WhatsApp / Telepon <span className="text-red-500">*</span>
                 </label>
-                <div className="flex rounded-xl overflow-hidden border border-[#c4c8bc] focus-within:ring-2 focus-within:ring-[#162809]">
-                  <span className="bg-[#f3ede6] px-3.5 py-2.5 text-xs font-bold text-[#44483f] flex items-center border-r border-[#c4c8bc]">
+                <div className="flex rounded-xl overflow-hidden border border-[#E0E0E0] focus-within:ring-1 focus-within:ring-[#2E7D32]">
+                  <span className="bg-[#E8F5E9] px-3.5 py-2.5 text-xs font-bold text-[#1B5E20] flex items-center border-r border-[#E0E0E0]">
                     +62
                   </span>
                   <input
@@ -272,7 +272,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                     value={phone.replace(/^\+?62/, '')}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="81234567890"
-                    className="w-full px-3.5 py-2.5 text-sm bg-white focus:outline-none"
+                    className="w-full px-3.5 py-2.5 text-sm bg-[#F7F8F6] text-[#1B5E20] focus:outline-none font-medium"
                   />
                 </div>
                 {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
@@ -280,7 +280,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
 
               {/* Password */}
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                   {isEditing ? 'Ubah Password (Opsional)' : 'Password Awal *'}
                 </label>
                 <div className="relative">
@@ -290,8 +290,8 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={isEditing ? 'Kosongkan jika tidak ingin mengubah password' : 'Minimal 6 karakter'}
                     className={`w-full px-4 py-2.5 pr-10 text-sm rounded-xl border ${
-                      errors.password ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
-                    } focus:outline-none focus:ring-2 focus:ring-[#162809]`}
+                      errors.password ? 'border-red-500 bg-red-50 text-red-900' : 'border-[#E0E0E0] bg-[#F7F8F6] text-[#1B5E20]'
+                    } focus:outline-none focus:ring-1 focus:ring-[#2E7D32] font-medium`}
                   />
                   <button
                     type="button"
@@ -309,18 +309,18 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
           </div>
 
           {/* Card 2: Daftar Alamat Pengiriman */}
-          <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
+          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-xl text-[#162809]">location_on</span>
-                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1d1b17]">
+                <span className="material-symbols-outlined text-xl text-[#1B5E20]">location_on</span>
+                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
                   Alamat Pengiriman ({addresses.length})
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAddAddress(!showAddAddress)}
-                className="px-3 py-1.5 bg-[#f3ede6] hover:bg-[#e2dacd] text-[#162809] text-xs font-bold rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1.5 bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20] text-xs font-bold rounded-xl transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-sm">
                   {showAddAddress ? 'close' : 'add'}
@@ -331,65 +331,65 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
 
             {/* Inline Form Tambah Alamat Baru */}
             {showAddAddress && (
-              <div className="p-4 bg-[#f9f8f6] rounded-xl border border-[#c4c8bc] space-y-3 animate-fadeIn">
-                <h4 className="text-xs font-bold text-[#162809] flex items-center gap-1">
+              <div className="p-4 bg-[#F7F8F6] rounded-xl border border-[#E0E0E0] space-y-3 animate-fadeIn">
+                <h4 className="text-xs font-bold text-[#1B5E20] flex items-center gap-1">
                   <span className="material-symbols-outlined text-sm">add_location_alt</span>
                   Tambah Alamat Baru untuk Konsumen Ini
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[11px] font-bold text-[#44483f] mb-1">Label Alamat</label>
+                    <label className="block text-[11px] font-bold text-[#555555] mb-1">Label Alamat</label>
                     <input
                       type="text"
                       placeholder="Rumah, Kantor, dsb."
                       value={newAddrLabel}
                       onChange={(e) => setNewAddrLabel(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#c4c8bc] bg-white"
+                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-[#44483f] mb-1">Nama Penerima</label>
+                    <label className="block text-[11px] font-bold text-[#555555] mb-1">Nama Penerima</label>
                     <input
                       type="text"
                       placeholder="Nama Penerima"
                       value={newAddrRecipient}
                       onChange={(e) => setNewAddrRecipient(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#c4c8bc] bg-white"
+                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-[#44483f] mb-1">No. HP Penerima</label>
+                    <label className="block text-[11px] font-bold text-[#555555] mb-1">No. HP Penerima</label>
                     <input
                       type="text"
                       placeholder="0812xxxx"
                       value={newAddrPhone}
                       onChange={(e) => setNewAddrPhone(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#c4c8bc] bg-white"
+                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-[#44483f] mb-1">Alamat Lengkap</label>
+                  <label className="block text-[11px] font-bold text-[#555555] mb-1">Alamat Lengkap</label>
                   <textarea
                     rows={2}
                     placeholder="Jl. Raya No. 123, Kelurahan, Kecamatan, Kota, Kode Pos"
                     value={newAddrFull}
                     onChange={(e) => setNewAddrFull(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#c4c8bc] bg-white"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20]"
                   />
                 </div>
                 <div className="flex justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setShowAddAddress(false)}
-                    className="px-3 py-1.5 text-xs font-bold text-[#44483f] bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer"
+                    className="px-3 py-1.5 text-xs font-bold text-[#555555] bg-[#FFFFFF] border border-[#E0E0E0] hover:bg-[#F7F8F6] rounded-lg cursor-pointer"
                   >
                     Batal
                   </button>
                   <button
                     type="button"
                     onClick={handleAddAddress}
-                    className="px-4 py-1.5 text-xs font-bold text-white bg-[#162809] hover:bg-[#233e0e] rounded-lg cursor-pointer"
+                    className="px-4 py-1.5 text-xs font-bold text-white bg-[#2E7D32] hover:bg-[#1B5E20] rounded-lg cursor-pointer transition-colors shadow-2xs"
                   >
                     Simpan Alamat
                   </button>
@@ -400,7 +400,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
             {/* List Alamat */}
             <div className="space-y-3">
               {addresses.length === 0 ? (
-                <div className="p-6 text-center text-gray-500 border border-dashed border-[#c4c8bc] rounded-xl text-xs">
+                <div className="p-6 text-center text-[#555555] border border-dashed border-[#E0E0E0] rounded-xl text-xs">
                   <span className="material-symbols-outlined text-2xl text-gray-300 mb-1">wrong_location</span>
                   <p>Belum ada alamat tersimpan untuk user ini.</p>
                 </div>
@@ -410,22 +410,22 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                     key={addr.id}
                     className={`p-4 rounded-xl border text-xs space-y-1.5 transition-all ${
                       addr.isPrimary
-                        ? 'border-[#162809] bg-[#fdfbf7] shadow-xs'
-                        : 'border-[#c4c8bc]/70 bg-white hover:border-[#c4c8bc]'
+                        ? 'border-2 border-[#2E7D32] bg-[#E8F5E9] text-[#1B5E20] shadow-2xs'
+                        : 'border-[#E0E0E0] bg-[#FFFFFF] hover:border-[#2E7D32]/50 text-[#1B5E20]'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#1d1b17] text-sm">{addr.label}</span>
+                        <span className="font-bold text-[#1B5E20] text-sm">{addr.label}</span>
                         {addr.isPrimary ? (
-                          <span className="px-2.5 py-0.5 bg-[#d2eabb] text-[#162809] font-bold text-[10px] rounded-full">
+                          <span className="px-2.5 py-0.5 bg-[#2E7D32] text-white font-bold text-[10px] rounded-full">
                             ALAMAT UTAMA
                           </span>
                         ) : (
                           <button
                             type="button"
                             onClick={() => handleSetPrimaryAddress(addr.id)}
-                            className="text-[11px] font-bold text-[#162809] hover:underline cursor-pointer"
+                            className="text-[11px] font-bold text-[#2E7D32] hover:underline cursor-pointer"
                           >
                             Set Sebagai Utama
                           </button>
@@ -435,17 +435,17 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                       <button
                         type="button"
                         onClick={() => handleDeleteAddress(addr.id)}
-                        className="text-gray-400 hover:text-red-600 cursor-pointer p-1 rounded-lg hover:bg-red-50 transition-colors"
+                        className="text-[#D32F2F] hover:bg-[#FFEBEE] cursor-pointer p-1 rounded-lg transition-colors"
                         title="Hapus Alamat"
                       >
                         <span className="material-symbols-outlined text-base">delete</span>
                       </button>
                     </div>
 
-                    <p className="text-[#44483f] font-semibold">
+                    <p className="text-[#555555] font-semibold">
                       Penerima: {addr.recipientName} ({addr.phone})
                     </p>
-                    <p className="text-gray-600 leading-relaxed">{addr.fullAddress}</p>
+                    <p className="text-[#555555] leading-relaxed">{addr.fullAddress}</p>
                   </div>
                 ))
               )}
@@ -454,48 +454,48 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
 
           {/* Card 3: Riwayat Pesanan (Only displayed in edit mode if orders exist) */}
           {isEditing && (
-            <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
+            <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="material-symbols-outlined text-xl text-[#162809]">shopping_bag</span>
-                  <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1d1b17]">
+                  <span className="material-symbols-outlined text-xl text-[#1B5E20]">shopping_bag</span>
+                  <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
                     Riwayat Transaksi Pesanan ({initialUser?.orderHistory?.length || 0})
                   </h3>
                 </div>
               </div>
 
               {(!initialUser?.orderHistory || initialUser.orderHistory.length === 0) ? (
-                <div className="p-6 text-center text-gray-500 text-xs">
+                <div className="p-6 text-center text-[#555555] text-xs">
                   <span className="material-symbols-outlined text-3xl mb-1 text-gray-300">shopping_cart_checkout</span>
                   <p>User ini belum pernah melakukan transaksi pesanan.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-xl border border-[#c4c8bc]/60">
+                <div className="overflow-x-auto rounded-xl border border-[#E0E0E0]">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="bg-[#f3ede6] text-[#44483f] font-bold uppercase tracking-wider border-b border-[#c4c8bc]">
-                        <th className="p-3">ID Pesanan</th>
-                        <th className="p-3">Tanggal</th>
-                        <th className="p-3">Total Jumlah</th>
-                        <th className="p-3">Status</th>
+                      <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
+                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">ID Pesanan</th>
+                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">Tanggal</th>
+                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">Total Jumlah</th>
+                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[#E0E0E0]">
                       {initialUser.orderHistory.map((order) => (
-                        <tr key={order.orderId} className="hover:bg-gray-50">
-                          <td className="p-3 font-mono font-bold text-[#162809]">{order.orderId}</td>
-                          <td className="p-3 text-gray-600">{order.date}</td>
-                          <td className="p-3 font-bold text-[#1d1b17]">{order.formattedAmount}</td>
+                        <tr key={order.orderId} className="hover:bg-[#E8F5E9]/60 transition-colors">
+                          <td className="p-3 font-mono font-bold text-[#1B5E20]">{order.orderId}</td>
+                          <td className="p-3 text-[#555555]">{order.date}</td>
+                          <td className="p-3 font-bold text-[#1B5E20]">{order.formattedAmount}</td>
                           <td className="p-3">
                             <span
                               className={`px-2.5 py-0.5 font-bold rounded-full text-[10px] ${
                                 order.status === 'Selesai'
-                                  ? 'bg-emerald-100 text-emerald-800'
+                                  ? 'bg-[#E8F5E9] text-[#2E7D32]'
                                   : order.status === 'Diproses'
-                                  ? 'bg-blue-100 text-blue-800'
+                                  ? 'bg-[#FFF8E1] text-[#C89B3C]'
                                   : order.status === 'Dikirim'
-                                  ? 'bg-amber-100 text-amber-800'
-                                  : 'bg-gray-100 text-gray-700'
+                                  ? 'bg-[#E3F2FD] text-[#1976D2]'
+                                  : 'bg-[#F7F8F6] text-[#555555]'
                               }`}
                             >
                               {order.status}
