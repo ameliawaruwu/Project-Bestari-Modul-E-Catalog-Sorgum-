@@ -49,7 +49,7 @@ export const OrderDeleteConfirmModal: React.FC<OrderDeleteConfirmModalProps> = (
             <div className="border-t border-[#c4c8bc]/30 pt-2 space-y-1">
               <p className="text-xs text-[#44483f]">Pelanggan:</p>
               <h4 className="font-bold text-sm text-[#1d1b17]">
-                {order.customerName || 'Pelanggan Bestari'}
+                {order.customerName || 'Pelanggan Sorgum'}
               </h4>
               <p className="text-xs text-[#44483f] font-mono">{order.customerPhone}</p>
             </div>

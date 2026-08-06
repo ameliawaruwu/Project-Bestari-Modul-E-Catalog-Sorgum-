@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
       <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12 lg:gap-16">
         <div className="max-w-sm">
           <span className="font-['Playfair_Display'] text-2xl lg:text-3xl font-semibold text-white mb-4 block">
-            {shopSettings.storeName || 'BESTARI'}
+            {shopSettings.storeName || 'SORGUM'}
           </span>
           <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-white/90 leading-relaxed mb-6">
             {t(
@@ -135,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               {t('Layanan Pelanggan', 'Customer Service')}
             </h5>
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">WhatsApp: {shopSettings.whatsappNumber}</p>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-4 text-white/90">Email: {shopSettings.storeEmail || 'halo@bestari.id'}</p>
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-4 text-white/90">Email: {shopSettings.storeEmail || 'halo@sorgum.id'}</p>
             <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/70">
               {t('Senin - Jumat: 09:00 - 18:00 WIB', 'Monday - Friday: 09:00 - 18:00 WIB')}
             </p>
@@ -145,7 +145,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
       <div className="max-w-[1280px] mx-auto mt-16 pt-8 border-t border-[#394c2a]/40 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/80">
-          © 2024 BESTARI Sorghum. Crafted with Authenticity.
+          © 2024 SORGUM Sorghum. Crafted with Authenticity.
         </p>
         <div className="flex gap-6 items-center">
           <img

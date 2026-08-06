@@ -38,7 +38,7 @@ export const authApi = {
     try {
       const res = await request<{ message: string; data: { user: BackendUser; token: string } }>(
         '/auth/register',
-        { method: 'POST', body: { name: payload.name, email: payload.email, password: payload.password } }
+        { method: 'POST', body: { name: payload.name, email: payload.email, password: payload.password, phone: payload.phone } }
       );
 
       const user = mapUser(res.data.user);
@@ -47,7 +47,7 @@ export const authApi = {
 
       return {
         success: true,
-        message: res.message || 'Pendaftaran berhasil! Selamat bergabung dengan BESTARI.',
+        message: res.message || 'Pendaftaran berhasil! Selamat bergabung dengan SORGUM.',
         user,
         token: res.data.token,
       };
@@ -150,6 +150,32 @@ export const authApi = {
       return { success: true, message: res.message || 'Password berhasil diubah' };
     } catch (e: any) {
       return { success: false, message: e?.message || 'Gagal mengubah password.' };
+    }
+  },
+
+  // Lupa password — minta OTP dikirim ke WhatsApp (POST /api/auth/forgot-password)
+  forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const res = await request<{ message: string }>('/auth/forgot-password', {
+        method: 'POST',
+        body: { email },
+      });
+      return { success: true, message: res.message || 'Kode OTP dikirim ke WhatsApp Anda.' };
+    } catch (e: any) {
+      return { success: false, message: e?.message || 'Gagal mengirim kode OTP.' };
+    }
+  },
+
+  // Reset password dengan OTP (POST /api/auth/reset-password)
+  resetPassword: async (email: string, otp: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const res = await request<{ message: string }>('/auth/reset-password', {
+        method: 'POST',
+        body: { email, otp, new_password: newPassword },
+      });
+      return { success: true, message: res.message || 'Password berhasil diubah.' };
+    } catch (e: any) {
+      return { success: false, message: e?.message || 'Gagal mengubah password. Periksa kode OTP.' };
     }
   },
 };

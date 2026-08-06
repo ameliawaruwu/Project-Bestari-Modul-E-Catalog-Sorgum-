@@ -52,7 +52,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             {/* Profile Label */}
             <div className="text-right hidden sm:block">
               <p className="text-xs font-bold text-[#1d1b17]">
-                {user?.name || 'Administrator Bestari'}
+                {user?.name || 'Administrator Sorgum'}
               </p>
               <p className="text-[9px] font-extrabold text-amber-700 uppercase tracking-widest mt-0.5">
                 Administrator
@@ -71,7 +71,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           {isDropdownOpen && (
             <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl border border-slate-200 shadow-md py-1.5 z-50 animate-fadeIn text-xs text-[#1d1b17]">
               <div className="px-4 py-2 border-b border-gray-100 sm:hidden">
-                <p className="font-bold text-[#1d1b17] truncate">{user?.name || 'Administrator Bestari'}</p>
+                <p className="font-bold text-[#1d1b17] truncate">{user?.name || 'Administrator Sorgum'}</p>
                 <p className="text-[10px] text-gray-500 font-medium">Administrator</p>
               </div>
 
@@ -111,7 +111,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
             <div className="space-y-1">
               <h3 className="font-bold text-lg text-[#1d1b17]">
-                {user?.name || 'Administrator Bestari'}
+                {user?.name || 'Administrator Sorgum'}
               </h3>
               <p className="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-full inline-block uppercase tracking-wider">
                 Administrator
@@ -122,7 +122,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <div className="text-left bg-gray-50 p-4 rounded-xl border border-slate-200/50 space-y-3 text-xs">
               <div>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">Nama Akun</p>
-                <p className="font-semibold text-gray-700">{user?.name || 'Administrator Bestari'}</p>
+                <p className="font-semibold text-gray-700">{user?.name || 'Administrator Sorgum'}</p>
               </div>
               <div>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">No. WhatsApp</p>

@@ -19,6 +19,18 @@ export const voucherService = {
     return rows as Voucher[];
   },
 
+  // Voucher yang AKTIF & belum expired & masih punya kuota — untuk ditampilkan ke user (public)
+  async listActive(): Promise<Voucher[]> {
+    const [rows] = await dbPool.query(
+      `SELECT * FROM vouchers
+       WHERE is_active = 1
+         AND (expires_at IS NULL OR expires_at > NOW())
+         AND (max_uses IS NULL OR used_count < max_uses)
+       ORDER BY created_at DESC`
+    );
+    return rows as Voucher[];
+  },
+
   async create(data: Partial<Voucher>) {
     const [res] = await dbPool.query('INSERT INTO vouchers SET ?', data);
     return res;

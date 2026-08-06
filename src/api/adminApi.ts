@@ -1,7 +1,7 @@
 import { request } from './http';
 
 // ---------------------------------------------------------------------------
-// Admin-only API helpers for the BESTARI admin panel.
+// Admin-only API helpers for the SORGUM admin panel.
 // All calls attach the Bearer token via http.ts (auth: true).
 // ---------------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CartItem, Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { orderApi } from '../api/orderApi';
@@ -29,6 +29,12 @@ export const CartPage: React.FC<CartPageProps> = ({
   const [promoCode, setPromoCode] = useState('');
   const [showPromoModal, setShowPromoModal] = useState(false);
   const [promoError, setPromoError] = useState('');
+  const [activeVouchers, setActiveVouchers] = useState<{ code: string; discount_amount: number; min_purchase: number }[]>([]);
+
+  // Fetch voucher aktif dari BE (public) — supaya promo tampil sinkron dengan yang dibuat admin
+  useEffect(() => {
+    orderApi.getActiveVouchers().then(setActiveVouchers);
+  }, []);
 
   // Toggle selection
   const toggleSelect = (id: string) => {
@@ -245,7 +251,7 @@ export const CartPage: React.FC<CartPageProps> = ({
 
               {appliedDiscount > 0 && (
                 <div className="flex justify-between items-center text-[#2b3e1d] font-semibold">
-                  <span>{t('Voucher Bestari', 'Bestari Voucher')}</span>
+                  <span>{t('Voucher Sorgum', 'Sorgum Voucher')}</span>
                   <span>- Rp {appliedDiscount.toLocaleString('id-ID')}</span>
                 </div>
               )}
@@ -316,7 +322,7 @@ export const CartPage: React.FC<CartPageProps> = ({
             </div>
 
             <p className="text-xs text-[#44483f]">
-              {t('Gunakan kode', 'Use code')} <strong className="text-[#162809]">BESTARI10</strong> {t('untuk mendapatkan potongan Rp 15.000.', 'to get a discount of Rp 15,000.')}
+              {t('Gunakan kode', 'Use code')} <strong className="text-[#162809]">SORGUM10</strong> {t('untuk mendapatkan potongan Rp 15.000.', 'to get a discount of Rp 15,000.')}
             </p>
 
             <div className="space-y-2">
@@ -343,19 +349,29 @@ export const CartPage: React.FC<CartPageProps> = ({
 
             <div className="pt-3 border-t border-[#c4c8bc]/30 space-y-2">
               <p className="text-xs font-bold text-[#44483f]">{t('Voucher Spesial Hari Ini:', 'Today\'s Special Voucher:')}</p>
-              <div
-                onClick={() => {
-                  setPromoCode('BESTARI10');
-                  handleApplyPromo('BESTARI10');
-                }}
-                className="p-3 bg-[#fff8f2] rounded-xl border border-[#fade88] flex justify-between items-center cursor-pointer hover:bg-[#fade88]/20"
-              >
-                <div>
-                  <p className="font-bold text-sm text-[#162809]">BESTARI10</p>
-                  <p className="text-[11px] text-[#44483f]">{t('Diskon Rp 15.000 Tanpa Minimal Belanja', 'Rp 15,000 Discount No Minimum Purchase')}</p>
-                </div>
-                <span className="text-xs font-bold text-[#715c13] underline">{t('Pakai', 'Apply')}</span>
-              </div>
+              {activeVouchers.length > 0 ? (
+                activeVouchers.map((v) => (
+                  <div
+                    key={v.code}
+                    onClick={() => {
+                      setPromoCode(v.code);
+                      handleApplyPromo(v.code);
+                    }}
+                    className="p-3 bg-[#fff8f2] rounded-xl border border-[#fade88] flex justify-between items-center cursor-pointer hover:bg-[#fade88]/20"
+                  >
+                    <div>
+                      <p className="font-bold text-sm text-[#162809]">{v.code}</p>
+                      <p className="text-[11px] text-[#44483f]">
+                        {t('Diskon Rp', 'Discount Rp')} {v.discount_amount.toLocaleString('id-ID')}
+                        {v.min_purchase > 0 ? ` ${t('min. belanja Rp', 'min. purchase Rp')} ${v.min_purchase.toLocaleString('id-ID')}` : ''}
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-[#715c13] underline">{t('Pakai', 'Apply')}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-[11px] text-[#44483f]">{t('Belum ada voucher aktif.', 'No active vouchers yet.')}</p>
+              )}
             </div>
           </div>
         </div>

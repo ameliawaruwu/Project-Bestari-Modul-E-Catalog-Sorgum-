@@ -96,7 +96,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="relative rounded-xl overflow-hidden shadow-sm max-h-[420px] border border-[#c4c8bc]/40">
             <img
               src={landingContent.storyImageUrl}
-              alt="Petani Sorgum Bestari"
+              alt="Petani Sorgum Sorgum"
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#162809]/40 to-transparent"></div>

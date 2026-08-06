@@ -1,13 +1,13 @@
 // ---------------------------------------------------------------------------
-// Shared HTTP helper for the BESTARI frontend.
+// Shared HTTP helper for the SORGUM frontend.
 // - Attaches Bearer token (from localStorage) & x-session-id (guest cart) headers
 // - Throws ApiError with server message on non-2xx
 // ---------------------------------------------------------------------------
 
 export const API_BASE = '/api';
 
-const TOKEN_KEY = 'bestari_token';
-const SESSION_KEY = 'bestari_session_id';
+const TOKEN_KEY = 'bestari_session_id';
+const SESSION_KEY = 'bestari_current_user';
 
 export class ApiError extends Error {
   status: number;

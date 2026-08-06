@@ -96,7 +96,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
         await userAdminApi.createUser({
           name: userData.name,
           email: userData.email,
-          password: password || 'bestari123', // default kalau kosong
+          password: password || 'sorgum123', // default kalau kosong
           phone: userData.phone !== '-' ? userData.phone : undefined,
         });
         showToast(`User baru ${userData.name} berhasil didaftarkan!`);

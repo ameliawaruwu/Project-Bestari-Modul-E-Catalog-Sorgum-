@@ -79,7 +79,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Halo Bestari, saya ingin bertanya mengenai produk: ${product.name} (Rp ${product.price.toLocaleString('id-ID')})`
+    `Halo Sorgum, saya ingin bertanya mengenai produk: ${product.name} (Rp ${product.price.toLocaleString('id-ID')})`
   );
   const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const whatsappUrl = `https://wa.me/${waNumber}?text=${whatsappMessage}`;

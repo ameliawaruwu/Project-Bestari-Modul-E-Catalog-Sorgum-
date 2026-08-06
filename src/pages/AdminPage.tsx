@@ -149,7 +149,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           ? new Date(a.published_at || a.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
           : '',
         createdAt: a.created_at ? new Date(a.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '',
-        author: a.author || 'Tim Bestari',
+        author: a.author || 'Tim Sorgum',
         views: 0,
         content: a.content || '',
         contentBlocks: a.content_blocks && typeof a.content_blocks === 'string'
@@ -219,8 +219,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
     try {
       const { orderAdminApi } = await import('../api/adminApi');
-      const { STATUS_LABEL_TO_ENUM } = await import('../api/orderApi');
-      const beStatus = STATUS_LABEL_TO_ENUM[newStatus] || newStatus.toLowerCase();
+      const { resolveOrderStatusTransition } = await import('../api/orderApi');
+      const currentOrder = orders.find((o) => o.id === orderId);
+      const currentRaw = currentOrder?.statusRaw || 'pending';
+      // Resolve enum target yang benar (pending→Diproses kirim 'confirmed', dst)
+      const beStatus = resolveOrderStatusTransition(currentRaw, newStatus) || newStatus.toLowerCase();
       await orderAdminApi.updateOrderStatus(orderId, beStatus);
       // Update local state (BE dulu, context kedua — context cuma mirror)
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
@@ -277,7 +280,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `transaksi_bestari_${Date.now()}.csv`);
+    link.setAttribute('download', `transaksi_bestari_token${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -758,7 +761,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
         {/* FOOTER / BRANDING BOTTOM */}
         <footer className="mt-auto px-8 py-6 border-t border-[#c4c8bc] bg-white flex flex-col sm:flex-row justify-between items-center text-[#44483f]/60 text-xs font-medium gap-2">
-          <p>© 2023 BESTARI Sorghum. Hak Cipta Dilindungi.</p>
+          <p>© 2023 SORGUM Sorghum. Hak Cipta Dilindungi.</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-[#162809] transition-colors">
               Syarat &amp; Ketentuan

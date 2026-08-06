@@ -43,7 +43,7 @@ function mapArticle(a: ArticleRow): Article {
       : undefined,
     image: a.image_url || '',
     date: dateStr,
-    author: a.author || 'Tim Bestari',
+    author: a.author || 'Tim Sorgum',
     authorRole: a.author_role || undefined,
     subImage: a.sub_image || undefined,
     quote: a.quote || undefined,

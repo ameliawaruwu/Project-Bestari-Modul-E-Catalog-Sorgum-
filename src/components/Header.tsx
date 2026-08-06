@@ -74,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
           {shopSettings.logoUrl ? (
             <img
               src={shopSettings.logoUrl}
-              alt={shopSettings.storeName || 'BESTARI'}
+              alt={shopSettings.storeName || 'SORGUM'}
               className="h-8 max-w-[140px] object-contain rounded bg-white/10 p-0.5"
               onError={(e) => {
                 (e.target as HTMLElement).style.display = 'none';
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
             />
           ) : (
             <span className="font-['Roboto'] text-xl lg:text-2xl font-bold tracking-tight text-white">
-              {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
+              {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'SORGUM'}
             </span>
           )}
         </button>

@@ -156,10 +156,10 @@ const DEFAULT_LANDING_CONTENT: LandingContent = {
   storyTaglineEn: 'Our Story',
   storyTitleId: 'Kembalinya Warisan Pangan Leluhur Nusantara',
   storyTitleEn: 'The Return of the Ancestral Food Heritage of Nusantara',
-  storyDesc1Id: 'Di Bestari, kami percaya bahwa kesehatan sejati dimulai dari apa yang ditanam oleh alam secara murni. Bersama para petani mitra lokal, kami menghidupkan kembali sorgum—tanaman super (*superfood*) kaya serat and bebas gluten yang telah menutrisi generasi sebelum kita.',
-  storyDesc1En: 'At Bestari, we believe that true health starts from what nature grows purely. Together with local partner farmers, we revive sorghum—a fiber-rich and gluten-free superfood that has nourished generations before us.',
-  storyDesc2Id: 'Setiap butir Bestari adalah wujud komitmen kami untuk menghadirkan kualitas terbaik dari tanah Indonesia langsung ke meja makan keluarga Anda, sambil melestarikan keseimbangan ekosistem bumi.',
-  storyDesc2En: 'Every grain of Bestari is a testament to our commitment to bringing the finest quality from Indonesian soil straight to your family dining table, while preserving the balance of the Earth\'s ecosystem.',
+  storyDesc1Id: 'Di Sorgum, kami percaya bahwa kesehatan sejati dimulai dari apa yang ditanam oleh alam secara murni. Bersama para petani mitra lokal, kami menghidupkan kembali sorgum—tanaman super (*superfood*) kaya serat and bebas gluten yang telah menutrisi generasi sebelum kita.',
+  storyDesc1En: 'At Sorgum, we believe that true health starts from what nature grows purely. Together with local partner farmers, we revive sorghum—a fiber-rich and gluten-free superfood that has nourished generations before us.',
+  storyDesc2Id: 'Setiap butir Sorgum adalah wujud komitmen kami untuk menghadirkan kualitas terbaik dari tanah Indonesia langsung ke meja makan keluarga Anda, sambil melestarikan keseimbangan ekosistem bumi.',
+  storyDesc2En: 'Every grain of Sorgum is a testament to our commitment to bringing the finest quality from Indonesian soil straight to your family dining table, while preserving the balance of the Earth\'s ecosystem.',
   storyImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl',
   benefitsTitleId: 'Mengapa Memilih Sorgum?',
   benefitsTitleEn: 'Why Choose Sorghum?',
@@ -215,7 +215,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [banners, setBanners] = useState<BannerSlide[]>([]);
 
   const [shopSettings, setShopSettings] = useState<ShopSettings>({
-    storeName: 'BESTARI', logoUrl: '', qrisImageUrl: '', qrisNmid: '', whatsappNumber: '', qrisStatus: 'AKTIF',
+    storeName: 'SORGUM', logoUrl: '', qrisImageUrl: '', qrisNmid: '', whatsappNumber: '', qrisStatus: 'AKTIF',
   });
 
   // Default konten landing page — data UI saja (disimpan di localStorage,
@@ -232,13 +232,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     storyTaglineEn: 'Our Story',
     storyTitleId: 'Dari Lahan Petani ke Meja Anda',
     storyTitleEn: 'From Farm to Your Table',
-    storyDesc1Id: 'BESTARI hadir untuk menghidupkan kembali sorgum, biji-bijian kaya nutrisi yang menjadi warisan pangan Nusantara.',
-    storyDesc1En: 'BESTARI brings back sorghum, a nutrient-rich grain that is part of Indonesia heritage.',
+    storyDesc1Id: 'SORGUM hadir untuk menghidupkan kembali sorgum, biji-bijian kaya nutrisi yang menjadi warisan pangan Nusantara.',
+    storyDesc1En: 'SORGUM brings back sorghum, a nutrient-rich grain that is part of Indonesia heritage.',
     storyDesc2Id: 'Kami bekerja langsung dengan petani lokal untuk menghadirkan produk berkualitas dan berkelanjutan.',
     storyDesc2En: 'We work directly with local farmers to deliver quality, sustainable products.',
     storyImageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80',
-    benefitsTitleId: 'Mengapa Memilih BESTARI?',
-    benefitsTitleEn: 'Why Choose BESTARI?',
+    benefitsTitleId: 'Mengapa Memilih SORGUM?',
+    benefitsTitleEn: 'Why Choose SORGUM?',
     benefitsDescId: 'Produk sorgum berkualitas tinggi yang baik untuk Anda dan lingkungan.',
     benefitsDescEn: 'High-quality sorghum products, good for you and the environment.',
     benefit1TitleId: '100% Alami',
@@ -272,7 +272,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // ─── Cart = SERVER-AUTHORITATIVE (DB) ──────────────────────────────────
   // Cart TIDAK disimpan di localStorage lagi — sumber kebenaran = DB (cart_items),
   // per-user_id (login) / session_id (guest). localStorage cuma nyimpen
-  // session id (bestari_session_id) sebagai identifier guest, bukan data cart.
+  // session id (bestari_cart_items_) sebagai identifier guest, bukan data cart.
   // Guest cart juga server-side (session_id) — login/register merge via
   // endpoint BE POST /cart/merge (session -> user). Key 'bestari_cart_items_'
   // di localStorage cuma sisa versi lama, dihapus pas merge (cleanup).
@@ -308,7 +308,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (!cancelled) setCurrentUser(fresh);
       // Gak ada sesi valid → hapus cache lama (admin/user basi) biar gak ke-render lagi
       if (!fresh) {
-        try { localStorage.removeItem('bestari_current_user'); } catch { /* ignore */ }
+        try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
       }
     });
 
@@ -477,7 +477,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const res = await authApi.login(payload);
       if (res.success && res.user) {
         setCurrentUser(res.user);
-        localStorage.setItem('bestari_current_user', JSON.stringify(res.user));
+        localStorage.setItem('bestari_cart_items_', JSON.stringify(res.user));
 
         // ─── Cart di login (server-authoritative) ─────────────────────────
         // 1) Merge cart guest (localStorage key '') ke server cart user —
@@ -509,7 +509,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const res = await authApi.register(payload);
       if (res.success && res.user) {
         setCurrentUser(res.user);
-        localStorage.setItem('bestari_current_user', JSON.stringify(res.user));
+        localStorage.setItem('bestari_cart_items_', JSON.stringify(res.user));
 
         // ─── Cart di register (server-authoritative) ──────────────────────
         // User baru: server cart kosong. Merge cart guest (localStorage key '')
@@ -530,8 +530,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCart([]);
     setWishlistIds({});
     setAppliedDiscount(0);
-    try { localStorage.removeItem('bestari_current_user'); } catch { /* ignore */ }
-    try { localStorage.removeItem('bestari_token'); } catch { /* ignore */ }
+    try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
+    try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
   };
 
   // Wishlist / Favorit helpers
@@ -747,7 +747,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         contentBlocks: articleData.contentBlocks,
         image: articleData.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
         date: dateStr,
-        author: articleData.author || 'Tim Bestari',
+        author: articleData.author || 'Tim Sorgum',
       };
       updateArticles([newArt, ...articles]);
     }
@@ -825,8 +825,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     updateCart(updated);
     // Server-authoritative: add via API (snapshot owner di dalam request).
-    orderApi.addToCartServer(product, quantity).catch(() => {
-      // Kalau gagal, refresh dari server biar state konsisten dengan DB.
+    // Refresh di sukses DAN gagal: item hasil optimistic update tidak punya
+    // __cartRowId, dan mutasi qty/hapus berikutnya butuh row id dari server.
+    // Tanpa ini tombol qty +/- di keranjang tidak mengubah apa-apa (bug).
+    orderApi.addToCartServer(product, quantity).finally(() => {
       refreshCart();
     });
   };

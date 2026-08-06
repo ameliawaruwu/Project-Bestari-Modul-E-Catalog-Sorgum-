@@ -6,6 +6,7 @@ interface RegisterInput {
   name: string;
   email: string;
   password: string;
+  phone?: string;
 }
 
 interface LoginInput {
@@ -22,7 +23,7 @@ interface UserRow {
 }
 
 export async function register(input: RegisterInput) {
-  const { name, email, password } = input;
+  const { name, email, password, phone } = input;
 
   const [existing] = await dbPool.query(
     'SELECT id FROM users WHERE email = ?',
@@ -35,8 +36,8 @@ export async function register(input: RegisterInput) {
   const passwordHash = await bcrypt.hash(password, 10);
 
   const [result] = await dbPool.query(
-    'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)',
-    [name, email, passwordHash],
+    'INSERT INTO users (name, email, password_hash, phone) VALUES (?, ?, ?, ?)',
+    [name, email, passwordHash, phone || null],
   );
 
   const insertId = (result as any).insertId;

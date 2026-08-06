@@ -75,7 +75,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
               Daftar Produk
             </h3>
             <p className="text-xs text-[#44483f] mt-0.5">
-              Daftar lengkap komoditas dan olahan sorgum Bestari
+              Daftar lengkap komoditas dan olahan sorgum Sorgum
             </p>
           </div>
 
@@ -113,7 +113,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
           <table className="w-full text-left border-collapse table-fixed">
             <thead>
               <tr className="bg-[#f3ede6] text-[#44483f] text-xs font-bold uppercase tracking-wider border-b border-[#c4c8bc]">
-                <th className="px-4 py-3 w-[80px]">ID Produk</th>
                 <th className="px-4 py-3 w-[80px]">Gambar</th>
                 <th className="px-4 py-3 w-[250px]">Nama Produk</th>
                 <th className="px-4 py-3 w-[130px]">Harga</th>
@@ -126,9 +125,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                 const stock = prod.stock ?? 0;
                 return (
                   <tr key={prod.id} className="hover:bg-[#f9f3ec] transition-colors odd:bg-white even:bg-[#faf9f6]">
-                    <td className="px-4 py-3 font-mono text-xs font-bold text-[#44483f]">
-                      {prod.id}
-                    </td>
                     <td className="px-4 py-3">
                       <div className="w-12 h-12 rounded-xl bg-[#e7e2db] overflow-hidden border border-[#c4c8bc] shadow-xs flex-shrink-0">
                         <img
@@ -166,24 +162,22 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                       {stock} Unit
                     </td>
                     <td className="px-4 py-3 text-right sticky right-0 bg-white odd:bg-white even:bg-[#faf9f6] hover:bg-[#f9f3ec] z-10">
-                      <div className="flex justify-end space-x-2">
+                      <div className="flex justify-end gap-1.5">
                         <button
                           type="button"
                           onClick={() => onOpenEditProduct(prod)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#162809] bg-[#fade88]/50 hover:bg-[#fade88] rounded-lg transition-all cursor-pointer"
+                          className="p-2 text-[#162809] bg-[#fade88]/50 hover:bg-[#fade88] rounded-lg transition-all cursor-pointer"
                           title="Edit produk"
                         >
                           <span className="material-symbols-outlined text-base">edit</span>
-                          Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => onDeleteProduct(prod)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all cursor-pointer"
+                          className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all cursor-pointer"
                           title="Hapus produk"
                         >
                           <span className="material-symbols-outlined text-base">delete</span>
-                          Hapus
                         </button>
                       </div>
                     </td>

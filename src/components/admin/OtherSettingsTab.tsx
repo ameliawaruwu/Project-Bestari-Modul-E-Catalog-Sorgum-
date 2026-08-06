@@ -13,7 +13,7 @@ const PRESET_LOGOS = [
   {
     label: 'Default Typography',
     url: '',
-    description: 'Logo teks elegan Playfair Display (BESTARI)',
+    description: 'Logo teks elegan Playfair Display (SORGUM)',
   },
   {
     label: 'Sorghum Gold Emblem',
@@ -29,7 +29,7 @@ const PRESET_LOGOS = [
 
 const PRESET_QRIS = [
   {
-    label: 'QRIS Standard Bestari',
+    label: 'QRIS Standard Sorgum',
     url: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAIKWh-z2qzILYDC9woreBeFgSVM7_5bAXQw5pYZ_WwXgCifGERVX51aW8YsqJjhz82BHNB45qL6bJnxNWBWwpAxsM67_7x2OTYNFuUS0K4XILgSk6ErmPXJ-UP3WMQhaf0M_b3gWRwVKHSZ6kbqzO0x1MUI3RpV0ldxSddeaWujNrHtPTNPk0WLMpMDYC-ht49m3cEFZM04MALEK2_xXvp7VSo9wE4R95RE8g09iTX-hLm7IdsDkg',
     nmid: 'ID1029384756382',
   },
@@ -41,7 +41,7 @@ const PRESET_QRIS = [
 ];
 
 const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
-  storeName: 'BESTARI',
+  storeName: 'SORGUM',
   logoUrl: '',
   qrisImageUrl: '',
   qrisNmid: '',
@@ -342,7 +342,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
                   type="text"
                   value={settings.storeName}
                   onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
-                  placeholder="BESTARI Sorghum"
+                  placeholder="SORGUM Sorghum"
                   className="w-full px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-[#c4c8bc] bg-white focus:outline-none focus:ring-2 focus:ring-[#162809]"
                 />
               </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Order } from '../../types';
+import { getOrderTransitionLabels } from '../../api/orderApi';
 
 interface OrderDetailViewProps {
   order: Order | null;
@@ -116,11 +117,12 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                   : 'bg-red-50 border-red-300 text-red-800'
               }`}
             >
-              <option value="Pending" className="text-[#1d1b17] bg-white">Pending</option>
-              <option value="Diproses" className="text-[#1d1b17] bg-white">Diproses</option>
-              <option value="Dikirim" className="text-[#1d1b17] bg-white">Dikirim</option>
-              <option value="Selesai" className="text-[#1d1b17] bg-white">Selesai</option>
-              <option value="Dibatalkan" className="text-[#1d1b17] bg-white">Dibatalkan</option>
+              {getOrderTransitionLabels(order.statusRaw || 'pending').map((s) => (
+                <option key={s} value={s} className="text-[#1d1b17] bg-white">{s}</option>
+              ))}
+              {getOrderTransitionLabels(order.statusRaw || 'pending').length === 0 && (
+                <option value={order.status} className="text-[#1d1b17] bg-white">{order.status}</option>
+              )}
             </select>
           </div>
         </div>
@@ -136,7 +138,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             </div>
             <div className="space-y-1">
               <p className="font-extrabold text-base text-[#1d1b17]">
-                {order.customerName || 'Pelanggan Bestari'}
+                {order.customerName || 'Pelanggan Sorgum'}
               </p>
               <p className="text-xs text-[#44483f] flex items-center gap-1.5 font-mono">
                 <span className="material-symbols-outlined text-sm">phone</span>

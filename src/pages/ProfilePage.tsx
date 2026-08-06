@@ -421,11 +421,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       </label>
                       <input
                         type="tel"
+                        inputMode="numeric"
+                        pattern="[0-9+ ]*"
                         value={profileData.phone}
                         onChange={(e) =>
-                          setProfileData({ ...profileData, phone: e.target.value })
+                          setProfileData({ ...profileData, phone: e.target.value.replace(/[^\d+ ]/g, '') })
                         }
                         className="w-full bg-[#f9f3ec] border border-[#c4c8bc]/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2b3e1d]"
+                        placeholder="Contoh: 081234567890"
                       />
                     </div>
 
@@ -450,7 +453,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         TANGGAL LAHIR
                       </label>
                       <input
-                        type="text"
+                        type="date"
                         value={profileData.birthDate}
                         onChange={(e) =>
                           setProfileData({ ...profileData, birthDate: e.target.value })
@@ -520,9 +523,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           Nomor HP
                         </label>
                         <input
-                          type="text"
+                          type="tel"
+                          inputMode="numeric"
+                          pattern="[0-9+ ]*"
                           value={addressData.phone}
-                          onChange={(e) => setAddressData({ ...addressData, phone: e.target.value })}
+                          onChange={(e) => setAddressData({ ...addressData, phone: e.target.value.replace(/[^\d+ ]/g, '') })}
                           className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
                         />
                       </div>
@@ -566,9 +571,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           Kode Pos
                         </label>
                         <input
-                          type="text"
+                          type="number"
+                          inputMode="numeric"
                           value={addressData.postalCode}
-                          onChange={(e) => setAddressData({ ...addressData, postalCode: e.target.value })}
+                          onChange={(e) => setAddressData({ ...addressData, postalCode: e.target.value.replace(/[^\d]/g, '') })}
                           className="w-full bg-white border border-[#c4c8bc]/50 rounded-xl px-4 py-2 text-sm"
                         />
                       </div>
@@ -939,7 +945,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           <span>Informasi Pengiriman</span>
                         </div>
                         <p className="text-xs font-bold text-[#162809]">
-                          {selectedOrderDetail.customerName || 'Aruna Bestari'}
+                          {selectedOrderDetail.customerName || 'Aruna Sorgum'}
                         </p>
                         <p className="text-xs text-[#44483f]">
                           {selectedOrderDetail.customerPhone || '+62 812-3456-7890'}
@@ -1015,7 +1021,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         Belum ada pesanan pada kategori ini
                       </h3>
                       <p className="text-xs text-[#44483f] mt-1 mb-4">
-                        Jelajahi berbagai produk sorgum terbaik BESTARI dan buat pesanan pertama Anda.
+                        Jelajahi berbagai produk sorgum terbaik SORGUM dan buat pesanan pertama Anda.
                       </p>
                       <button
                         onClick={onNavigateProducts}
@@ -1193,37 +1199,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
 
                         <div className="flex gap-2">
                           <button
-                            onClick={() => onSelectProduct(prod)}
-                            className="p-2 border border-[#c4c8bc] rounded-xl hover:bg-white text-[#162809] transition-colors"
-                            title="Detail Produk"
-                          >
-                            <span className="material-symbols-outlined text-lg">visibility</span>
-                          </button>
-                          <button
                             onClick={() => onAddToCart(prod)}
-                            className="bg-[#2b3e1d] hover:bg-[#162809] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                            className="bg-[#2b3e1d] hover:bg-[#162809] text-white p-2 rounded-xl transition-all cursor-pointer"
+                            title="Tambah ke keranjang"
                           >
-                            + Tambah
+                            <span className="material-symbols-outlined text-lg">shopping_cart</span>
                           </button>
                         </div>
                       </div>
                     </div>
                   ))}
-                </div>
-
-                {/* Banner CTA */}
-                <div className="mt-8 bg-[#fff8f2] rounded-2xl p-6 border-2 border-dashed border-[#c4c8bc] text-center space-y-3">
-                  <span className="material-symbols-outlined text-3xl text-[#715c13]">add_circle</span>
-                  <p className="font-bold text-sm text-[#162809]">Ingin menambah lebih banyak?</p>
-                  <p className="text-xs text-[#44483f]">
-                    Jelajahi katalog kami untuk menemukan produk sorghum terbaik lainnya.
-                  </p>
-                  <button
-                    onClick={onNavigateProducts}
-                    className="bg-[#715c13] hover:bg-[#574500] text-white px-6 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer"
-                  >
-                    Buka Katalog Produk
-                  </button>
                 </div>
               </div>
             </div>

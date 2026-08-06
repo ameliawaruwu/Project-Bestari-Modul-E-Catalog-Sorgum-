@@ -233,7 +233,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Contoh: Aruna Bestari"
+                  placeholder="Contoh: Aruna Sorgum"
                   className={`w-full px-4 py-2.5 text-sm rounded-xl border ${
                     errors.name ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
                   } focus:outline-none focus:ring-2 focus:ring-[#162809]`}
