@@ -109,6 +109,14 @@ export function App() {
   };
 
   const handleSelectProduct = (product: Product) => {
+    // Guest belum login: klik produk (card / ikon mata / favorit) → arahkan ke login + notif
+    if (!user) {
+      showToast('Silakan masuk (login) terlebih dahulu untuk melihat detail produk.');
+      setRedirectAfterLogin(activeTab);
+      setActiveTab('login');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setSelectedProduct(product);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -189,7 +197,8 @@ export function App() {
   const handleLogout = async () => {
     await logout();
     showToast('Anda telah keluar.');
-    setActiveTab('beranda');
+    // Refresh page biar semua state bersih — efek "benar-benar keluar"
+    setTimeout(() => window.location.reload(), 600);
   };
 
   const handleAuthSuccess = (loggedInUser: User) => {
@@ -201,7 +210,7 @@ export function App() {
         ? 'admin'
         : redirectAfterLogin && redirectAfterLogin !== 'admin'
           ? redirectAfterLogin
-          : 'beranda';
+          : 'produk'; // user non-admin setelah login → ke produk
     setRedirectAfterLogin(null);
     setActiveTab(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -211,9 +220,9 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EFECE6] text-[#1d1b17] font-['Poppins'] selection:bg-[#fde08b] selection:text-[#231b00] relative pb-16 md:pb-0">
-      {/* Toast Notification */}
+      {/* Toast Notification — top center */}
       {toastMessage && (
-        <div className="fixed top-24 right-4 z-50 bg-[#162809] text-white px-5 py-3 rounded-xl shadow-2xl border border-[#fade88]/40 text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-[#162809] text-white px-6 py-3 rounded-xl shadow-2xl border border-[#fade88]/40 text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw]">
           <span className="material-symbols-outlined text-[#fde08b]">check_circle</span>
           <span>{toastMessage}</span>
         </div>
@@ -274,6 +283,11 @@ export function App() {
                 onAddToCart={(p) => handleAddToCart(p, 1)}
                 onClickProduct={handleSelectProduct}
                 searchQuery={searchQuery}
+                onRequireLogin={() => {
+                  showToast('Silakan masuk (login) terlebih dahulu untuk menambahkan ke favorit.');
+                  setRedirectAfterLogin('favorit');
+                  setActiveTab('login');
+                }}
               />
             )}
 

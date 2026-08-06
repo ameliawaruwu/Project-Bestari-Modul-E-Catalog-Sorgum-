@@ -24,7 +24,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   showToast,
   onNavigateAdmin,
 }) => {
-  const { t, orders: allOrders, products: allProducts, currentUser, updateOrderStatus } = useApp();
+  const { t, orders: allOrders, products: allProducts, currentUser, updateOrderStatus, wishlistIds: ctxWishlistIds, toggleWishlist } = useApp();
   const [activeTab, setActiveTab] = useState<'profil' | 'pesanan' | 'favorit' | 'pengaturan'>(
     initialTab
   );
@@ -122,7 +122,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       setWishlistIds(idMap);
     }).catch(() => {});
     return () => { cancelled = true; };
-  }, [currentUser, allProducts]);
+  }, [currentUser, allProducts, ctxWishlistIds]);
 
   // Profile Form state — dari user login (bukan mock)
   const [profileData, setProfileData] = useState({
@@ -1139,22 +1139,15 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       key={prod.id}
                       className="bg-[#f9f3ec] rounded-2xl p-4 border border-[#c4c8bc]/30 relative flex flex-col justify-between group hover:shadow-md transition-shadow"
                     >
-                      {/* Heart Button */}
+                      {/* Heart Button — sync dengan context (ProductCard/Detail) */}
                       <button
-                        onClick={() => {
-                          const wid = wishlistIds[String(prod.id)];
-                          if (wid) {
-                            wishlistApi.removeFromWishlist(wid).then((ok) => {
-                              if (ok) {
-                                setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
-                                showToast(`${prod.name} dihapus dari favorit.`);
-                              } else {
-                                showToast('Gagal menghapus favorit.');
-                              }
-                            });
-                          } else {
+                        onClick={async () => {
+                          const ok = await toggleWishlist(prod.id);
+                          if (ok) {
                             setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
                             showToast(`${prod.name} dihapus dari favorit.`);
+                          } else {
+                            showToast('Gagal menghapus favorit.');
                           }
                         }}
                         className="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 text-red-600 flex items-center justify-center shadow-sm hover:scale-110 transition-transform cursor-pointer"

@@ -19,6 +19,8 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   const [loading, setLoading] = useState(true);
   const [activeArticle, setActiveArticle] = useState<Article | null>(selectedArticle || null);
   const [allArticles, setAllArticles] = useState<Article[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
     if (selectedArticle) {
@@ -62,6 +64,16 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     return matchesCategory && matchesSearch;
   });
 
+  // Pagination asli
+  const totalPages = Math.max(1, Math.ceil(filteredArticles.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const pageArticles = filteredArticles.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
+
+  const goToPage = (p: number) => {
+    setCurrentPage(Math.min(Math.max(1, p), totalPages));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleCardClick = async (article: Article) => {
     // Fetch full article (content, subImage, quote, facts) from backend by slug
     const full = await articleApi.getArticleBySlug(article.slug);
@@ -79,9 +91,72 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
   // If viewing article detail
   if (activeArticle) {
-    const paragraphs = activeArticle.content.split('\n\n');
-    const firstPara = paragraphs[0] || '';
-    const otherParas = paragraphs.slice(1);
+    // Content: blok terurut jika ada; fallback: content teks lama split \n\n
+    const hasBlocks = Array.isArray(activeArticle.contentBlocks) && activeArticle.contentBlocks.length > 0;
+    const blocks: Array<{ type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string }> = hasBlocks
+      ? activeArticle.contentBlocks!
+      : activeArticle.content
+        ? activeArticle.content
+            .split('\n\n')
+            .filter((p) => p.trim())
+            .map((p) => ({ type: 'text', content: p }))
+        : [];
+
+    const renderBlock = (block: { type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string }, idx: number) => {
+      switch (block.type) {
+        case 'image':
+          return block.image_url ? (
+            <figure key={idx} className="my-4">
+              <div className="relative rounded-xl overflow-hidden h-80 md:h-96 my-8 group shadow-sm bg-[#dfd9d3] border border-[#c4c8bc]/20">
+                <img
+                  src={block.image_url}
+                  alt={block.alt || activeArticle.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              {block.caption && (
+                <figcaption className="text-center text-xs sm:text-sm text-[#75786e] italic mt-1 font-['Plus_Jakarta_Sans'] -mt-5">
+                  {block.caption}
+                </figcaption>
+              )}
+            </figure>
+          ) : null;
+
+        case 'quote':
+          return (
+            <blockquote
+              key={idx}
+              className="bg-[#faf8f5] p-8 rounded-xl border-l-4 border-[#162809] italic text-[#2b3e1d] font-['Plus_Jakarta_Sans'] text-base md:text-lg my-8 leading-relaxed shadow-3xs border-t border-r border-b border-[#c4c8bc]/30"
+            >
+              "{block.content}"
+              {block.author && (
+                <footer className="mt-3 text-right text-sm font-bold not-italic text-[#162809]">
+                  — {block.author}
+                </footer>
+              )}
+            </blockquote>
+          );
+
+        case 'text':
+        default:
+          // Paragraf pertama: drop cap (mengikuti gaya artikel "Manfaat Sorghum")
+          if (idx === 0) {
+            return (
+              <p
+                key={idx}
+                className="text-[#1d1b17] text-base md:text-lg leading-relaxed first-letter:float-left first-letter:text-5xl first-letter:leading-[4rem] first-letter:pr-3 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#162809]"
+              >
+                {block.content}
+              </p>
+            );
+          }
+          return (
+            <p key={idx} className="text-[#1d1b17] text-base md:text-lg leading-relaxed font-normal">
+              {block.content}
+            </p>
+          );
+      }
+    };
 
     return (
       <div className="pt-28 sm:pt-32 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
@@ -135,49 +210,28 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left: Article Body */}
           <article className="lg:col-span-8 space-y-8 font-['Plus_Jakarta_Sans']">
-            <p className="text-[#1d1b17] text-base md:text-lg leading-relaxed first-letter:float-left first-letter:text-5xl first-letter:leading-[4rem] first-letter:pr-3 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#162809]">
-              {firstPara}
-            </p>
+            {/* Blok konten berurutan (teks/gambar/kutipan) */}
+            {blocks.map(renderBlock)}
 
-            <h2 className="text-2xl md:text-3xl font-bold text-[#162809] pt-2">
-              {t('Mengapa Sorgum?', 'Why Sorghum?')}
-            </h2>
-
-            {otherParas[0] && (
-              <p className="text-[#1d1b17] text-base md:text-lg leading-relaxed font-normal">
-                {otherParas[0]}
-              </p>
+            {/* Fallback lama: quote & subImage utk artikel lama yg belum punya content_blocks */}
+            {!hasBlocks && (
+              <>
+                {activeArticle.quote && (
+                  <div className="bg-[#faf8f5] p-8 rounded-xl border-l-4 border-[#162809] italic text-[#2b3e1d] font-['Plus_Jakarta_Sans'] text-base md:text-lg my-8 leading-relaxed shadow-3xs border-t border-r border-b border-[#c4c8bc]/30">
+                    "{activeArticle.quote}"
+                  </div>
+                )}
+                {activeArticle.subImage && (
+                  <div className="relative rounded-xl overflow-hidden h-80 md:h-96 my-8 group shadow-sm bg-[#dfd9d3] border border-[#c4c8bc]/20">
+                    <img
+                      src={activeArticle.subImage}
+                      alt="Sub content"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                )}
+              </>
             )}
-
-            {/* Quote Block */}
-            {activeArticle.quote && (
-              <div className="bg-[#faf8f5] p-8 rounded-xl border-l-4 border-[#162809] italic text-[#2b3e1d] font-['Plus_Jakarta_Sans'] text-base md:text-lg my-8 leading-relaxed shadow-3xs border-t border-r border-b border-[#c4c8bc]/30">
-                "{activeArticle.quote}"
-              </div>
-            )}
-
-            {otherParas[1] && (
-              <p className="text-[#1d1b17] text-base md:text-lg leading-relaxed font-normal">
-                {otherParas[1]}
-              </p>
-            )}
-
-            {/* Sub-Image */}
-            {activeArticle.subImage && (
-              <div className="relative rounded-xl overflow-hidden h-80 md:h-96 my-8 group shadow-sm bg-[#dfd9d3] border border-[#c4c8bc]/20">
-                <img
-                  src={activeArticle.subImage}
-                  alt="Sub content"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-            )}
-
-            {otherParas.slice(2).map((p, idx) => (
-              <p key={idx} className="text-[#1d1b17] text-base md:text-lg leading-relaxed font-normal">
-                {p}
-              </p>
-            ))}
           </article>
 
           {/* Right: Sidebar */}
@@ -264,7 +318,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             type="text"
             placeholder={t('Cari artikel (misal: budidaya, celiac, serat, resep)...', 'Search articles (e.g. cultivation, celiac, fiber, recipes)...')}
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="w-full pl-12 pr-10 py-3 bg-[#faf8f5] rounded-xl border border-[#c4c8bc]/50 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1d1b17] placeholder-[#75786e]/60 focus:outline-none focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all"
           />
           {searchQuery && (
@@ -285,7 +339,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             return (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
                 className={`px-5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-semibold transition-all duration-200 focus:outline-none cursor-pointer ${
                   isActive
                     ? 'bg-[#2b3e1d] text-white shadow-xs'
@@ -318,30 +372,51 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-2">
-          {filteredArticles.map((art) => (
+          {pageArticles.map((art) => (
             <ArticleCard key={art.id} article={art} onSelectArticle={handleCardClick} />
           ))}
         </div>
       )}
 
-      {/* Pagination */}
-      {filteredArticles.length > 0 && (
-        <div className="mt-16 flex justify-center items-center gap-3">
-          <button className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#c4c8bc]/60 text-[#44483f] hover:bg-[#2b3e1d] hover:text-white hover:border-[#2b3e1d] transition-all cursor-pointer bg-white">
-            <span className="material-symbols-outlined text-xl">chevron_left</span>
-          </button>
-          <span className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#2b3e1d] text-white font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-xs">
-            1
+      {/* Pagination ASLI */}
+      {filteredArticles.length > 0 && totalPages > 1 && (
+        <div className="mt-16 flex flex-col items-center gap-4">
+          <div className="flex justify-center items-center gap-2">
+            <button
+              onClick={() => goToPage(safePage - 1)}
+              disabled={safePage <= 1}
+              className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#c4c8bc]/60 text-[#44483f] hover:bg-[#2b3e1d] hover:text-white hover:border-[#2b3e1d] transition-all cursor-pointer bg-white disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Halaman sebelumnya"
+            >
+              <span className="material-symbols-outlined text-xl">chevron_left</span>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => goToPage(p)}
+                className={`w-10 h-10 flex items-center justify-center rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm transition-all cursor-pointer ${
+                  p === safePage
+                    ? 'bg-[#2b3e1d] text-white shadow-xs'
+                    : 'text-[#44483f] hover:bg-[#faf8f5] border border-[#c4c8bc]/50 bg-white'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+
+            <button
+              onClick={() => goToPage(safePage + 1)}
+              disabled={safePage >= totalPages}
+              className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#c4c8bc]/60 text-[#44483f] hover:bg-[#2b3e1d] hover:text-white hover:border-[#2b3e1d] transition-all cursor-pointer bg-white disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Halaman berikutnya"
+            >
+              <span className="material-symbols-outlined text-xl">chevron_right</span>
+            </button>
+          </div>
+          <span className="text-xs text-[#75786e] font-['Plus_Jakarta_Sans']">
+            Menampilkan {Math.min(ITEMS_PER_PAGE, filteredArticles.length - (safePage - 1) * ITEMS_PER_PAGE)} dari {filteredArticles.length} artikel • Halaman {safePage}/{totalPages}
           </span>
-          <span className="w-10 h-10 flex items-center justify-center rounded-xl text-[#44483f] font-['Plus_Jakarta_Sans'] font-semibold text-sm hover:bg-[#faf8f5] border border-[#c4c8bc]/50 cursor-pointer transition-colors bg-white">
-            2
-          </span>
-          <span className="w-10 h-10 flex items-center justify-center rounded-xl text-[#44483f] font-['Plus_Jakarta_Sans'] font-semibold text-sm hover:bg-[#faf8f5] border border-[#c4c8bc]/50 cursor-pointer transition-colors bg-white">
-            3
-          </span>
-          <button className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#c4c8bc]/60 text-[#44483f] hover:bg-[#2b3e1d] hover:text-white hover:border-[#2b3e1d] transition-all cursor-pointer bg-white">
-            <span className="material-symbols-outlined text-xl">chevron_right</span>
-          </button>
         </div>
       )}
     </div>

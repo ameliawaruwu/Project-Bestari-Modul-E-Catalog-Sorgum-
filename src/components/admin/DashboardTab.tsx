@@ -5,7 +5,6 @@ import { AdminActiveNav } from '../../types/admin';
 interface DashboardTabProps {
   orders: Order[];
   products: Product[];
-  productStockMap: Record<string, number>;
   setActiveNav: (nav: AdminActiveNav) => void;
   handleUpdateOrderStatus: (orderId: string, newStatus: Order['status']) => void;
 }
@@ -13,7 +12,6 @@ interface DashboardTabProps {
 export const DashboardTab: React.FC<DashboardTabProps> = ({
   orders,
   products,
-  productStockMap,
   setActiveNav,
   handleUpdateOrderStatus,
 }) => {
@@ -25,7 +23,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const totalProductsCount = products.length;
 
   const lowStockProducts = products.filter((p) => {
-    const stock = productStockMap[p.id] ?? 50;
+    const stock = p.stock ?? 0;
     return stock < 30;
   });
 
@@ -234,7 +232,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <p className="text-xs text-slate-400">Seluruh stok produk berada dalam tingkat aman.</p>
             ) : (
               lowStockProducts.map((p) => {
-                const stock = productStockMap[p.id] ?? 15;
+                const stock = p.stock ?? 0;
                 return (
                   <div
                     key={p.id}

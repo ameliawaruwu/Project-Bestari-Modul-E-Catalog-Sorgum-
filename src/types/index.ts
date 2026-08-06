@@ -5,16 +5,26 @@ export interface Product {
   categoryLabel: string;
   price: number;
   formattedPrice: string;
+  originalPrice?: number;
+  discountPercent?: number;
   unitInfo: string;
-  badge?: 'BEST SELLER' | 'DISKON 15%' | 'BARU';
+  badge?: string;
   image: string;
   description: string;
   weight: string;
   glutenFree: boolean;
   organic: boolean;
-  specification?: string;
+  composition?: string;
+  shelfLife?: string;
+  attributes?: string;
   shippingInfo?: string;
+  stock?: number;
 }
+
+export type ArticleContentBlock =
+  | { type: 'text'; content: string }
+  | { type: 'image'; image_url: string; alt?: string; caption?: string }
+  | { type: 'quote'; content: string; author?: string };
 
 export interface Article {
   id: string;
@@ -24,6 +34,7 @@ export interface Article {
   readTime?: string;
   snippet: string;
   content: string;
+  contentBlocks?: ArticleContentBlock[];
   image: string;
   date: string;
   author: string;
@@ -117,5 +128,6 @@ export interface CheckoutData {
   notes?: string;
   paymentMethod: 'cod' | 'qris';
   paymentProofUrl?: string;
-  discount?: number;
+  voucherCode?: string;
+  idempotencyKey?: string;
 }

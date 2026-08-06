@@ -7,9 +7,13 @@ export interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
+  original_price: number | null;
+  discount_percent: number;
   stock: number;
   weight_spec: string | null;
   origin: string | null;
+  composition: string | null;
+  shelf_life: string | null;
   is_active: number;
   is_featured: number;
   category_id: number;
@@ -49,10 +53,16 @@ interface CreateProductInput {
   gluten_free?: boolean;
   organic?: boolean;
   badge?: string | null;
+  original_price?: number | null;
+  discount_percent?: number;
+  composition?: string | null;
+  shelf_life?: string | null;
+  attributes?: string | null;
 }
 
 const LIST_SELECT = `
-  SELECT p.id, p.name, p.slug, p.price, p.stock, p.weight_spec, p.origin,
+  SELECT p.id, p.name, p.slug, p.description, p.price, p.original_price, p.discount_percent,
+         p.stock, p.weight_spec, p.origin, p.composition, p.shelf_life, p.attributes,
          p.is_active, p.is_featured, p.category_id, p.created_at,
          p.gluten_free, p.organic, p.badge,
          c.name AS category_name,
@@ -136,23 +146,44 @@ export async function getFeaturedProducts(limit = 8) {
 
 // === ADMIN ===
 
+// Hitung harga final & original_price dari harga dasar + diskon%
+// - hargaDasar: harga sebelum diskon (original_price)
+// - diskon%: 0-90
+// price = original_price × (1 - diskon/100), dibulatkan ke 50 terdekat (rupiah rapi)
+function applyDiscount(hargaDasar: number, diskonPersen: number) {
+  const pct = Math.max(0, Math.min(90, diskonPersen || 0));
+  const original = Math.round(hargaDasar);
+  let price = original;
+  if (pct > 0) {
+    price = Math.round((original * (100 - pct)) / 100);
+    // bulatkan ke 50 terdekat supaya harga jual rapi (misal 48000 → 38400)
+    price = Math.round(price / 50) * 50;
+  }
+  return { originalPrice: original, price, discountPercent: pct };
+}
+
 export async function createProduct(input: CreateProductInput) {
-  const { category_id, name, slug, description, price, stock, weight_spec, origin, is_featured } = input;
+  const { category_id, name, slug, description, stock, weight_spec, origin, is_featured } = input;
+  const { originalPrice, price, discountPercent } = applyDiscount(input.price ?? 0, input.discount_percent ?? 0);
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, is_featured, gluten_free, organic, badge)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [category_id, name, slug, description, price, stock, weight_spec, origin, is_featured ? 1 : 0,
-     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.badge ?? null],
+    `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [category_id, name, slug, description, price, originalPrice, discountPercent, stock, weight_spec, origin, is_featured ? 1 : 0,
+     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.badge ?? null, input.composition ?? null, input.shelf_life ?? null,
+     input.attributes ?? null],
   );
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'is_featured', 'gluten_free', 'organic', 'badge'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'is_featured', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   const fields: string[] = [];
   const params: any[] = [];
 
+  // Diskon: FE sudah hitung price (harga jual final) & original_price (harga asli).
+  // Simpan apa adanya — jangan hitung ulang (kalau FE kirim price yg sudah diskon,
+  // hitung ulang akan double-apply).
   for (const [key, val] of Object.entries(input)) {
     if (val !== undefined && ALLOWED_COLUMNS.includes(key)) {
       fields.push(`${key} = ?`);

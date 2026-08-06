@@ -53,7 +53,7 @@ export const faqApi = {
   // Get all FAQs for Admin (includes DRAFTs) — auth required
   getAdminFaqs: async (): Promise<FaqItem[]> => {
     try {
-      const res = await request<{ data: FaqRow[] }>('/articles/faq/all');
+      const res = await request<{ data: FaqRow[] }>('/admin/articles/faq', { auth: true });
       return (res?.data || [])
         .sort((a, b) => (a.sort_order || 99) - (b.sort_order || 99))
         .map(mapFaq);
@@ -98,8 +98,8 @@ export const faqApi = {
   // Toggle status — admin. BE has no toggle endpoint; emulate via PUT with flipped status.
   toggleStatus: async (id: string): Promise<FaqItem | null> => {
     try {
-      // Fetch current, flip status, PUT back
-      const listRes = await request<{ data: FaqRow[] }>('/articles/faq/all');
+      // Fetch current (admin list — includes DRAFT), flip status, PUT back
+      const listRes = await request<{ data: FaqRow[] }>('/admin/articles/faq', { auth: true });
       const row = (listRes?.data || []).find((f) => String(f.id) === id);
       if (!row) return null;
 
@@ -128,7 +128,7 @@ export const faqApi = {
   // Reorder FAQ — admin. BE has no reorder endpoint; emulate by swapping sort_order via PUT.
   reorderFaq: async (id: string, direction: 'UP' | 'DOWN'): Promise<FaqItem[]> => {
     try {
-      const listRes = await request<{ data: FaqRow[] }>('/articles/faq/all');
+      const listRes = await request<{ data: FaqRow[] }>('/admin/articles/faq', { auth: true });
       const rows = [...(listRes?.data || [])].sort((a, b) => (a.sort_order || 99) - (b.sort_order || 99));
       const idx = rows.findIndex((f) => String(f.id) === id);
       const target = direction === 'UP' ? idx - 1 : idx + 1;

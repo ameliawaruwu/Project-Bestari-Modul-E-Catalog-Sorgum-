@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BannerSlide } from '../../types/admin';
+import { Product } from '../../types';
 import { useApp, LandingContent } from '../../context/AppContext';
 
 interface LandingSettingsTabProps {
   banners: BannerSlide[];
+  products: Product[];
   onToggleBanner: (id: string) => void;
   onDeleteBanner: (id: string) => void;
   onOpenCreateBanner: () => void;
@@ -13,6 +15,7 @@ interface LandingSettingsTabProps {
 
 export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
   banners,
+  products,
   onToggleBanner,
   onDeleteBanner,
   onOpenCreateBanner,
@@ -22,11 +25,28 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
   const { landingContent, saveLandingContent } = useApp();
   const [searchBanner, setSearchBanner] = useState('');
   const [contentForm, setContentForm] = useState<LandingContent>(landingContent);
-  const [activeTab, setActiveTab] = useState<'banners' | 'text'>('banners');
+  const [activeTab, setActiveTab] = useState<'banners' | 'text' | 'produk'>('banners');
+  const [searchProduk, setSearchProduk] = useState('');
+
+  // Produk terpilih utk section "Koleksi Produk Pilihan" (string JSON di landingContent)
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>(() => {
+    try {
+      const parsed = JSON.parse(landingContent.featuredProductIds || '[]');
+      return Array.isArray(parsed) ? parsed.map(String) : [];
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     if (landingContent) {
       setContentForm(landingContent);
+      try {
+        const parsed = JSON.parse(landingContent.featuredProductIds || '[]');
+        if (Array.isArray(parsed)) setSelectedProductIds(parsed.map(String));
+      } catch {
+        /* abaikan */
+      }
     }
   }, [landingContent]);
 
@@ -41,6 +61,25 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
       b.title.toLowerCase().includes(searchBanner.toLowerCase()) ||
       b.targetLink.toLowerCase().includes(searchBanner.toLowerCase())
   );
+
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchProduk.toLowerCase()) ||
+      p.categoryLabel.toLowerCase().includes(searchProduk.toLowerCase())
+  );
+
+  const toggleProductSelection = (id: string) => {
+    setSelectedProductIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const handleSaveFeaturedProducts = () => {
+    // Kirim SELURUH contentForm + featuredProductIds — saveLandingContent replace seluruh state,
+    // jadi jangan kirim cuma satu field (nanti field lain hilang).
+    saveLandingContent({ ...contentForm, featuredProductIds: JSON.stringify(selectedProductIds) });
+    showToast('Produk Pilihan berhasil disimpan!');
+  };
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -86,6 +125,17 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
           >
             Teks &amp; Konten Landing Page
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('produk')}
+            className={`px-4 py-2 rounded-lg font-semibold text-xs transition-all cursor-pointer ${
+              activeTab === 'produk'
+                ? 'bg-[#162809] text-white shadow-xs'
+                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            Produk Pilihan ({selectedProductIds.length})
+          </button>
         </div>
       </section>
 
@@ -101,8 +151,6 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
               <span>TAMBAH BANNER BARU</span>
             </button>
           </div>
-
-          {/* Table Card: Daftar Banner Beranda */}
           <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
             <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
               <h3 className="text-sm font-bold text-slate-800">
@@ -194,6 +242,90 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             </div>
           </div>
         </>
+      ) : activeTab === 'produk' ? (
+        <div className="space-y-4">
+          {/* Header + search */}
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+              <div>
+                <h3 className="text-sm font-bold text-slate-800">
+                  Produk Pilihan di Beranda
+                </h3>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Pilih maksimal 4 produk yang tampil di section &quot;Koleksi Produk Pilihan&quot; beranda.
+                </p>
+              </div>
+              <div className="flex items-center bg-[#f8fafc] rounded-lg px-3 py-1.5 border border-slate-200/80">
+                <span className="material-symbols-outlined text-slate-400 mr-2 text-base">search</span>
+                <input
+                  type="text"
+                  value={searchProduk}
+                  onChange={(e) => setSearchProduk(e.target.value)}
+                  placeholder="Cari produk..."
+                  className="bg-transparent border-none outline-none text-xs text-slate-700 w-44 placeholder:text-slate-400/80"
+                />
+              </div>
+            </div>
+
+            {/* Grid produk dengan checkbox */}
+            {filteredProducts.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-sm">
+                Tidak ada produk yang cocok.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4">
+                {filteredProducts.map((product) => {
+                  const isSelected = selectedProductIds.includes(String(product.id));
+                  return (
+                    <div
+                      key={product.id}
+                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-[#162809] bg-[#162809]/5 shadow-xs'
+                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      }`}
+                      onClick={() => toggleProductSelection(String(product.id))}
+                    >
+                      <div className="w-14 h-14 rounded-lg bg-[#e7e2db] overflow-hidden border border-slate-200/60 flex-shrink-0">
+                        <img
+                          src={product.image || ''}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-xs text-slate-800 truncate">{product.name}</p>
+                        <p className="text-[10px] text-slate-400">{product.categoryLabel}</p>
+                        <p className="text-[11px] font-bold text-[#162809] font-mono">{product.formattedPrice}</p>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleProductSelection(String(product.id))}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-4 h-4 mt-0.5 accent-[#162809] cursor-pointer flex-shrink-0"
+                        title="Pilih produk"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="p-4 bg-white text-slate-500 text-xs font-medium flex items-center justify-between border-t border-slate-100">
+              <span>
+                Terpilih {selectedProductIds.length} dari {products.length} produk
+              </span>
+              <button
+                type="button"
+                onClick={handleSaveFeaturedProducts}
+                className="bg-[#162809] hover:bg-[#2b3e1d] text-white px-5 py-2 rounded-lg font-bold text-xs shadow-md transition-all cursor-pointer"
+              >
+                Simpan Produk Pilihan
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
         <form onSubmit={handleSaveContent} className="space-y-6">
           {/* Card: Hero Section */}
@@ -267,12 +399,44 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-semibold text-slate-600 mb-1">URL Gambar Story</label>
-                <input
-                  type="text"
-                  value={contentForm.storyImageUrl}
-                  onChange={(e) => setContentForm({ ...contentForm, storyImageUrl: e.target.value })}
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg outline-none focus:border-[#162809]"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={contentForm.storyImageUrl}
+                    onChange={(e) => setContentForm({ ...contentForm, storyImageUrl: e.target.value })}
+                    className="w-full text-xs p-2.5 border border-slate-200 rounded-lg outline-none focus:border-[#162809]"
+                    placeholder="https://... atau gunakan tombol Upload"
+                  />
+                  <label className="cursor-pointer text-xs font-semibold text-[#162809] bg-[#fade88]/40 border border-[#fade88]/60 px-3 py-2 rounded-lg hover:bg-[#fade88]/60 transition-all whitespace-nowrap flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">upload</span>
+                    Upload
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/avif"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const { productAdminApi } = await import('../../api/adminApi');
+                          const url = await productAdminApi.uploadImage(file);
+                          if (!url) throw new Error('upload gagal');
+                          setContentForm({ ...contentForm, storyImageUrl: url });
+                          showToast('Gambar story berhasil diunggah. Klik Simpan untuk menyimpan.');
+                        } catch {
+                          showToast('Gagal mengunggah gambar.');
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+                {contentForm.storyImageUrl && (
+                  <img
+                    src={contentForm.storyImageUrl}
+                    alt="Pratinjau Gambar Story"
+                    className="mt-2 w-48 h-28 object-cover rounded-lg border border-slate-200"
+                  />
+                )}
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Paragraf 1 (ID)</label>

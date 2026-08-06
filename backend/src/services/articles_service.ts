@@ -6,6 +6,7 @@ export interface ArticleRow {
   slug: string;
   category: string;
   content: string;
+  content_blocks?: string | Array<Record<string, any>> | null;
   excerpt: string | null;
   image_url: string | null;
   is_published: number;
@@ -27,12 +28,18 @@ export async function getPublishedArticles(category?: string, limit = 12, offset
   const [countRows] = await dbPool.query(`SELECT COUNT(*) as total FROM articles ${where}`, params);
   const total = (countRows as any[])[0].total;
 
-  const [rows] = await dbPool.query(
-    `SELECT id, title, slug, category, excerpt, image_url, published_at, created_at, author, author_role, read_time FROM articles ${where} ORDER BY published_at DESC LIMIT ? OFFSET ?`,
+  const rows = (await dbPool.query(
+    `SELECT id, title, slug, category, excerpt, image_url, content, content_blocks, published_at, created_at, author, author_role, read_time, sub_image, quote, facts FROM articles ${where} ORDER BY published_at DESC LIMIT ? OFFSET ?`,
     [...params, limit, offset],
-  );
+  ))[0] as ArticleRow[];
 
-  return { data: rows as ArticleRow[], meta: { total, limit, offset } };
+  for (const row of rows) {
+    if (row.content_blocks && typeof row.content_blocks === 'string') {
+      try { row.content_blocks = JSON.parse(row.content_blocks); } catch { row.content_blocks = null; }
+    }
+  }
+
+  return { data: rows, meta: { total, limit, offset } };
 }
 
 export async function getArticleBySlug(slug: string) {
@@ -40,20 +47,33 @@ export async function getArticleBySlug(slug: string) {
     'SELECT * FROM articles WHERE slug = ? AND is_published = 1',
     [slug],
   );
-  return (rows as ArticleRow[])[0] || null;
+  const row = (rows as ArticleRow[])[0] || null;
+  if (!row) return null;
+  // Parse content_blocks (JSON string dari MySQL) → array
+  if (row.content_blocks && typeof row.content_blocks === 'string') {
+    try { row.content_blocks = JSON.parse(row.content_blocks); } catch { row.content_blocks = null; }
+  }
+  return row;
 }
 
 export async function getAllArticles() {
   const [rows] = await dbPool.query('SELECT * FROM articles ORDER BY created_at DESC');
-  return rows as ArticleRow[];
+  const list = rows as ArticleRow[];
+  for (const row of list) {
+    if (row.content_blocks && typeof row.content_blocks === 'string') {
+      try { row.content_blocks = JSON.parse(row.content_blocks); } catch { row.content_blocks = null; }
+    }
+  }
+  return list;
 }
 
 export async function createArticle(fields: Record<string, any>) {
   const [r] = await dbPool.query(
-    `INSERT INTO articles (title, slug, category, content, excerpt, image_url, is_published, published_at,
+    `INSERT INTO articles (title, slug, category, content, content_blocks, excerpt, image_url, is_published, published_at,
       author, author_role, read_time, sub_image, quote, facts)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [fields.title, fields.slug, fields.category, fields.content, fields.excerpt || null,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [fields.title, fields.slug, fields.category, fields.content, fields.content_blocks ? JSON.stringify(fields.content_blocks) : null,
+     fields.excerpt || null,
      fields.image_url || null, fields.is_published ? 1 : 0,
      fields.is_published ? new Date() : null,
      fields.author || null, fields.author_role || null, fields.read_time || null,
@@ -64,7 +84,7 @@ export async function createArticle(fields: Record<string, any>) {
 }
 
 const ARTICLE_ALLOWED_COLUMNS = [
-  'title', 'slug', 'category', 'content', 'excerpt', 'image_url',
+  'title', 'slug', 'category', 'content', 'content_blocks', 'excerpt', 'image_url',
   'is_published', 'published_at', 'author', 'author_role', 'read_time',
   'sub_image', 'quote', 'facts',
 ];
@@ -76,6 +96,11 @@ export async function updateArticle(id: number, fields: Record<string, any>) {
     // Whitelist kolom — cegah SQL injection via dynamic column name
     if (!ARTICLE_ALLOWED_COLUMNS.includes(k)) continue;
     if (v === undefined) continue;
+    if (k === 'content_blocks') {
+      sets.push('content_blocks = ?');
+      vals.push(Array.isArray(v) ? JSON.stringify(v) : v);
+      continue;
+    }
     if (k === 'is_published') {
       sets.push('is_published = ?');
       vals.push(v ? 1 : 0);

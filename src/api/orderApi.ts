@@ -62,7 +62,7 @@ interface BackendOrder {
   courier: string | null;
   tracking_number: string | null;
   created_at: string;
-  items?: { id: number; product_id: number | null; product_name: string; price: number; quantity: number; subtotal: number }[];
+  items?: { id: number; product_id: number | null; product_name: string; price: number; quantity: number; subtotal: number; image_url?: string | null }[];
 }
 
 const STATUS_MAP: Record<string, Order['status']> = {
@@ -94,7 +94,7 @@ export function mapOrder(o: BackendOrder): Order {
       formattedPrice: `IDR ${it.price.toLocaleString('id-ID')}`,
       unitInfo: '',
       weight: '',
-      image: '',
+      image: it.image_url || '',
       description: '',
       glutenFree: true,
       organic: true,
@@ -242,12 +242,15 @@ export const orderApi = {
   // Place checkout order
   checkoutOrder: async (checkoutData?: CheckoutData): Promise<Order> => {
     // Ambil cart dari SERVER (sumber kebenaran) — bukan dari parameter/localStorage
-    const cartItems = await orderApi.getCart();
-    const subtotal = cartItems.reduce((acc, it) => acc + it.product.price * it.quantity, 0);
-    // shipping_cost & diskon ditentukan SERVER (BE ambil dari settings + body discount)
-    const shippingCost = 0; // BE yang hitung ongkir dari site_settings
-    const discount = checkoutData?.discount || 0;
-    const total = subtotal + shippingCost - discount;
+    await orderApi.getCart();
+    // subtotal/ongkir/diskon SEMUA dihitung server (BE hitung dari site_settings + voucher_code)
+    // jangan hitung ulang di FE — biar total yang tampil selalu == total BE
+
+    // Idempotency key: 1 key per checkout attempt (cek di CheckoutPage state).
+    // BE replay kalau key sama → cegah double-submit order ganda.
+    const idempotencyKey =
+      checkoutData?.idempotencyKey ||
+      (crypto?.randomUUID ? crypto.randomUUID() : `order-${Date.now()}-${Math.random().toString(36).slice(2)}`);
 
     const shipping_address = checkoutData
       ? {
@@ -288,7 +291,8 @@ export const orderApi = {
         customer_phone: checkoutData?.customerPhone || '',
         shipping_address,
         notes: checkoutData?.notes,
-        discount: discount,
+        voucher_code: checkoutData?.voucherCode || undefined,
+        idempotency_key: idempotencyKey,
         payment_method: checkoutData?.paymentMethod || 'cod',
       },
     });

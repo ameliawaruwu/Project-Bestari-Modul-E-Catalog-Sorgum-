@@ -6,15 +6,20 @@ interface ProductFormViewProps {
   initialStock?: number;
   onSave: (productData: {
     id?: string;
+    categoryId?: number;
     name: string;
     category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
     price: number;
     unitInfo: string;
     weight: string;
-    badge: 'BEST SELLER' | 'DISKON 15%' | 'BARU' | '' | undefined;
+    badge: string | undefined;
     image: string;
     stock: number;
     description: string;
+    originalPrice?: number;
+    discountPercent?: number;
+    composition?: string;
+    shelfLife?: string;
     glutenFree: boolean;
     organic: boolean;
     specification?: string;
@@ -22,6 +27,10 @@ interface ProductFormViewProps {
   }) => void;
   onCancel: () => void;
   showToast: (msg: string) => void;
+  /** Opsi badge dinamis dari Kelola Badge (jika ada) */
+  badgeOptions?: string[];
+  /** Opsi kategori dinamis dari Kelola Kategori (jika ada) */
+  categoryOptions?: { name: string; slug: string }[];
 }
 
 export const ProductFormView: React.FC<ProductFormViewProps> = ({
@@ -30,22 +39,26 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   onSave,
   onCancel,
   showToast,
+  badgeOptions,
+  categoryOptions,
 }) => {
   const [idInput, setIdInput] = useState('');
   const [nameInput, setNameInput] = useState('');
   const [categoryInput, setCategoryInput] = useState<
     'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih'
   >('beras');
+  const [categoryIdInput, setCategoryIdInput] = useState<number | undefined>(undefined);
   const [priceInput, setPriceInput] = useState<number | ''>('');
+  const [discountInput, setDiscountInput] = useState<number | ''>('');
+  const [compositionInput, setCompositionInput] = useState('');
+  const [shelfLifeInput, setShelfLifeInput] = useState('');
+  const [attributesInput, setAttributesInput] = useState('');
   const [unitInput, setUnitInput] = useState('');
   const [weightInput, setWeightInput] = useState('');
   const [badgeInput, setBadgeInput] = useState<string>('');
   const [imageInput, setImageInput] = useState('');
   const [stockInput, setStockInput] = useState<number | ''>('');
   const [descInput, setDescInput] = useState('');
-  const [glutenFreeInput, setGlutenFreeInput] = useState(true);
-  const [organicInput, setOrganicInput] = useState(true);
-  const [specificationInput, setSpecificationInput] = useState('');
   const [shippingInfoInput, setShippingInfoInput] = useState('');
 
   useEffect(() => {
@@ -53,38 +66,45 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setIdInput(initialProduct.id);
       setNameInput(initialProduct.name);
       setCategoryInput(initialProduct.category);
-      setPriceInput(initialProduct.price);
+      // Sinkron categoryId ke kategori BE (kalau ada di options)
+      const catMatch = categoryOptions?.find((c) => c.name.toLowerCase().includes(initialProduct.category));
+      setCategoryIdInput(catMatch?.id);
+      setPriceInput(initialProduct.originalPrice ?? initialProduct.price);
+      setDiscountInput(initialProduct.discountPercent || '');
+      setCompositionInput(initialProduct.composition || '');
+      setShelfLifeInput(initialProduct.shelfLife || '');
+      setAttributesInput(initialProduct.attributes || '');
       setUnitInput(initialProduct.unitInfo || '');
       setWeightInput(initialProduct.weight || '');
       setBadgeInput(initialProduct.badge || '');
       setImageInput(initialProduct.image || '');
       setStockInput(initialStock);
       setDescInput(initialProduct.description || '');
-      setGlutenFreeInput(initialProduct.glutenFree ?? true);
-      setOrganicInput(initialProduct.organic ?? true);
-      setSpecificationInput(initialProduct.specification || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
     } else {
       setIdInput('');
       setNameInput('');
       setCategoryInput('beras');
+      setCategoryIdInput(undefined);
       setPriceInput('');
+      setDiscountInput('');
+      setCompositionInput('');
+      setShelfLifeInput('');
+      setAttributesInput('');
       setUnitInput('');
       setWeightInput('');
       setBadgeInput('');
       setImageInput('');
       setStockInput('');
       setDescInput('');
-      setGlutenFreeInput(true);
-      setOrganicInput(true);
-      setSpecificationInput('');
       setShippingInfoInput('');
     }
-  }, [initialProduct, initialStock]);
+  }, [initialProduct, initialStock, categoryOptions]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImageInput(reader.result as string);
@@ -93,7 +113,9 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nameInput.trim()) {
       showToast('Masukkan nama produk!');
@@ -103,22 +125,37 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     const priceNum = Number(priceInput) || 0;
     const stockNum = Number(stockInput) || 0;
 
+    // Kalau ada file baru → upload dulu ke server, dapat URL
+    let finalImage = imageInput; // dataURL preview / URL lama
+    if (imageFile) {
+      try {
+        const { productAdminApi } = await import('../../api/adminApi');
+        const uploadedUrl = await productAdminApi.uploadImage(imageFile);
+        if (uploadedUrl) finalImage = uploadedUrl;
+        else showToast('Gagal upload gambar.');
+      } catch (err: any) {
+        showToast(err?.message || 'Gagal upload gambar.');
+        return;
+      }
+    }
+
     onSave({
       id: idInput || initialProduct?.id,
+      categoryId: categoryIdInput,
       name: nameInput,
       category: categoryInput,
       price: priceNum,
+      originalPrice: priceNum, // harga asli = harga yang diinput admin (harga dasar)
+      discountPercent: Number(discountInput) || 0,
+      composition: compositionInput,
+      shelfLife: shelfLifeInput,
+      attributes: attributesInput,
       unitInfo: unitInput || `${weightInput || '1kg'} / Premium`,
       weight: weightInput || '1kg',
       badge: (badgeInput as any) || undefined,
-      image:
-        imageInput ||
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDx6V_oUnfKzyojm9uXQ7bSN6saxNNJzgrPhjyFQ8SDKkwHBRL_MjAtQ9wWncQju2t0FE095pnEc_KY0CAkXND0ZFmkKncxnCLaoz85Fx4_p818g2JXproo8RQRnDBzZALrKLSfKPiQVF-HikX7czDtanpQjjZbF7NGwy0DsKUT2yDAqx4-esjUOFhaf0e9oAZ7w7KV3MmH3BosDB1jK0DgJcYibaN7d2Vo68vjaZR_58IEQO_Zl5E',
+      image: finalImage,
       stock: stockNum,
       description: descInput,
-      glutenFree: glutenFreeInput,
-      organic: organicInput,
-      specification: specificationInput,
       shippingInfo: shippingInfoInput,
     });
   };
@@ -240,24 +277,46 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 Kategori Produk
               </label>
               <select
-                value={categoryInput}
-                onChange={(e) =>
-                  setCategoryInput(
-                    e.target.value as 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih'
-                  )
-                }
+                value={categoryIdInput !== undefined ? `cat-${categoryIdInput}` : categoryInput}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v.startsWith('cat-')) {
+                    const id = Number(v.slice(4));
+                    setCategoryIdInput(id);
+                    // cari nama kategori utk update label fallback
+                    const match = categoryOptions?.find((c) => c.id === id);
+                    setCategoryInput((match?.name.toLowerCase().includes('tepung') ? 'tepung'
+                      : match?.name.toLowerCase().includes('camilan') ? 'camilan'
+                      : match?.name.toLowerCase().includes('pemanis') ? 'pemanis'
+                      : match?.name.toLowerCase().includes('benih') ? 'benih'
+                      : 'beras') as any);
+                  } else {
+                    setCategoryIdInput(undefined);
+                    setCategoryInput(v as any);
+                  }
+                }}
                 className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer font-medium"
               >
-                <option value="beras">Beras Sorgum</option>
-                <option value="tepung">Tepung Sorgum</option>
-                <option value="camilan">Camilan Sehat</option>
-                <option value="pemanis">Pemanis Alami</option>
-                <option value="benih">Benih Sorgum</option>
+                {categoryOptions && categoryOptions.length > 0 ? (
+                  <>
+                    {categoryOptions.map((c) => (
+                      <option key={c.id} value={`cat-${c.id}`}>{c.name}</option>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <option value="beras">Beras Sorgum</option>
+                    <option value="tepung">Tepung Sorgum</option>
+                    <option value="camilan">Camilan Sehat</option>
+                    <option value="pemanis">Pemanis Alami</option>
+                    <option value="benih">Benih Sorgum</option>
+                  </>
+                )}
               </select>
             </div>
           </div>
 
-          {/* Row 2: Harga & Kemasan */}
+          {/* Row 2: Harga & Diskon */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1d1b17]">
@@ -271,19 +330,27 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 required
                 className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-mono"
               />
+              <p className="text-[10px] text-gray-400">Harga asli sebelum diskon. Harga jual dihitung otomatis dari diskon.</p>
             </div>
 
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1d1b17]">
-                Kemasan / Berat (Info Unit)
+                Diskon (%)
               </label>
               <input
-                type="text"
-                value={unitInput}
-                onChange={(e) => setUnitInput(e.target.value)}
-                placeholder="Contoh: 1kg / Kemasan Vacuum"
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                type="number"
+                min={0}
+                max={90}
+                value={discountInput}
+                onChange={(e) => setDiscountInput(e.target.value ? Math.max(0, Math.min(90, Number(e.target.value))) : '')}
+                placeholder="0"
+                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-mono"
               />
+              <p className="text-[10px] text-gray-400">
+                {priceInput && discountInput
+                  ? `Harga jual: Rp ${(Number(priceInput) * (100 - Number(discountInput)) / 100).toLocaleString('id-ID')}`
+                  : 'Isi 0 atau kosongkan jika tidak ada diskon.'}
+              </p>
             </div>
           </div>
 
@@ -312,9 +379,9 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer"
               >
                 <option value="">Tidak Ada Badge</option>
-                <option value="BEST SELLER">BEST SELLER</option>
-                <option value="DISKON 15%">DISKON 15%</option>
-                <option value="BARU">BARU</option>
+                {(badgeOptions && badgeOptions.length > 0 ? badgeOptions : ['BEST SELLER', 'DISKON 15%', 'BARU']).map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -333,48 +400,71 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             />
           </div>
 
-          {/* Row 5: Attribute Checkboxes */}
-          <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1d1b17]">
-              Atribut Spesifikasi Nutrisi
-            </label>
-            <div className="flex flex-wrap gap-6 pt-1">
-              <label className="inline-flex items-center space-x-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={glutenFreeInput}
-                  onChange={(e) => setGlutenFreeInput(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#162809] focus:ring-[#162809]"
-                />
-                <span className="text-xs font-semibold text-[#1d1b17]">100% Bebas Gluten</span>
-              </label>
-              <label className="inline-flex items-center space-x-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={organicInput}
-                  onChange={(e) => setOrganicInput(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#162809] focus:ring-[#162809]"
-                />
-                <span className="text-xs font-semibold text-[#1d1b17]">Organik &amp; Alami</span>
-              </label>
+          {/* Section: Spesifikasi Produk */}
+          <div className="space-y-5 border-t border-[#c4c8bc]/50 pt-5">
+            <div>
+              <h4 className="font-['Playfair_Display'] text-base font-bold text-[#1d1b17]">Spesifikasi Produk</h4>
+              <p className="text-[10px] text-gray-400">Informasi teknis produk yang tampil di halaman detail.</p>
             </div>
-          </div>
 
-          {/* Row: Spesifikasi & Informasi Pengiriman */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-[#1d1b17]">
+                  Kemasan / Berat (Info Unit)
+                </label>
+                <input
+                  type="text"
+                  value={unitInput}
+                  onChange={(e) => setUnitInput(e.target.value)}
+                  placeholder="Contoh: 1kg / Kemasan Vacuum"
+                  className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-[#1d1b17]">
+                  Masa Simpan
+                </label>
+                <input
+                  type="text"
+                  value={shelfLifeInput}
+                  onChange={(e) => setShelfLifeInput(e.target.value)}
+                  placeholder="Contoh: 12 bulan sejak produksi"
+                  className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1d1b17]">
-                Spesifikasi Produk
+                Komposisi
               </label>
               <textarea
                 rows={2}
-                value={specificationInput}
-                onChange={(e) => setSpecificationInput(e.target.value)}
-                placeholder="Contoh: Kadar air <14%, Masa simpan 12 bulan, Gluten-Free."
+                value={compositionInput}
+                onChange={(e) => setCompositionInput(e.target.value)}
+                placeholder="Contoh: 100% biji sorgum merah organik"
                 className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
               />
             </div>
 
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1d1b17]">
+                Atribut Produk
+              </label>
+              <input
+                type="text"
+                value={attributesInput}
+                onChange={(e) => setAttributesInput(e.target.value)}
+                placeholder="Contoh: Gluten-Free, Organik"
+                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+              />
+              <p className="text-[10px] text-gray-400">Tulis atribut bebas, pisahkan dengan koma.</p>
+            </div>
+          </div>
+
+          {/* Row: Informasi Pengiriman */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1d1b17]">
                 Informasi Pengiriman

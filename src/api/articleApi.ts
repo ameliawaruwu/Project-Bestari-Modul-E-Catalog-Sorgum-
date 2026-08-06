@@ -8,6 +8,7 @@ interface ArticleRow {
   slug: string;
   category: string;
   content: string;
+  content_blocks?: string | Array<Record<string, any>> | null;
   excerpt: string | null;
   image_url: string | null;
   is_published: number | boolean;
@@ -35,6 +36,11 @@ function mapArticle(a: ArticleRow): Article {
     readTime: a.read_time || undefined,
     snippet: a.excerpt || a.content.slice(0, 150),
     content: a.content,
+    contentBlocks: a.content_blocks
+      ? (typeof a.content_blocks === 'string'
+          ? (() => { try { return JSON.parse(a.content_blocks); } catch { return undefined; } })()
+          : a.content_blocks)
+      : undefined,
     image: a.image_url || '',
     date: dateStr,
     author: a.author || 'Tim Bestari',

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
+import { useApp } from '../context/AppContext';
 
 interface ProductModalProps {
   product: Product | null;
@@ -13,8 +14,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   onAddToCart,
 }) => {
   const [quantity, setQuantity] = useState(1);
+  const { currentUser, isFavorite, toggleWishlist } = useApp();
 
   if (!product) return null;
+
+  const favorite = isFavorite(product.id);
+  const handleToggleFavorite = () => {
+    if (!currentUser) return;
+    toggleWishlist(product.id);
+  };
 
   const handleAdd = () => {
     onAddToCart(product, quantity);
@@ -109,6 +117,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
               <span>Tambah ke Keranjang • IDR {(product.price * quantity).toLocaleString('id-ID')}</span>
             </button>
+
+            {/* Favorite Button */}
+            {currentUser && (
+              <button
+                onClick={handleToggleFavorite}
+                className={`w-full flex items-center justify-center gap-2 border-2 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer ${
+                  favorite
+                    ? 'border-red-500 bg-red-500/10 text-red-600'
+                    : 'border-[#75786e]/40 text-[#44483f] hover:border-red-400 hover:text-red-500'
+                }`}
+              >
+                <span className="material-symbols-outlined text-lg">{favorite ? 'favorite' : 'favorite_border'}</span>
+                <span>
+                  {favorite
+                    ? 'Hapus dari Favorit'
+                    : 'Tambah ke Favorit'}
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>

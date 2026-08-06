@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { HeroBanner } from '../components/HeroBanner';
 import { ProductCard } from '../components/ProductCard';
 import { BenefitsSection } from '../components/BenefitsSection';
@@ -20,9 +20,27 @@ export const HomePage: React.FC<HomePageProps> = ({
   setActiveTab,
   searchQuery,
 }) => {
-  const { t, landingContent } = useApp();
+  const { t, landingContent, currentUser } = useApp();
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+
+  // Produk yang tampil di section "Koleksi Produk Pilihan" —
+  // diatur admin lewat Pengaturan Landing Page (featuredProductIds, JSON array of id).
+  // Kosong (tidak ada dicentang) => section KOSONG, tidak ada fallback.
+  const featuredProducts = useMemo(() => {
+    if (!products.length) return [];
+    let featuredIds: string[] = [];
+    try {
+      const raw = landingContent.featuredProductIds || '';
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) featuredIds = parsed.map(String);
+    } catch {
+      featuredIds = [];
+    }
+    return featuredIds
+      .map((id) => products.find((p) => String(p.id) === id))
+      .filter(Boolean) as Product[];
+  }, [products, landingContent.featuredProductIds]);
 
   // Load products from backend (filter by search client-side)
   useEffect(() => {
@@ -160,12 +178,15 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-                {products.slice(0, 4).map((product) => (
+                {featuredProducts.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
                     onAddToCart={onAddToCart}
                     onClickProduct={onClickProduct}
+                    onRequireLogin={() => setActiveTab('login')}
+                    guestNonInteractive={!currentUser}
+                    hideActions
                   />
                 ))}
               </div>

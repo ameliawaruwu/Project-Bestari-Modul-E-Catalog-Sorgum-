@@ -3,8 +3,6 @@ import { Product } from '../../types';
 
 interface ProductsTabProps {
   products: Product[];
-  productActiveMap: Record<string, boolean>;
-  productStockMap: Record<string, number>;
   onToggleProductStatus: (id: string) => void;
   onDeleteProduct: (product: Product) => void;
   onOpenCreateProduct: () => void;
@@ -23,17 +21,20 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
   const [searchProduct, setSearchProduct] = useState('');
   const [selectedProductCategory, setSelectedProductCategory] = useState<string>('semua');
 
-  const filteredProducts = products.filter((p) => {
-    const matchesSearch =
-      p.name.toLowerCase().includes(searchProduct.toLowerCase()) ||
-      (p.categoryLabel || p.category).toLowerCase().includes(searchProduct.toLowerCase()) ||
-      (p.unitInfo || '').toLowerCase().includes(searchProduct.toLowerCase());
+  const filteredProducts = products
+    .filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(searchProduct.toLowerCase()) ||
+        (p.categoryLabel || p.category).toLowerCase().includes(searchProduct.toLowerCase()) ||
+        (p.unitInfo || '').toLowerCase().includes(searchProduct.toLowerCase());
 
-    const matchesCategory =
-      selectedProductCategory === 'semua' || p.category === selectedProductCategory;
+      const matchesCategory =
+        selectedProductCategory === 'semua' || p.category === selectedProductCategory;
 
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory;
+    })
+    // ID urut DESC (terbaru di atas)
+    .sort((a, b) => b.id - a.id);
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -114,20 +115,15 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
               <tr className="bg-[#f3ede6] text-[#44483f] text-xs font-bold uppercase tracking-wider border-b border-[#c4c8bc]">
                 <th className="px-4 py-3 w-[80px]">ID Produk</th>
                 <th className="px-4 py-3 w-[80px]">Gambar</th>
-                <th className="px-4 py-3 w-[160px]">Nama Produk</th>
-                <th className="px-4 py-3 w-[120px]">Kategori</th>
-                <th className="px-4 py-3 w-[100px]">Harga</th>
+                <th className="px-4 py-3 w-[250px]">Nama Produk</th>
+                <th className="px-4 py-3 w-[130px]">Harga</th>
                 <th className="px-4 py-3 w-[85px]">Stok</th>
-                <th className="px-4 py-3 w-[80px]">Berat</th>
-                <th className="px-4 py-3 w-[160px]">Spesifikasi</th>
-                <th className="px-4 py-3 w-[200px]">Deskripsi</th>
-                <th className="px-4 py-3 w-[160px]">Info Pengiriman</th>
-                <th className="px-4 py-3 text-right w-[90px]">Aksi</th>
+                <th className="px-4 py-3 text-right w-[150px] sticky right-0 bg-[#f3ede6]">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#c4c8bc]/60 text-xs sm:text-sm">
               {filteredProducts.map((prod) => {
-                const stock = productStockMap[prod.id] ?? 50;
+                const stock = prod.stock ?? 0;
                 return (
                   <tr key={prod.id} className="hover:bg-[#f9f3ec] transition-colors odd:bg-white even:bg-[#faf9f6]">
                     <td className="px-4 py-3 font-mono text-xs font-bold text-[#44483f]">
@@ -152,48 +148,42 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#d2eabb] text-[#162809]">
-                        {prod.categoryLabel || prod.category}
-                      </span>
-                    </td>
                     <td className="px-4 py-3 font-bold text-[#162809] font-mono">
-                      Rp {prod.price.toLocaleString('id-ID')}
+                      {prod.originalPrice ? (
+                        <div className="space-y-0.5">
+                          <p className="text-[#162809] font-bold">
+                            Rp {prod.price.toLocaleString('id-ID')}
+                          </p>
+                          <p className="text-[10px] text-gray-400 line-through">
+                            Rp {prod.originalPrice.toLocaleString('id-ID')}
+                          </p>
+                        </div>
+                      ) : (
+                        `Rp ${prod.price.toLocaleString('id-ID')}`
+                      )}
                     </td>
                     <td className="px-4 py-3 font-bold text-[#1d1b17]">
                       {stock} Unit
                     </td>
-                    <td className="px-4 py-3 text-[#1d1b17]">
-                      {prod.weight || '1kg'}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-[#44483f] leading-normal break-words">
-                      {prod.specification || 'Bebas Gluten, Organik & Alami.'}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-[#44483f] leading-normal break-words">
-                      <div className="line-clamp-3">
-                        {prod.description}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-[#44483f] leading-normal break-words">
-                      {prod.shippingInfo || 'Dikirim dari Yogyakarta.'}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end space-x-1">
+                    <td className="px-4 py-3 text-right sticky right-0 bg-white odd:bg-white even:bg-[#faf9f6] hover:bg-[#f9f3ec] z-10">
+                      <div className="flex justify-end space-x-2">
                         <button
                           type="button"
                           onClick={() => onOpenEditProduct(prod)}
-                          className="p-1.5 text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#162809] bg-[#fade88]/50 hover:bg-[#fade88] rounded-lg transition-all cursor-pointer"
                           title="Edit produk"
                         >
-                          <span className="material-symbols-outlined text-lg">edit</span>
+                          <span className="material-symbols-outlined text-base">edit</span>
+                          Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => onDeleteProduct(prod)}
-                          className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all cursor-pointer"
                           title="Hapus produk"
                         >
-                          <span className="material-symbols-outlined text-lg">delete</span>
+                          <span className="material-symbols-outlined text-base">delete</span>
+                          Hapus
                         </button>
                       </div>
                     </td>
