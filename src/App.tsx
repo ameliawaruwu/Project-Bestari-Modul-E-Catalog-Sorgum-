@@ -9,6 +9,7 @@ import { ArticlesPage } from './pages/ArticlesPage';
 import { FaqPage } from './pages/FaqPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { OrdersPage } from './pages/OrdersPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CartPage } from './pages/CartPage';
@@ -365,6 +366,7 @@ export function App() {
                 onLoginSuccess={handleAuthSuccess}
                 onNavigateRegister={() => setActiveTab('register')}
                 onNavigateHome={() => handleTabChange('beranda')}
+                onNavigateForgot={() => setActiveTab('forgot-password')}
               />
             )}
 
@@ -375,17 +377,25 @@ export function App() {
                 onNavigateHome={() => handleTabChange('beranda')}
               />
             )}
+
+            {activeTab === 'forgot-password' && (
+              <ForgotPasswordPage
+                onBackToLogin={() => setActiveTab('login')}
+                onNavigateHome={() => handleTabChange('beranda')}
+                onNavigateRegister={() => setActiveTab('register')}
+              />
+            )}
           </>
         )}
       </main>
 
       {/* Footer */}
-      {activeTab !== 'login' && activeTab !== 'register' && activeTab !== 'admin' && (
+      {activeTab !== 'login' && activeTab !== 'register' && activeTab !== 'forgot-password' && activeTab !== 'admin' && (
         <Footer setActiveTab={handleTabChange} />
       )}
 
       {/* Sticky Bottom Navigation for Mobile Devices */}
-      {activeTab !== 'login' && activeTab !== 'register' && activeTab !== 'admin' && (
+      {activeTab !== 'login' && activeTab !== 'register' && activeTab !== 'forgot-password' && activeTab !== 'admin' && (
         <MobileBottomNav
           activeTab={activeTab}
           setActiveTab={handleTabChange}

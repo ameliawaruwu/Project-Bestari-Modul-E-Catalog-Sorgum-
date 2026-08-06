@@ -63,7 +63,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         <div className={isCollapsed ? 'lg:hidden block' : 'block'}>
           <h1 className="font-['Playfair_Display'] text-xl text-white font-bold tracking-wider">
-            BESTARI
+            SORGUM
           </h1>
           <p className="text-white/60 text-[9px] font-bold uppercase tracking-widest mt-0.5">
             Admin Console

@@ -213,7 +213,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                 maxLength={150}
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Contoh: Apakah produk sorgum Bestari 100% Bebas Gluten?"
+                placeholder="Contoh: Apakah produk sorgum Sorgum 100% Bebas Gluten?"
                 className={`w-full px-4 py-2.5 text-sm rounded-xl border ${
                   errors.question ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
                 } focus:outline-none focus:ring-2 focus:ring-[#162809] font-medium`}

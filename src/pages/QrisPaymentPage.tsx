@@ -36,7 +36,7 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
     .replace(/^0/, '62');
 
   const waMessage = encodeURIComponent(
-    `Halo Admin ${shopSettings.storeName || 'BESTARI'}, saya ingin konfirmasi pembayaran QRIS untuk pesanan *${orderId}*.\n\n*Detail Pesanan:*\n${itemsSummary}\n*Total Bayar: Rp ${totalAmount.toLocaleString(
+    `Halo Admin ${shopSettings.storeName || 'SORGUM'}, saya ingin konfirmasi pembayaran QRIS untuk pesanan *${orderId}*.\n\n*Detail Pesanan:*\n${itemsSummary}\n*Total Bayar: Rp ${totalAmount.toLocaleString(
       'id-ID'
     )}*\n\nAtas nama: ${order?.customerName || 'Pelanggan'}\nNomor WA: ${
       order?.customerPhone || '-'
@@ -85,7 +85,7 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
               </div>
             )}
             <p className="font-bold text-sm text-[#162809] mt-3 tracking-wide">
-              {shopSettings.storeName || 'BESTARI SORGHUM'}
+              {shopSettings.storeName || 'SORGUM SORGHUM'}
             </p>
             {shopSettings.qrisNmid && (
               <p className="text-[10px] font-mono text-gray-500 mt-0.5">

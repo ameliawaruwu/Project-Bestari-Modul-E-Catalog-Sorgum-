@@ -41,7 +41,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
 }) => {
   const [titleInput, setTitleInput] = useState('');
   const [categoryInput, setCategoryInput] = useState('Kesehatan & Nutrisi');
-  const [authorInput, setAuthorInput] = useState('Tim Nutrisi Bestari');
+  const [authorInput, setAuthorInput] = useState('Tim Nutrisi Sorgum');
   const [createdAtText, setCreatedAtText] = useState('');
   const [heroImage, setHeroImage] = useState('');
   const [blocks, setBlocks] = useState<ArticleBlockDraft[]>([]);
@@ -76,7 +76,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
     } else {
       setTitleInput('');
       setCategoryInput('Kesehatan & Nutrisi');
-      setAuthorInput('Tim Nutrisi Bestari');
+      setAuthorInput('Tim Nutrisi Sorgum');
       setCreatedAtText('');
       setHeroImage('');
       setBlocks([]);
@@ -222,6 +222,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 <option value="Resep & Kuliner">Resep &amp; Kuliner</option>
                 <option value="Budidaya Sorgum">Budidaya Sorgum</option>
                 <option value="Berita & Event">Berita &amp; Event</option>
+                <option value="Promosi">Promosi</option>
               </select>
             </div>
 
@@ -231,7 +232,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 type="text"
                 value={authorInput}
                 onChange={(e) => setAuthorInput(e.target.value)}
-                placeholder="Contoh: Tim Nutrisi Bestari"
+                placeholder="Contoh: Tim Nutrisi Sorgum"
                 className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
               />
             </div>

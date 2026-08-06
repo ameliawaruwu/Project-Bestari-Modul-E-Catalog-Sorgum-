@@ -11,7 +11,7 @@ export interface ShopSettings {
 }
 
 export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
-  storeName: 'BESTARI',
+  storeName: 'SORGUM',
   logoUrl: '',
   qrisImageUrl: '',
   qrisNmid: '',

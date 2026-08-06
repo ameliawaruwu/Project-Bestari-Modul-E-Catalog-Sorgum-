@@ -205,7 +205,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
               <div className="relative z-10 w-full text-white space-y-1 max-w-lg">
                 <p className="text-[11px] uppercase tracking-widest text-[#fde08b] font-bold">
-                  BESTARI PREMIUM
+                  SORGUM PREMIUM
                 </p>
                 <h3 className="font-['Playfair_Display'] text-lg sm:text-2xl font-bold leading-tight">
                   {titleInput || 'Judul Promosi Banner...'}

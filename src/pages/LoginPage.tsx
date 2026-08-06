@@ -6,12 +6,14 @@ interface LoginPageProps {
   onLoginSuccess: (user: User) => void;
   onNavigateRegister: () => void;
   onNavigateHome: () => void;
+  onNavigateForgot: () => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
   onLoginSuccess,
   onNavigateRegister,
   onNavigateHome,
+  onNavigateForgot,
 }) => {
   const { t, login } = useApp();
   const [email, setEmail] = useState('');
@@ -66,7 +68,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <span className="material-symbols-outlined text-[#fade88] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
             eco
           </span>
-          <span className="font-['Playfair_Display'] text-lg font-black tracking-wider text-white">BESTARI</span>
+          <span className="font-['Playfair_Display'] text-lg font-black tracking-wider text-white">SORGUM</span>
         </div>
 
         {/* Banner Copywriter */}
@@ -76,15 +78,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </h2>
           <p className="text-xs sm:text-sm text-white/80 leading-relaxed max-w-sm">
             {t(
-              'Gabung bersama ekosistem hidup sehat Bestari dan dapatkan kemudahan memesan olahan sorgum organik murni langsung dari petani lokal.',
-              'Join the Bestari healthy living ecosystem and enjoy the ease of ordering pure organic sorghum products directly from local farmers.'
+              'Gabung bersama ekosistem hidup sehat Sorgum dan dapatkan kemudahan memesan olahan sorgum organik murni langsung dari petani lokal.',
+              'Join the Sorgum healthy living ecosystem and enjoy the ease of ordering pure organic sorghum products directly from local farmers.'
             )}
           </p>
         </div>
 
         {/* Banner Footer */}
         <div className="relative z-20 text-[10px] text-white/40 tracking-wider">
-          © 2026 BESTARI SORGUM. ALL RIGHTS RESERVED.
+          © 2026 SORGUM SORGUM. ALL RIGHTS RESERVED.
         </div>
       </div>
 
@@ -195,7 +197,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  setErrorMsg('Instruksi pemulihan kata sandi telah dikirimkan.');
+                  onNavigateForgot();
                 }}
                 className="text-[#2b3e1d] font-bold hover:underline transition-all"
               >

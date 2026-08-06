@@ -109,7 +109,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
               <div>
                 <label className="text-xs font-bold text-[#44483f]">Kode Voucher</label>
                 <input required value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                  className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" placeholder="BESTARI10" />
+                  className="w-full border border-[#c4c8bc] rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-[#162809] outline-none" placeholder="SORGUM10" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>

@@ -18,7 +18,7 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
 
   const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waMessage = encodeURIComponent(
-    `Halo Admin ${shopSettings.storeName || 'BESTARI'}, saya ingin konfirmasi pesanan *${orderId}*.\n\n` +
+    `Halo Admin ${shopSettings.storeName || 'SORGUM'}, saya ingin konfirmasi pesanan *${orderId}*.\n\n` +
     `Total: Rp ${(order?.totalAmount || 0).toLocaleString('id-ID')}\n` +
     `Metode: ${order?.paymentMethod === 'qris' ? 'QRIS' : 'COD'}\n\n` +
     `Mohon diproses, terima kasih!`
@@ -72,8 +72,8 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
             </h1>
             <p className="text-xs sm:text-sm text-[#44483f]">
               {t(
-                'Terima kasih telah berbelanja produk olahan sorgum berkualitas dari BESTARI.',
-                'Thank you for shopping for quality sorghum products from BESTARI.'
+                'Terima kasih telah berbelanja produk olahan sorgum berkualitas dari SORGUM.',
+                'Thank you for shopping for quality sorghum products from SORGUM.'
               )}
             </p>
           </div>

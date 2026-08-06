@@ -77,6 +77,7 @@ export interface RegisterPayload {
   password: string;
   confirmPassword?: string;
   agreeToTerms?: boolean;
+  phone?: string;
 }
 
 export interface LoginPayload {
@@ -99,6 +100,10 @@ export interface Order {
   items: CartItem[];
   totalAmount: number;
   status: 'Pending' | 'Diproses' | 'Dikirim' | 'Selesai' | 'Dibatalkan';
+  // Status enum BE asli (pending/confirmed/processed/shipped/delivered/cancelled) —
+  // FE tampilkan label gabungan (confirmed & processed sama-sama 'Diproses'),
+  // tapi untuk transisi status perlu tahu enum asli.
+  statusRaw?: string;
   createdAt: string;
   shippingAddress?: string;
   paymentMethod?: 'cod' | 'qris';

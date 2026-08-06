@@ -81,8 +81,8 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
         </h1>
         <p className="text-xs sm:text-sm text-[#44483f]">
           {t(
-            'Pantau status pengiriman dan riwayat belanja produk sorgum BESTARI Anda.',
-            'Track delivery status and shopping history of your BESTARI sorghum products.'
+            'Pantau status pengiriman dan riwayat belanja produk sorgum SORGUM Anda.',
+            'Track delivery status and shopping history of your SORGUM sorghum products.'
           )}
         </p>
       </div>

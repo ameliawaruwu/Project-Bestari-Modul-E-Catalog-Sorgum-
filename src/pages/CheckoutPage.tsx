@@ -47,7 +47,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  // appliedDiscount = NOMINAL RUPIAH (dari CartPage promo: BESTARI10 = Rp 15.000)
+  // appliedDiscount = NOMINAL RUPIAH (dari CartPage promo: SORGUM10 = Rp 15.000)
   const discount = appliedDiscount > 0 ? Math.min(appliedDiscount, subtotal) : 0;
   // Ongkir dari settings BE (bukan hardcode 15000)
   const shippingFee = cart.length > 0 ? (shopSettings.shippingCost ?? 15000) : 0;
@@ -95,7 +95,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
         )
         .join('\n');
 
-      const fullMessage = `Halo Admin BESTARI, saya ingin melakukan pemesanan:${
+      const fullMessage = `Halo Admin SORGUM, saya ingin melakukan pemesanan:${
         formData.paymentMethod === 'qris' ? ' (Metode: QRIS)' : ' (Metode: COD)'
       }
 
@@ -271,7 +271,8 @@ ${
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-[#44483f]">Kode Pos</label>
                   <input
-                    type="text"
+                    type="number"
+                    inputMode="numeric"
                     name="postalCode"
                     value={formData.postalCode}
                     onChange={handleInputChange}

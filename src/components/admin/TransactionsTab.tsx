@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Order } from '../../types';
+import { getOrderTransitionLabels, getPaymentTransitionOptions } from '../../api/orderApi';
 
 interface TransactionsTabProps {
   orders: Order[];
@@ -98,6 +99,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                 <th className="p-4">Produk Dipesan</th>
                 <th className="p-4">Metode Bayar</th>
                 <th className="p-4">Total</th>
+                <th className="p-4">Kurir / Resi</th>
                 <th className="p-4">Status</th>
                 <th className="p-4 text-center">Aksi</th>
               </tr>
@@ -105,7 +107,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
             <tbody className="divide-y divide-[#c4c8bc]/30">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-[#44483f]">
+                  <td colSpan={8} className="p-8 text-center text-[#44483f]">
                     Tidak ada transaksi yang cocok dengan pencarian.
                   </td>
                 </tr>
@@ -113,14 +115,14 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                 filteredOrders.map((ord) => (
                   <tr key={ord.id} className="hover:bg-[#f9f3ec]/60 transition-colors">
                     <td className="p-4 font-bold font-mono text-[#162809]">
-                      <div className="text-sm">{ord.orderNumber || ord.id}</div>
+                      <div className="text-sm font-bold">{ord.orderNumber || '-'}</div>
                       <div className="text-[11px] font-normal text-[#44483f] mt-0.5">
                         {ord.createdAt}
                       </div>
                     </td>
                     <td className="p-4">
                       <p className="font-bold text-[#1d1b17]">
-                        {ord.customerName || 'Pelanggan Bestari'}
+                        {ord.customerName || 'Pelanggan Sorgum'}
                       </p>
                       <p className="text-xs text-[#44483f]">{ord.customerPhone}</p>
                       <p className="text-[11px] text-[#44483f]/80 truncate max-w-[160px]">
@@ -172,15 +174,32 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             }`}
                             title="Verifikasi pembayaran (unpaid/paid/confirmed)"
                           >
-                            <option value="unpaid">Belum Bayar</option>
-                            <option value="paid">Sudah Bayar</option>
-                            <option value="confirmed">Terverifikasi</option>
+                            {getPaymentTransitionOptions(ord.paymentStatus || 'unpaid').map((p) => (
+                              <option key={p} value={p}>
+                                {p === 'paid' ? 'Sudah Bayar' : p === 'confirmed' ? 'Terverifikasi' : 'Belum Bayar'}
+                              </option>
+                            ))}
+                            {getPaymentTransitionOptions(ord.paymentStatus || 'unpaid').length === 0 && (
+                              <option value={ord.paymentStatus || 'unpaid'}>
+                                {ord.paymentStatus === 'confirmed' ? 'Terverifikasi' : ord.paymentStatus === 'paid' ? 'Sudah Bayar' : 'Belum Bayar'}
+                              </option>
+                            )}
                           </select>
                         )}
                       </div>
                     </td>
                     <td className="p-4 font-bold text-[#162809] font-mono text-sm">
                       Rp {ord.totalAmount.toLocaleString('id-ID')}
+                    </td>
+                    <td className="p-4">
+                      {ord.courier || ord.trackingNumber ? (
+                        <div>
+                          <p className="font-bold text-[#1d1b17] text-xs">{ord.courier || '-'}</p>
+                          <p className="text-[11px] font-mono text-[#44483f]">{ord.trackingNumber || '-'}</p>
+                        </div>
+                      ) : (
+                        <span className="text-[#c4c8bc]">-</span>
+                      )}
                     </td>
                     <td className="p-4">
                       <select
@@ -200,11 +219,12 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             : 'bg-red-50 border-red-300 text-red-800'
                         }`}
                       >
-                        <option value="Pending" className="text-[#1d1b17] bg-white">Pending</option>
-                        <option value="Diproses" className="text-[#1d1b17] bg-white">Diproses</option>
-                        <option value="Dikirim" className="text-[#1d1b17] bg-white">Dikirim</option>
-                        <option value="Selesai" className="text-[#1d1b17] bg-white">Selesai</option>
-                        <option value="Dibatalkan" className="text-[#1d1b17] bg-white">Dibatalkan</option>
+                        {getOrderTransitionLabels(ord.statusRaw || 'pending').map((s) => (
+                          <option key={s} value={s} className="text-[#1d1b17] bg-white">{s}</option>
+                        ))}
+                        {getOrderTransitionLabels(ord.statusRaw || 'pending').length === 0 && (
+                          <option value={ord.status} className="text-[#1d1b17] bg-white">{ord.status}</option>
+                        )}
                       </select>
                     </td>
                     <td className="p-4 text-center">

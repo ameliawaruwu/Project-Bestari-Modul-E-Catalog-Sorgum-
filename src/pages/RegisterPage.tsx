@@ -16,6 +16,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   const { t, register } = useApp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -40,6 +41,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
       const res = await register({
         name,
         email,
+        phone,
         password,
         confirmPassword,
         agreeToTerms,
@@ -77,7 +79,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           <span className="material-symbols-outlined text-[#fade88] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
             eco
           </span>
-          <span className="font-['Playfair_Display'] text-lg font-black tracking-wider text-white">BESTARI</span>
+          <span className="font-['Playfair_Display'] text-lg font-black tracking-wider text-white">SORGUM</span>
         </div>
 
         {/* Banner Copywriter */}
@@ -92,7 +94,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
 
         {/* Banner Footer */}
         <div className="relative z-20 text-[10px] text-white/40 tracking-wider">
-          © 2026 BESTARI SORGUM. ALL RIGHTS RESERVED.
+          © 2026 SORGUM SORGUM. ALL RIGHTS RESERVED.
         </div>
       </div>
 
@@ -115,7 +117,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           {/* Form Header */}
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-[#162809] mb-1">
-              {t('Bergabung dengan Bestari', 'Join Bestari')}
+              {t('Bergabung dengan Sorgum', 'Join Sorgum')}
             </h1>
             <p className="text-xs sm:text-sm text-[#75786e] font-semibold">
               {t('Mulai belanja sehat produk sorgum organik pilihan Anda', 'Start shopping for your choice of organic sorghum products')}
@@ -164,6 +166,23 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                 required
                 className="w-full h-11 px-4 bg-white border border-[#c4c8bc]/60 rounded-xl text-xs sm:text-sm text-[#1d1b17] placeholder-[#75786e]/60 focus:outline-none focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
               />
+            </div>
+
+            {/* Nomor WhatsApp */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-[#44483f] ml-0.5">
+                {t('Nomor WhatsApp', 'WhatsApp Number')}
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder={t('Contoh: 081234567890', 'e.g. 081234567890')}
+                className="w-full h-11 px-4 bg-white border border-[#c4c8bc]/60 rounded-xl text-xs sm:text-sm text-[#1d1b17] placeholder-[#75786e]/60 focus:outline-none focus:border-[#2b3e1d] focus:ring-1 focus:ring-[#2b3e1d] transition-all font-medium"
+              />
+              <p className="text-[10px] text-[#75786e]/80 ml-0.5">
+                {t('Dipakai untuk verifikasi lupa password via WhatsApp.', 'Used for password recovery via WhatsApp.')}
+              </p>
             </div>
 
             {/* Passwords Grid */}
@@ -223,7 +242,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    setErrorMsg('Syarat & Ketentuan BESTARI: Produk 100% Organik & Garansi Kualitas.');
+                    setErrorMsg('Syarat & Ketentuan SORGUM: Produk 100% Organik & Garansi Kualitas.');
                   }}
                   className="text-[#2b3e1d] font-bold underline hover:text-[#162809]"
                 >

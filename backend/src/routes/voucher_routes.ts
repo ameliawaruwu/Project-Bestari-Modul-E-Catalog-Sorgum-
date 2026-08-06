@@ -4,6 +4,16 @@ import { voucherService } from '../services/voucher_service';
 
 const router = Router();
 
+// Public — daftar voucher aktif (untuk ditampilkan di halaman user/cart)
+router.get('/vouchers', async (_req, res) => {
+  try {
+    const vouchers = await voucherService.listActive();
+    res.json({ data: vouchers });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message || 'Gagal mengambil daftar voucher' });
+  }
+});
+
 router.get('/admin/vouchers', authRequired, adminOnly, async (_req, res) => {
   try {
     const vouchers = await voucherService.list();
