@@ -33,6 +33,12 @@ import voucherRoutes from './routes/voucher_routes';
 
 const app = express();
 
+// Trust proxy: app jalan di belakang nginx (minibox) / Cloudflare, yang meng-set header
+// X-Forwarded-For. Tanpa ini express-rate-limit (authLimiter) melempar
+// ValidationError ERR_ERL_UNEXPECTED_X_FORWARDED_FOR pada tiap request → request auth
+// gagal random ("server tidak dapat terhubung" di panel admin). '1' = percaya hop proxy pertama.
+app.set('trust proxy', 1);
+
 app.use(cors({ origin: config.corsOrigins }));
 app.use(express.json());
 app.use('/uploads', express.static(path.resolve(config.upload.dir)));

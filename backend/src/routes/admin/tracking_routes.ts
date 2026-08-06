@@ -1,9 +1,21 @@
 import { Router, Request, Response } from 'express';
-import { setTracking, manualPoll } from '../../services/tracking_service';
+import { setTracking, manualPoll, getTrackingHistory } from '../../services/tracking_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
 router.use(authRequired, adminOnly);
+
+// GET /api/admin/tracking/:orderId — lihat status pengiriman + riwayat (admin boleh order siapa pun)
+router.get('/:orderId', async (req: Request, res: Response) => {
+  const orderId = parseInt(String(req.params.orderId));
+  if (isNaN(orderId)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
+  try {
+    const data = await getTrackingHistory(orderId);
+    res.json({ data });
+  } catch (e: any) {
+    res.status(e.status || 500).json({ error: e.message || 'Gagal ambil tracking' });
+  }
+});
 
 router.post('/:orderId/set', async (req: Request, res: Response) => {
   const orderId = parseInt(String(req.params.orderId));

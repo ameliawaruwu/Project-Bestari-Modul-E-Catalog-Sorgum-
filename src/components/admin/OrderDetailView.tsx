@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Order } from '../../types';
-import { getOrderTransitionLabels } from '../../api/orderApi';
 
 interface OrderDetailViewProps {
   order: Order | null;
@@ -18,6 +17,25 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
   const [courierInput, setCourierInput] = useState('');
   const [resiInput, setResiInput] = useState('');
   const [trackingSaving, setTrackingSaving] = useState(false);
+  const [trackingData, setTrackingData] = useState<any>(null);
+
+  // Fetch status pengiriman (resi_status + riwayat) saat detail dibuka
+  useEffect(() => {
+    setTrackingData(null);
+    if (!order) return;
+    if (!order.courier || !order.trackingNumber) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { trackingAdminApi } = await import('../../api/adminApi');
+        const data = await trackingAdminApi.getTracking(order.id);
+        if (!cancelled) setTrackingData(data);
+      } catch {
+        // tracking unavailable — diam (resi_status belum ada / cek-resi down)
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [order?.id, order?.courier, order?.trackingNumber]);
 
   if (!order) return null;
 
@@ -117,12 +135,9 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                   : 'bg-red-50 border-red-300 text-red-800'
               }`}
             >
-              {getOrderTransitionLabels(order.statusRaw || 'pending').map((s) => (
+              {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
                 <option key={s} value={s} className="text-[#1d1b17] bg-white">{s}</option>
               ))}
-              {getOrderTransitionLabels(order.statusRaw || 'pending').length === 0 && (
-                <option value={order.status} className="text-[#1d1b17] bg-white">{order.status}</option>
-              )}
             </select>
           </div>
         </div>
@@ -210,6 +225,49 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                 <span className="material-symbols-outlined text-sm">open_in_new</span>
                 Lacak di CekResi
               </a>
+            )}
+
+            {/* Status pengiriman real-time dari cek-resi */}
+            {trackingData?.tracking && (
+              <div className="pt-3 border-t border-[#c4c8bc]/30 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                    trackingData.tracking.resi_status?.toLowerCase().includes('delivered')
+                      ? 'bg-[#d2eabb]/60 text-[#162809]'
+                      : trackingData.tracking.resi_status
+                        ? 'bg-[#fade88]/50 text-[#756118]'
+                        : 'bg-gray-100 text-[#44483f]'
+                  }`}>
+                    <span className="material-symbols-outlined text-xs">local_shipping</span>
+                    {trackingData.tracking.resi_status || 'Belum ada update'}
+                  </span>
+                  {trackingData.tracking.checked_at && (
+                    <span className="text-[10px] text-[#44483f]">
+                      {new Date(trackingData.tracking.checked_at).toLocaleString('id-ID')}
+                    </span>
+                  )}
+                </div>
+                {(trackingData.tracking.pengirim || trackingData.tracking.tujuan) && (
+                  <p className="text-[11px] text-[#44483f]">
+                    {trackingData.tracking.pengirim && `Pengirim: ${trackingData.tracking.pengirim}`}
+                    {trackingData.tracking.pengirim && trackingData.tracking.tujuan && ' · '}
+                    {trackingData.tracking.tujuan && `Tujuan: ${trackingData.tracking.tujuan}`}
+                  </p>
+                )}
+                {trackingData.history?.length > 0 && (
+                  <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+                    {trackingData.history.map((h: any, i: number) => (
+                      <div key={i} className="flex items-start gap-2 text-[11px]">
+                        <span className="material-symbols-outlined text-xs text-[#93a97f] mt-0.5">schedule</span>
+                        <div>
+                          <p className="text-[#1d1b17]">{h.description}</p>
+                          <p className="text-[10px] text-[#44483f]">{h.event_date}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Form set resi */}

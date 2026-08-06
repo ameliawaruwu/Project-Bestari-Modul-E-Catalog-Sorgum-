@@ -37,7 +37,7 @@ router.put('/users/:id', async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id));
   if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
 
-  const allowed = ['name', 'email', 'phone', 'password'];
+  const allowed = ['name', 'email', 'phone', 'password', 'is_deleted'];
   const fields: Record<string, any> = {};
   for (const k of allowed) {
     if (req.body[k] !== undefined) fields[k] = req.body[k];

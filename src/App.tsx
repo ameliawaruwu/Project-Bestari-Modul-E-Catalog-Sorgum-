@@ -67,6 +67,11 @@ export function App() {
       setRedirectAfterLogin(activeTab);
       setActiveTab('login');
     }
+    // Admin: enforce cuma panel admin (atau profil). Kalau reload/nyangkut di beranda/produk
+    // sebagai admin → lempar balik ke panel admin.
+    if (user?.role === 'admin' && activeTab !== 'admin' && activeTab !== 'profil') {
+      setActiveTab('admin');
+    }
   }, [user, activeTab]);
 
   const showToast = (message: string) => {

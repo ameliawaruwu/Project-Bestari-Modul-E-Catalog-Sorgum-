@@ -160,7 +160,7 @@ const DEFAULT_LANDING_CONTENT: LandingContent = {
   storyDesc1En: 'At Sorgum, we believe that true health starts from what nature grows purely. Together with local partner farmers, we revive sorghum—a fiber-rich and gluten-free superfood that has nourished generations before us.',
   storyDesc2Id: 'Setiap butir Sorgum adalah wujud komitmen kami untuk menghadirkan kualitas terbaik dari tanah Indonesia langsung ke meja makan keluarga Anda, sambil melestarikan keseimbangan ekosistem bumi.',
   storyDesc2En: 'Every grain of Sorgum is a testament to our commitment to bringing the finest quality from Indonesian soil straight to your family dining table, while preserving the balance of the Earth\'s ecosystem.',
-  storyImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl',
+  storyImageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1920',
   benefitsTitleId: 'Mengapa Memilih Sorgum?',
   benefitsTitleEn: 'Why Choose Sorghum?',
   benefitsDescId: 'Kami berkomitmen menghadirkan produk pangan berkelanjutan yang sehat untuk tubuh dan ramah bagi bumi.',
@@ -524,13 +524,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const logout = async () => {
+    // Hapus token + user dari localStorage DULU (authApi.logout = setToken(null) + remove bestari_current_user).
+    // Sebelumnya cuma set state React — localStorage `bestari_session_id` & `bestari_current_user`
+    // masih ada → setelah reload readUser() baca user lama → session nyangkut, gabisa logout/login.
+    await authApi.logout();
     // Cart server-authoritative: gak usah simpan ke localStorage — sumber di DB.
     // Kosongin state — jangan sampai cart user A kebawa ke user B/guest.
     setCurrentUser(null);
     setCart([]);
     setWishlistIds({});
     setAppliedDiscount(0);
-    try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
     try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
   };
 

@@ -219,11 +219,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
     try {
       const { orderAdminApi } = await import('../api/adminApi');
-      const { resolveOrderStatusTransition } = await import('../api/orderApi');
-      const currentOrder = orders.find((o) => o.id === orderId);
-      const currentRaw = currentOrder?.statusRaw || 'pending';
-      // Resolve enum target yang benar (pending→Diproses kirim 'confirmed', dst)
-      const beStatus = resolveOrderStatusTransition(currentRaw, newStatus) || newStatus.toLowerCase();
+      const { STATUS_LABEL_TO_ENUM } = await import('../api/orderApi');
+      // BE opsi B (longgar): terima semua status — cukup map label FE → enum BE.
+      // 'Diproses' selalu kirim 'processed' (confirmed & processed sama-sama tampil 'Diproses').
+      const beStatus = STATUS_LABEL_TO_ENUM[newStatus] || newStatus.toLowerCase();
       await orderAdminApi.updateOrderStatus(orderId, beStatus);
       // Update local state (BE dulu, context kedua — context cuma mirror)
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));

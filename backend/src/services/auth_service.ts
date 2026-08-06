@@ -20,6 +20,7 @@ interface UserRow {
   email: string;
   password_hash: string;
   role: 'user' | 'admin';
+  is_deleted?: number;
 }
 
 export async function register(input: RegisterInput) {
@@ -52,13 +53,18 @@ export async function login(input: LoginInput) {
   const { email, password } = input;
 
   const [rows] = await dbPool.query(
-    'SELECT id, name, email, password_hash, role FROM users WHERE email = ?',
+    'SELECT id, name, email, password_hash, role, is_deleted FROM users WHERE email = ?',
     [email],
   );
 
   const user = (rows as UserRow[])[0];
   if (!user) {
     throw new AppError('Email atau password salah', 401);
+  }
+
+  // SOFT DELETE: user yang dinonaktifkan admin tidak boleh login lagi
+  if (user.is_deleted) {
+    throw new AppError('Akun Anda telah dinonaktifkan. Hubungi admin.', 403);
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);

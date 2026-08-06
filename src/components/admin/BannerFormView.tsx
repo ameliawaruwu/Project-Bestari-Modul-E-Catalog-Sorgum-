@@ -17,6 +17,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
   const [titleInput, setTitleInput] = useState('');
   const [targetInput, setTargetInput] = useState('');
   const [imageInput, setImageInput] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initialBanner) {
@@ -43,7 +44,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
       targetLink: targetInput || 'Halaman Toko: Semua Produk',
       image:
         imageInput ||
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuBedFkef0uf3wThSykVry5S0pnKGNteDPCI4H_u9wXo2Iw6MB2JV9-GWbXBPiXoIINPGG_JNRn_oUg7XoFYH7bLYib2-pxC1R6SOqYMFKB6AYHi1lZWglunj0vDmRrLXAXarWaqQd_yPAqs39gyfrHheQ1wByPzSpB_9OZQV86FLWiUFhpsZ4tuUTDD6NKfMzT3xfwdnRJrmP6dxJnap7TErQ6DfJ3IoO2_VWWB3XP8JuMSECFMNiBl',
+        'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1920',
     });
   };
 
@@ -129,13 +130,44 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                     Rasio disarankan: 1920x600 px (Landscape HD)
                   </p>
                 </div>
-                <input
-                  type="text"
-                  value={imageInput}
-                  onChange={(e) => setImageInput(e.target.value)}
-                  placeholder="Masukkan URL Gambar Banner (https://...)"
-                  className="w-full max-w-md mx-auto h-11 px-3.5 border border-[#c4c8bc] bg-[#fff8f2] rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#162809]"
-                />
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <label className="inline-flex items-center gap-2 bg-[#2b3e1d] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#162809] transition-all cursor-pointer">
+                    <span className="material-symbols-outlined text-base">upload_file</span>
+                    {uploading ? 'Mengunggah...' : 'Pilih File Gambar'}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/avif"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          setUploading(true);
+                          const { productAdminApi } = await import('../../api/adminApi');
+                          const url = await productAdminApi.uploadImage(file);
+                          if (!url) throw new Error('upload gagal');
+                          setImageInput(url);
+                          showToast('Gambar berhasil diunggah.');
+                        } catch {
+                          showToast('Gagal mengunggah gambar.');
+                        } finally {
+                          setUploading(false);
+                          // Reset input supaya file yang sama bisa dipilih ulang
+                          e.target.value = '';
+                        }
+                      }}
+                    />
+                  </label>
+                  <span className="text-[11px] text-[#44483f]">atau</span>
+                  <input
+                    type="text"
+                    value={imageInput}
+                    onChange={(e) => setImageInput(e.target.value)}
+                    placeholder="Masukkan URL Gambar Banner (https://...)"
+                    className="w-full max-w-md mx-auto h-11 px-3.5 border border-[#c4c8bc] bg-[#fff8f2] rounded-xl text-xs outline-none focus:ring-2 focus:ring-[#162809]"
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -296,13 +296,15 @@ export async function getAllOrders() {
 const VALID_ORDER_STATUS = ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'];
 const VALID_PAYMENT_STATUS = ['unpaid', 'paid', 'confirmed'];
 
-// State machine transisi status order (maju saja + cancel dari status belum dikirim).
-// delivered TIDAK bisa mundur; cancelled TIDAK bisa dari shipped/delivered.
+// State machine transisi status order — OPSI B (longgar): admin bebas set status apa pun,
+// termasuk mundur (mis. Dikirim → Diproses, kalau salah input). Satu-satunya batasan:
+// status terminal (delivered/cancelled) TIDAK bisa berubah lagi.
+// (Keputusan user 2026-08-06: dropdown FE menampilkan SEMUA status, bukan filter per transisi.)
 const ALLOWED_ORDER_TRANSITIONS: Record<string, string[]> = {
-  pending: ['confirmed', 'cancelled'],
-  confirmed: ['processed', 'cancelled'],
-  processed: ['shipped', 'cancelled'],
-  shipped: ['delivered'],
+  pending: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
+  confirmed: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
+  processed: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
+  shipped: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
   delivered: [],
   cancelled: [],
 };
@@ -398,12 +400,13 @@ export async function cancelOrderByUser(orderId: number, userId: number) {
   }
 }
 
-// State machine transisi status pembayaran (maju saja).
-// unpaid → paid → confirmed; tidak boleh mundur.
+// State machine transisi status pembayaran — OPSI B (longgar): admin bebas set,
+// termasuk mundur (mis. paid → unpaid kalau salah verifikasi). Tidak ada terminal.
+// (Keputusan user 2026-08-06: dropdown FE menampilkan SEMUA status pembayaran.)
 const ALLOWED_PAYMENT_TRANSITIONS: Record<string, string[]> = {
-  unpaid: ['paid'],
-  paid: ['confirmed'],
-  confirmed: [],
+  unpaid: ['unpaid', 'paid', 'confirmed'],
+  paid: ['unpaid', 'paid', 'confirmed'],
+  confirmed: ['unpaid', 'paid', 'confirmed'],
 };
 
 export async function updatePaymentStatus(orderId: number, status: string) {

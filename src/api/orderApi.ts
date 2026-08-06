@@ -83,53 +83,6 @@ export const STATUS_LABEL_TO_ENUM: Record<Order['status'], string> = {
   Dibatalkan: 'cancelled',
 };
 
-// Resolve enum target yang benar untuk transisi label FE → label FE.
-// BE state machine: pending→[confirmed,cancelled], confirmed→[processed,cancelled],
-// processed→[shipped,cancelled], shipped→[delivered], delivered/cancelled→terminal.
-// currentRaw = status enum BE asli (dari order.statusRaw), targetLabel = label FE tujuan.
-export function resolveOrderStatusTransition(
-  currentRaw: string,
-  targetLabel: Order['status'],
-): string | null {
-  // Dari pending → Diproses berarti 'confirmed' (langkah perantara BE)
-  if (currentRaw === 'pending' && targetLabel === 'Diproses') return 'confirmed';
-  // Dari confirmed → Diproses (lagi) berarti 'processed'
-  if (currentRaw === 'confirmed' && targetLabel === 'Diproses') return 'processed';
-  return STATUS_LABEL_TO_ENUM[targetLabel];
-}
-
-// Status label FE yang BOLEH dituju dari status enum BE sekarang (untuk filter dropdown).
-// Sinkron dengan ALLOWED_ORDER_TRANSITIONS di BE.
-export function getOrderTransitionLabels(currentRaw: string): Order['status'][] {
-  switch (currentRaw) {
-    case 'pending':
-      return ['Diproses', 'Dibatalkan']; // confirmed, cancelled
-    case 'confirmed':
-      return ['Diproses', 'Dibatalkan']; // processed, cancelled
-    case 'processed':
-      return ['Dikirim', 'Dibatalkan']; // shipped, cancelled
-    case 'shipped':
-      return ['Selesai']; // delivered
-    default:
-      return []; // delivered, cancelled → terminal
-  }
-}
-
-// Status pembayaran yang BOLEH dituju (sinkron ALLOWED_PAYMENT_TRANSITIONS di BE:
-// unpaid→[paid], paid→[confirmed], confirmed→[]). Return [] = terminal.
-export function getPaymentTransitionOptions(
-  current: 'unpaid' | 'paid' | 'confirmed',
-): ('unpaid' | 'paid' | 'confirmed')[] {
-  switch (current) {
-    case 'unpaid':
-      return ['paid'];
-    case 'paid':
-      return ['confirmed'];
-    default:
-      return []; // confirmed → terminal
-  }
-}
-
 export function mapOrder(o: BackendOrder): Order {
   const items: CartItem[] = (o.items || []).map((it) => ({
     product: {

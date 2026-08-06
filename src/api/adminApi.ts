@@ -195,6 +195,11 @@ export const bannerAdminApi = {  // GET /api/admin/banners
 };
 
 export const trackingAdminApi = {
+  // GET /api/admin/tracking/:orderId — status pengiriman + riwayat
+  getTracking: async (orderId: string): Promise<any> => {
+    const res = await request<{ data: any }>(`/admin/tracking/${orderId}`, { auth: true });
+    return res?.data || null;
+  },
   // POST /api/admin/tracking/:orderId/set — set kurir + resi (order otomatis jadi 'shipped')
   setTracking: async (orderId: string, courier: string, trackingNumber: string) => {
     await request(`/admin/tracking/${orderId}/set`, {
@@ -212,6 +217,7 @@ export interface AdminUserRow {
   email: string;
   phone: string | null;
   role: string;
+  is_deleted?: number;
   created_at: string;
 }
 
@@ -232,7 +238,7 @@ export const userAdminApi = {
   },
 
   // PUT /api/admin/dashboard/users/:id
-  updateUser: async (id: number, fields: { name?: string; email?: string; phone?: string; password?: string }) => {
+  updateUser: async (id: number, fields: { name?: string; email?: string; phone?: string; password?: string; is_deleted?: number }) => {
     await request(`/admin/dashboard/users/${id}`, { method: 'PUT', body: fields, auth: true });
   },
 

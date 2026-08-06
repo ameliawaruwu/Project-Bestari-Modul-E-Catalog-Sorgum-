@@ -9,7 +9,8 @@ interface UsersTabProps {
 }
 
 // BE user row -> AdminUser (FE shape)
-function mapAdminUser(u: { id: number; name: string; email: string; phone: string | null; created_at: string }): AdminUser {
+function mapAdminUser(u: { id: number; name: string; email: string; phone: string | null; is_deleted?: number; created_at: string }): AdminUser {
+  const isDeleted = !!u.is_deleted;
   return {
     id: String(u.id),
     name: u.name,
@@ -21,8 +22,8 @@ function mapAdminUser(u: { id: number; name: string; email: string; phone: strin
       year: 'numeric',
     }),
     orderCount: 0,
-    status: 'AKTIF',
-    isDeleted: false,
+    status: isDeleted ? 'NONAKTIF' : 'AKTIF',
+    isDeleted,
     addresses: [],
   };
 }
@@ -135,9 +136,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
     await refreshUsers();
   };
 
-  const handleRestoreUser = (userId: string) => {
-    // BE tidak punya endpoint restore — re-create via update (aktifkan lagi)
-    showToast('Restore user belum didukung backend. Buat user baru atau hubungi admin.');
+  const handleRestoreUser = async (userId: string) => {
+    try {
+      await userAdminApi.updateUser(Number(userId), { is_deleted: 0 });
+      showToast('User berhasil dipulihkan (aktif kembali).');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal memulihkan user.');
+    }
     refreshUsers();
   };
 

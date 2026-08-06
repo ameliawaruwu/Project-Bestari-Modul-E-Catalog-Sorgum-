@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Order } from '../../types';
-import { getOrderTransitionLabels, getPaymentTransitionOptions } from '../../api/orderApi';
 
 interface TransactionsTabProps {
   orders: Order[];
@@ -174,16 +173,9 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             }`}
                             title="Verifikasi pembayaran (unpaid/paid/confirmed)"
                           >
-                            {getPaymentTransitionOptions(ord.paymentStatus || 'unpaid').map((p) => (
-                              <option key={p} value={p}>
-                                {p === 'paid' ? 'Sudah Bayar' : p === 'confirmed' ? 'Terverifikasi' : 'Belum Bayar'}
-                              </option>
-                            ))}
-                            {getPaymentTransitionOptions(ord.paymentStatus || 'unpaid').length === 0 && (
-                              <option value={ord.paymentStatus || 'unpaid'}>
-                                {ord.paymentStatus === 'confirmed' ? 'Terverifikasi' : ord.paymentStatus === 'paid' ? 'Sudah Bayar' : 'Belum Bayar'}
-                              </option>
-                            )}
+                            <option value="unpaid">Belum Bayar</option>
+                            <option value="paid">Sudah Bayar</option>
+                            <option value="confirmed">Terverifikasi</option>
                           </select>
                         )}
                       </div>
@@ -219,12 +211,9 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             : 'bg-red-50 border-red-300 text-red-800'
                         }`}
                       >
-                        {getOrderTransitionLabels(ord.statusRaw || 'pending').map((s) => (
+                        {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
                           <option key={s} value={s} className="text-[#1d1b17] bg-white">{s}</option>
                         ))}
-                        {getOrderTransitionLabels(ord.statusRaw || 'pending').length === 0 && (
-                          <option value={ord.status} className="text-[#1d1b17] bg-white">{ord.status}</option>
-                        )}
                       </select>
                     </td>
                     <td className="p-4 text-center">
