@@ -36,7 +36,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   return (
     <aside
-      className={`h-screen fixed left-0 top-0 admin-sidebar-bg border-r border-white/10 flex flex-col py-4 z-[100] transition-all duration-300 ${
+      style={{ backgroundColor: '#1B5E20' }}
+      className={`h-screen fixed left-0 top-0 border-r border-white/10 flex flex-col py-4 z-[100] transition-all duration-300 ${
         isCollapsed ? 'lg:w-20' : 'lg:w-64'
       } ${
         isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'
@@ -99,32 +100,34 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           const isActive = activeNav === item.id;
           return (
             <div key={item.id} className="relative w-full flex items-center px-1">
-              {/* Flat yellow bar on the left edge for active button */}
-              {isActive && (
-                <span className="absolute left-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#fade88] rounded-full z-10" />
-              )}
               <button
                 type="button"
                 onClick={() => {
                   setActiveNav(item.id);
                   onClose(); // Close mobile drawer
                 }}
-                className={`w-full flex items-center py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer border ${
+                className={`group w-full flex items-center py-2.5 text-xs sm:text-sm transition-all duration-200 cursor-pointer border ${
                   isActive
-                    ? 'bg-white/10 text-white border-white/20 shadow-none'
-                    : 'text-white/70 border-transparent hover:text-white hover:bg-white/5'
+                    ? 'bg-[#2E7D32] text-white border-l-4 border-l-[#C89B3C] border-t-white/15 border-b-black/10 border-r-white/10 rounded-r-xl rounded-l-sm shadow-md pl-3.5'
+                    : 'text-white/70 border-transparent rounded-xl hover:text-white hover:bg-white/10 hover:border-white/10 pl-3.5'
                 } ${
                   isCollapsed
-                    ? 'lg:justify-center lg:px-0 px-3.5 justify-start'
-                    : 'px-3.5 justify-start'
+                    ? 'lg:justify-center lg:px-0 justify-start'
+                    : 'justify-start'
                 }`}
                 title={item.label}
               >
-                <span className="material-symbols-outlined text-base flex-shrink-0">{item.icon}</span>
+                <span
+                  className={`material-symbols-outlined text-lg flex-shrink-0 transition-colors ${
+                    isActive ? 'text-[#C89B3C] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-white/70 group-hover:text-[#C89B3C]'
+                  }`}
+                >
+                  {item.icon}
+                </span>
                 <span
                   className={`ml-2.5 font-bold tracking-wide truncate transition-opacity duration-200 ${
-                    isCollapsed ? 'lg:hidden inline' : 'inline'
-                  }`}
+                    isActive ? 'text-white font-extrabold' : 'text-white/75 group-hover:text-white'
+                  } ${isCollapsed ? 'lg:hidden inline' : 'inline'}`}
                 >
                   {item.label}
                 </span>

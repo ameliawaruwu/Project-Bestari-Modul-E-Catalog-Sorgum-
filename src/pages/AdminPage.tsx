@@ -16,7 +16,6 @@ import { OrderDetailView } from '../components/admin/OrderDetailView';
 import { OrderDeleteConfirmModal } from '../components/admin/OrderDeleteConfirmModal';
 import { InfoTab } from '../components/admin/InfoTab';
 import { ArticleFormView } from '../components/admin/ArticleFormView';
-import { ArticleDeleteConfirmModal } from '../components/admin/ArticleDeleteConfirmModal';
 import { UsersTab } from '../components/admin/UsersTab';
 import { FaqTab } from '../components/admin/FaqTab';
 import { FaqFormView } from '../components/admin/FaqFormView';
@@ -209,7 +208,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [editingFaq, setEditingFaq] = useState<{ isEditing: boolean; faq?: FAQItem | null } | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null);
-  const [deletingArticle, setDeletingArticle] = useState<ArticleItem | null>(null);
 
   // Order selection & Proof Modal State
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -589,7 +587,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const selectedOrderObj = orders.find((o) => o.id === selectedOrderId) || null;
 
   return (
-    <div className="min-h-screen bg-[#f8f7f5] text-[#1d1b17] admin-theme relative flex">
+    <div style={{ backgroundColor: '#F7F8F6' }} className="min-h-screen text-[#1B5E20] admin-theme relative flex">
       {/* Drawer Overlay for Mobile */}
       {isSidebarOpen && (
         <div
@@ -716,7 +714,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             ) : (
               <InfoTab
                 articles={adminArticles}
-                onDeleteArticle={(article) => setDeletingArticle(article)}
+                onDeleteArticle={(article) => handleDeleteArticle(article.id)}
                 onOpenCreateArticle={() => setEditingArticle({ isEditing: true, article: null })}
                 onOpenEditArticle={(article) => setEditingArticle({ isEditing: true, article })}
               />
@@ -735,7 +733,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ) : (
               <FaqTab
-                faqs={adminFaqs}
+                faqs={faqs}
                 onDeleteFaq={handleDeleteFaq}
                 onOpenCreateFaq={() => setEditingFaq({ isEditing: true, faq: null })}
                 onOpenEditFaq={(faq) => setEditingFaq({ isEditing: true, faq })}
@@ -759,13 +757,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         </main>
 
         {/* FOOTER / BRANDING BOTTOM */}
-        <footer className="mt-auto px-8 py-6 border-t border-[#c4c8bc] bg-white flex flex-col sm:flex-row justify-between items-center text-[#44483f]/60 text-xs font-medium gap-2">
+        <footer className="mt-auto px-8 py-6 border-t border-[#E0E0E0] bg-[#FFFFFF] flex flex-col sm:flex-row justify-between items-center text-[#555555] text-xs font-medium gap-2">
           <p>© 2023 SORGUM Sorghum. Hak Cipta Dilindungi.</p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-[#162809] transition-colors">
+            <a href="#" className="hover:text-[#1B5E20] transition-colors">
               Syarat &amp; Ketentuan
             </a>
-            <a href="#" className="hover:text-[#162809] transition-colors">
+            <a href="#" className="hover:text-[#1B5E20] transition-colors">
               Kebijakan Privasi
             </a>
           </div>
@@ -826,16 +824,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           if (prodToDelete) {
             handleDeleteProduct(id, prodToDelete.name);
           }
-        }}
-      />
-
-      {/* ARTICLE DELETE CONFIRMATION MODAL */}
-      <ArticleDeleteConfirmModal
-        isOpen={deletingArticle !== null}
-        article={deletingArticle}
-        onClose={() => setDeletingArticle(null)}
-        onConfirmDelete={(id) => {
-          handleDeleteArticle(id);
         }}
       />
     </div>

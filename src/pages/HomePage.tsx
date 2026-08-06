@@ -74,7 +74,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   }, [searchQuery]);
 
   return (
-    <div className="animate-fadeIn bg-[#faf8f5]">
+    <div className="animate-fadeIn bg-[#F7F8F6]">
       {/* Hero Banner Section */}
       <HeroBanner
         onShopNow={() => {
@@ -91,27 +91,27 @@ export const HomePage: React.FC<HomePageProps> = ({
       <BenefitsSection />
 
       {/* 2. Brand Story Section (Kisah Kami) */}
-      <section className="py-20 bg-white border-b border-[#c4c8bc]/30">
+      <section className="py-20 bg-[#FFFFFF] border-b border-[#E0E0E0]">
         <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative rounded-xl overflow-hidden shadow-sm max-h-[420px] border border-[#c4c8bc]/40">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xs max-h-[420px] border border-[#E0E0E0]">
             <img
               src={landingContent.storyImageUrl}
               alt="Petani Sorgum Sorgum"
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#162809]/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1B5E20]/40 to-transparent"></div>
           </div>
           <div className="space-y-6">
-            <span className="text-[#162809] font-['Plus_Jakarta_Sans'] text-xs font-bold uppercase tracking-widest bg-[#fade88]/30 px-3 py-1 rounded border border-[#fade88]/40">
+            <span className="text-[#1B5E20] font-['Plus_Jakarta_Sans'] text-xs font-bold uppercase tracking-widest bg-[#E8F5E9] px-3 py-1 rounded-md border border-[#A5D6A7]">
               {t(landingContent.storyTaglineId, landingContent.storyTaglineEn)}
             </span>
-            <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-[#162809] leading-tight">
+            <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-[#1B5E20] leading-tight">
               {t(landingContent.storyTitleId, landingContent.storyTitleEn)}
             </h2>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/90 leading-relaxed font-semibold">
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555] leading-relaxed font-semibold">
               {t(landingContent.storyDesc1Id, landingContent.storyDesc1En)}
             </p>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/80 leading-relaxed font-normal">
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555] leading-relaxed font-normal">
               {t(landingContent.storyDesc2Id, landingContent.storyDesc2En)}
             </p>
           </div>
@@ -120,10 +120,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 3. Section Title: Koleksi Produk Pilihan */}
       <div id="product-catalog-section" className="text-center pt-20 pb-10 px-4 md:px-10">
-        <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#162809] mb-4">
+        <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] mb-4">
           {t(landingContent.featuredTitleId, landingContent.featuredTitleEn)}
         </h2>
-        <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/80 max-w-xl mx-auto leading-relaxed font-semibold">
+        <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555] max-w-xl mx-auto leading-relaxed font-semibold">
           {t(landingContent.featuredDescId, landingContent.featuredDescEn)}
         </p>
       </div>
@@ -132,11 +132,11 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section className="pb-20 md:pb-24 px-4 md:px-10 bg-transparent">
         <div className="max-w-[1280px] mx-auto">
           {searchQuery && (
-            <div className="mb-6 p-4 bg-white rounded-xl border border-[#c4c8bc]/50 flex items-center justify-between shadow-2xs">
-              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]">
-                {t('Menampilkan hasil pencarian untuk', 'Showing search results for')} &quot;<span className="font-bold text-[#1d1b17]">{searchQuery}</span>&quot;
+            <div className="mb-6 p-4 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] flex items-center justify-between shadow-2xs">
+              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555]">
+                {t('Menampilkan hasil pencarian untuk', 'Showing search results for')} &quot;<span className="font-bold text-[#1B5E20]">{searchQuery}</span>&quot;
               </p>
-              <span className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#162809] bg-[#fade88]/30 px-2.5 py-0.5 rounded border border-[#fade88]/50">
+              <span className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#1B5E20] bg-[#E8F5E9] px-2.5 py-0.5 rounded-md border border-[#A5D6A7]">
                 {products.length} {t('produk ditemukan', 'products found')}
               </span>
             </div>
@@ -147,17 +147,17 @@ export const HomePage: React.FC<HomePageProps> = ({
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="h-80 rounded-xl bg-[#faf8f5]/80 animate-pulse border border-[#c4c8bc]/30 shadow-2xs"
+                  className="h-80 rounded-2xl bg-[#FFFFFF] animate-pulse border border-[#E0E0E0] shadow-2xs"
                 ></div>
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-xl border border-[#c4c8bc]/50 p-8 shadow-2xs">
-              <span className="material-symbols-outlined text-5xl text-[#75786e] mb-2 animate-pulse">search_off</span>
-              <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#162809] mb-1">
+            <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-8 shadow-2xs">
+              <span className="material-symbols-outlined text-5xl text-[#C89B3C] mb-2 animate-pulse">search_off</span>
+              <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#1B5E20] mb-1">
                 {t('Produk Tidak Ditemukan', 'Product Not Found')}
               </h3>
-              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#44483f]/80">
+              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555]">
                 {t('Coba gunakan kata kunci lain atau ganti kategori filter.', 'Try using other keywords or change the category filter.')}
               </p>
             </div>
@@ -168,7 +168,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveTab('produk')}
-                  className="flex items-center gap-1.5 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#162809] hover:text-[#715c13] transition-colors cursor-pointer group"
+                  className="flex items-center gap-1.5 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#2E7D32] hover:text-[#1B5E20] transition-colors cursor-pointer group"
                 >
                   <span>{t('Lihat Seluruh Produk', 'View All Products')}</span>
                   <span className="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">

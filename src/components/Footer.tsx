@@ -9,7 +9,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
   const { t, shopSettings } = useApp();
 
   return (
-    <footer className="w-full py-16 lg:py-20 px-4 md:px-10 bg-[#2b3e1d] text-white border-t border-[#c4c8bc]/20">
+    <footer className="w-full py-16 lg:py-20 px-4 md:px-10 bg-[#1B5E20] text-white border-t border-[#A5D6A7]/20">
       <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12 lg:gap-16">
         <div className="max-w-sm">
           <span className="font-['Playfair_Display'] text-2xl lg:text-3xl font-semibold text-white mb-4 block">
@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <a
               href="#"
               onClick={(e) => e.preventDefault()}
-              className="w-10 h-10 rounded-full border border-[#394c2a] flex items-center justify-center hover:bg-[#715c13] hover:border-[#715c13] transition-all text-white"
+              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[#2E7D32] hover:border-[#2E7D32] transition-all text-white cursor-pointer"
               aria-label="QR Code"
             >
               <span className="material-symbols-outlined text-xl">qr_code_2</span>
@@ -33,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <a
               href="#"
               onClick={(e) => e.preventDefault()}
-              className="w-10 h-10 rounded-full border border-[#394c2a] flex items-center justify-center hover:bg-[#715c13] hover:border-[#715c13] transition-all text-white"
+              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[#2E7D32] hover:border-[#2E7D32] transition-all text-white cursor-pointer"
               aria-label="Instagram Camera"
             >
               <span className="material-symbols-outlined text-xl">camera</span>
@@ -41,7 +41,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <a
               href="#"
               onClick={(e) => e.preventDefault()}
-              className="w-10 h-10 rounded-full border border-[#394c2a] flex items-center justify-center hover:bg-[#715c13] hover:border-[#715c13] transition-all text-white"
+              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[#2E7D32] hover:border-[#2E7D32] transition-all text-white cursor-pointer"
               aria-label="YouTube Play"
             >
               <span className="material-symbols-outlined text-xl">play_circle</span>
@@ -51,14 +51,14 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 lg:gap-12 flex-grow">
           <div>
-            <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#fde08b] mb-4 uppercase tracking-widest">
+            <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#C89B3C] mb-4 uppercase tracking-widest">
               {t('Navigasi', 'Navigation')}
             </h5>
             <ul className="space-y-3 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm">
               <li>
                 <button
                   onClick={() => setActiveTab('produk')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Katalog Produk', 'Product Catalog')}
                 </button>
@@ -66,7 +66,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               <li>
                 <button
                   onClick={() => setActiveTab('informasi')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Informasi & Artikel', 'Info & Articles')}
                 </button>
@@ -74,7 +74,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               <li>
                 <button
                   onClick={() => setActiveTab('beranda')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Tentang Kami', 'About Us')}
                 </button>
@@ -82,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               <li>
                 <button
                   onClick={() => setActiveTab('faq')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Karir', 'Careers')}
                 </button>
@@ -91,14 +91,14 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           </div>
 
           <div>
-            <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#fde08b] mb-4 uppercase tracking-widest">
+            <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#C89B3C] mb-4 uppercase tracking-widest">
               {t('Bantuan', 'Support')}
             </h5>
             <ul className="space-y-3 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm">
               <li>
                 <button
                   onClick={() => setActiveTab('faq')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Hubungi Kami', 'Contact Us')}
                 </button>
@@ -106,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               <li>
                 <button
                   onClick={() => setActiveTab('faq')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Kebijakan Pengiriman', 'Shipping Policy')}
                 </button>
@@ -114,7 +114,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               <li>
                 <button
                   onClick={() => setActiveTab('faq')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Kebijakan Privasi', 'Privacy Policy')}
                 </button>
@@ -122,7 +122,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               <li>
                 <button
                   onClick={() => setActiveTab('pesanan')}
-                  className="hover:text-[#fde08b] hover:underline transition-all text-white/90 text-left cursor-pointer"
+                  className="hover:text-[#C89B3C] hover:underline transition-all text-white/90 text-left cursor-pointer"
                 >
                   {t('Status Pesanan', 'Order Status')}
                 </button>
@@ -131,7 +131,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           </div>
 
           <div className="col-span-2 sm:col-span-1">
-            <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#fde08b] mb-4 uppercase tracking-widest">
+            <h5 className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#C89B3C] mb-4 uppercase tracking-widest">
               {t('Layanan Pelanggan', 'Customer Service')}
             </h5>
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">WhatsApp: {shopSettings.whatsappNumber}</p>
@@ -143,7 +143,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto mt-16 pt-8 border-t border-[#394c2a]/40 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="max-w-[1280px] mx-auto mt-16 pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/80">
           © 2024 SORGUM Sorghum. Crafted with Authenticity.
         </p>

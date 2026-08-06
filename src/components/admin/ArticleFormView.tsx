@@ -157,13 +157,13 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       {/* Header & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="hover:text-[#162809] transition-colors cursor-pointer"
+                  className="hover:text-[#1B5E20] hover:underline transition-colors cursor-pointer"
                 >
                   Kelola Info
                 </button>
@@ -173,12 +173,12 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#162809] font-bold">
+              <li className="text-[#1B5E20] font-bold">
                 {initialArticle ? 'Edit Artikel' : 'Tambah Artikel Baru'}
               </li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
             {initialArticle ? 'Edit Artikel' : 'Halaman Tambah Artikel Baru'}
           </h2>
         </div>
@@ -186,7 +186,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="bg-white border border-[#c4c8bc] text-[#1d1b17] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#f3ede6] transition-all cursor-pointer font-bold text-xs"
+          className="bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#E8F5E9] transition-all cursor-pointer font-bold text-xs shadow-2xs"
         >
           <span className="material-symbols-outlined text-lg">arrow_back</span>
           <span>KEMBALI KE DAFTAR</span>
@@ -194,10 +194,10 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       </section>
 
       {/* Form Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-[#c4c8bc] overflow-hidden">
+      <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1d1b17]">
+            <label className="block text-sm font-bold text-[#1B5E20]">
               Judul Artikel <span className="text-red-600">*</span>
             </label>
             <input
@@ -206,17 +206,17 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
               onChange={(e) => setTitleInput(e.target.value)}
               placeholder="Contoh: Manfaat Bebas Gluten dari Sorgum Lokal"
               required
-              className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+              className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">Kategori Artikel</label>
+              <label className="block text-sm font-bold text-[#1B5E20]">Kategori Artikel</label>
               <select
                 value={categoryInput}
                 onChange={(e) => setCategoryInput(e.target.value)}
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none cursor-pointer font-medium"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none cursor-pointer font-medium"
               >
                 <option value="Kesehatan & Nutrisi">Kesehatan &amp; Nutrisi</option>
                 <option value="Resep & Kuliner">Resep &amp; Kuliner</option>
@@ -227,33 +227,33 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">Penulis / Author</label>
+              <label className="block text-sm font-bold text-[#1B5E20]">Penulis / Author</label>
               <input
                 type="text"
                 value={authorInput}
                 onChange={(e) => setAuthorInput(e.target.value)}
                 placeholder="Contoh: Tim Nutrisi Sorgum"
-                className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1d1b17]">Dibuat Tanggal</label>
+              <label className="block text-sm font-bold text-[#1B5E20]">Dibuat Tanggal</label>
               <input
                 type="text"
                 value={createdAtText}
                 readOnly
                 disabled
                 placeholder="Otomatis"
-                className="w-full bg-[#f3ede6] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#44483f] outline-none font-medium cursor-not-allowed"
+                className="w-full bg-[#E8F5E9] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] outline-none font-medium cursor-not-allowed"
               />
             </div>
           </div>
 
           {/* Gambar Judul (Hero) — banner besar di atas artikel */}
           <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1d1b17]">
-              Gambar Judul (Hero) <span className="text-[#75786e] font-medium text-[11px]">— tampil besar di atas artikel</span>
+            <label className="block text-sm font-bold text-[#1B5E20]">
+              Gambar Judul (Hero) <span className="text-[#555555] font-medium text-[11px]">— tampil besar di atas artikel</span>
             </label>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
@@ -261,20 +261,20 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 value={heroImage}
                 onChange={(e) => setHeroImage(e.target.value)}
                 placeholder="Tempel URL gambar utama artikel (mis. https://...jpg)"
-                className="flex-1 w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+                className="flex-1 w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
               />
               {heroImage && (
                 <button
                   type="button"
                   onClick={() => setHeroImage('')}
-                  className="px-4 py-2.5 rounded-xl border border-red-200 text-red-500 font-bold text-xs hover:bg-red-50 transition-all cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-[#FFCDD2] bg-[#FFEBEE] text-[#D32F2F] font-bold text-xs hover:bg-[#FFCDD2] transition-all cursor-pointer shadow-2xs"
                 >
                   Hapus
                 </button>
               )}
             </div>
             {heroImage ? (
-              <div className="rounded-xl overflow-hidden border border-[#c4c8bc] bg-[#faf8f5] mt-2">
+              <div className="rounded-xl overflow-hidden border border-[#E0E0E0] bg-[#F7F8F6] mt-2">
                 <img
                   src={heroImage}
                   alt="Pratinjau gambar judul"
@@ -283,7 +283,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 />
               </div>
             ) : (
-              <div className="rounded-xl border-2 border-dashed border-[#c4c8bc] bg-[#faf8f5] py-6 text-center text-xs text-[#75786e] mt-2">
+              <div className="rounded-xl border-2 border-dashed border-[#E0E0E0] bg-[#F7F8F6] py-6 text-center text-xs text-[#555555] mt-2">
                 Belum ada gambar judul. Tempel URL di atas untuk pratinjau.
               </div>
             )}
@@ -292,10 +292,10 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
           {/* ===== Block Editor ===== */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-bold text-[#1d1b17]">
+              <label className="block text-sm font-bold text-[#1B5E20]">
                 Isi / Konten Artikel <span className="text-red-600">*</span>
               </label>
-              <span className="text-[11px] text-[#75786e] font-medium">
+              <span className="text-[11px] text-[#555555] font-medium">
                 Susun konten: pindahkan kartu dengan panah ↑ ↓
               </span>
             </div>
@@ -303,9 +303,9 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
             {/* Daftar blok */}
             <div className="space-y-4">
               {blocks.length === 0 && (
-                <div className="text-center py-10 bg-[#faf8f5] border-2 border-dashed border-[#c4c8bc] rounded-xl">
-                  <span className="material-symbols-outlined text-4xl text-[#75786e] mb-2 block">article</span>
-                  <p className="text-sm text-[#44483f] font-medium">
+                <div className="text-center py-10 bg-[#F7F8F6] border-2 border-dashed border-[#E0E0E0] rounded-xl">
+                  <span className="material-symbols-outlined text-4xl text-[#C89B3C] mb-2 block">article</span>
+                  <p className="text-sm text-[#1B5E20] font-medium">
                     Belum ada konten. Tambahkan kartu di bawah.
                   </p>
                 </div>
@@ -314,19 +314,19 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
               {blocks.map((b, idx) => (
                 <div
                   key={b.id}
-                  className="border border-[#c4c8bc] rounded-xl overflow-hidden bg-white shadow-2xs"
+                  className="border border-[#E0E0E0] rounded-xl overflow-hidden bg-[#FFFFFF] shadow-2xs"
                 >
                   {/* Card header */}
-                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#f3ede6] border-b border-[#c4c8bc]/60">
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#F7F8F6] border-b border-[#E0E0E0]">
                     <div className="flex items-center gap-2">
                       <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                        b.type === 'text' ? 'bg-[#d2eabb] text-[#162809]'
-                        : b.type === 'image' ? 'bg-[#fade88] text-[#162809]'
-                        : 'bg-[#e3d5c0] text-[#162809]'
+                        b.type === 'text' ? 'bg-[#E8F5E9] text-[#1B5E20]'
+                        : b.type === 'image' ? 'bg-[#FFF8E1] text-[#C89B3C]'
+                        : 'bg-[#E3F2FD] text-[#1976D2]'
                       }`}>
                         {b.type === 'text' ? 'Teks' : b.type === 'image' ? 'Gambar' : 'Kutipan'}
                       </span>
-                      <span className="text-[11px] text-[#44483f] font-medium">
+                      <span className="text-[11px] text-[#555555] font-medium">
                         Kartu {idx + 1} dari {blocks.length}
                       </span>
                     </div>
@@ -336,7 +336,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                         onClick={() => moveBlock(idx, -1)}
                         disabled={idx === 0}
                         title="Pindah ke atas"
-                        className="p-1.5 rounded-lg text-[#44483f] hover:bg-white hover:text-[#162809] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-1.5 rounded-lg text-[#555555] hover:bg-[#E8F5E9] hover:text-[#1B5E20] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         <span className="material-symbols-outlined text-base">arrow_upward</span>
                       </button>
@@ -345,7 +345,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                         onClick={() => moveBlock(idx, 1)}
                         disabled={idx === blocks.length - 1}
                         title="Pindah ke bawah"
-                        className="p-1.5 rounded-lg text-[#44483f] hover:bg-white hover:text-[#162809] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-1.5 rounded-lg text-[#555555] hover:bg-[#E8F5E9] hover:text-[#1B5E20] transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         <span className="material-symbols-outlined text-base">arrow_downward</span>
                       </button>
@@ -353,9 +353,9 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                         type="button"
                         onClick={() => removeBlock(b.id)}
                         title="Hapus kartu"
-                        className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                        className="w-7 h-7 rounded-lg bg-[#FFEBEE] hover:bg-[#FFCDD2] text-[#D32F2F] flex items-center justify-center transition-colors cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-base">delete</span>
+                        <span className="material-symbols-outlined text-sm">delete</span>
                       </button>
                     </div>
                   </div>
@@ -368,7 +368,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                         value={b.content || ''}
                         onChange={(e) => updateBlock(b.id, { content: e.target.value })}
                         placeholder="Tulis paragraf teks artikel di sini..."
-                        className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none leading-relaxed"
+                        className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none leading-relaxed font-medium"
                       />
                     )}
 
@@ -379,7 +379,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                           value={b.image_url || ''}
                           onChange={(e) => updateBlock(b.id, { image_url: e.target.value })}
                           placeholder="Tempel URL gambar (mis. https://...jpg)"
-                          className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none font-medium"
+                          className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
                         />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <input
@@ -387,18 +387,18 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                             value={b.caption || ''}
                             onChange={(e) => updateBlock(b.id, { caption: e.target.value })}
                             placeholder="Caption gambar (opsional)"
-                            className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3 text-xs text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                            className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3 text-xs text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
                           />
                           <input
                             type="text"
                             value={b.alt || ''}
                             onChange={(e) => updateBlock(b.id, { alt: e.target.value })}
                             placeholder="Alt text (opsional)"
-                            className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3 text-xs text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                            className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3 text-xs text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
                           />
                         </div>
                         {b.image_url && (
-                          <div className="rounded-lg overflow-hidden border border-[#c4c8bc] bg-[#faf8f5]">
+                          <div className="rounded-lg overflow-hidden border border-[#E0E0E0] bg-[#F7F8F6]">
                             <img
                               src={b.image_url}
                               alt={b.alt || 'Pratinjau gambar'}
@@ -417,14 +417,14 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                           value={b.content || ''}
                           onChange={(e) => updateBlock(b.id, { content: e.target.value })}
                           placeholder="Tulis kutipan di sini..."
-                          className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3.5 text-xs sm:text-sm text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none leading-relaxed italic"
+                          className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none leading-relaxed italic font-medium"
                         />
                         <input
                           type="text"
                           value={b.author || ''}
                           onChange={(e) => updateBlock(b.id, { author: e.target.value })}
                           placeholder="Sumber kutipan (opsional, mis. Dr. Rina Wati)"
-                          className="w-full bg-[#faf8f5] border border-[#c4c8bc] rounded-xl p-3 text-xs text-[#1d1b17] focus:ring-2 focus:ring-[#162809] outline-none"
+                          className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3 text-xs text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
                         />
                       </div>
                     )}
@@ -438,7 +438,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
               <button
                 type="button"
                 onClick={() => addBlock('text')}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#2b3e1d] bg-white text-[#162809] font-bold text-xs hover:bg-[#d2eabb] transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] font-bold text-xs hover:bg-[#E8F5E9] transition-all cursor-pointer shadow-2xs"
               >
                 <span className="material-symbols-outlined text-base">notes</span>
                 Tambah Teks
@@ -446,7 +446,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
               <button
                 type="button"
                 onClick={() => addBlock('image')}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#2b3e1d] bg-white text-[#162809] font-bold text-xs hover:bg-[#fade88] transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] font-bold text-xs hover:bg-[#E8F5E9] transition-all cursor-pointer shadow-2xs"
               >
                 <span className="material-symbols-outlined text-base">image</span>
                 Tambah Gambar
@@ -454,7 +454,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
               <button
                 type="button"
                 onClick={() => addBlock('quote')}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#2b3e1d] bg-white text-[#162809] font-bold text-xs hover:bg-[#e3d5c0] transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] font-bold text-xs hover:bg-[#E8F5E9] transition-all cursor-pointer shadow-2xs"
               >
                 <span className="material-symbols-outlined text-base">format_quote</span>
                 Tambah Kutipan
@@ -463,17 +463,17 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end pt-4 space-x-4 border-t border-[#c4c8bc]">
+          <div className="flex justify-end pt-4 space-x-4 border-t border-[#E0E0E0]">
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2.5 rounded-xl border border-[#75786e] text-[#44483f] font-bold text-xs hover:bg-[#e7e2db] transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl border border-[#E0E0E0] bg-[#FFFFFF] text-[#555555] font-bold text-xs hover:bg-[#F7F8F6] transition-all cursor-pointer"
             >
               Batalkan
             </button>
             <button
               type="submit"
-              className="bg-[#162809] text-white px-8 py-2.5 rounded-xl font-bold text-xs hover:opacity-90 shadow-sm active:scale-95 transition-all cursor-pointer"
+              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-2xs active:scale-95 transition-all cursor-pointer"
             >
               {initialArticle ? 'Simpan Perubahan Artikel' : 'Terbitkan Artikel Baru'}
             </button>

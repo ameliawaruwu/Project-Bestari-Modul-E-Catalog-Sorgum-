@@ -52,17 +52,17 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center justify-center text-[#1d1b17] animate-fadeIn">
-      <div className="max-w-[520px] w-full bg-[#f9f3ec] rounded-2xl p-6 sm:p-10 text-center border border-[#c4c8bc]/40 shadow-xl space-y-6">
+    <main className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center justify-center text-[#1B5E20] animate-fadeIn bg-[#F7F8F6]">
+      <div className="max-w-[520px] w-full bg-[#FFFFFF] rounded-2xl p-6 sm:p-10 text-center border border-[#E0E0E0] shadow-2xs space-y-6">
         {/* Payment Header */}
         <header>
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#fade88]/30 border border-[#715c13]/20 mb-3 text-[#715c13]">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FFF8E1] border border-[#FFE0B2] mb-3 text-[#C89B3C]">
             <span className="material-symbols-outlined text-2xl">qr_code_2</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#162809] mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#1B5E20] mb-2 font-['Playfair_Display']">
             {t('Pembayaran QRIS', 'QRIS Payment')}
           </h1>
-          <p className="text-xs sm:text-sm text-[#44483f]">
+          <p className="text-xs sm:text-sm text-[#555555]">
             {t(
               'Silakan pindai kode QR di bawah ini untuk menyelesaikan pembayaran Anda.',
               'Please scan the QR code below to complete your payment.'
@@ -72,7 +72,7 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
 
         {/* QR Code Card */}
         <div className="relative group my-4">
-          <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc]/40 flex flex-col items-center justify-center shadow-sm">
+          <div className="bg-[#F7F8F6] p-6 rounded-2xl border border-[#E0E0E0] flex flex-col items-center justify-center shadow-2xs">
             {shopSettings.qrisImageUrl ? (
               <img
                 src={shopSettings.qrisImageUrl}
@@ -80,15 +80,15 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
                 className="w-56 h-56 object-contain"
               />
             ) : (
-              <div className="w-56 h-56 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 text-xs">
+              <div className="w-56 h-56 bg-[#FFFFFF] rounded-xl flex items-center justify-center text-[#555555] text-xs">
                 {t('Gambar QRIS Belum Dikonfigurasi', 'QRIS Image Not Configured')}
               </div>
             )}
-            <p className="font-bold text-sm text-[#162809] mt-3 tracking-wide">
+            <p className="font-bold text-sm text-[#1B5E20] mt-3 tracking-wide">
               {shopSettings.storeName || 'SORGUM SORGHUM'}
             </p>
             {shopSettings.qrisNmid && (
-              <p className="text-[10px] font-mono text-gray-500 mt-0.5">
+              <p className="text-[10px] font-mono text-[#555555] mt-0.5">
                 NMID: {shopSettings.qrisNmid}
               </p>
             )}
@@ -96,21 +96,21 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
         </div>
 
         {/* Order Summary Box */}
-        <div className="bg-white rounded-xl p-5 space-y-3 border border-[#c4c8bc]/30 text-left shadow-xs">
-          <div className="flex justify-between items-center border-b border-[#c4c8bc]/30 pb-2">
-            <span className="text-[11px] font-bold text-[#44483f] uppercase tracking-wider">
+        <div className="bg-[#F7F8F6] rounded-xl p-5 space-y-3 border border-[#E0E0E0] text-left shadow-2xs">
+          <div className="flex justify-between items-center border-b border-[#E0E0E0] pb-2">
+            <span className="text-[11px] font-bold text-[#555555] uppercase tracking-wider">
               ORDER ID
             </span>
-            <span className="font-bold text-base text-[#162809]">
+            <span className="font-bold text-base text-[#1B5E20]">
               {orderId}
             </span>
           </div>
 
           <div className="flex justify-between items-center pt-1">
-            <span className="text-[11px] font-bold text-[#44483f] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#555555] uppercase tracking-wider">
               {t('TOTAL BAYAR', 'TOTAL AMOUNT')}
             </span>
-            <span className="font-bold text-xl text-[#162809]">
+            <span className="font-bold text-xl text-[#1B5E20]">
               Rp {totalAmount.toLocaleString('id-ID')}
             </span>
           </div>
@@ -120,13 +120,13 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
         <div className="space-y-4 pt-2">
           <button
             onClick={handleWaClick}
-            className="w-full bg-[#2b3e1d] hover:bg-[#162809] text-white py-4 px-6 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer btn-hover-effect"
+            className="w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white py-4 px-6 rounded-xl font-bold text-xs sm:text-sm shadow-2xs transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-xl">chat</span>
             <span>{t('Konfirmasi Pembayaran via WhatsApp', 'Confirm Payment via WhatsApp')}</span>
           </button>
 
-          <p className="text-xs text-[#44483f] font-medium leading-relaxed">
+          <p className="text-xs text-[#555555] font-medium leading-relaxed">
             {t(
               'Setelah memindai, harap tekan tombol di atas untuk mengirim bukti pembayaran ke Admin kami.',
               'After scanning, please press the button above to send payment proof to our Admin.'
@@ -136,7 +136,7 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
           {hasClickedWa && (
             <button
               onClick={onCompleteOrder}
-              className="mt-4 w-full bg-[#f3e8d9] hover:bg-[#e1d5c7] border border-[#2b3e1d]/30 text-[#162809] py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all flex items-center justify-center gap-2 animate-fadeIn shadow-xs"
+              className="mt-4 w-full bg-[#E8F5E9] hover:bg-[#A5D6A7]/30 border border-[#A5D6A7] text-[#1B5E20] py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all flex items-center justify-center gap-2 animate-fadeIn shadow-2xs"
             >
               <span>{t('Selesai / Lihat Status Pesanan', 'Done / View Order Status')}</span>
               <span className="material-symbols-outlined text-sm">arrow_forward</span>

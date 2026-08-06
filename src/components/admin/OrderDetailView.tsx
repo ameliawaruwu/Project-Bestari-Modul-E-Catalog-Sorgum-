@@ -61,7 +61,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
       {/* Header Navigation */}
       <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
@@ -73,7 +73,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="hover:underline hover:text-[#162809] cursor-pointer"
+                  className="hover:underline hover:text-[#1B5E20] cursor-pointer"
                 >
                   Kelola Transaksi
                 </button>
@@ -83,10 +83,10 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#162809] font-bold">Detail Pesanan</li>
+              <li className="text-[#1B5E20] font-bold">Detail Pesanan</li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
             Detail Pesanan {order.id}
           </h2>
         </div>
@@ -94,7 +94,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="bg-white border border-[#c4c8bc] text-[#1d1b17] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 hover:bg-[#f3ede6] transition-all cursor-pointer font-bold text-xs"
+          className="bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 hover:bg-[#E8F5E9] transition-all cursor-pointer font-bold text-xs shadow-2xs"
         >
           <span className="material-symbols-outlined text-base">arrow_back</span>
           <span>Kembali</span>
@@ -102,22 +102,22 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
       </section>
 
       {/* Main Detail Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-[#c4c8bc] overflow-hidden">
+      <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
         {/* Top order summary info */}
-        <div className="p-6 border-b border-[#c4c8bc] bg-[#f9f3ec] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-6 border-b border-[#E0E0E0] bg-[#F7F8F6] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2.5">
-              <span className="px-3 py-1 text-xs font-bold bg-[#162809] text-white rounded-lg font-mono">
-                {order.id}
+              <span className="px-3 py-1 text-xs font-bold bg-[#1B5E20] text-white rounded-lg font-mono">
+                {order.orderNumber || 'ORD'}
               </span>
-              <span className="text-xs text-[#44483f] font-semibold">
+              <span className="text-xs text-[#555555] font-semibold">
                 Dipesan pada: {order.createdAt}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-[#1d1b17]">Status Pesanan:</span>
+            <span className="text-xs font-bold text-[#1B5E20]">Status Pesanan:</span>
             <select
               value={order.status}
               onChange={(e) =>
@@ -125,14 +125,14 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
               }
               className={`px-4 py-2 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-colors ${
                 order.status === 'Selesai'
-                  ? 'bg-green-50 border-green-300 text-green-800'
+                  ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
                   : order.status === 'Diproses'
-                  ? 'bg-yellow-50 border-yellow-300 text-yellow-800'
+                  ? 'bg-[#FFF8E1] border-[#FFE082] text-[#C89B3C]'
                   : order.status === 'Dikirim'
-                  ? 'bg-blue-50 border-blue-300 text-blue-800'
+                  ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
                   : order.status === 'Pending'
-                  ? 'bg-amber-50 border-amber-300 text-amber-800'
-                  : 'bg-red-50 border-red-300 text-red-800'
+                  ? 'bg-[#FFF3E0] border-[#FFCC80] text-[#E65100]'
+                  : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
               }`}
             >
               {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
@@ -143,47 +143,47 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
         </div>
 
         {/* Customer & Shipping Information Grid */}
-        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-[#c4c8bc]/60 bg-white">
-          <div className="bg-[#faf8f5] p-5 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-3">
-            <div className="flex items-center gap-2 text-[#162809] border-b border-[#c4c8bc]/30 pb-2">
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-[#E0E0E0] bg-[#FFFFFF]">
+          <div className="bg-[#F7F8F6] p-5 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-3">
+            <div className="flex items-center gap-2 text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
               <span className="material-symbols-outlined text-lg">person</span>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#44483f]">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#1B5E20]">
                 Informasi Pelanggan
               </h4>
             </div>
             <div className="space-y-1">
-              <p className="font-extrabold text-base text-[#1d1b17]">
+              <p className="font-extrabold text-base text-[#1B5E20]">
                 {order.customerName || 'Pelanggan Sorgum'}
               </p>
-              <p className="text-xs text-[#44483f] flex items-center gap-1.5 font-mono">
+              <p className="text-xs text-[#555555] flex items-center gap-1.5 font-mono">
                 <span className="material-symbols-outlined text-sm">phone</span>
                 {order.customerPhone || '-'}
               </p>
-              <p className="text-xs text-[#44483f] flex items-center gap-1.5">
+              <p className="text-xs text-[#555555] flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-sm">mail</span>
                 {order.customerEmail || '-'}
               </p>
             </div>
           </div>
 
-          <div className="bg-[#faf8f5] p-5 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-3">
-            <div className="flex items-center gap-2 text-[#162809] border-b border-[#c4c8bc]/30 pb-2">
+          <div className="bg-[#F7F8F6] p-5 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-3">
+            <div className="flex items-center gap-2 text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
               <span className="material-symbols-outlined text-lg">local_shipping</span>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#44483f]">
-                Alamat Pengiriman & Pembayaran
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#1B5E20]">
+                Alamat Pengiriman &amp; Pembayaran
               </h4>
             </div>
             <div className="space-y-2">
-              <p className="text-xs text-[#1d1b17] leading-relaxed">
+              <p className="text-xs text-[#1B5E20] leading-relaxed">
                 {order.shippingAddress || 'Alamat tidak dicantumkan.'}
               </p>
-              <div className="pt-2 border-t border-[#c4c8bc]/30 flex justify-between items-center text-xs">
-                <span className="font-medium text-[#44483f]">Metode Pembayaran:</span>
+              <div className="pt-2 border-t border-[#E0E0E0] flex justify-between items-center text-xs">
+                <span className="font-medium text-[#555555]">Metode Pembayaran:</span>
                 <span
                   className={`inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase rounded ${
                     order.paymentMethod === 'qris'
-                      ? 'bg-purple-100 text-purple-800 border border-purple-200'
-                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                      ? 'bg-[#E3F2FD] text-[#1976D2] border border-[#BBDEFB]'
+                      : 'bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]'
                   }`}
                 >
                   {order.paymentMethod === 'qris' ? 'QRIS' : 'COD (Bayar di Tempat)'}
@@ -194,11 +194,11 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
         </div>
 
         {/* Tracking Info — admin set kurir + resi */}
-        <div className="p-8 border-b border-[#c4c8bc]/60 bg-white">
-          <div className="bg-[#faf8f5] p-5 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-3">
-            <div className="flex items-center gap-2 text-[#162809] border-b border-[#c4c8bc]/30 pb-2">
+        <div className="p-8 border-b border-[#E0E0E0] bg-[#FFFFFF]">
+          <div className="bg-[#F7F8F6] p-5 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-3">
+            <div className="flex items-center gap-2 text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
               <span className="material-symbols-outlined text-lg">local_shipping</span>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#44483f]">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#1B5E20]">
                 Informasi Pengiriman
               </h4>
             </div>
@@ -206,12 +206,12 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             {(order.courier || order.trackingNumber) && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="space-y-1">
-                  <p className="text-[#44483f] font-medium">Kurir</p>
-                  <p className="font-bold text-[#1d1b17]">{order.courier || '-'}</p>
+                  <p className="text-[#555555] font-medium">Kurir</p>
+                  <p className="font-bold text-[#1B5E20]">{order.courier || '-'}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[#44483f] font-medium">Nomor Resi</p>
-                  <p className="font-bold font-mono text-[#162809]">{order.trackingNumber || '-'}</p>
+                  <p className="text-[#555555] font-medium">Nomor Resi</p>
+                  <p className="font-bold font-mono text-[#1B5E20]">{order.trackingNumber || '-'}</p>
                 </div>
               </div>
             )}
@@ -220,7 +220,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                 href={`https://cekresi.com/cek-resi/?courier=${order.courier}&awb=${order.trackingNumber}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-[#2b3e1d] font-bold hover:underline text-xs"
+                className="inline-flex items-center gap-1.5 text-[#2E7D32] font-bold hover:underline text-xs"
               >
                 <span className="material-symbols-outlined text-sm">open_in_new</span>
                 Lacak di CekResi
@@ -271,9 +271,9 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             )}
 
             {/* Form set resi */}
-            <div className="pt-3 border-t border-[#c4c8bc]/30">
-              <p className="text-[11px] text-[#44483f] font-semibold mb-2">
-                Set Kurir & Nomor Resi (order otomatis jadi Dikirim):
+            <div className="pt-3 border-t border-[#E0E0E0]">
+              <p className="text-[11px] text-[#555555] font-semibold mb-2">
+                Set Kurir &amp; Nomor Resi (order otomatis jadi Dikirim):
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <input
@@ -281,20 +281,20 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                   value={courierInput}
                   onChange={(e) => setCourierInput(e.target.value)}
                   placeholder="Kurir (JNE, J&T, SiCepat...)"
-                  className="px-3 py-2 rounded-lg border border-[#c4c8bc] bg-white text-xs text-[#1d1b17] outline-none focus:border-[#2b3e1d] flex-1"
+                  className="px-3 py-2 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-xs text-[#1B5E20] outline-none focus:border-[#2E7D32] flex-1 font-medium"
                 />
                 <input
                   type="text"
                   value={resiInput}
                   onChange={(e) => setResiInput(e.target.value)}
                   placeholder="Nomor Resi"
-                  className="px-3 py-2 rounded-lg border border-[#c4c8bc] bg-white text-xs text-[#1d1b17] outline-none focus:border-[#2b3e1d] flex-1 font-mono"
+                  className="px-3 py-2 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-xs text-[#1B5E20] outline-none focus:border-[#2E7D32] flex-1 font-mono font-medium"
                 />
                 <button
                   type="button"
                   onClick={handleSetTracking}
                   disabled={trackingSaving || !courierInput.trim() || !resiInput.trim()}
-                  className="px-4 py-2 rounded-lg bg-[#162809] text-white text-xs font-bold hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
                 >
                   {trackingSaving ? 'Menyimpan...' : 'Simpan Resi'}
                 </button>
@@ -304,20 +304,20 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
         </div>
 
         {/* Order Items & Payment Proof */}
-        <div className="p-8 space-y-8">
+        <div className="p-8 space-y-8 bg-[#FFFFFF]">
           <div className="space-y-4">
-            <h4 className="text-sm font-bold text-[#1d1b17] flex items-center gap-2">
-              <span className="material-symbols-outlined text-lg text-[#162809]">shopping_basket</span>
+            <h4 className="text-sm font-extrabold text-[#1B5E20] flex items-center gap-2">
+              <span className="material-symbols-outlined text-lg text-[#1B5E20]">shopping_basket</span>
               <span>Daftar Produk Dipesan</span>
             </h4>
             <div className="space-y-3">
               {order.items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-4 bg-[#faf8f5] rounded-2xl border border-[#c4c8bc] hover:shadow-xs transition-shadow"
+                  className="flex items-center justify-between p-4 bg-[#F7F8F6] rounded-2xl border border-[#E0E0E0] hover:shadow-2xs transition-shadow"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-[#e7e2db] overflow-hidden border border-[#c4c8bc] flex-shrink-0">
+                    <div className="w-14 h-14 rounded-xl bg-[#FFFFFF] overflow-hidden border border-[#E0E0E0] flex-shrink-0">
                       <img
                         src={item.product.image}
                         alt={item.product.name}
@@ -325,18 +325,18 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                       />
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#1d1b17]">
+                      <p className="font-bold text-sm text-[#1B5E20]">
                         {item.product.name}
                       </p>
-                      <p className="text-xs text-[#44483f] mt-0.5">
+                      <p className="text-xs text-[#555555] mt-0.5">
                         Ukuran/Varian: {item.product.unitInfo || item.product.weight || '-'}
                       </p>
-                      <p className="text-xs font-mono text-[#162809] font-semibold mt-1">
+                      <p className="text-xs font-mono text-[#1B5E20] font-semibold mt-1">
                         Rp {item.product.price.toLocaleString('id-ID')} x {item.quantity}
                       </p>
                     </div>
                   </div>
-                  <p className="font-bold font-mono text-sm text-[#162809] text-right">
+                  <p className="font-bold font-mono text-sm text-[#1B5E20] text-right">
                     Rp {(item.product.price * item.quantity).toLocaleString('id-ID')}
                   </p>
                 </div>
@@ -344,13 +344,11 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             </div>
           </div>
 
-
-
           {/* Bill Summary Area */}
-          <div className="pt-6 border-t border-[#c4c8bc] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="pt-6 border-t border-[#E0E0E0] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="space-y-0.5">
-              <span className="text-xs text-[#44483f] font-medium">Total Pembayaran Pelanggan:</span>
-              <p className="text-2xl font-black font-mono text-[#162809]">
+              <span className="text-xs text-[#555555] font-medium">Total Pembayaran Pelanggan:</span>
+              <p className="text-2xl font-black font-mono text-[#1B5E20]">
                 Rp {order.totalAmount.toLocaleString('id-ID')}
               </p>
             </div>
@@ -358,7 +356,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto bg-[#162809] hover:opacity-90 text-white px-8 py-3 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer text-center"
+              className="w-full sm:w-auto bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-8 py-3 rounded-xl text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer text-center"
             >
               Selesai &amp; Kembali
             </button>

@@ -31,12 +31,12 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-slate-200/50 px-6 py-3 flex justify-between items-center shadow-2xs">
+      <header style={{ backgroundColor: '#F7F8F6' }} className="sticky top-0 z-40 backdrop-blur-md border-b border-[#E0E0E0] px-6 py-3 flex justify-between items-center shadow-2xs">
         {/* Mobile Drawer Hamburger Button */}
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="lg:hidden p-1.5 text-[#162809] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-1.5 text-[#1B5E20] hover:bg-[#E8F5E9] rounded-lg transition-colors cursor-pointer"
           title="Buka Menu"
         >
           <span className="material-symbols-outlined text-xl">menu</span>
@@ -51,17 +51,17 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           >
             {/* Profile Label */}
             <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-[#1d1b17]">
+              <p className="text-xs font-bold text-[#1B5E20]">
                 {user?.name || 'Administrator Sorgum'}
               </p>
-              <p className="text-[9px] font-extrabold text-amber-700 uppercase tracking-widest mt-0.5">
+              <p className="text-[9px] font-extrabold text-[#C89B3C] uppercase tracking-widest mt-0.5">
                 Administrator
               </p>
             </div>
 
             {/* Profile Avatar */}
             <div className="flex items-center">
-              <span className="material-symbols-outlined text-[#162809] text-3xl group-active:opacity-70 transition-opacity">
+              <span className="material-symbols-outlined text-[#1B5E20] text-3xl group-active:opacity-70 transition-opacity">
                 account_circle
               </span>
             </div>
@@ -69,8 +69,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
           {/* Dropdown Menu Box */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl border border-slate-200 shadow-md py-1.5 z-50 animate-fadeIn text-xs text-[#1d1b17]">
-              <div className="px-4 py-2 border-b border-gray-100 sm:hidden">
+            <div className="absolute right-0 top-full mt-2 w-52 bg-[#fdfbf7] rounded-2xl border border-[#e2ded4] shadow-md py-1.5 z-50 animate-fadeIn text-xs text-[#1d1b17]">
+              <div className="px-4 py-2 border-b border-[#e2ded4]/60 sm:hidden">
                 <p className="font-bold text-[#1d1b17] truncate">{user?.name || 'Administrator Sorgum'}</p>
                 <p className="text-[10px] text-gray-500 font-medium">Administrator</p>
               </div>
@@ -81,7 +81,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                   setShowProfileModal(true);
                   setIsDropdownOpen(false);
                 }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer font-semibold"
+                className="w-full text-left px-4 py-2 hover:bg-[#f4efe8] transition-colors flex items-center gap-2 cursor-pointer font-semibold"
               >
                 <span className="material-symbols-outlined text-base text-gray-500">person</span>
                 <span>Lihat Profil</span>
@@ -94,7 +94,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
       {/* Profile Details Modal Dialog */}
       {showProfileModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[110] animate-fadeIn p-4">
-          <div className="bg-white rounded-2xl border border-slate-200/80 max-w-sm w-full p-6 shadow-xl space-y-5 text-center relative">
+          <div className="bg-[#fdfbf7] rounded-2xl border border-[#e2ded4] max-w-sm w-full p-6 shadow-xl space-y-5 text-center relative">
             <button
               type="button"
               onClick={() => setShowProfileModal(false)}
@@ -119,7 +119,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             </div>
 
             {/* Profile Fields List */}
-            <div className="text-left bg-gray-50 p-4 rounded-xl border border-slate-200/50 space-y-3 text-xs">
+            <div className="text-left bg-[#f4efe8] p-4 rounded-xl border border-[#e2ded4]/60 space-y-3 text-xs">
               <div>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">Nama Akun</p>
                 <p className="font-semibold text-gray-700">{user?.name || 'Administrator Sorgum'}</p>
