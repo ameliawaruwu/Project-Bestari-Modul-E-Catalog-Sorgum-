@@ -197,13 +197,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
       {/* Breadcrumb & Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#162809] font-bold">Kelola User</li>
+              <li className="text-[#1B5E20] font-bold">Kelola User</li>
             </ol>
           </nav>
           <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
@@ -306,7 +306,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                         }`}
                     >
                       {/* ID User */}
-                      <td className="p-3.5 pl-5 font-mono font-bold text-[#162809]">{u.id}</td>
+                      <td className="p-3.5 pl-5 font-mono font-bold text-[#1B5E20]">{u.id}</td>
 
                       {/* Nama Konsumen */}
                       <td className="p-3.5">
@@ -314,13 +314,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${isSoftDeleted
                                 ? 'bg-gray-200 text-gray-600'
-                                : 'bg-[#162809] text-white shadow-2xs'
+                                : 'bg-[#2E7D32] text-white shadow-2xs'
                               }`}
                           >
                             {initials}
                           </div>
                           <div>
-                            <span className="font-bold text-[#1d1b17] block">{u.name}</span>
+                            <span className="font-bold text-[#1B5E20] block">{u.name}</span>
                             {isSoftDeleted && (
                               <span className="text-[10px] text-amber-700 font-semibold italic">
                                 Soft Deleted
@@ -336,7 +336,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                           href={`https://wa.me/${u.phone.replace(/[^0-9]/g, '')}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[#1d1b17] font-mono font-medium hover:underline"
+                          className="text-[#1B5E20] font-mono font-medium hover:underline"
                         >
                           {u.phone}
                         </a>
@@ -353,7 +353,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                             NONAKTIF
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 bg-[#d2eabb] text-[#162809] font-bold rounded-full text-[11px] inline-flex items-center gap-1">
+                          <span className="px-2.5 py-1 bg-[#d2eabb] text-[#1B5E20] font-bold rounded-full text-[11px] inline-flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
                             AKTIF
                           </span>
@@ -368,7 +368,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                             type="button"
                             title={isSoftDeleted ? 'Aktifkan Kembali' : 'Nonaktifkan (Soft Delete)'}
                             onClick={() => handleToggleStatus(u)}
-                            className={`w-8 h-4 rounded-full transition-colors relative p-0.5 cursor-pointer ${isSoftDeleted ? 'bg-gray-300' : 'bg-[#162809]'
+                            className={`w-8 h-4 rounded-full transition-colors relative p-0.5 cursor-pointer ${isSoftDeleted ? 'bg-gray-300' : 'bg-[#2E7D32]'
                               }`}
                           >
                             <div
@@ -397,13 +397,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="p-4 bg-[#f9f8f6] border-t border-[#c4c8bc]/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#44483f]">
+        <div className="p-4 bg-[#f9f8f6] border-t border-[#E0E0E0]/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#555555]">
           <p>
             Menampilkan{' '}
-            <strong className="text-[#1d1b17]">
+            <strong className="text-[#1B5E20]">
               {startIndex + 1} - {Math.min(startIndex + itemsPerPage, totalItems)}
             </strong>{' '}
-            dari <strong className="text-[#1d1b17]">{totalItems}</strong> Konsumen
+            dari <strong className="text-[#1B5E20]">{totalItems}</strong> Konsumen
           </p>
 
           <div className="flex items-center gap-1">
@@ -411,7 +411,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
               type="button"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="p-1.5 rounded-lg border border-[#c4c8bc] bg-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 cursor-pointer"
+              className="p-1.5 rounded-lg border border-[#E0E0E0] bg-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">chevron_left</span>
             </button>
@@ -422,8 +422,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                 type="button"
                 onClick={() => setCurrentPage(page)}
                 className={`w-7 h-7 rounded-lg text-xs font-bold cursor-pointer transition-colors ${currentPage === page
-                    ? 'bg-[#162809] text-white'
-                    : 'bg-white border border-[#c4c8bc] text-[#44483f] hover:bg-gray-50'
+                    ? 'bg-[#2E7D32] text-white'
+                    : 'bg-white border border-[#E0E0E0] text-[#555555] hover:bg-gray-50'
                   }`}
               >
                 {page}
@@ -434,7 +434,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
               type="button"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="p-1.5 rounded-lg border border-[#c4c8bc] bg-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 cursor-pointer"
+              className="p-1.5 rounded-lg border border-[#E0E0E0] bg-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">chevron_right</span>
             </button>

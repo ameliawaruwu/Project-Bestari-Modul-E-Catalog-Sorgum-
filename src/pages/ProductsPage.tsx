@@ -19,7 +19,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 }) => {
   const { t } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('semua');
-  const [sortBy, setSortBy] = useState('populer');
+  const [sortBy, setSortBy] = useState<'populer' | 'harga-terendah' | 'harga-tertinggi' | 'terbaru'>('populer');
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,7 +91,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             <span className="font-['Plus_Jakarta_Sans'] text-xs font-semibold text-[#555555]">{t('Urutkan:', 'Sort By:')}</span>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => setSortBy(e.target.value as 'populer' | 'harga-terendah' | 'harga-tertinggi' | 'terbaru')}
               className="bg-transparent border-none font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1B5E20] focus:ring-0 cursor-pointer outline-none"
             >
               <option value="populer">{t('Populer', 'Popular')}</option>

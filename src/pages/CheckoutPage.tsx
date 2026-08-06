@@ -20,7 +20,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
   // Promotional articles for the checkout promotions section
   const promoArticles = articles.filter(
-    (a) => a.category === 'Promosi' || a.category === 'Promotion'
+    (a) => a.category === 'Promosi'
   );
   const [promoExpanded, setPromoExpanded] = useState(false);
 
@@ -377,8 +377,8 @@ ${
                   <div className="mt-4 space-y-3">
                     {promoArticles.map((promo) => (
                       <div key={promo.id} className="bg-[#FFFFFF] rounded-xl p-4 border border-[#FFE0B2] flex items-start gap-3">
-                        {promo.imageUrl && (
-                          <img src={promo.imageUrl} alt={promo.title} className="w-14 h-14 object-cover rounded-lg flex-shrink-0" />
+                        {promo.image && (
+                          <img src={promo.image} alt={promo.title} className="w-14 h-14 object-cover rounded-lg flex-shrink-0" />
                         )}
                         <div className="flex-grow">
                           <p className="font-bold text-xs text-[#1B5E20]">{promo.title}</p>

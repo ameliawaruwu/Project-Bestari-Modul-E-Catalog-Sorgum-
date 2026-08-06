@@ -53,12 +53,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Image Container */}
       <div className="h-52 sm:h-60 overflow-hidden bg-[#F7F8F6] relative border-b border-[#E0E0E0]">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-          loading="lazy"
-        />
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-[#E8F5E9]">
+            <span className="material-symbols-outlined text-5xl text-[#A5D6A7]">image</span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
       </div>
 

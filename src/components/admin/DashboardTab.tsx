@@ -32,13 +32,13 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       {/* Breadcrumb & Heading */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-semibold text-[#44483f]/70 mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-semibold text-[#555555]/70 mb-1">
             <ol className="flex items-center space-x-2">
               <li>
                 <button
                   type="button"
                   onClick={() => setActiveNav('dashboard')}
-                  className="hover:text-[#162809] transition-colors cursor-pointer"
+                  className="hover:text-[#1B5E20] transition-colors cursor-pointer"
                 >
                   Dashboard
                 </button>
@@ -48,7 +48,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#162809] font-bold">Dashboard Utama</li>
+              <li className="text-[#1B5E20] font-bold">Dashboard Utama</li>
             </ol>
           </nav>
           <h2 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight">

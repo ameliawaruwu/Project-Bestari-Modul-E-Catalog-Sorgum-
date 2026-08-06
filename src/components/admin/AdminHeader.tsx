@@ -69,9 +69,9 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
           {/* Dropdown Menu Box */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-[#fdfbf7] rounded-2xl border border-[#e2ded4] shadow-md py-1.5 z-50 animate-fadeIn text-xs text-[#1d1b17]">
+            <div className="absolute right-0 top-full mt-2 w-52 bg-[#fdfbf7] rounded-2xl border border-[#e2ded4] shadow-md py-1.5 z-50 animate-fadeIn text-xs text-[#1B5E20]">
               <div className="px-4 py-2 border-b border-[#e2ded4]/60 sm:hidden">
-                <p className="font-bold text-[#1d1b17] truncate">{user?.name || 'Administrator Sorgum'}</p>
+                <p className="font-bold text-[#1B5E20] truncate">{user?.name || 'Administrator Sorgum'}</p>
                 <p className="text-[10px] text-gray-500 font-medium">Administrator</p>
               </div>
 
@@ -105,12 +105,12 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             </button>
 
             {/* Avatar Header */}
-            <div className="mx-auto w-16 h-16 rounded-full bg-[#162809]/10 flex items-center justify-center text-[#162809]">
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#2E7D32]/10 flex items-center justify-center text-[#1B5E20]">
               <span className="material-symbols-outlined text-4xl">admin_panel_settings</span>
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-bold text-lg text-[#1d1b17]">
+              <h3 className="font-bold text-lg text-[#1B5E20]">
                 {user?.name || 'Administrator Sorgum'}
               </h3>
               <p className="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-full inline-block uppercase tracking-wider">
@@ -126,7 +126,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               </div>
               <div>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">No. WhatsApp</p>
-                <p className="font-semibold text-gray-700">{user?.whatsapp || '+62 812-3456-7890'}</p>
+                <p className="font-semibold text-gray-700">{user?.phone || '+62 812-3456-7890'}</p>
               </div>
               <div>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">Hak Akses</p>
@@ -138,7 +138,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <button
               type="button"
               onClick={() => setShowProfileModal(false)}
-              className="w-full py-2 bg-[#162809] hover:opacity-90 text-white font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer"
+              className="w-full py-2 bg-[#2E7D32] hover:opacity-90 text-white font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer"
             >
               Selesai
             </button>

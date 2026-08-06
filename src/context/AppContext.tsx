@@ -21,6 +21,7 @@ export interface ShopSettings {
   faviconUrl?: string;
   storeAddress?: string;
   storeEmail?: string;
+  shippingCost?: number;
 }
 
 export interface LandingContent {
@@ -88,7 +89,7 @@ interface AppContextProps {
 
   // FAQs
   faqs: FaqItem[];
-  saveFaq: (faqData: any) => Promise<void>;
+  saveFaq: (faqData: any) => Promise<FaqItem>;
   deleteFaq: (id: string) => Promise<void>;
   toggleFaqStatus: (id: string) => Promise<void>;
   reorderFaq: (id: string, direction: 'UP' | 'DOWN') => Promise<void>;
@@ -130,6 +131,7 @@ interface AppContextProps {
   updateCartQuantity: (productId: string, delta: number) => void;
   removeCartItem: (productId: string) => void;
   clearCart: () => void;
+  resetCartLocal: () => void;
   appliedDiscount: number;
   setAppliedDiscount: (val: number) => void;
   appliedVoucherCode: string | null;
@@ -878,6 +880,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (rowIds.length) orderApi.clearCartServer(rowIds).catch(() => refreshCart());
   };
 
+  // Reset state cart LOCAL saja (tanpa panggil server). Dipakai setelah checkout:
+  // BE sudah hapus cart_items saat order dibuat, jadi panggil DELETE lagi = 404.
+  const resetCartLocal = () => {
+    updateCart([]);
+  };
+
   // Translation helper function
   const t = (idText: string, enText: string): string => {
     return language === 'en' ? enText : idText;
@@ -934,6 +942,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateCartQuantity,
         removeCartItem,
         clearCart,
+        resetCartLocal,
         appliedDiscount,
         setAppliedDiscount,
         appliedVoucherCode,

@@ -61,7 +61,7 @@ export interface ArticleItem {
   views: number;
   content?: string;
   contentBlocks?: Array<{
-    type: string;
+    type: 'text' | 'image' | 'quote';
     content?: string;
     image_url?: string;
     alt?: string;

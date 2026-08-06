@@ -20,8 +20,9 @@ interface ProductFormViewProps {
     discountPercent?: number;
     composition?: string;
     shelfLife?: string;
-    glutenFree: boolean;
-    organic: boolean;
+    attributes?: string;
+    glutenFree?: boolean;
+    organic?: boolean;
     specification?: string;
     shippingInfo?: string;
   }) => void;
@@ -30,7 +31,7 @@ interface ProductFormViewProps {
   /** Opsi badge dinamis dari Kelola Badge (jika ada) */
   badgeOptions?: string[];
   /** Opsi kategori dinamis dari Kelola Kategori (jika ada) */
-  categoryOptions?: { name: string; slug: string }[];
+  categoryOptions?: { id?: number; name: string; slug: string }[];
 }
 
 export const ProductFormView: React.FC<ProductFormViewProps> = ({

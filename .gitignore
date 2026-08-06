@@ -6,5 +6,18 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# AI Studio / asset scratch
 assets/.aistudio/*
-.hermes/plans/
+
+# Hermes plans (internal, bukan source)
+.hermes/
+
+# Testing / E2E (kredensial & data test — jangan masuk repo)
+tests/
+ui_e2e_*.cjs
+*.spec.cjs
+*.test.cjs
+
+# Tooling lokal (bukan source yang perlu di-version)
+tools/

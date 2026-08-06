@@ -9,6 +9,7 @@ interface BackendUser {
   name: string;
   email: string;
   role: 'user' | 'admin';
+  phone?: string;
 }
 
 function saveUser(user: User) {
@@ -29,7 +30,7 @@ function readUser(): User | null {
 }
 
 function mapUser(u: BackendUser): User {
-  return { id: String(u.id), name: u.name, email: u.email, role: u.role };
+  return { id: String(u.id), name: u.name, email: u.email, role: u.role, phone: u.phone };
 }
 
 export const authApi = {

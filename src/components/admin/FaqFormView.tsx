@@ -124,21 +124,21 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn pb-12 max-w-4xl mx-auto">
       {/* Top Breadcrumb & Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#c4c8bc]/60 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E0E0E0]/60 pb-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#44483f] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="cursor-pointer hover:underline text-[#44483f]" onClick={onCancel}>
+              <li className="cursor-pointer hover:underline text-[#555555]" onClick={onCancel}>
                 Kelola FAQ
               </li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#162809] font-bold">
+              <li className="text-[#1B5E20] font-bold">
                 {isEditing ? `Edit FAQ: ${initialFaq?.id}` : 'Tambah FAQ Baru'}
               </li>
             </ol>
@@ -147,12 +147,12 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="p-2 rounded-xl bg-white border border-[#c4c8bc] text-[#162809] hover:bg-[#f3ede6] transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-white border border-[#E0E0E0] text-[#1B5E20] hover:bg-[#F7F8F6] transition-colors cursor-pointer"
               title="Kembali"
             >
               <span className="material-symbols-outlined text-lg">arrow_back</span>
             </button>
-            <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1d1b17]">
+            <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
               {isEditing ? 'Formulir Edit FAQ' : 'Halaman Tambah Pertanyaan Baru'}
             </h2>
           </div>
@@ -163,14 +163,14 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 bg-white hover:bg-gray-100 border border-[#c4c8bc] text-[#44483f] text-xs font-bold rounded-xl transition-colors cursor-pointer"
+            className="px-4 py-2.5 bg-white hover:bg-gray-100 border border-[#E0E0E0] text-[#555555] text-xs font-bold rounded-xl transition-colors cursor-pointer"
           >
             Batal
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2.5 bg-[#162809] hover:bg-[#233e0e] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+            className="px-5 py-2.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">save</span>
             {isEditing ? 'Simpan Perubahan' : 'Terbitkan FAQ Baru'}
@@ -183,16 +183,16 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
         {/* Left 2 Columns: Form Fields */}
         <div className="space-y-6">
           {/* Card 1: Isi Pertanyaan & Jawaban */}
-          <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-5">
+          <div className="bg-white p-6 rounded-2xl border border-[#E0E0E0] shadow-xs space-y-5">
             <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-xl text-[#162809]">quiz</span>
-                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1d1b17]">
+                <span className="material-symbols-outlined text-xl text-[#1B5E20]">quiz</span>
+                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
                   Konten Pertanyaan &amp; Jawaban
                 </h3>
               </div>
               {isEditing && (
-                <span className="px-3 py-1 bg-[#f3ede6] text-[#162809] font-mono text-xs font-bold rounded-lg border border-[#c4c8bc]/60">
+                <span className="px-3 py-1 bg-[#F7F8F6] text-[#1B5E20] font-mono text-xs font-bold rounded-lg border border-[#E0E0E0]/60">
                   {initialFaq?.id}
                 </span>
               )}
@@ -201,7 +201,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
             {/* Pertanyaan */}
             <div>
               <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-xs font-bold text-[#1d1b17]">
+                <label className="block text-xs font-bold text-[#1B5E20]">
                   Pertanyaan Konsumen <span className="text-red-500">*</span>
                 </label>
                 <span className="text-[11px] text-gray-400 font-mono">
@@ -215,8 +215,8 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder="Contoh: Apakah produk sorgum Sorgum 100% Bebas Gluten?"
                 className={`w-full px-4 py-2.5 text-sm rounded-xl border ${
-                  errors.question ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
-                } focus:outline-none focus:ring-2 focus:ring-[#162809] font-medium`}
+                  errors.question ? 'border-red-500 bg-red-50' : 'border-[#E0E0E0] bg-white'
+                } focus:outline-none focus:ring-2 focus:ring-[#2E7D32] font-medium`}
               />
               {errors.question && <p className="text-xs text-red-500 mt-1">{errors.question}</p>}
             </div>
@@ -224,7 +224,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
             {/* Jawaban Penjelasan */}
             <div>
               <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-xs font-bold text-[#1d1b17]">
+                <label className="block text-xs font-bold text-[#1B5E20]">
                   Jawaban Penjelasan Lengkap <span className="text-red-500">*</span>
                 </label>
                 {/* Formatting Shortcuts */}
@@ -232,7 +232,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                   <button
                     type="button"
                     onClick={() => insertShortcutText('bullet')}
-                    className="px-2 py-0.5 bg-[#f3ede6] hover:bg-[#e2dacd] text-[#162809] text-[11px] font-bold rounded cursor-pointer"
+                    className="px-2 py-0.5 bg-[#F7F8F6] hover:bg-[#E8F5E9] text-[#1B5E20] text-[11px] font-bold rounded cursor-pointer"
                     title="Tambah Poin Bullet"
                   >
                     + Bullet
@@ -240,7 +240,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                   <button
                     type="button"
                     onClick={() => insertShortcutText('bold')}
-                    className="px-2 py-0.5 bg-[#f3ede6] hover:bg-[#e2dacd] text-[#162809] text-[11px] font-bold rounded cursor-pointer"
+                    className="px-2 py-0.5 bg-[#F7F8F6] hover:bg-[#E8F5E9] text-[#1B5E20] text-[11px] font-bold rounded cursor-pointer"
                     title="Teks Tebal"
                   >
                     Bold
@@ -254,18 +254,18 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="Tuliskan penjelasan yang rinci, ramah, dan mudah dipahami konsumen..."
                 className={`w-full px-4 py-3 text-sm rounded-xl border ${
-                  errors.answer ? 'border-red-500 bg-red-50' : 'border-[#c4c8bc] bg-white'
-                } focus:outline-none focus:ring-2 focus:ring-[#162809] leading-relaxed`}
+                  errors.answer ? 'border-red-500 bg-red-50' : 'border-[#E0E0E0] bg-white'
+                } focus:outline-none focus:ring-2 focus:ring-[#2E7D32] leading-relaxed`}
               />
               {errors.answer && <p className="text-xs text-red-500 mt-1">{errors.answer}</p>}
             </div>
           </div>
 
           {/* Card 2: Pengaturan Kategori & Tampilan */}
-          <div className="bg-white p-6 rounded-2xl border border-[#c4c8bc] shadow-xs space-y-4">
+          <div className="bg-white p-6 rounded-2xl border border-[#E0E0E0] shadow-xs space-y-4">
             <div className="flex items-center gap-2.5 border-b border-[#e2e8f0] pb-3">
-              <span className="material-symbols-outlined text-xl text-[#162809]">category</span>
-              <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1d1b17]">
+              <span className="material-symbols-outlined text-xl text-[#1B5E20]">category</span>
+              <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
                 Pengelompokan &amp; Urutan Tampilan
               </h3>
             </div>
@@ -273,7 +273,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Kategori Select */}
               <div>
-                <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                   Kategori FAQ <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -287,7 +287,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                       setCategory(val);
                     }
                   }}
-                  className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#c4c8bc] bg-white focus:outline-none focus:ring-2 focus:ring-[#162809] font-medium cursor-pointer"
+                  className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E0E0E0] bg-white focus:outline-none focus:ring-2 focus:ring-[#2E7D32] font-medium cursor-pointer"
                 >
                   {PREDEFINED_CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>
@@ -301,7 +301,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
               {/* Custom Category Input (If custom mode) */}
               {isCustomCategoryMode ? (
                 <div>
-                  <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                  <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                     Nama Kategori Baru <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -309,14 +309,14 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                     value={customCategory}
                     onChange={(e) => setCustomCategory(e.target.value)}
                     placeholder="Contoh: Program Loyalitas"
-                    className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#c4c8bc] bg-white focus:outline-none focus:ring-2 focus:ring-[#162809]"
+                    className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E0E0E0] bg-white focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
                   />
                   {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category}</p>}
                 </div>
               ) : (
                 /* Urutan Prioritas */
                 <div>
-                  <label className="block text-xs font-bold text-[#1d1b17] mb-1.5">
+                  <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
                     Nomor Urutan Tampilan
                   </label>
                   <input
@@ -325,7 +325,7 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                     max={100}
                     value={order}
                     onChange={(e) => setOrder(parseInt(e.target.value) || 1)}
-                    className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#c4c8bc] bg-white focus:outline-none focus:ring-2 focus:ring-[#162809]"
+                    className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E0E0E0] bg-white focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
                   />
                   <p className="text-[11px] text-gray-400 mt-1">
                     Nilai lebih kecil (1, 2, 3) akan ditampilkan di urutan paling atas.

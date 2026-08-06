@@ -44,13 +44,15 @@ export function App() {
     updateCartQuantity,
     removeCartItem,
     clearCart,
+    resetCartLocal,
     shopSettings,
     logout,
     addOrder,
     t
   } = useApp();
 
-  const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '');
+  // Konversi 0→62 biar wa.me pakai format internasional (konsisten dgn QrisPaymentPage/ProductDetailPage).
+  const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waUrl = `https://wa.me/${cleanWaNumber}`;
   
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -186,7 +188,10 @@ export function App() {
   const handleOrderComplete = async (order: Order, paymentMethod: 'cod' | 'qris') => {
     setCompletedOrder(order);
     addOrder(order);
-    clearCart();
+    // Cart SUDAH dihapus BE saat order dibuat (checkout consume cart_items).
+    // Jangan clearCart() (kirim DELETE ke server → 404 karena item sudah tidak ada).
+    // Reset state lokal saja.
+    resetCartLocal();
 
     setSelectedProduct(null);
 
@@ -225,10 +230,10 @@ export function App() {
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#EFECE6] text-[#1d1b17] font-['Poppins'] selection:bg-[#fde08b] selection:text-[#231b00] relative pb-16 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-[#EFECE6] text-[#1B5E20] font-['Poppins'] selection:bg-[#fde08b] selection:text-[#231b00] relative pb-16 md:pb-0">
       {/* Toast Notification — top center */}
       {toastMessage && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-[#162809] text-white px-6 py-3 rounded-xl shadow-2xl border border-[#fade88]/40 text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw]">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-[#2E7D32] text-white px-6 py-3 rounded-xl shadow-2xl border border-[#fade88]/40 text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw]">
           <span className="material-symbols-outlined text-[#fde08b]">check_circle</span>
           <span>{toastMessage}</span>
         </div>
@@ -425,7 +430,7 @@ export function App() {
             <path fill="#FFF" d="M59.3 50.8c-.8-.4-4.7-2.3-5.5-2.6-.8-.3-1.4-.4-2 .5-.6.9-2.3 2.9-2.8 3.5-.5.6-1 1.2-1.8.8-3.4-1.7-6-3-8.6-5.5-2-1.7-3.4-3.8-3.8-4.5-.4-.7-.1-1.1.2-1.4.3-.3.6-.7.9-1 .3-.3.4-.6.6-1 .2-.4.1-.7-.1-.9-.2-.2-1.4-3.4-2-4.7-.5-1.3-1.1-1.1-1.6-1.1h-1.3c-.5 0-1.2.2-1.9.9-2.3 2.5-3 6.1-1.6 9.6 2.9 7.4 8.7 13.5 15.6 17.2 2.6 1.4 5 2.1 7.5 2.1 3.5 0 6.6-1.5 8.7-4.1.8-1 1.5-2.2 1.5-3.5.1-.2 0-.4-.1-.5l-.8-.4z" />
           </svg>
           {/* Animated Call to Action Bubble */}
-          <div className="absolute right-full mr-3 bottom-2 bg-white text-[#162809] border border-emerald-400 text-[10px] font-extrabold px-3 py-1.5 rounded-2xl shadow-md whitespace-nowrap flex items-center gap-1.5 animate-bubble-slide shadow-emerald-500/10 pointer-events-none">
+          <div className="absolute right-full mr-3 bottom-2 bg-white text-[#1B5E20] border border-emerald-400 text-[10px] font-extrabold px-3 py-1.5 rounded-2xl shadow-md whitespace-nowrap flex items-center gap-1.5 animate-bubble-slide shadow-emerald-500/10 pointer-events-none">
             <span className="w-2 h-2 bg-[#25d366] rounded-full animate-ping" />
             <span>Tanya Kami via WA 💬</span>
           </div>

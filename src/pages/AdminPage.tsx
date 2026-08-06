@@ -394,8 +394,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     composition?: string;
     shelfLife?: string;
     attributes?: string;
-    glutenFree: boolean;
-    organic: boolean;
+    glutenFree?: boolean;
+    organic?: boolean;
     specification?: string;
     shippingInfo?: string;
   }) => {
@@ -434,8 +434,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           composition: data.composition || null,
           shelf_life: data.shelfLife || null,
           attributes: data.attributes || null,
-          gluten_free: data.glutenFree,
-          organic: data.organic,
+          gluten_free: data.glutenFree ?? false,
+          organic: data.organic ?? false,
           badge: data.badge || null,
         });
         // Gambar baru (URL hasil upload) → daftarkan ke product_images.
@@ -457,8 +457,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           composition: data.composition || null,
           shelf_life: data.shelfLife || null,
           attributes: data.attributes || null,
-          gluten_free: data.glutenFree,
-          organic: data.organic,
+          gluten_free: data.glutenFree ?? false,
+          organic: data.organic ?? false,
           badge: data.badge || null,
         });
         // Gambar baru → daftarkan sebagai primary image produk baru
@@ -783,7 +783,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       {/* Full-screen Payment Proof Image Lightbox Modal */}
       {proofModalUrl && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fadeIn">
-          <div className="relative max-w-xl w-full bg-white rounded-xl overflow-hidden shadow-2xl p-4 flex flex-col items-center border border-[#c4c8bc]/40">
+          <div className="relative max-w-xl w-full bg-white rounded-xl overflow-hidden shadow-2xl p-4 flex flex-col items-center border border-[#E0E0E0]/40">
             <button
               type="button"
               onClick={() => setProofModalUrl(null)}
@@ -792,10 +792,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             >
               <span className="material-symbols-outlined text-base">close</span>
             </button>
-            <h4 className="font-bold text-sm text-[#1d1b17] mb-3 self-start px-2">
+            <h4 className="font-bold text-sm text-[#1B5E20] mb-3 self-start px-2">
               Bukti Transfer Pembayaran QRIS
             </h4>
-            <div className="w-full bg-[#faf8f5] rounded-lg overflow-hidden flex items-center justify-center max-h-[70vh] border border-[#c4c8bc]/30">
+            <div className="w-full bg-[#faf8f5] rounded-lg overflow-hidden flex items-center justify-center max-h-[70vh] border border-[#E0E0E0]/30">
               <img
                 src={proofModalUrl}
                 alt="Bukti Transfer QRIS Full"
@@ -806,7 +806,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               <button
                 type="button"
                 onClick={() => setProofModalUrl(null)}
-                className="bg-[#2b3e1d] text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-[#162809] transition-colors cursor-pointer"
+                className="bg-[#2E7D32] text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-[#1B5E20] transition-colors cursor-pointer"
               >
                 Selesai
               </button>

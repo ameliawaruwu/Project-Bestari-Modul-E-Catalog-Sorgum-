@@ -86,7 +86,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
     } catch { showToast('Gagal menghapus voucher.'); }
   };
 
-  if (loading) return <div className="text-center py-12 text-[#44483f]">Memuat data voucher...</div>;
+  if (loading) return <div className="text-center py-12 text-[#555555]">Memuat data voucher...</div>;
 
   return (
     <div className="space-y-6">
@@ -208,10 +208,10 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
             <tbody className="divide-y divide-[#e4dfd5]/60">
               {vouchers.map((v) => (
                 <tr key={v.id} className="hover:bg-[#f5efe6] transition-colors">
-                  <td className="p-3.5 font-bold text-[#162809]">{v.code}</td>
-                  <td className="p-3.5 font-bold font-mono-custom text-[#1d1b17]">Rp {v.discount_amount.toLocaleString('id-ID')}</td>
-                  <td className="p-3.5 font-mono-custom text-[#44483f]">Rp {v.min_purchase.toLocaleString('id-ID')}</td>
-                  <td className="p-3.5 text-[#44483f] font-mono-custom">{v.used_count}{v.max_uses ? `/${v.max_uses}` : ''}</td>
+                  <td className="p-3.5 font-bold text-[#1B5E20]">{v.code}</td>
+                  <td className="p-3.5 font-bold font-mono-custom text-[#1B5E20]">Rp {v.discount_amount.toLocaleString('id-ID')}</td>
+                  <td className="p-3.5 font-mono-custom text-[#555555]">Rp {v.min_purchase.toLocaleString('id-ID')}</td>
+                  <td className="p-3.5 text-[#555555] font-mono-custom">{v.used_count}{v.max_uses ? `/${v.max_uses}` : ''}</td>
                   <td className="p-3.5">
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${v.is_active ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-gray-100 text-gray-500'}`}>
                       {v.is_active ? 'Aktif' : 'Nonaktif'}

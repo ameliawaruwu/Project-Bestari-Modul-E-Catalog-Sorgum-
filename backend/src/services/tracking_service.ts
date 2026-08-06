@@ -43,8 +43,8 @@ function normalizeEventDate(d: string | null | undefined): string | null {
 }
 
 export async function setTracking(orderId: number, courier: string, trackingNumber: string) {
-  // Validasi state machine: hanya order yang BELUM dikirim yang boleh di-set resi.
-  // Tolak mundur dari shipped/delivered/cancelled (konsisten dgn ALLOWED_ORDER_TRANSITIONS).
+  // Validasi state machine: OPSI B (longgar) — admin bebas set/ubah resi dari status apa pun,
+  // kecuali status terminal (delivered/cancelled). Konsisten dgn ALLOWED_ORDER_TRANSITIONS.
   const conn = await dbPool.getConnection();
   try {
     await conn.beginTransaction();
@@ -57,11 +57,11 @@ export async function setTracking(orderId: number, courier: string, trackingNumb
       await conn.rollback();
       throw new AppError('Pesanan tidak ditemukan', 404);
     }
-    const allowedBeforeShip = ['pending', 'confirmed', 'processed'];
-    if (!allowedBeforeShip.includes(order.order_status)) {
+    const terminal = ['delivered', 'cancelled'];
+    if (terminal.includes(order.order_status)) {
       await conn.rollback();
       throw new AppError(
-        `Tidak bisa set nomor resi: status pesanan saat ini "${order.order_status}" (sudah dikirim/dibatalkan)`,
+        `Tidak bisa set nomor resi: status pesanan saat ini "${order.order_status}" (terminal, tidak bisa diubah)`,
         400,
       );
     }

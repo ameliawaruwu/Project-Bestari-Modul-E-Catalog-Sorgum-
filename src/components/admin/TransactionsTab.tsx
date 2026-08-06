@@ -212,7 +212,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                         }`}
                       >
                         {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
-                          <option key={s} value={s} className="text-[#1d1b17] bg-white">{s}</option>
+                          <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
                         ))}
                       </select>
                     </td>

@@ -11,8 +11,6 @@ interface ProductsTabProps {
 
 export const ProductsTab: React.FC<ProductsTabProps> = ({
   products,
-  productActiveMap,
-  productStockMap,
   onToggleProductStatus,
   onDeleteProduct,
   onOpenCreateProduct,
@@ -34,7 +32,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
       return matchesSearch && matchesCategory;
     })
     // ID urut DESC (terbaru di atas)
-    .sort((a, b) => b.id - a.id);
+    .sort((a, b) => Number(b.id) - Number(a.id));
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -137,21 +135,21 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                     </td>
                     <td className="px-4 py-3">
                       <div className="space-y-1">
-                        <p className="font-bold text-[#1d1b17] leading-tight">{prod.name}</p>
+                        <p className="font-bold text-[#1B5E20] leading-tight">{prod.name}</p>
                         {prod.badge && (
-                          <span className="inline-block text-[9px] font-extrabold uppercase bg-[#fade88] text-[#756118] px-2 py-0.5 rounded-md leading-none">
+                          <span className="inline-block text-[9px] font-extrabold uppercase bg-[#fade88] text-[#C89B3C] px-2 py-0.5 rounded-md leading-none">
                             {prod.badge}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-[#44483f] font-semibold text-xs">
+                    <td className="px-4 py-3 text-[#555555] font-semibold text-xs">
                       {prod.categoryLabel || prod.category}
                     </td>
-                    <td className="px-4 py-3 font-bold text-[#162809] font-mono-custom">
+                    <td className="px-4 py-3 font-bold text-[#1B5E20] font-mono-custom">
                       {prod.originalPrice ? (
                         <div className="space-y-0.5">
-                          <p className="text-[#162809] font-bold">
+                          <p className="text-[#1B5E20] font-bold">
                             Rp {prod.price.toLocaleString('id-ID')}
                           </p>
                           <p className="text-[10px] text-gray-400 line-through">
@@ -162,7 +160,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                         `Rp ${prod.price.toLocaleString('id-ID')}`
                       )}
                     </td>
-                    <td className="px-4 py-3 font-bold text-[#1d1b17]">
+                    <td className="px-4 py-3 font-bold text-[#1B5E20]">
                       {stock} Unit
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -193,7 +191,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
         </div>
 
         {/* Pagination & Counter */}
-        <div className="p-4 bg-[#fdfbf7] text-[#44483f]/80 text-xs font-medium flex justify-between items-center border-t border-[#e4dfd5]">
+        <div className="p-4 bg-[#fdfbf7] text-[#555555]/80 text-xs font-medium flex justify-between items-center border-t border-[#e4dfd5]">
           <span>
             Menampilkan {filteredProducts.length} dari {products.length} Produk
           </span>
@@ -204,7 +202,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
             >
               Sebelumnya
             </button>
-            <button className="px-3 py-1 border border-[#e4dfd5] rounded-xl hover:bg-[#f4efe8] text-xs cursor-pointer font-medium text-[#162809]">
+            <button className="px-3 py-1 border border-[#e4dfd5] rounded-xl hover:bg-[#f4efe8] text-xs cursor-pointer font-medium text-[#1B5E20]">
               Berikutnya
             </button>
           </div>

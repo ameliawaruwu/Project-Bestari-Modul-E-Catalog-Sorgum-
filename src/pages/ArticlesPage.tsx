@@ -50,7 +50,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
   // Filter out promotional articles — they appear only in Checkout
   const publicArticles = allArticles.filter(
-    (a) => a.category !== 'Promosi' && a.category !== 'Promotion'
+    (a) => a.category !== 'Promosi'
   );
 
 
@@ -107,7 +107,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
         case 'image':
           return block.image_url ? (
             <figure key={idx} className="my-4">
-              <div className="relative rounded-xl overflow-hidden h-80 md:h-96 my-8 group shadow-sm bg-[#dfd9d3] border border-[#c4c8bc]/20">
+              <div className="relative rounded-xl overflow-hidden h-80 md:h-96 my-8 group shadow-sm bg-[#dfd9d3] border border-[#E0E0E0]/20">
                 <img
                   src={block.image_url}
                   alt={block.alt || activeArticle.title}
