@@ -12,6 +12,12 @@ export const authLimiter = RATE_LIMIT_DISABLED
   : rateLimit({
       windowMs: 15 * 60 * 1000, // 15 menit
       max: 100, // max 100 request per window
+      // Bypass validasi X-Forwarded-For: app jalan di belakang nginx yang
+      // selalu set header ini. express-rate-limit v8 melempar
+      // ERR_ERL_UNEXPECTED_X_FORWARDED_FOR kalau validasi tetap on
+      // (trust proxy express sudah di-set di index.ts → validasi malah salah
+      // deteksi "permissive"). Nonaktifkan validasi ini supaya tidak crash.
+      validate: { xForwardedForHeader: false },
       standardHeaders: true,
       legacyHeaders: false,
       message: { error: 'Terlalu banyak percobaan. Coba lagi 15 menit.' },
