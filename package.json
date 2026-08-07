@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
+    "postbuild": "bash scripts/ensure-uploads-symlink.sh",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "i18n:extract": "node tools/extract-i18n.mjs",
