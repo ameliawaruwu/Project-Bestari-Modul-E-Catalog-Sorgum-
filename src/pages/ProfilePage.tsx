@@ -305,11 +305,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           {/* User Profile Header */}
           <div className="flex items-center gap-4 pb-6 mb-6 border-b border-[#E0E0E0]">
             <div className="w-14 h-14 rounded-full overflow-hidden bg-[#2E7D32] text-white flex items-center justify-center font-bold text-xl shadow-2xs shrink-0">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwdVH1D5ecKN62Wytyzaw1zN_anZ6YtNQZI2I9valVfVT8BbPHgEDivkiq7r8VIE0aHXv86yS8zeF5QfJj_0L_IIsCASNCylrKt5ow0HmPn512vfiNzr61kbCEhlGx3eUmV2EdSD3ydd7ugNg7-TlFnzJ1-lqbuN_P1y4bfpY1RYTVehJ7wIy14Vyd4Y28PUfj2wA_C8c6qiehT3XeyMFQSoV21lv59c1n896hUIDtC3ajIL00VFE"
-                alt={profileData.fullName}
-                className="w-full h-full object-cover"
-              />
+              {profileData.fullName?.charAt(0)?.toUpperCase() || 'U'}
             </div>
             <div className="overflow-hidden">
               <h2 className="font-['Playfair_Display'] font-bold text-lg text-[#1B5E20] truncate">
