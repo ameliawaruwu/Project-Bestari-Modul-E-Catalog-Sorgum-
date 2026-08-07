@@ -117,7 +117,6 @@ export interface Order {
   district?: string;
   postalCode?: string;
   notes?: string;
-  paymentProofUrl?: string;
   courier?: string;
   trackingNumber?: string;
 }
@@ -133,7 +132,6 @@ export interface CheckoutData {
   postalCode: string;
   notes?: string;
   paymentMethod: 'cod' | 'qris';
-  paymentProofUrl?: string;
   voucherCode?: string;
   idempotencyKey?: string;
 }

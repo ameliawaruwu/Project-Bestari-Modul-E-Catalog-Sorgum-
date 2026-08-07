@@ -39,8 +39,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     paymentMethod: 'cod',
   });
 
-  const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
-
   // Prefill alamat default (is_primary) dari profil user — kalau login & punya alamat.
   // User tetap bisa ubah manual di form; ini cuma mengisi awal biar tidak kosong.
   useEffect(() => {
@@ -75,7 +73,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const idempotencyRef = useRef<string>(
     (crypto?.randomUUID ? crypto.randomUUID() : `order-${Date.now()}-${Math.random().toString(36).slice(2)}`)
   );
-  const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
@@ -96,14 +93,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     setFormData((prev) => ({ ...prev, paymentMethod: method }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setPaymentProofFile(file);
-      setPaymentProofPreview(URL.createObjectURL(file));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -111,7 +100,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     try {
       const finalCheckoutData: CheckoutData = {
         ...formData,
-        paymentProofUrl: paymentProofPreview || undefined,
         voucherCode: appliedVoucherCode || undefined, // kirim KODE voucher (BE verifikasi & hitung diskon)
         idempotencyKey: idempotencyRef.current,
       };

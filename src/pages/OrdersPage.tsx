@@ -87,13 +87,7 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
         </p>
       </div>
 
-      {loading ? (
-        <div className="space-y-4">
-          {[1, 2].map((i) => (
-            <div key={i} className="h-32 bg-[#FFFFFF] animate-pulse rounded-2xl border border-[#E0E0E0] shadow-2xs"></div>
-          ))}
-        </div>
-      ) : displayOrders.length === 0 ? (
+      {displayOrders.length === 0 ? (
         <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-8 shadow-2xs">
           <span className="material-symbols-outlined text-6xl text-[#C89B3C] mb-3">
             receipt_long

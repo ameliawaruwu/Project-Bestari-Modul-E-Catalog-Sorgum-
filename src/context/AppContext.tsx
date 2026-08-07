@@ -500,7 +500,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const res = await authApi.login(payload);
       if (res.success && res.user) {
         setCurrentUser(res.user);
-        localStorage.setItem('bestari_cart_items_', JSON.stringify(res.user));
 
         // ─── Cart di login (server-authoritative) ─────────────────────────
         // 1) Merge cart guest (localStorage key '') ke server cart user —
@@ -532,7 +531,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const res = await authApi.register(payload);
       if (res.success && res.user) {
         setCurrentUser(res.user);
-        localStorage.setItem('bestari_cart_items_', JSON.stringify(res.user));
 
         // ─── Cart di register (server-authoritative) ──────────────────────
         // User baru: server cart kosong. Merge cart guest (localStorage key '')
