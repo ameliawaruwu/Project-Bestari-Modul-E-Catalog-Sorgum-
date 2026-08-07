@@ -52,6 +52,21 @@ export const addressApi = {
     }
   },
 
+  // Upsert alamat utama (primary) — get → cari primary (jangan asumsi [0]) → create/update.
+  // Dipakai oleh CheckoutPage & ProfilePage supaya logika tersimpan di satu tempat.
+  upsertPrimaryAddress: async (input: AddressInput): Promise<boolean> => {
+    try {
+      const list = await addressApi.getAddresses();
+      const primary = list.find((a) => a.isPrimary) || list[0];
+      if (primary) {
+        return addressApi.updateAddress(primary.id, input);
+      }
+      return (await addressApi.createAddress(input)) !== null;
+    } catch {
+      return false;
+    }
+  },
+
   // POST /api/user/ — tambah alamat
   createAddress: async (input: AddressInput): Promise<number | null> => {
     try {

@@ -152,6 +152,26 @@ ${
       // ke user — jangan diam-diam lanjut ke halaman sukses dengan order fiktif.
       const finalOrder = await orderApi.checkoutOrder(finalCheckoutData);
       onOrderComplete(finalOrder, formData.paymentMethod);
+
+      // Simpan alamat checkout ke profil user (login) — supaya alamat tidak hilang
+      // dan tersedia untuk checkout berikutnya. Gagal di sini TIDAK menggagalkan order.
+      if (currentUser) {
+        const input = {
+          label: 'Alamat Utama',
+          recipient_name: formData.customerName,
+          phone: formData.customerPhone,
+          address_line: formData.address,
+          city: formData.city,
+          district: formData.district,
+          province: formData.province,
+          postal_code: formData.postalCode,
+          is_primary: true,
+        };
+        // Fire-and-forget: jangan tahan halaman sukses menunggu save alamat.
+        addressApi.upsertPrimaryAddress(input).catch((err) => {
+          console.warn('Simpan alamat checkout gagal (non-fatal):', err);
+        });
+      }
     } catch (err: any) {
       console.error('Checkout error:', err);
       const msg = err?.message || 'Gagal membuat pesanan. Silakan coba lagi.';

@@ -22,7 +22,9 @@ export const config = {
 
   upload: {
     dir: path.resolve(process.env.ECATALOG_BESTARI_UPLOAD_DIR || 'uploads_ecatalog_bestari'),
-    maxFileSize: parseInt(process.env.ECATALOG_BESTARI_MAX_FILE_SIZE || '5242880', 10),
+    // 8MB — lebih longgar dari nginx default 1MB (gambar client sudah dikompres
+    // ke <1MB di FE, jadi upload tidak pernah kena batas ini; ini jaring pengaman).
+    maxFileSize: parseInt(process.env.ECATALOG_BESTARI_MAX_FILE_SIZE || '8388608', 10),
   },
 
   tracking: {

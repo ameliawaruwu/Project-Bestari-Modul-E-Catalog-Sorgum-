@@ -129,7 +129,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   const [profileData, setProfileData] = useState({
     fullName: user?.name || '',
     email: user?.email || '',
-    phone: '',
+    phone: user?.phone || '',
     gender: '',
     birthDate: '',
   });
@@ -197,7 +197,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     });
     showToast(res.message);
     if (res.success && res.user) {
-      setProfileData((p) => ({ ...p, fullName: res.user!.name || p.fullName, email: res.user!.email || p.email }));
+      setProfileData((p) => ({
+        ...p,
+        fullName: res.user!.name || p.fullName,
+        email: res.user!.email || p.email,
+        phone: res.user!.phone || p.phone,
+      }));
     }
   };
 
@@ -237,15 +242,40 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         district: addressData.district,
         province: addressData.province,
         postal_code: addressData.postalCode,
-        is_primary: addresses.length === 0, // alamat pertama jadi primary
+        is_primary: true, // alamat yang disimpan selalu jadi alamat utama
       };
-      if (addresses.length === 0) {
-        await addressApi.createAddress(input);
-      } else {
-        await addressApi.updateAddress(addresses[0].id, input);
-      }
-      const list = await addressApi.getAddresses();
-      setAddresses(list);
+      const ok = await addressApi.upsertPrimaryAddress(input);
+      if (!ok) throw new Error('upsert gagal');
+      // Merge hasil ke state lokal — tanpa fetch ulang (hemat 1 round-trip).
+      setAddresses((prev) => {
+        const primary = prev.find((a) => a.isPrimary) || prev[0];
+        const merged = {
+          id: primary?.id || String(Date.now()),
+          label: input.label,
+          recipientName: input.recipient_name,
+          phone: input.phone,
+          addressLine: input.address_line,
+          city: input.city,
+          district: input.district || '',
+          province: input.province,
+          postalCode: input.postal_code,
+          isPrimary: true,
+        };
+        if (primary) {
+          return prev.map((a) => (a.id === primary.id ? merged : a));
+        }
+        return [...prev, merged];
+      });
+      setAddressData({
+        label: input.label,
+        recipient: input.recipient_name,
+        phone: input.phone,
+        address: input.address_line,
+        district: input.district || '',
+        city: input.city,
+        province: input.province,
+        postalCode: input.postal_code,
+      });
       setIsEditingAddress(false);
       showToast('Alamat pengiriman berhasil disimpan!');
     } catch {

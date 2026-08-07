@@ -156,9 +156,9 @@ export async function createOrder(input: CreateOrderInput) {
     // 4. Insert order items (snapshot) + decrement stock
     for (const item of cartItems) {
       await conn.query(
-        `INSERT INTO order_items (order_id, product_id, product_name, price, quantity, subtotal)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [orderId, item.product_id, item.product_name, item.price, item.quantity, item.price * item.quantity],
+        `INSERT INTO order_items (order_id, product_id, product_name, image_url, price, quantity, subtotal)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [orderId, item.product_id, item.product_name, item.primary_image || null, item.price, item.quantity, item.price * item.quantity],
       );
       // Kurangi stok produk (cegah over-selling). Cek stok cukup dulu.
       const [stockRows] = await conn.query('SELECT stock FROM products WHERE id = ? FOR UPDATE', [item.product_id]);
@@ -238,7 +238,7 @@ export async function getOrderById(orderId: number, userId?: number) {
 
   const [items] = await dbPool.query(
     `SELECT oi.*,
-            pi.image_url AS image_url
+            COALESCE(oi.image_url, pi.image_url) AS image_url
      FROM order_items oi
      LEFT JOIN (
        SELECT product_id, MIN(image_url) AS image_url
@@ -258,7 +258,7 @@ async function attachItems(orders: any[]): Promise<any[]> {
   const placeholders = ids.map(() => '?').join(',');
   const [rows] = await dbPool.query(
     `SELECT oi.*,
-            pi.image_url AS image_url
+            COALESCE(oi.image_url, pi.image_url) AS image_url
      FROM order_items oi
      LEFT JOIN (
        SELECT product_id, MIN(image_url) AS image_url

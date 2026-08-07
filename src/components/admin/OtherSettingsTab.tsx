@@ -74,7 +74,9 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
     }
     try {
       const { productAdminApi } = await import('../../api/adminApi');
-      const url = await productAdminApi.uploadImage(file);
+      const { compressImage } = await import('../../utils/imageCompress');
+      const toUpload = await compressImage(file, 512);
+      const url = await productAdminApi.uploadImage(toUpload);
       if (!url) throw new Error('upload gagal');
       setSettings((prev) => ({ ...prev, logoUrl: url }));
       showToast('Gambar logo berhasil diunggah!');
@@ -95,7 +97,9 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
     }
     try {
       const { productAdminApi } = await import('../../api/adminApi');
-      const url = await productAdminApi.uploadImage(file);
+      const { compressImage } = await import('../../utils/imageCompress');
+      const toUpload = await compressImage(file, 512);
+      const url = await productAdminApi.uploadImage(toUpload);
       if (!url) throw new Error('upload gagal');
       setSettings((prev) => ({ ...prev, qrisImageUrl: url }));
       showToast('Gambar barcode QRIS berhasil diunggah!');
@@ -124,6 +128,23 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
       showToast('Pengaturan berhasil dikembalikan ke standar bawaan.');
     } else {
       showToast('Gagal menyimpan pengaturan.');
+    }
+  };
+
+  // Hapus Logo / QRIS — langsung simpan ke BE (bukan cuma state lokal),
+  // supaya benar-benar hilang walau halaman di-reload.
+  const handleRemoveImage = async (key: 'logoUrl' | 'qrisImageUrl', okMsg: string, failMsg: string) => {
+    try {
+      const next = { ...settings, [key]: '' };
+      setSettings(next);
+      const ok = await saveShopSettings(next);
+      if (ok) {
+        showToast(okMsg);
+      } else {
+        showToast(failMsg);
+      }
+    } catch {
+      showToast(failMsg);
     }
   };
 
@@ -215,8 +236,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    setSettings({ ...settings, logoUrl: '' });
-                    showToast('Logo dihapus, sekarang menggunakan logo teks standar.');
+                    handleRemoveImage('logoUrl', 'Logo dihapus, sekarang menggunakan logo teks standar.', 'Gagal menyimpan penghapusan logo. Coba lagi.');
                   }}
                   className="text-xs font-bold text-[#D32F2F] hover:underline cursor-pointer"
                 >
@@ -325,8 +345,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    setSettings({ ...settings, qrisImageUrl: '' });
-                    showToast('Gambar QRIS berhasil dihapus.');
+                    handleRemoveImage('qrisImageUrl', 'Gambar QRIS berhasil dihapus.', 'Gagal menyimpan penghapusan QRIS. Coba lagi.');
                   }}
                   className="text-xs font-bold text-[#D32F2F] hover:underline cursor-pointer"
                 >

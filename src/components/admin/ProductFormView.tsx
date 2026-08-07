@@ -126,12 +126,14 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     const priceNum = Number(priceInput) || 0;
     const stockNum = Number(stockInput) || 0;
 
-    // Kalau ada file baru → upload dulu ke server, dapat URL
+    // Kalau ada file baru → kompres dulu (lolos limit nginx/multer), upload, dapat URL
     let finalImage = imageInput; // dataURL preview / URL lama
     if (imageFile) {
       try {
         const { productAdminApi } = await import('../../api/adminApi');
-        const uploadedUrl = await productAdminApi.uploadImage(imageFile);
+        const { compressImage } = await import('../../utils/imageCompress');
+        const toUpload = await compressImage(imageFile, 800);
+        const uploadedUrl = await productAdminApi.uploadImage(toUpload);
         if (uploadedUrl) finalImage = uploadedUrl;
         else showToast('Gagal upload gambar.');
       } catch (err: any) {

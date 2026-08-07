@@ -14,10 +14,13 @@ assets/.aistudio/*
 .hermes/
 
 # Testing / E2E (kredensial & data test — jangan masuk repo)
-tests/
+/tests/
 ui_e2e_*.cjs
 *.spec.cjs
 *.test.cjs
 
 # Tooling lokal (bukan source yang perlu di-version)
 tools/
+
+# oh-my-openagent runtime state (bukan source)
+.omo/
