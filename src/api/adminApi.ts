@@ -169,11 +169,12 @@ export const bannerAdminApi = {  // GET /api/admin/banners
   },
 
   // POST /api/admin/banners
-  createBanner: async (fields: { title: string; image_url: string; target_type?: string; target_link?: string }) => {
+  createBanner: async (fields: { title: string; title_en?: string | null; image_url: string; target_type?: string; target_link?: string | null }) => {
     const res = await request<{ data: any }>('/admin/banners', {
       method: 'POST',
       body: {
         title: fields.title,
+        title_en: fields.title_en || null,
         image_url: fields.image_url,
         target_type: fields.target_type || 'store',
         target_link: fields.target_link || null,

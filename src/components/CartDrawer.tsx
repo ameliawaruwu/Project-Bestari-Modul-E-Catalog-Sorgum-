@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CartItem } from '../types';
+import { useApp } from '../context/AppContext';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemoveItem,
   onCheckout,
 }) => {
+  const { t } = useApp();
   if (!isOpen) return null;
 
   const total = items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
@@ -29,7 +31,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         <div className="p-5 border-b border-[#E0E0E0] flex justify-between items-center bg-[#1B5E20] text-white">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-2xl">shopping_bag</span>
-            <h3 className="font-['Playfair_Display'] text-xl font-bold">Keranjang Belanja</h3>
+            <h3 className="font-['Playfair_Display'] text-xl font-bold">{t('Keranjang Belanja', 'Shopping Cart')}</h3>
           </div>
           <button
             onClick={onClose}
@@ -47,10 +49,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 remove_shopping_cart
               </span>
               <p className="font-['Playfair_Display'] text-xl font-semibold text-[#1B5E20] mb-1">
-                Keranjang Anda Masih Kosong
+                {t('Keranjang Anda Masih Kosong', 'Your Cart is Still Empty')}
               </p>
               <p className="font-['Plus_Jakarta_Sans'] text-xs text-[#555555]">
-                Jelajahi produk sorgum terbaik kami dan tambahkan favorit Anda ke keranjang.
+                {t('Jelajahi produk sorgum terbaik kami dan tambahkan favorit Anda ke keranjang.', 'Explore our best sorghum products and add your favorites to cart.')}
               </p>
             </div>
           ) : (
@@ -115,15 +117,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {items.length > 0 && (
           <div className="p-5 border-t border-[#E0E0E0] bg-[#FFFFFF] space-y-3">
             <div className="flex justify-between text-xs text-[#555555] font-['Plus_Jakarta_Sans']">
-              <span>Subtotal Produk</span>
+              <span>{t('Subtotal Produk', 'Product Subtotal')}</span>
               <span className="font-bold text-[#1B5E20]">IDR {total.toLocaleString('id-ID')}</span>
             </div>
-            <div className="flex justify-between text-xs text-[#555555] font-['Plus_Jakarta_Sans']">
-              <span>Estimasi Pengiriman</span>
-              <span className="text-[#2E7D32] font-semibold">Dihitung di Checkout</span>
-            </div>
             <div className="pt-2 border-t border-[#E0E0E0] flex justify-between items-center">
-              <span className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1B5E20]">Total</span>
+              <span className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1B5E20]">{t('Total', 'Total')}</span>
               <span className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-bold text-[#1B5E20]">
                 IDR {total.toLocaleString('id-ID')}
               </span>
@@ -133,7 +131,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               onClick={onCheckout}
               className="w-full bg-[#2E7D32] text-white py-3.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm hover:bg-[#1B5E20] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
             >
-              <span>Lanjut ke Pembayaran</span>
+              <span>{t('Lanjut ke Pembayaran', 'Proceed to Checkout')}</span>
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           </div>

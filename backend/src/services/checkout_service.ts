@@ -90,14 +90,7 @@ export async function createOrder(input: CreateOrderInput) {
     throw new AppError('Keranjang kosong', 400);
   }
 
-  // 2. Ambil shipping_cost & diskon dari server (JANGAN percaya body client)
-  const [settingsRows] = await dbPool.query(
-    "SELECT setting_value FROM site_settings WHERE setting_key = 'shipping_cost'",
-  );
-  const settingsRow = (settingsRows as any[])[0];
-  const shippingCost = Math.max(0, parseInt(String(settingsRow?.setting_value || '0'), 10) || 0);
-
-  // Diskon: HANYA dari voucher yang DIVERIFIKASI server-side.
+  // 2. Diskon: HANYA dari voucher yang DIVERIFIKASI server-side.
   // JANGAN pernah percaya input.discount client (bisa dimanipulasi).
   const subtotal = cartItems.reduce((sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity, 0);
   let discount = 0;
@@ -110,7 +103,9 @@ export async function createOrder(input: CreateOrderInput) {
     discount = Math.min(vResult.voucher.discount_amount, subtotal);
     voucherId = vResult.voucher.id;
   }
-  const total = subtotal + shippingCost - discount;
+  // Ongkir TIDAK dipakai lagi (keputusan 2026-08-07: hapus ongkir dari perhitungan
+  // pembayaran, baik UI maupun sistem). Total = subtotal - diskon.
+  const total = subtotal - discount;
   const orderNumber = await generateUniqueOrderNumber();
 
   // 3. Insert order
@@ -134,7 +129,7 @@ export async function createOrder(input: CreateOrderInput) {
           JSON.stringify(input.shipping_address),
           input.notes || null,
           subtotal,
-          shippingCost,
+          0, // shipping_cost — ongkir dihapus dari sistem (2026-08-07)
           discount,
           total,
           input.payment_method,

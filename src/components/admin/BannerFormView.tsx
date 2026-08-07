@@ -3,7 +3,7 @@ import { BannerSlide } from '../../types/admin';
 
 interface BannerFormViewProps {
   initialBanner?: BannerSlide | null;
-  onSave: (bannerData: { title: string; targetLink: string; image: string; id?: string }) => void;
+  onSave: (bannerData: { title: string; titleEn?: string; targetLink: string; image: string; id?: string }) => void;
   onCancel: () => void;
   showToast: (msg: string) => void;
 }
@@ -15,6 +15,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
   showToast,
 }) => {
   const [titleInput, setTitleInput] = useState('');
+  const [titleEnInput, setTitleEnInput] = useState('');
   const [targetInput, setTargetInput] = useState('');
   const [imageInput, setImageInput] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -22,10 +23,12 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
   useEffect(() => {
     if (initialBanner) {
       setTitleInput(initialBanner.title);
+      setTitleEnInput(initialBanner.titleEn || '');
       setTargetInput(initialBanner.targetLink);
       setImageInput(initialBanner.image);
     } else {
       setTitleInput('');
+      setTitleEnInput('');
       setTargetInput('');
       setImageInput('');
     }
@@ -41,6 +44,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
     onSave({
       id: initialBanner?.id,
       title: titleInput,
+      titleEn: titleEnInput.trim() || undefined,
       targetLink: targetInput || 'Halaman Toko: Semua Produk',
       image:
         imageInput ||
@@ -176,7 +180,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
             {/* Title Input */}
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
-                Judul Promosi Banner <span className="text-red-600">*</span>
+                Judul Promosi Banner (ID) <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
@@ -186,6 +190,23 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                 required
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
               />
+            </div>
+
+            {/* Title EN Input — dipakai saat Switch Bahasa EN */}
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1B5E20]">
+                Judul Promosi Banner (EN)
+              </label>
+              <input
+                type="text"
+                value={titleEnInput}
+                onChange={(e) => setTitleEnInput(e.target.value)}
+                placeholder="Contoh: Organic Red Sorghum Harvest Festival"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
+              />
+              <p className="text-[11px] text-[#555555]">
+                Opsional — kosongkan agar memakai judul ID saat bahasa Inggris aktif.
+              </p>
             </div>
 
             {/* Target Link Select */}

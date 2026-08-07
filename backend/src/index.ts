@@ -40,7 +40,11 @@ const app = express();
 app.set('trust proxy', 1);
 
 app.use(cors({ origin: config.corsOrigins }));
-app.use(express.json());
+// Limit besar: admin bisa upload logo/QRIS via API upload (file), tapi settings
+// JSON juga bisa bawa data URL base64 — naikkan ke 10mb supaya PUT /admin/settings
+// tidak gagal 413 untuk base64 gambar QRIS/logo (sebelumnya 100kb default → QRIS
+// >100kb gagal tersimpan diam-diam, fix 2026-08-07).
+app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.resolve(config.upload.dir)));
 
 if (!config.jwt.secret) {

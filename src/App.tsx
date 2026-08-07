@@ -281,7 +281,6 @@ export function App() {
           <>
             {activeTab === 'beranda' && (
               <HomePage
-                onAddToCart={(p) => handleAddToCart(p, 1)}
                 onClickProduct={handleSelectProduct}
                 onSelectArticle={handleSelectArticle}
                 setActiveTab={handleTabChange}
@@ -291,7 +290,6 @@ export function App() {
 
             {activeTab === 'produk' && (
               <ProductsPage
-                onAddToCart={(p) => handleAddToCart(p, 1)}
                 onClickProduct={handleSelectProduct}
                 searchQuery={searchQuery}
                 onRequireLogin={() => {

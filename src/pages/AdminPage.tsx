@@ -314,18 +314,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     showToast('Banner berhasil dihapus.');
   };
 
-  const handleSaveBanner = async (data: { id?: string; title: string; targetLink: string; image: string }) => {
+  const handleSaveBanner = async (data: { id?: string; title: string; titleEn?: string; targetLink: string; image: string }) => {
     try {
       const { bannerAdminApi } = await import('../api/adminApi');
       if (data.id) {
         await bannerAdminApi.updateBanner(data.id, {
           title: data.title,
+          title_en: data.titleEn || null,
           target_link: data.targetLink || null,
           image_url: data.image,
         });
       } else {
         await bannerAdminApi.createBanner({
           title: data.title,
+          title_en: data.titleEn || null,
           image_url: data.image,
           target_link: data.targetLink || null,
         });
@@ -343,6 +345,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       setAdminBanners((list || []).map((b: any) => ({
         id: String(b.id),
         title: b.title,
+        titleEn: b.title_en || undefined,
         uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
         targetLink: b.target_link || '',
         image: b.image_url || '',

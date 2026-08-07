@@ -936,10 +936,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                 .toLocaleString('id-ID')}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Pengiriman</span>
-                            <span>Rp {((selectedOrderDetail as any).shippingCost ?? 15000).toLocaleString('id-ID')}</span>
-                          </div>
                           <div className="flex justify-between font-bold text-sm text-[#1B5E20] pt-2 border-t border-[#E0E0E0]">
                             <span>Total Tagihan</span>
                             <span>Rp {selectedOrderDetail.totalAmount.toLocaleString('id-ID')}</span>

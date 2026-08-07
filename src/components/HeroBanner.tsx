@@ -25,7 +25,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
   }, [slides.length]);
 
   const currentTitle = activeBanners.length > 0 && activeBanners[currentIdx]
-    ? activeBanners[currentIdx].title
+    ? t(activeBanners[currentIdx].title, activeBanners[currentIdx].titleEn || activeBanners[currentIdx].title)
     : t(landingContent.heroTitleId, landingContent.heroTitleEn);
 
   return (

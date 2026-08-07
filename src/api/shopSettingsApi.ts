@@ -62,7 +62,7 @@ export const shopSettingsApi = {
     return DEFAULT_SHOP_SETTINGS;
   },
 
-  saveSettings: (settings: Partial<ShopSettings>): ShopSettings => {
+  saveSettings: async (settings: Partial<ShopSettings>): Promise<boolean> => {
     // Persist to backend (admin). Tidak ada cache localStorage.
     const body: Record<string, string> = {
       store_name: settings.storeName || DEFAULT_SHOP_SETTINGS.storeName,
@@ -74,8 +74,13 @@ export const shopSettingsApi = {
     };
     if (settings.shippingCost !== undefined) body.shipping_cost = String(settings.shippingCost);
     if (getToken()) {
-      request('/admin/settings', { method: 'PUT', body, auth: true }).catch(() => {});
+      try {
+        await request('/admin/settings', { method: 'PUT', body, auth: true });
+        return true;
+      } catch {
+        return false;
+      }
     }
-    return { ...DEFAULT_SHOP_SETTINGS, ...settings };
+    return false;
   },
 };

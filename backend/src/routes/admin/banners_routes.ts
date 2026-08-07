@@ -11,9 +11,9 @@ router.get('/', async (_req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { title, image_url, target_type, target_link } = req.body;
+  const { title, title_en, image_url, target_type, target_link } = req.body;
   if (!title || !image_url) { res.status(400).json({ error: 'title dan image_url wajib diisi' }); return; }
-  const id = await createBanner(title, image_url, target_type || 'store', target_link);
+  const id = await createBanner(title, title_en || null, image_url, target_type || 'store', target_link);
   res.status(201).json({ message: 'Banner berhasil dibuat', data: { id } });
 });
 

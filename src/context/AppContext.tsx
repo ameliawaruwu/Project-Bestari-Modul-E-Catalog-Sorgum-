@@ -10,6 +10,7 @@ import { authApi } from '../api/authApi';
 import { wishlistApi } from '../api/wishlistApi';
 import { landingContentApi } from '../api/landingContentApi';
 import { request, getToken } from '../api/http';
+import i18n from '../i18n';
 
 export interface ShopSettings {
   storeName: string;
@@ -101,13 +102,13 @@ interface AppContextProps {
 
   // Banners
   banners: BannerSlide[];
-  saveBanner: (bannerData: { id?: string; title: string; targetLink: string; image: string }) => void;
+  saveBanner: (bannerData: { id?: string; title: string; titleEn?: string; targetLink: string; image: string }) => void;
   deleteBanner: (id: string) => void;
   toggleBanner: (id: string) => void;
 
   // Shop Settings
   shopSettings: ShopSettings;
-  saveShopSettings: (settings: Partial<ShopSettings>) => void;
+  saveShopSettings: (settings: Partial<ShopSettings>) => Promise<boolean>;
 
   // Landing Page Content
   landingContent: LandingContent;
@@ -196,11 +197,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return (saved === 'en' || saved === 'id') ? saved : 'id';
   });
 
+  // Sinkronkan state `language` dengan i18n + paksa re-render semua pemakai t().
+  // toggleLanguage hanya memanggil i18n.changeLanguage (sumber kebenaran tunggal).
+  // Komponen yang baca `language` (mis. konten DB landing) tetap dapat nilai akurat.
+  const [, forceLang] = useState(0);
+  useEffect(() => {
+    const h = (lng: string) => {
+      const lang: Language = lng === 'en' ? 'en' : 'id';
+      setLanguage(lang);
+      document.documentElement.setAttribute('lang', lang);
+      forceLang((n) => n + 1); // re-render semua yang pakai t()
+    };
+    i18n.on('languageChanged', h);
+    return () => { i18n.off('languageChanged', h); };
+  }, []);
+
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('app-theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
-    return 'light';
+    // Default LIGHT selalu — jangan ikut prefers-color-scheme OS (user minta light default)
+    return (saved === 'light' || saved === 'dark') ? saved : 'light';
   });
 
   // Data States
@@ -355,6 +370,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const mapped: BannerSlide[] = (res.data as any[]).map((b: any) => ({
           id: String(b.id),
           title: b.title,
+          titleEn: b.title_en || undefined,
           uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
           targetLink: b.target_link || '',
           image: b.image_url || '',
@@ -448,10 +464,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // dari beranda setelah reload (fetch ulang dari /api/banners).
   };
 
-  const saveShopSettings = (settings: Partial<ShopSettings>) => {
-    // Sync ke backend (PUT /admin/settings) + cache lokal — jangan cuma localStorage
-    const updated = shopSettingsApi.saveSettings(settings);
-    setShopSettings(updated);
+  const saveShopSettings = async (settings: Partial<ShopSettings>): Promise<boolean> => {
+    // Sync ke backend (PUT /admin/settings). return true kalau berhasil.
+    const ok = await shopSettingsApi.saveSettings(settings);
+    if (ok) {
+      // Update state lokal hanya kalau PUT sukses — kalau gagal (413/network),
+      // jangan timpa state dengan nilai yang sebenarnya tidak tersimpan.
+      setShopSettings((prev) => ({ ...prev, ...settings }));
+    }
+    return ok;
   };
 
   const saveLandingContent = (content: LandingContent) => {
@@ -764,13 +785,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   // Banner CRUD
-  const saveBanner = (bannerData: { id?: string; title: string; targetLink: string; image: string }) => {
+  const saveBanner = (bannerData: { id?: string; title: string; titleEn?: string; targetLink: string; image: string }) => {
     if (bannerData.id) {
       const updated = banners.map((b) => {
         if (b.id === bannerData.id) {
           return {
             ...b,
             title: bannerData.title,
+            titleEn: bannerData.titleEn || undefined,
             targetLink: bannerData.targetLink,
             image: bannerData.image,
           };
@@ -886,13 +908,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateCart([]);
   };
 
-  // Translation helper function
+  // Translation helper — delegate ke i18next (sumber kebenaran TUNGGAL: i18n.language).
+  // i18next dibentuk oleh src/i18n.ts dari src/locales/{id,en}.ts (generate
+  // otomatis oleh tools/extract-i18n.mjs dari pasangan t('id','en')).
+  // Fallback: kalau string tidak ada di kamus (mis. string baru yang belum
+  // diextract), pakai ternary — jadi tidak ada string yang pernah kosong.
+  // Race fix (2026-08-07): dulu baca state `language` (React) + i18n.language
+  // dua sumber berbeda → saat toggle, React re-render lebih dulu dari
+  // i18n.changeLanguage selesai → teks telat berganti (judul dulu, teks nanti).
+  // Sekarang t() baca i18n.language langsung; re-render dipicu event
+  // 'languageChanged' (di atas) — sinkron, tanpa telat.
   const t = (idText: string, enText: string): string => {
-    return language === 'en' ? enText : idText;
+    const key = idText.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-').slice(0, 60);
+    const tr = i18n.t(key);
+    return tr && tr !== key ? tr : (i18n.language === 'en' ? enText : idText);
   };
 
   const toggleLanguage = () => {
-    setLanguage((prev) => (prev === 'id' ? 'en' : 'id'));
+    const next = i18n.language === 'id' ? 'en' : 'id';
+    i18n.changeLanguage(next); // event 'languageChanged' → forceLang → re-render semua t()
   };
 
   const toggleTheme = () => {

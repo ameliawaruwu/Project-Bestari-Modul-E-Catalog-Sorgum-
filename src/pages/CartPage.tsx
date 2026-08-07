@@ -51,8 +51,8 @@ export const CartPage: React.FC<CartPageProps> = ({
     (acc, item) => acc + item.product.price * item.quantity,
     0
   );
-  const shippingEstimate = selectedItems.length > 0 ? 15000 : 0;
-  const totalPrice = Math.max(0, subtotalPrice + shippingEstimate - appliedDiscount);
+  // Ongkir dihapus (2026-08-07) — total = subtotal - diskon
+  const totalPrice = Math.max(0, subtotalPrice - appliedDiscount);
 
   const handleApplyPromo = async (code: string) => {
     const cleanCode = code.trim().toUpperCase();
@@ -239,13 +239,6 @@ export const CartPage: React.FC<CartPageProps> = ({
                 <span>{t('Total Item', 'Total Items')} ({totalItemCount})</span>
                 <span className="font-semibold text-[#1B5E20]">
                   Rp {subtotalPrice.toLocaleString('id-ID')}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center text-[#555555]">
-                <span>{t('Estimasi Ongkir', 'Est. Shipping')}</span>
-                <span className="font-semibold text-[#1B5E20]">
-                  Rp {shippingEstimate.toLocaleString('id-ID')}
                 </span>
               </div>
 

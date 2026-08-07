@@ -7,7 +7,6 @@ import { useApp } from '../context/AppContext';
 import { productApi } from '../api/productApi';
 
 interface HomePageProps {
-  onAddToCart: (product: Product, e: React.MouseEvent) => void;
   onClickProduct: (product: Product) => void;
   onSelectArticle: (article: Article) => void;
   setActiveTab: (tab: string) => void;
@@ -15,7 +14,6 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
-  onAddToCart,
   onClickProduct,
   setActiveTab,
   searchQuery,
@@ -182,7 +180,6 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onAddToCart={onAddToCart}
                     onClickProduct={onClickProduct}
                     onRequireLogin={() => setActiveTab('login')}
                     guestNonInteractive={!currentUser}

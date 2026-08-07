@@ -81,9 +81,8 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   // appliedDiscount = NOMINAL RUPIAH (dari CartPage promo: SORGUM10 = Rp 15.000)
   const discount = appliedDiscount > 0 ? Math.min(appliedDiscount, subtotal) : 0;
-  // Ongkir dari settings BE (bukan hardcode 15000)
-  const shippingFee = cart.length > 0 ? (shopSettings.shippingCost ?? 15000) : 0;
-  const totalAmount = Math.max(0, subtotal - discount + shippingFee);
+  // Ongkir dihapus (keputusan 2026-08-07) — total = subtotal - diskon
+  const totalAmount = Math.max(0, subtotal - discount);
 
 
   const handleInputChange = (
@@ -134,7 +133,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 *Detail Pesanan:*
 ${itemsSummary}
 Subtotal: Rp ${subtotal.toLocaleString('id-ID')}
-Ongkir: Rp ${shippingFee.toLocaleString('id-ID')}
 *Total Bayar: Rp ${totalAmount.toLocaleString('id-ID')}*
 
 *Informasi Pembeli:*
@@ -362,10 +360,6 @@ ${
                 <div className="flex justify-between text-[#555555]">
                   <span>Subtotal</span>
                   <span className="font-semibold text-[#1B5E20]">Rp {subtotal.toLocaleString('id-ID')}</span>
-                </div>
-                <div className="flex justify-between text-[#555555]">
-                  <span>Ongkos Kirim <span className="text-[10px] text-[#999999]">(flat)</span></span>
-                  <span className="font-semibold text-[#1B5E20]">Rp {shippingFee.toLocaleString('id-ID')}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-[#2E7D32]">

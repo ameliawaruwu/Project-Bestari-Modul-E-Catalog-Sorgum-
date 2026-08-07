@@ -5,14 +5,12 @@ import { useApp } from '../context/AppContext';
 import { productApi } from '../api/productApi';
 
 interface ProductsPageProps {
-  onAddToCart: (product: Product, e: React.MouseEvent) => void;
   onClickProduct: (product: Product) => void;
   searchQuery: string;
   onRequireLogin?: () => void;
 }
 
 export const ProductsPage: React.FC<ProductsPageProps> = ({
-  onAddToCart,
   onClickProduct,
   searchQuery,
   onRequireLogin,
@@ -149,7 +147,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             <ProductCard
               key={p.id}
               product={p}
-              onAddToCart={onAddToCart}
               onClickProduct={onClickProduct}
               onRequireLogin={onRequireLogin}
             />

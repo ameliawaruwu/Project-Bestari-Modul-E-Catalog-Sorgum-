@@ -97,6 +97,26 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
           </div>
         </div>
 
+        {/* Keterangan pembayaran: QRIS hanya harga barang, ongkir menyusul */}
+        <div className="bg-[#FFF8E1] border border-[#FFE0B2] rounded-xl p-4 text-left text-xs text-[#555555] space-y-1.5 shadow-2xs">
+          <p className="font-bold text-[#C89B3C] flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-sm">info</span>
+            {t('Informasi Pembayaran', 'Payment Information')}
+          </p>
+          <p>
+            {t(
+              'Pembayaran QRIS hanya untuk harga barang. Biaya ongkir belum termasuk — akan dikirim oleh admin setelah konfirmasi pesanan.',
+              'QRIS payment covers the product price only. Shipping fee is not included — it will be arranged by admin after order confirmation.'
+            )}
+          </p>
+          <p className="font-semibold text-[#1B5E20]">
+            {t(
+              'Silakan konfirmasi pembelian Anda ke admin untuk melanjutkan proses pengiriman.',
+              'Please confirm your purchase to admin to continue the shipping process.'
+            )}
+          </p>
+        </div>
+
         {/* Action Button — langsung lanjut ke status pesanan */}
         <div className="space-y-4 pt-2">
           <button

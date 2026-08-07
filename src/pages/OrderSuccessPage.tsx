@@ -119,6 +119,22 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
                   Rp {(order.totalAmount || 0).toLocaleString('id-ID')}
                 </span>
               </div>
+
+              {/* Keterangan ongkir: belum termasuk, menyusul setelah konfirmasi */}
+              <div className="bg-[#FFF8E1] border border-[#FFE0B2] rounded-xl p-3 space-y-1">
+                <p className="text-[11px] text-[#555555] leading-relaxed">
+                  {t(
+                    'Pembayaran QRIS hanya untuk harga barang. Biaya ongkir belum termasuk — akan dikirim oleh admin setelah konfirmasi pesanan.',
+                    'QRIS payment covers the product price only. Shipping fee is not included — it will be arranged by admin after order confirmation.'
+                  )}
+                </p>
+                <p className="text-[11px] font-semibold text-[#1B5E20]">
+                  {t(
+                    'Silakan konfirmasi pembelian Anda ke admin untuk melanjutkan proses pengiriman.',
+                    'Please confirm your purchase to admin to continue the shipping process.'
+                  )}
+                </p>
+              </div>
             </div>
           )}
 

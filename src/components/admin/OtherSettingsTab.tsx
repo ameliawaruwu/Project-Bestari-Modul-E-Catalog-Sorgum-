@@ -62,57 +62,69 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
     }
   }, [shopSettings]);
 
-  // Handle local image file upload for Logo
-  const handleLogoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle local image file upload for Logo — upload ke server via API,
+  // dapat URL /uploads/xxx (bukan base64). URL baru tiap upload → browser
+  // tidak cache gambar lama (root cause QRIS tidak berubah, fix 2026-08-07).
+  const handleLogoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        showToast('Ukuran berkas logo terlalu besar (maksimal 2MB)!');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        if (result) {
-          setSettings((prev) => ({ ...prev, logoUrl: result }));
-          showToast('Gambar logo berhasil diunggah!');
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Ukuran berkas logo terlalu besar (maksimal 2MB)!');
+      return;
+    }
+    try {
+      const { productAdminApi } = await import('../../api/adminApi');
+      const url = await productAdminApi.uploadImage(file);
+      if (!url) throw new Error('upload gagal');
+      setSettings((prev) => ({ ...prev, logoUrl: url }));
+      showToast('Gambar logo berhasil diunggah!');
+    } catch {
+      showToast('Gagal mengunggah gambar logo.');
+    } finally {
+      e.target.value = '';
     }
   };
 
-  // Handle local image file upload for QRIS
-  const handleQrisFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle local image file upload for QRIS — upload ke server via API.
+  const handleQrisFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        showToast('Ukuran berkas gambar QRIS terlalu besar (maksimal 3MB)!');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        if (result) {
-          setSettings((prev) => ({ ...prev, qrisImageUrl: result }));
-          showToast('Gambar barcode QRIS berhasil diunggah!');
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      showToast('Ukuran berkas gambar QRIS terlalu besar (maksimal 3MB)!');
+      return;
+    }
+    try {
+      const { productAdminApi } = await import('../../api/adminApi');
+      const url = await productAdminApi.uploadImage(file);
+      if (!url) throw new Error('upload gagal');
+      setSettings((prev) => ({ ...prev, qrisImageUrl: url }));
+      showToast('Gambar barcode QRIS berhasil diunggah!');
+    } catch {
+      showToast('Gagal mengunggah gambar QRIS.');
+    } finally {
+      e.target.value = '';
     }
   };
 
   // Save Settings
-  const handleSave = () => {
-    saveShopSettings(settings);
-    showToast('Pengaturan logo & QRIS pembayaran berhasil disimpan!');
+  const handleSave = async () => {
+    const ok = await saveShopSettings(settings);
+    if (ok) {
+      showToast('Pengaturan logo & QRIS pembayaran berhasil disimpan!');
+    } else {
+      showToast('Gagal menyimpan pengaturan. Periksa koneksi / ukuran gambar lalu coba lagi.');
+    }
   };
 
   // Reset Settings
-  const handleReset = () => {
+  const handleReset = async () => {
     setSettings(DEFAULT_SETTINGS_FALLBACK);
-    saveShopSettings(DEFAULT_SETTINGS_FALLBACK);
-    showToast('Pengaturan berhasil dikembalikan ke standar bawaan.');
+    const ok = await saveShopSettings(DEFAULT_SETTINGS_FALLBACK);
+    if (ok) {
+      showToast('Pengaturan berhasil dikembalikan ke standar bawaan.');
+    } else {
+      showToast('Gagal menyimpan pengaturan.');
+    }
   };
 
   return (

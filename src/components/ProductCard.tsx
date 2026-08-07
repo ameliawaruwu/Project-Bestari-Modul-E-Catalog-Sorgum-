@@ -4,7 +4,6 @@ import { useApp } from '../context/AppContext';
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product, e: React.MouseEvent) => void;
   onClickProduct: (product: Product) => void;
   onRequireLogin?: () => void;
   // Guest di beranda: kartu non-interaktif (tanpa favorit, tanpa klik) — hover saja
@@ -15,7 +14,6 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
-  onAddToCart,
   onClickProduct,
   onRequireLogin,
   guestNonInteractive,

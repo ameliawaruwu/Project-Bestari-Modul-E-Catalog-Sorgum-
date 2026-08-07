@@ -45,6 +45,7 @@ export interface AdminUser {
 export interface BannerSlide {
   id: string;
   title: string;
+  titleEn?: string;
   uploadDate: string;
   targetLink: string;
   image: string;
