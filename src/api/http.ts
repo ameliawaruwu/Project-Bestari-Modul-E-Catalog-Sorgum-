@@ -79,11 +79,20 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
 
   let res: Response;
   try {
-    res = await fetch(`${API_BASE}${path}`, {
-      method,
-      headers,
-      body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
-    });
+    // Timeout 20s biar request tidak menggantung selamanya kalau BE lambat/hang
+    // (default fetch tanpa AbortController = nunggu sampai browser timeout, bisa menit).
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    try {
+      res = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers,
+        body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
   } catch {
     throw new ApiError(0, 'Tidak dapat terhubung ke server. Pastikan backend berjalan.');
   }

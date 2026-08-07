@@ -187,7 +187,7 @@ export async function createOrder(input: CreateOrderInput) {
 
     // 6. Generate WA link
     const waPhone = config.store.adminWhatsapp;
-    const waMessage = `Halo BESTARI, saya ingin konfirmasi pesanan:\n\nNomor Pesanan: ${orderNumber}\nNama: ${input.customer_name}\nTotal: Rp${total.toLocaleString('id-ID')}\nMetode: ${input.payment_method.toUpperCase()}`;
+    const waMessage = `Halo SORGUM, saya ingin konfirmasi pesanan:\n\nNomor Pesanan: ${orderNumber}\nNama: ${input.customer_name}\nTotal: Rp${total.toLocaleString('id-ID')}\nMetode: ${input.payment_method.toUpperCase()}`;
     const waLink = generateWALink(waPhone, waMessage);
 
     // 7. Return order detail

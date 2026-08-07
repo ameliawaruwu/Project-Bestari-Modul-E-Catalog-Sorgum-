@@ -277,7 +277,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `transaksi_bestari_token${Date.now()}.csv`);
+    link.setAttribute('download', `transaksi_sorgum_${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

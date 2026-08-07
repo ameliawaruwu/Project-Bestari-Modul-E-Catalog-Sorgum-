@@ -140,14 +140,16 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
 
           {/* Primary CTA */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#25D366] hover:bg-[#1eb958] text-white font-bold text-sm rounded-xl transition-all shadow-2xs active:scale-95"
-            >
-              <span>{t('Konfirmasi ke Admin via WhatsApp', 'Confirm to Admin via WhatsApp')}</span>
-            </a>
+            {order.paymentMethod !== 'qris' && (
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#25D366] hover:bg-[#1eb958] text-white font-bold text-sm rounded-xl transition-all shadow-2xs active:scale-95"
+              >
+                <span>{t('Konfirmasi ke Admin via WhatsApp', 'Confirm to Admin via WhatsApp')}</span>
+              </a>
+            )}
             <button
               onClick={onNavigateHome}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-bold text-sm rounded-xl transition-all shadow-2xs active:scale-95 cursor-pointer group"
