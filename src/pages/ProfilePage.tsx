@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Order, Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { wishlistApi } from '../api/wishlistApi';
+import { PhoneInput } from '../components/PhoneInput';
 
 interface ProfilePageProps {
   user: User | null;
@@ -136,13 +137,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   // Shipping Address state — dari BE /api/user/ (bukan mock)
   const [addresses, setAddresses] = useState<Array<{
     id: string; label: string; recipientName: string; phone: string;
-    addressLine: string; city: string; province: string; postalCode: string; isPrimary: boolean;
+    addressLine: string; city: string; district?: string; province: string; postalCode: string; isPrimary: boolean;
   }>>([]);
   const [addressData, setAddressData] = useState({
     label: '',
     recipient: '',
     phone: '',
     address: '',
+    district: '',
     city: '',
     province: '',
     postalCode: '',
@@ -174,6 +176,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             recipient: primary.recipientName,
             phone: primary.phone,
             address: primary.addressLine,
+            district: primary.district || '',
             city: primary.city,
             province: primary.province,
             postalCode: primary.postalCode,
@@ -231,6 +234,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         phone: addressData.phone,
         address_line: addressData.address,
         city: addressData.city,
+        district: addressData.district,
         province: addressData.province,
         postal_code: addressData.postalCode,
         is_primary: addresses.length === 0, // alamat pertama jadi primary
@@ -419,16 +423,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#555555] mb-1.5">
                         NOMOR TELEPON
                       </label>
-                      <input
-                        type="tel"
-                        inputMode="numeric"
-                        pattern="[0-9+ ]*"
-                        value={profileData.phone}
-                        onChange={(e) =>
-                          setProfileData({ ...profileData, phone: e.target.value.replace(/[^\d+ ]/g, '') })
-                        }
-                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32] font-medium"
-                        placeholder="Contoh: 081234567890"
+                      <PhoneInput
+                        value={profileData.phone.replace(/^\+?62/, '').replace(/^0/, '')}
+                        onChange={(digits) => setProfileData({ ...profileData, phone: digits })}
+                        className="px-4 py-3"
+                        placeholder="812-3456-7890"
                       />
                     </div>
 
@@ -522,13 +521,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         <label className="block text-xs font-bold uppercase text-[#555555] mb-1">
                           Nomor HP
                         </label>
-                        <input
-                          type="tel"
-                          inputMode="numeric"
-                          pattern="[0-9+ ]*"
-                          value={addressData.phone}
-                          onChange={(e) => setAddressData({ ...addressData, phone: e.target.value.replace(/[^\d+ ]/g, '') })}
-                          className="w-full bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-2 text-sm text-[#1B5E20]"
+                        <PhoneInput
+                          value={addressData.phone.replace(/^\+?62/, '').replace(/^0/, '')}
+                          onChange={(digits) => setAddressData({ ...addressData, phone: digits })}
+                          className="px-4 py-2"
+                          placeholder="812-3456-7890"
                         />
                       </div>
                     </div>
@@ -543,7 +540,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         className="w-full bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-2 text-sm text-[#1B5E20]"
                       />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold uppercase text-[#555555] mb-1">
                           Provinsi
@@ -563,6 +560,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           type="text"
                           value={addressData.city}
                           onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
+                          className="w-full bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-2 text-sm text-[#1B5E20]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-[#555555] mb-1">
+                          Kecamatan
+                        </label>
+                        <input
+                          type="text"
+                          value={addressData.district}
+                          onChange={(e) => setAddressData({ ...addressData, district: e.target.value })}
                           className="w-full bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-2 text-sm text-[#1B5E20]"
                         />
                       </div>
@@ -610,7 +618,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             {addr.recipientName} ({addr.phone})
                           </p>
                           <p className="text-xs text-[#555555] leading-relaxed mb-4">
-                            {addr.addressLine}, {addr.city}, {addr.province} {addr.postalCode}
+                            {addr.addressLine}, {addr.district ? `${addr.district}, ` : ''}{addr.city}, {addr.province} {addr.postalCode}
                           </p>
                           <button
                             onClick={() => {
@@ -619,6 +627,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                                 recipient: addr.recipientName,
                                 phone: addr.phone,
                                 address: addr.addressLine,
+                                district: addr.district || '',
                                 city: addr.city,
                                 province: addr.province,
                                 postalCode: addr.postalCode,
@@ -950,7 +959,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         <p className="text-xs text-[#555555]">
                           {selectedOrderDetail.customerPhone || '+62 812-3456-7890'}
                         </p>
-                        <p className="text-xs text-[#555555] leading-relaxed pt-1">
+                        <p className="text-xs text-[#555555] leading-relaxed pt-1 whitespace-pre-line">
                           {selectedOrderDetail.shippingAddress ||
                             'Jl. Kebon Jeruk No. 12, Jakarta Barat, DKI Jakarta, 11530'}
                         </p>
@@ -995,7 +1004,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       'Dikirim',
                       'Selesai',
                       'Dibatalkan',
-                      'Pengembalian Barang',
                     ].map((tabName) => (
                       <button
                         key={tabName}

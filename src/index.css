@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+/* Self-hosted fonts — variable font (1 file berisi semua weight 100-800).
+   Load dari server lokal → instan, tanpa FOUT saat hard refresh (tidak
+   tergantung cache Google Fonts CDN). */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono.woff2') format('woff2');
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CartItem, CheckoutData, Order } from '../types';
 import { useApp } from '../context/AppContext';
 import { orderApi } from '../api';
+import { addressApi } from '../api/addressApi';
+import { PhoneInput } from '../components/PhoneInput';
 
 interface CheckoutPageProps {
   cart: CartItem[];
@@ -38,6 +40,36 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   });
 
   const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
+
+  // Prefill alamat default (is_primary) dari profil user — kalau login & punya alamat.
+  // User tetap bisa ubah manual di form; ini cuma mengisi awal biar tidak kosong.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!currentUser) return;
+      try {
+        const list = await addressApi.getAddresses();
+        if (cancelled) return;
+        const primary = list.find((a) => a.isPrimary) || list[0];
+        if (primary) {
+          setFormData((prev) => ({
+            ...prev,
+            customerName: prev.customerName || primary.recipientName,
+            customerPhone: prev.customerPhone || primary.phone,
+            address: primary.addressLine,
+            district: primary.district || '',
+            city: primary.city,
+            province: primary.province,
+            postalCode: primary.postalCode,
+          }));
+        }
+      } catch {
+        // Abaikan — alamat default tidak wajib; form tetap bisa diisi manual.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [currentUser]);
+
   // Idempotency key per checkout session: retry/submit ulang (mis. double-click)
   // pakai key SAMA → BE replay order yang sama, bukan bikin order baru.
   const idempotencyRef = useRef<string>(
@@ -175,20 +207,13 @@ ${
 
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-[#555555]">{t('Nomor WhatsApp', 'WhatsApp Number')}</label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3 text-[#555555] text-xs font-bold">
-                      +62
-                    </span>
-                    <input
-                      type="tel"
-                      name="customerPhone"
-                      required
-                      value={formData.customerPhone}
-                      onChange={handleInputChange}
-                      placeholder="8123456789"
-                      className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl p-3 pl-12 text-xs sm:text-sm text-[#1B5E20] focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-                    />
-                  </div>
+                  <PhoneInput
+                    value={formData.customerPhone.replace(/^\+?62/, '').replace(/^0/, '')}
+                    onChange={(digits) => setFormData((prev) => ({ ...prev, customerPhone: digits }))}
+                    placeholder="8123456789"
+                    className="p-3"
+                    required
+                  />
                 </div>
               </div>
 
@@ -339,7 +364,7 @@ ${
                   <span className="font-semibold text-[#1B5E20]">Rp {subtotal.toLocaleString('id-ID')}</span>
                 </div>
                 <div className="flex justify-between text-[#555555]">
-                  <span>Ongkos Kirim</span>
+                  <span>Ongkos Kirim <span className="text-[10px] text-[#999999]">(flat)</span></span>
                   <span className="font-semibold text-[#1B5E20]">Rp {shippingFee.toLocaleString('id-ID')}</span>
                 </div>
                 {discount > 0 && (

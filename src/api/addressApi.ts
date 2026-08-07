@@ -8,6 +8,7 @@ export interface AddressRow {
   phone: string;
   address_line: string;
   city: string;
+  district?: string | null;
   province: string;
   postal_code: string;
   is_primary: number;
@@ -19,6 +20,7 @@ export interface AddressInput {
   phone: string;
   address_line: string;
   city: string;
+  district?: string;
   province: string;
   postal_code: string;
   is_primary?: boolean;
@@ -32,6 +34,7 @@ function mapAddress(a: AddressRow) {
     phone: a.phone,
     addressLine: a.address_line,
     city: a.city,
+    district: a.district || '',
     province: a.province,
     postalCode: a.postal_code,
     isPrimary: !!a.is_primary,

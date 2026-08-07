@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ArticleItem } from '../../types/admin';
-
 export type ArticleBlockDraft = {
   id: string;
   type: 'text' | 'image' | 'quote';
@@ -45,6 +44,16 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
   const [createdAtText, setCreatedAtText] = useState('');
   const [heroImage, setHeroImage] = useState('');
   const [blocks, setBlocks] = useState<ArticleBlockDraft[]>([]);
+  const [uploading, setUploading] = useState(false);
+
+  // Upload gambar via endpoint admin (sama seperti Banner/Product form).
+  // Returns URL yang siap disimpan ke field image/image_url.
+  const uploadImage = async (file: File): Promise<string> => {
+    const { productAdminApi } = await import('../../api/adminApi');
+    const url = await productAdminApi.uploadImage(file);
+    if (!url) throw new Error('upload gagal');
+    return url;
+  };
 
   useEffect(() => {
     if (initialArticle) {
@@ -263,6 +272,31 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 placeholder="Tempel URL gambar utama artikel (mis. https://...jpg)"
                 className="flex-1 w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
               />
+              <label className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-bold text-xs transition-all cursor-pointer shadow-2xs">
+                <span className="material-symbols-outlined text-base">upload_file</span>
+                {uploading ? 'Mengunggah...' : 'Upload Gambar'}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      setUploading(true);
+                      const url = await uploadImage(file);
+                      setHeroImage(url);
+                      showToast('Gambar berhasil diunggah.');
+                    } catch {
+                      showToast('Gagal mengunggah gambar.');
+                    } finally {
+                      setUploading(false);
+                      e.target.value = '';
+                    }
+                  }}
+                />
+              </label>
               {heroImage && (
                 <button
                   type="button"
@@ -374,13 +408,40 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
 
                     {b.type === 'image' && (
                       <div className="space-y-3">
-                        <input
-                          type="text"
-                          value={b.image_url || ''}
-                          onChange={(e) => updateBlock(b.id, { image_url: e.target.value })}
-                          placeholder="Tempel URL gambar (mis. https://...jpg)"
-                          className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
-                        />
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input
+                            type="text"
+                            value={b.image_url || ''}
+                            onChange={(e) => updateBlock(b.id, { image_url: e.target.value })}
+                            placeholder="Tempel URL gambar (mis. https://...jpg)"
+                            className="flex-1 w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
+                          />
+                          <label className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-bold text-xs transition-all cursor-pointer shadow-2xs whitespace-nowrap">
+                            <span className="material-symbols-outlined text-sm">upload_file</span>
+                            {uploading ? '...' : 'Upload'}
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp,image/avif"
+                              className="hidden"
+                              disabled={uploading}
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                try {
+                                  setUploading(true);
+                                  const url = await uploadImage(file);
+                                  updateBlock(b.id, { image_url: url });
+                                  showToast('Gambar berhasil diunggah.');
+                                } catch {
+                                  showToast('Gagal mengunggah gambar.');
+                                } finally {
+                                  setUploading(false);
+                                  e.target.value = '';
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <input
                             type="text"

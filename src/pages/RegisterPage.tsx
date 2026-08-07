@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User } from '../types';
 import { useApp } from '../context/AppContext';
+import { PhoneInput } from '../components/PhoneInput';
 
 interface RegisterPageProps {
   onRegisterSuccess: (user: User) => void;
@@ -173,12 +174,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
               <label className="block text-xs font-bold text-[#555555] ml-0.5">
                 {t('Nomor WhatsApp', 'WhatsApp Number')}
               </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={t('Contoh: 081234567890', 'e.g. 081234567890')}
-                className="w-full h-11 px-4 bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl text-xs sm:text-sm text-[#1B5E20] placeholder-[#555555]/60 focus:outline-none focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
+              <PhoneInput
+                value={phone.replace(/^\+?62/, '').replace(/^0/, '')}
+                onChange={(digits) => setPhone(digits)}
+                placeholder={t('812-3456-7890', '812-3456-7890')}
+                className="h-11 px-4"
               />
               <p className="text-[10px] text-[#555555] ml-0.5">
                 {t('Dipakai untuk verifikasi lupa password via WhatsApp.', 'Used for password recovery via WhatsApp.')}

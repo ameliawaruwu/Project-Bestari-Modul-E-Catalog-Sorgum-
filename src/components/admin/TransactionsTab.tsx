@@ -175,7 +175,6 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                           >
                             <option value="unpaid">Belum Bayar</option>
                             <option value="paid">Sudah Bayar</option>
-                            <option value="confirmed">Terverifikasi</option>
                           </select>
                         )}
                       </div>

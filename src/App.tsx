@@ -335,9 +335,6 @@ export function App() {
             {activeTab === 'qris-pembayaran' && (
               <QrisPaymentPage
                 order={completedOrder}
-                onConfirmWhatsApp={() => {
-                  showToast('Membuka WhatsApp untuk konfirmasi pembayaran...');
-                }}
                 onCompleteOrder={() => handleTabChange('pesanan-berhasil')}
               />
             )}
@@ -415,8 +412,9 @@ export function App() {
         />
       )}
 
-      {/* Floating WhatsApp Button */}
-      {activeTab === 'faq' && (
+      {/* Floating WhatsApp Button — tampil di semua halaman (user & guest),
+          kecuali halaman auth (login/register/forgot) & admin */}
+      {activeTab !== 'login' && activeTab !== 'register' && activeTab !== 'forgot-password' && activeTab !== 'admin' && (
         <a
           href={waUrl}
           target="_blank"

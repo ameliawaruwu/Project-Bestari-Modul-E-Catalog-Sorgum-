@@ -3,6 +3,7 @@ import dbPool from '../lib/db';
 export interface Voucher {
   id: number;
   code: string;
+  type: 'fixed' | 'percent';
   discount_amount: number;
   min_purchase: number;
   max_uses: number | null;
@@ -62,7 +63,12 @@ export const voucherService = {
         message: `Minimal belanja Rp ${v.min_purchase.toLocaleString('id-ID')} untuk menggunakan voucher ini.`,
       };
     }
-    return { valid: true, discount: v.discount_amount, voucher: v };
+    // Diskon sesuai tipe: fixed = nominal Rp; percent = % dari subtotal.
+    const discount =
+      v.type === 'percent'
+        ? Math.min(Math.round((v.discount_amount / 100) * subtotal), subtotal)
+        : Math.min(v.discount_amount, subtotal);
+    return { valid: true, discount, voucher: v };
   },
 
   async incrementUsage(id: number) {

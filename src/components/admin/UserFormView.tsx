@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AdminUser, UserAddress } from '../../types/admin';
+import { PhoneInput } from '../PhoneInput';
 
 interface UserFormViewProps {
   initialUser?: AdminUser | null;
@@ -359,12 +360,11 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                   </div>
                   <div>
                     <label className="block text-[11px] font-bold text-[#555555] mb-1">No. HP Penerima</label>
-                    <input
-                      type="text"
-                      placeholder="0812xxxx"
-                      value={newAddrPhone}
-                      onChange={(e) => setNewAddrPhone(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20]"
+                    <PhoneInput
+                      value={newAddrPhone.replace(/^\+?62/, '').replace(/^0/, '')}
+                      onChange={(digits) => setNewAddrPhone(digits)}
+                      placeholder="812-xxxx-xxxx"
+                      className="px-3 py-2 text-xs rounded-lg"
                     />
                   </div>
                 </div>

@@ -80,8 +80,11 @@ export async function getProducts(filters: ProductFilters) {
     params.push(filters.category);
   }
   if (filters.search) {
-    where += ' AND MATCH(p.name, p.description) AGAINST(? IN BOOLEAN MODE)';
-    params.push(`+${filters.search}*`);
+    // Cari di NAMA produk saja (bukan description) — user mengharapkan hasil
+    // sesuai nama. Sebelumnya pakai FULLTEXT MATCH(name, description) yg juga
+    // match kata di deskripsi (mis. "nasi" match "nasional") → hasil tidak sesuai.
+    where += ' AND p.name LIKE ?';
+    params.push(`%${filters.search.trim()}%`);
   }
   if (filters.minPrice !== undefined) {
     where += ' AND p.price >= ?';

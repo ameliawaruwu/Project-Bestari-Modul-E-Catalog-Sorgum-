@@ -4,6 +4,7 @@ import { voucherAdminApi } from '../../api/adminApi';
 interface Voucher {
   id: number;
   code: string;
+  type: 'fixed' | 'percent';
   discount_amount: number;
   min_purchase: number;
   max_uses: number | null;
@@ -22,7 +23,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [form, setForm] = useState({ code: '', discount_amount: 0, min_purchase: 0, max_uses: '', is_active: true, expires_at: '' });
+  const [form, setForm] = useState({ code: '', type: 'fixed' as 'fixed' | 'percent', discount_amount: 0, min_purchase: 0, max_uses: '', is_active: true, expires_at: '' });
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const refresh = async () => {
@@ -37,7 +38,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
   useEffect(() => { refresh(); }, []);
 
   const resetForm = () => {
-    setForm({ code: '', discount_amount: 0, min_purchase: 0, max_uses: '', is_active: true, expires_at: '' });
+    setForm({ code: '', type: 'fixed', discount_amount: 0, min_purchase: 0, max_uses: '', is_active: true, expires_at: '' });
     setEditingId(null);
   };
 
@@ -45,6 +46,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
   const openEdit = (v: Voucher) => {
     setForm({
       code: v.code,
+      type: v.type || 'fixed',
       discount_amount: v.discount_amount,
       min_purchase: v.min_purchase,
       max_uses: v.max_uses?.toString() || '',
@@ -113,27 +115,40 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-[#555555]">Diskon (Rp)</label>
-                  <input required type="number" min={0} value={form.discount_amount} onChange={e => setForm({ ...form, discount_amount: parseInt(e.target.value) || 0 })}
-                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
+                  <label className="text-xs font-bold text-[#555555]">Tipe Diskon</label>
+                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as 'fixed' | 'percent' })}
+                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium cursor-pointer">
+                    <option value="fixed">Rp (Nominal)</option>
+                    <option value="percent">% (Persen)</option>
+                  </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[#555555]">Min. Belanja (Rp)</label>
-                  <input required type="number" min={0} value={form.min_purchase} onChange={e => setForm({ ...form, min_purchase: parseInt(e.target.value) || 0 })}
+                  <label className="text-xs font-bold text-[#555555]">
+                    {form.type === 'percent' ? 'Diskon (%)' : 'Diskon (Rp)'}
+                  </label>
+                  <input required type="number" min={0} max={form.type === 'percent' ? 100 : undefined}
+                    value={form.discount_amount}
+                    onChange={e => setForm({ ...form, discount_amount: parseInt(e.target.value) || 0 })}
+                    placeholder={form.type === 'percent' ? 'mis. 10 = 10%' : 'mis. 15000'}
                     className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
+                  <label className="text-xs font-bold text-[#555555]">Min. Belanja (Rp)</label>
+                  <input required type="number" min={0} value={form.min_purchase} onChange={e => setForm({ ...form, min_purchase: parseInt(e.target.value) || 0 })}
+                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
+                </div>
+                <div>
                   <label className="text-xs font-bold text-[#555555]">Maks. Penggunaan</label>
                   <input type="number" min={1} value={form.max_uses} onChange={e => setForm({ ...form, max_uses: e.target.value })}
                     className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" placeholder="Kosong = unlimited" />
                 </div>
-                <div>
-                  <label className="text-xs font-bold text-[#555555]">Kadaluarsa</label>
-                  <input type="datetime-local" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })}
-                    className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
-                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#555555]">Kadaluarsa</label>
+                <input type="datetime-local" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })}
+                  className="w-full border border-[#E0E0E0] bg-[#F7F8F6] rounded-xl p-2.5 text-sm focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] outline-none font-medium" />
               </div>
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} className="w-4 h-4 accent-[#2E7D32]" />
@@ -209,7 +224,11 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
               {vouchers.map((v) => (
                 <tr key={v.id} className="hover:bg-[#f5efe6] transition-colors">
                   <td className="p-3.5 font-bold text-[#1B5E20]">{v.code}</td>
-                  <td className="p-3.5 font-bold font-mono-custom text-[#1B5E20]">Rp {v.discount_amount.toLocaleString('id-ID')}</td>
+                  <td className="p-3.5 font-bold font-mono-custom text-[#1B5E20]">
+                    {v.type === 'percent'
+                      ? `${v.discount_amount}%`
+                      : `Rp ${v.discount_amount.toLocaleString('id-ID')}`}
+                  </td>
                   <td className="p-3.5 font-mono-custom text-[#555555]">Rp {v.min_purchase.toLocaleString('id-ID')}</td>
                   <td className="p-3.5 text-[#555555] font-mono-custom">{v.used_count}{v.max_uses ? `/${v.max_uses}` : ''}</td>
                   <td className="p-3.5">

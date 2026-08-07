@@ -103,9 +103,13 @@ export function mapOrder(o: BackendOrder): Order {
   }));
 
   const addr = o.shipping_address || {};
+  // Alamat multi-baris rapi: penerima, alamat, lalu kecamatan/kota/provinsi/kodepos.
+  // Join dengan \n supaya dirender per baris (whitespace-pre-line di UI admin & user).
   const shippingAddress = [
-    addr.address_line, addr.district, addr.city, addr.province, addr.postal_code,
-  ].filter(Boolean).join(', ');
+    addr.recipient_name ? `Penerima: ${addr.recipient_name}` : '',
+    addr.phone ? `Telp: ${addr.phone}` : '',
+    addr.address_line, addr.district, `${addr.city}, ${addr.province} ${addr.postal_code || ''}`.trim(),
+  ].filter(Boolean).join('\n');
 
   return {
     id: String(o.id), // id numerik BE — dipakai buat API call (admin set tracking/status)

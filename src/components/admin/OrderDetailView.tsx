@@ -174,7 +174,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
               </h4>
             </div>
             <div className="space-y-2">
-              <p className="text-xs text-[#1B5E20] leading-relaxed">
+              <p className="text-xs text-[#1B5E20] leading-relaxed whitespace-pre-line">
                 {order.shippingAddress || 'Alamat tidak dicantumkan.'}
               </p>
               <div className="pt-2 border-t border-[#E0E0E0] flex justify-between items-center text-xs">

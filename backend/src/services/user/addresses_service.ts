@@ -7,6 +7,7 @@ interface AddressRow {
   phone: string;
   address_line: string;
   city: string;
+  district?: string | null;
   province: string;
   postal_code: string;
   is_primary: number;
@@ -22,16 +23,16 @@ export async function getAddresses(userId: number): Promise<AddressRow[]> {
 
 export async function createAddress(userId: number, fields: Record<string, any>) {
   const [r] = await dbPool.query(
-    `INSERT INTO user_addresses (user_id, label, recipient_name, phone, address_line, city, province, postal_code, is_primary)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO user_addresses (user_id, label, recipient_name, phone, address_line, city, district, province, postal_code, is_primary)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [userId, fields.label, fields.recipient_name, fields.phone,
-     fields.address_line, fields.city, fields.province, fields.postal_code,
+     fields.address_line, fields.city, fields.district || null, fields.province, fields.postal_code,
      fields.is_primary ? 1 : 0],
   );
   return (r as any).insertId;
 }
 
-const ADDRESS_ALLOWED_COLUMNS = ['label', 'recipient_name', 'phone', 'address_line', 'city', 'province', 'postal_code', 'is_primary'];
+const ADDRESS_ALLOWED_COLUMNS = ['label', 'recipient_name', 'phone', 'address_line', 'city', 'district', 'province', 'postal_code', 'is_primary'];
 
 export async function updateAddress(addressId: number, userId: number, fields: Record<string, any>) {
   const sets: string[] = [];

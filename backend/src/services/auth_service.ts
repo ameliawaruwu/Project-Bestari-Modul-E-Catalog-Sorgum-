@@ -64,7 +64,7 @@ export async function login(input: LoginInput) {
 
   // SOFT DELETE: user yang dinonaktifkan admin tidak boleh login lagi
   if (user.is_deleted) {
-    throw new AppError('Akun Anda telah dinonaktifkan. Hubungi admin.', 403);
+    throw new AppError('Akun Telah dihapus, silakan hubungi Admin', 403);
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);

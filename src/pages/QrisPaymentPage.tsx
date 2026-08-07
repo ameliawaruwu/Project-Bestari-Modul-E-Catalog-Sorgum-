@@ -1,55 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Order } from '../types';
 import { useApp } from '../context/AppContext';
+import { shopSettingsApi } from '../api/shopSettingsApi';
 
 interface QrisPaymentPageProps {
   order: Order | null;
-  onConfirmWhatsApp: () => void;
   onCompleteOrder: () => void;
 }
 
 export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
   order,
-  onConfirmWhatsApp,
   onCompleteOrder,
 }) => {
   const { t, shopSettings } = useApp();
-  const [hasClickedWa, setHasClickedWa] = useState(false);
+  // Local copy QRIS settings — di-refresh saat halaman dibuka supaya gambar
+  // QRIS yang baru diupload admin langsung tampil (AppContext cuma fetch
+  // sekali saat mount, tanpa ini gambar tetap lama sampai full reload).
+  const [qris, setQris] = useState(shopSettings);
 
+  useEffect(() => {
+    let cancelled = false;
+    shopSettingsApi.getSettingsAsync().then((s) => {
+      if (!cancelled) {
+        setQris(s as unknown as typeof shopSettings);
+      }
+    }).catch(() => {});
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const orderId = order?.orderNumber || order?.id || '(tidak diketahui)';
   const totalAmount = order?.totalAmount || 0;
-
-  const itemsSummary = order?.items
-    ? order.items
-        .map(
-          (item) =>
-            `- ${item.product.name} (${item.product.unitInfo || item.product.weight}) x${
-              item.quantity
-            } = Rp ${(item.product.price * item.quantity).toLocaleString('id-ID')}`
-        )
-        .join('\n')
-    : '';
-
-  const cleanWaNumber = shopSettings.whatsappNumber
-    .replace(/[^0-9]/g, '')
-    .replace(/^0/, '62');
-
-  const waMessage = encodeURIComponent(
-    `Halo Admin ${shopSettings.storeName || 'SORGUM'}, saya ingin konfirmasi pembayaran QRIS untuk pesanan *${orderId}*.\n\n*Detail Pesanan:*\n${itemsSummary}\n*Total Bayar: Rp ${totalAmount.toLocaleString(
-      'id-ID'
-    )}*\n\nAtas nama: ${order?.customerName || 'Pelanggan'}\nNomor WA: ${
-      order?.customerPhone || '-'
-    }\n\nMohon diproses, terima kasih! (Lampiran bukti transfer di atas)`
-  );
-
-  const waUrl = `https://wa.me/${cleanWaNumber}?text=${waMessage}`;
-
-  const handleWaClick = () => {
-    window.open(waUrl, '_blank');
-    setHasClickedWa(true);
-    onConfirmWhatsApp();
-  };
 
   return (
     <main className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center justify-center text-[#1B5E20] animate-fadeIn bg-[#F7F8F6]">
@@ -73,10 +54,10 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
         {/* QR Code Card */}
         <div className="relative group my-4">
           <div className="bg-[#F7F8F6] p-6 rounded-2xl border border-[#E0E0E0] flex flex-col items-center justify-center shadow-2xs">
-            {shopSettings.qrisImageUrl ? (
+            {qris.qrisImageUrl ? (
               <img
-                src={shopSettings.qrisImageUrl}
-                alt={`QRIS Code ${shopSettings.storeName}`}
+                src={qris.qrisImageUrl}
+                alt={`QRIS Code ${qris.storeName}`}
                 className="w-56 h-56 object-contain"
               />
             ) : (
@@ -85,11 +66,11 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
               </div>
             )}
             <p className="font-bold text-sm text-[#1B5E20] mt-3 tracking-wide">
-              {shopSettings.storeName || 'SORGUM SORGHUM'}
+              {qris.storeName || 'SORGUM SORGHUM'}
             </p>
-            {shopSettings.qrisNmid && (
+            {qris.qrisNmid && (
               <p className="text-[10px] font-mono text-[#555555] mt-0.5">
-                NMID: {shopSettings.qrisNmid}
+                NMID: {qris.qrisNmid}
               </p>
             )}
           </div>
@@ -116,32 +97,15 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
           </div>
         </div>
 
-        {/* Action Button & Disclaimer */}
+        {/* Action Button — langsung lanjut ke status pesanan */}
         <div className="space-y-4 pt-2">
           <button
-            onClick={handleWaClick}
-            className="w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white py-4 px-6 rounded-xl font-bold text-xs sm:text-sm shadow-2xs transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer"
+            onClick={onCompleteOrder}
+            className="mt-4 w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white py-4 px-6 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-2xs"
           >
-            <span className="material-symbols-outlined text-xl">chat</span>
-            <span>{t('Konfirmasi Pembayaran via WhatsApp', 'Confirm Payment via WhatsApp')}</span>
+            <span>{t('Selesai / Lihat Status Pesanan', 'Done / View Order Status')}</span>
+            <span className="material-symbols-outlined text-sm">arrow_forward</span>
           </button>
-
-          <p className="text-xs text-[#555555] font-medium leading-relaxed">
-            {t(
-              'Setelah memindai, harap tekan tombol di atas untuk mengirim bukti pembayaran ke Admin kami.',
-              'After scanning, please press the button above to send payment proof to our Admin.'
-            )}
-          </p>
-
-          {hasClickedWa && (
-            <button
-              onClick={onCompleteOrder}
-              className="mt-4 w-full bg-[#E8F5E9] hover:bg-[#A5D6A7]/30 border border-[#A5D6A7] text-[#1B5E20] py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all flex items-center justify-center gap-2 animate-fadeIn shadow-2xs"
-            >
-              <span>{t('Selesai / Lihat Status Pesanan', 'Done / View Order Status')}</span>
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </button>
-          )}
         </div>
       </div>
     </main>
