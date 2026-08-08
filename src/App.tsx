@@ -61,7 +61,7 @@ export function App() {
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
 
   // Guard protected routes when user is not logged in
   useEffect(() => {
@@ -77,7 +77,7 @@ export function App() {
     }
   }, [user, activeTab]);
 
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToastType(type);
     setToastMessage(message);
     setTimeout(() => {
@@ -238,10 +238,12 @@ export function App() {
         <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[100] text-white px-6 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw] ${
           toastType === 'error'
             ? 'bg-[#D32F2F] border-[#FFCDD2]/60'
+            : toastType === 'info'
+            ? 'bg-[#C89B3C] border-[#fade88]/60'
             : 'bg-[#2E7D32] border-[#fade88]/40'
         }`}>
           <span className={`material-symbols-outlined ${toastType === 'error' ? 'text-[#FFCDD2]' : 'text-[#fde08b]'}`}>
-            {toastType === 'error' ? 'error' : 'check_circle'}
+            {toastType === 'error' ? 'error' : toastType === 'info' ? 'info' : 'check_circle'}
           </span>
           <span>{toastMessage}</span>
         </div>

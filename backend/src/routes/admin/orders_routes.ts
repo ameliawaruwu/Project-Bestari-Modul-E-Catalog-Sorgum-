@@ -26,6 +26,10 @@ router.patch('/:id/status', async (req: Request, res: Response) => {
 
   const updated = await updateOrderStatus(id, status);
   if (!updated) { res.status(404).json({ error: 'Pesanan tidak ditemukan' }); return; }
+  if ((updated as any).unchanged) {
+    res.json({ message: `Pesanan sudah berstatus ${(updated as any).current} (status akhir, tidak dapat diubah).`, unchanged: true });
+    return;
+  }
   res.json({ message: 'Status pesanan diupdate' });
 });
 

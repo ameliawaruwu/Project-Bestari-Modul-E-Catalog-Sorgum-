@@ -157,7 +157,7 @@ export const orderAdminApi = {
 
   // PATCH /api/admin/orders/:id/status
   updateOrderStatus: async (id: string, status: string) => {
-    await request(`/admin/orders/${id}/status`, { method: 'PATCH', body: { status }, auth: true });
+    return request<{ message: string; unchanged?: boolean }>(`/admin/orders/${id}/status`, { method: 'PATCH', body: { status }, auth: true });
   },
 
   // PATCH /api/admin/orders/:id/payment

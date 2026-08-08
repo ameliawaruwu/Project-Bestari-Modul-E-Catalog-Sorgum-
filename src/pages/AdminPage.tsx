@@ -26,7 +26,7 @@ interface AdminPageProps {
   user: User | null;
   onNavigateHome: () => void;
   onLogout?: () => void;
-  showToast: (msg: string, type?: 'success' | 'error') => void;
+  showToast: (msg: string, type?: 'success' | 'error' | 'info') => void;
 }
 
 export const AdminPage: React.FC<AdminPageProps> = ({
@@ -221,7 +221,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       // BE opsi B (longgar): terima semua status — cukup map label FE → enum BE.
       // 'Diproses' selalu kirim 'processed' (confirmed & processed sama-sama tampil 'Diproses').
       const beStatus = STATUS_LABEL_TO_ENUM[newStatus] || newStatus.toLowerCase();
-      await orderAdminApi.updateOrderStatus(orderId, beStatus);
+      const res = await orderAdminApi.updateOrderStatus(orderId, beStatus);
+      // Order terminal (Selesai/Dibatalkan) → BE return unchanged (no-op): tampilkan info ramah,
+      // JANGAN update state & JANGAN toast error — admin tidak boleh lihat error mentah.
+      if (res?.unchanged) {
+        showToast(res.message || 'Pesanan sudah berstatus akhir, tidak dapat diubah.', 'info');
+        return;
+      }
       // Update local state (BE dulu, context kedua — context cuma mirror)
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
     } catch (e: any) {

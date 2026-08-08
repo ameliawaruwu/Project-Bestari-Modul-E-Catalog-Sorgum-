@@ -330,7 +330,11 @@ export async function updateOrderStatus(orderId: number, status: string) {
     }
     const allowed = ALLOWED_ORDER_TRANSITIONS[current] || [];
     if (!allowed.includes(status)) {
-      throw new AppError(`Transisi status tidak valid: ${current} → ${status}`, 400);
+      // Order sudah terminal (delivered/cancelled) — jangan lempar error mentah ke admin.
+      // Return no-op sukses dgn flag unchanged supaya FE bisa tampilkan info ramah
+      // (bukan toast error "Transisi status tidak valid" yang ambigu).
+      await conn.rollback();
+      return { unchanged: true, current };
     }
     const [result] = await conn.query(
       'UPDATE orders SET order_status = ? WHERE id = ?',
