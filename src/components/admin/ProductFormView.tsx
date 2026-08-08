@@ -207,19 +207,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       {/* Form Card */}
       <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
-          {/* ID Produk (Read-Only) */}
-          <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1B5E20]">
-              ID Produk <span className="text-gray-500 font-normal">(Otomatis Terisi)</span>
-            </label>
-            <input
-              type="text"
-              value={idInput}
-              disabled
-              className="w-full bg-[#E8F5E9]/50 border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] font-mono-custom outline-none cursor-not-allowed font-bold"
-            />
-          </div>
-
           {/* Upload Gambar Field (Local Device Upload Only) */}
           <div className="space-y-3">
             <label className="block text-sm font-bold text-[#1B5E20]">
