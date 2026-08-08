@@ -78,6 +78,35 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   // appliedDiscount = NOMINAL RUPIAH (dari CartPage promo: SORGUM10 = Rp 15.000)
   const discount = appliedDiscount > 0 ? Math.min(appliedDiscount, subtotal) : 0;
+
+  // ─── SINKRONISASI DISKON FE ↔ BE ──────────────────────────────────────
+  // Bug: user apply voucher persen di CartPage (mis. HALAL 20% → diskon dihitung
+  // dari subtotal SAAT ITU). Lalu user ubah qty/isi cart di checkout → subtotal
+  // berubah → BE saat order menghitung diskon ULANG dari subtotal baru → total
+  // order BE ≠ total tampil FE ("harga tidak sesuai").
+  // Fix: validasi ulang voucher ke BE setiap subtotal berubah; appliedDiscount
+  // di-update ke nominal diskon BE untuk subtotal SAAT INI → FE selalu == BE.
+  useEffect(() => {
+    if (!appliedVoucherCode) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await orderApi.validateVoucher(appliedVoucherCode, subtotal);
+        if (cancelled) return;
+        if (res.valid && res.discount !== undefined) {
+          // Hanya update kalau nominal BERUBAH (hindari loop re-render)
+          setAppliedDiscount(res.discount);
+        } else {
+          // Voucher tidak valid lagi (min belanja baru tidak tercapai / kadaluarsa)
+          setAppliedDiscount(0);
+        }
+      } catch {
+        // Keep previous — jangan crash kalau BE offline
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal]);
   // Ongkir dihapus (keputusan 2026-08-07) — total = subtotal - diskon
   const totalAmount = Math.max(0, subtotal - discount);
 
