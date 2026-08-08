@@ -195,13 +195,12 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                     <td className="p-4">
                       {ord.status === 'Selesai' || ord.status === 'Dibatalkan' ? (
                         <span
-                          className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border ${
                             ord.status === 'Selesai'
                               ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
                               : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
                           }`}
                         >
-                          <span className="material-symbols-outlined text-xs leading-none">lock</span>
                           {ord.status}
                         </span>
                       ) : (

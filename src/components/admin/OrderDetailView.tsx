@@ -120,15 +120,13 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             <span className="text-xs font-bold text-[#1B5E20]">Status Pesanan:</span>
             {order.status === 'Selesai' || order.status === 'Dibatalkan' ? (
               <span
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold border ${
                   order.status === 'Selesai'
                     ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
                     : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
                 }`}
               >
-                <span className="material-symbols-outlined text-sm leading-none">lock</span>
                 {order.status}
-                <span className="font-medium text-[10px] opacity-80">(terkunci)</span>
               </span>
             ) : (
               <select
