@@ -27,7 +27,13 @@ router.patch('/:id/status', async (req: Request, res: Response) => {
   const updated = await updateOrderStatus(id, status);
   if (!updated) { res.status(404).json({ error: 'Pesanan tidak ditemukan' }); return; }
   if ((updated as any).unchanged) {
-    res.json({ message: `Pesanan sudah berstatus ${(updated as any).current} (status akhir, tidak dapat diubah).`, unchanged: true });
+    const STATUS_LABEL: Record<string, string> = {
+      pending: 'Pending', confirmed: 'Diproses', processed: 'Diproses',
+      shipped: 'Dikirim', delivered: 'Selesai', cancelled: 'Dibatalkan',
+    };
+    const current = (updated as any).current as string;
+    const label = STATUS_LABEL[current] || current;
+    res.json({ message: `Pesanan sudah berstatus ${label} (status akhir, tidak dapat diubah).`, unchanged: true });
     return;
   }
   res.json({ message: 'Status pesanan diupdate' });
