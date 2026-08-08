@@ -341,6 +341,15 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   ? `Harga jual: Rp ${(Number(priceInput) * (100 - Number(discountInput)) / 100).toLocaleString('id-ID')}`
                   : 'Isi 0 atau kosongkan jika tidak ada diskon.'}
               </p>
+              {/* Live preview badge diskon — badge otomatis sesuai diskon */}
+              {discountInput && Number(discountInput) > 0 && (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="inline-block text-[9px] font-extrabold uppercase bg-[#D32F2F] text-white px-2 py-0.5 rounded-md leading-none">
+                    -{Number(discountInput)}%
+                  </span>
+                  <span className="text-[9px] text-[#555555]">badge diskon otomatis</span>
+                </div>
+              )}
             </div>
           </div>
 

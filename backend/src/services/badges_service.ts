@@ -29,6 +29,26 @@ export async function updateBadge(id: number, name: string, isActive: boolean): 
 }
 
 export async function deleteBadge(id: number): Promise<boolean> {
-  const [result] = await dbPool.query('DELETE FROM badges WHERE id = ?', [id]);
-  return (result as any).affectedRows > 0;
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    // Ambil nama badge dulu (sebelum dihapus) — buat sinkronisasi ke produk
+    const [rows] = await conn.query('SELECT name FROM badges WHERE id = ?', [id]);
+    const badge = (rows as any[])[0];
+    if (!badge) {
+      await conn.rollback();
+      return false;
+    }
+    // Sinkronisasi: semua produk yang memakai badge ini kehilangan badge-nya.
+    // (badge di products adalah string bebas, jadi hapus manual by name)
+    await conn.query('UPDATE products SET badge = NULL WHERE badge = ?', [badge.name]);
+    const [result] = await conn.query('DELETE FROM badges WHERE id = ?', [id]);
+    await conn.commit();
+    return (result as any).affectedRows > 0;
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../../types';
+import { discountBadgeLabel } from '../../utils/discountBadge';
 
 interface ProductsTabProps {
   products: Product[];
@@ -136,11 +137,18 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                     <td className="px-4 py-3">
                       <div className="space-y-1">
                         <p className="font-bold text-[#1B5E20] leading-tight">{prod.name}</p>
-                        {prod.badge && (
-                          <span className="inline-block text-[9px] font-extrabold uppercase bg-[#fade88] text-[#C89B3C] px-2 py-0.5 rounded-md leading-none">
-                            {prod.badge}
-                          </span>
-                        )}
+                        <div className="flex flex-wrap gap-1 mt-0.5">
+                          {prod.badge && (
+                            <span className="inline-block text-[9px] font-extrabold uppercase bg-[#fade88] text-[#C89B3C] px-2 py-0.5 rounded-md leading-none">
+                              {prod.badge}
+                            </span>
+                          )}
+                          {discountBadgeLabel(prod) && (
+                            <span className="inline-block text-[9px] font-extrabold uppercase bg-[#D32F2F] text-white px-2 py-0.5 rounded-md leading-none">
+                              {discountBadgeLabel(prod)}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-[#555555] font-semibold text-xs">

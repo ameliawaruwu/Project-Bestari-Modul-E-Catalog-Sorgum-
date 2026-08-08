@@ -3,6 +3,7 @@ import { User, Order, Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { wishlistApi } from '../api/wishlistApi';
 import { PhoneInput } from '../components/PhoneInput';
+import { discountBadgeLabel } from '../utils/discountBadge';
 
 interface ProfilePageProps {
   user: User | null;
@@ -1202,6 +1203,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           {prod.badge && (
                             <span className="absolute top-2 left-2 bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
                               {prod.badge}
+                            </span>
+                          )}
+                          {discountBadgeLabel(prod) && (
+                            <span className="absolute top-2 right-2 bg-[#D32F2F] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
+                              {discountBadgeLabel(prod)}
                             </span>
                           )}
                         </div>

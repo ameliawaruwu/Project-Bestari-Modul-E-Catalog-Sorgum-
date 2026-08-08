@@ -1,6 +1,7 @@
 import React from 'react';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
+import { discountBadgeLabel } from '../utils/discountBadge';
 
 interface ProductCardProps {
   product: Product;
@@ -46,6 +47,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {product.badge && (
         <span className="absolute top-3.5 right-3.5 z-10 bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] px-2.5 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-wider uppercase shadow-2xs">
           {product.badge}
+        </span>
+      )}
+      {/* Badge diskon otomatis — kiri atas, tidak tabrakan dgn badge manual */}
+      {discountBadgeLabel(product) && (
+        <span className="absolute top-3.5 left-3.5 z-10 bg-[#D32F2F] text-white border border-[#FFCDD2]/60 px-2.5 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-wider shadow-2xs">
+          {discountBadgeLabel(product)}
         </span>
       )}
 

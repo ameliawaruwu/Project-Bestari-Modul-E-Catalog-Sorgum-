@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { productApi } from '../api/productApi';
+import { discountBadgeLabel } from '../utils/discountBadge';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -157,10 +158,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <div className="md:col-span-7 flex flex-col justify-between">
           <div>
             {/* Category / Badge Label */}
-            <div className="mb-3">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
               <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] font-['Plus_Jakarta_Sans'] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
                 {product.badge || 'PREMIUM FINE GRADE'}
               </span>
+              {discountBadgeLabel(product) && (
+                <span className="bg-[#D32F2F] text-white border border-[#FFCDD2]/60 font-['Plus_Jakarta_Sans'] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                  {discountBadgeLabel(product)}
+                </span>
+              )}
             </div>
 
             {/* Product Title */}
