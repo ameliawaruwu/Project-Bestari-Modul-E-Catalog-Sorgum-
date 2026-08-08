@@ -9,7 +9,7 @@ interface FaqTabProps {
   onOpenEditFaq: (faq: FAQItem) => void;
   onToggleStatus?: (id: string) => void;
   onReorderFaq?: (id: string, direction: 'UP' | 'DOWN') => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const FaqTab: React.FC<FaqTabProps> = ({

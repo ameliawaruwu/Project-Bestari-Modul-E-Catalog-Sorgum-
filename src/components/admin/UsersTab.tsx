@@ -5,7 +5,7 @@ import { SoftDeleteConfirmModal } from './SoftDeleteConfirmModal';
 import { userAdminApi } from '../../api/adminApi';
 
 interface UsersTabProps {
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 // BE user row -> AdminUser (FE shape)
@@ -102,7 +102,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
         });
         showToast(`User baru ${userData.name} berhasil didaftarkan!`);
       } catch (e: any) {
-        showToast(e?.message || 'Gagal membuat user.');
+        showToast(e?.message || 'Gagal membuat user.', 'error');
+        return; // Jangan tutup form kalau create gagal — user perlu lihat & perbaiki input
       }
     } else if (selectedUserForEdit) {
       try {
@@ -114,7 +115,8 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
         });
         showToast(`Data user ${userData.name} berhasil diperbarui!`);
       } catch (e: any) {
-        showToast(e?.message || 'Gagal memperbarui user.');
+        showToast(e?.message || 'Gagal memperbarui user.', 'error');
+        return; // Jangan tutup form kalau update gagal
       }
     }
 
@@ -131,7 +133,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
       await userAdminApi.deleteUser(Number(userId));
       showToast(`User berhasil dinonaktifkan (Soft Delete).`);
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menonaktifkan user.');
+      showToast(e?.message || 'Gagal menonaktifkan user.', 'error');
     }
     await refreshUsers();
   };
@@ -141,7 +143,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
       await userAdminApi.updateUser(Number(userId), { is_deleted: 0 });
       showToast('User berhasil dipulihkan (aktif kembali).');
     } catch (e: any) {
-      showToast(e?.message || 'Gagal memulihkan user.');
+      showToast(e?.message || 'Gagal memulihkan user.', 'error');
     }
     refreshUsers();
   };

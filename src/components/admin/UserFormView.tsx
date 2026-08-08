@@ -11,7 +11,7 @@ interface UserFormViewProps {
   onCancel: () => void;
   onSoftDelete?: (userId: string) => void;
   onRestore?: (userId: string) => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const UserFormView: React.FC<UserFormViewProps> = ({

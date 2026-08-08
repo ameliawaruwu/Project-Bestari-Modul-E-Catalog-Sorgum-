@@ -13,7 +13,7 @@ interface FaqFormViewProps {
     tags?: string[];
   }) => void;
   onCancel: () => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 const PREDEFINED_CATEGORIES = [

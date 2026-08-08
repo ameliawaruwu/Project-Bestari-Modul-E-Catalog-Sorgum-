@@ -10,7 +10,7 @@ interface LandingSettingsTabProps {
   onDeleteBanner: (id: string) => void;
   onOpenCreateBanner: () => void;
   onOpenEditBanner: (banner: BannerSlide) => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
@@ -423,8 +423,8 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                           if (!url) throw new Error('upload gagal');
                           setContentForm({ ...contentForm, storyImageUrl: url });
                           showToast('Gambar story berhasil diunggah. Klik Simpan untuk menyimpan.');
-                        } catch {
-                          showToast('Gagal mengunggah gambar.');
+                        } catch (e: any) {
+                          showToast(e?.message || 'Gagal mengunggah gambar.', 'error');
                         }
                       }}
                     />

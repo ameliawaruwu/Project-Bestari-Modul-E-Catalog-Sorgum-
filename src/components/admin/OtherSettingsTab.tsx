@@ -4,7 +4,7 @@ import BadgeManagement from './BadgeManagement';
 import CategoryManagement from './CategoryManagement';
 
 interface OtherSettingsTabProps {
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
   onBadgesChange?: (badges: { id: number; name: string; is_active: number | boolean }[]) => void;
   onCategoriesChange?: (categories: { id: number; name: string; slug: string }[]) => void;
 }
@@ -80,8 +80,8 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
       if (!url) throw new Error('upload gagal');
       setSettings((prev) => ({ ...prev, logoUrl: url }));
       showToast('Gambar logo berhasil diunggah!');
-    } catch {
-      showToast('Gagal mengunggah gambar logo.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengunggah gambar logo.', 'error');
     } finally {
       e.target.value = '';
     }
@@ -103,8 +103,8 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
       if (!url) throw new Error('upload gagal');
       setSettings((prev) => ({ ...prev, qrisImageUrl: url }));
       showToast('Gambar barcode QRIS berhasil diunggah!');
-    } catch {
-      showToast('Gagal mengunggah gambar QRIS.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengunggah gambar QRIS.', 'error');
     } finally {
       e.target.value = '';
     }
@@ -143,8 +143,8 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
       } else {
         showToast(failMsg);
       }
-    } catch {
-      showToast(failMsg);
+    } catch (e: any) {
+      showToast(e?.message || failMsg, 'error');
     }
   };
 

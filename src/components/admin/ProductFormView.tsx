@@ -27,7 +27,7 @@ interface ProductFormViewProps {
     shippingInfo?: string;
   }) => void;
   onCancel: () => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
   /** Opsi badge dinamis dari Kelola Badge (jika ada) */
   badgeOptions?: string[];
   /** Opsi kategori dinamis dari Kelola Kategori (jika ada) */

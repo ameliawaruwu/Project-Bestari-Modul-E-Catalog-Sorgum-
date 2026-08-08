@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { badgeAdminApi, BadgeItem } from '../../api/adminApi';
 
 interface BadgeManagementProps {
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
   onBadgesChange?: (badges: BadgeItem[]) => void;
 }
 
@@ -48,7 +48,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
       setNewName('');
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menambah badge');
+      showToast(e?.message || 'Gagal menambah badge', 'error');
     } finally {
       setSaving(false);
     }
@@ -67,7 +67,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
       setEditingId(null);
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengupdate badge');
+      showToast(e?.message || 'Gagal mengupdate badge', 'error');
     } finally {
       setSaving(false);
     }
@@ -79,7 +79,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
       showToast(badge.is_active ? 'Badge dinonaktifkan' : 'Badge diaktifkan');
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengubah status badge');
+      showToast(e?.message || 'Gagal mengubah status badge', 'error');
     }
   };
 
@@ -90,7 +90,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
       showToast('Badge berhasil dihapus');
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus badge');
+      showToast(e?.message || 'Gagal menghapus badge', 'error');
     }
   };
 

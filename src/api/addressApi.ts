@@ -42,66 +42,49 @@ function mapAddress(a: AddressRow) {
 }
 
 export const addressApi = {
-  // GET /api/user/ — list alamat user (auth required)
+  // GET /api/user/ — list alamat user (auth required). THROW error BE biar caller tahu.
   getAddresses: async (): Promise<ReturnType<typeof mapAddress>[]> => {
-    try {
-      const res = await request<{ data: AddressRow[] }>('/user/', { auth: true });
-      return (res?.data || []).map(mapAddress);
-    } catch {
-      return [];
-    }
+    const res = await request<{ data: AddressRow[] }>('/user/', { auth: true });
+    return (res?.data || []).map(mapAddress);
   },
 
   // Upsert alamat utama (primary) — get → cari primary (jangan asumsi [0]) → create/update.
   // Dipakai oleh CheckoutPage & ProfilePage supaya logika tersimpan di satu tempat.
+  // THROW error dari BE (mis. validasi) — caller menampilkan e.message ke user.
   upsertPrimaryAddress: async (input: AddressInput): Promise<boolean> => {
-    try {
-      const list = await addressApi.getAddresses();
-      const primary = list.find((a) => a.isPrimary) || list[0];
-      if (primary) {
-        return addressApi.updateAddress(primary.id, input);
-      }
-      return (await addressApi.createAddress(input)) !== null;
-    } catch {
-      return false;
+    const list = await addressApi.getAddresses();
+    const primary = list.find((a) => a.isPrimary) || list[0];
+    if (primary) {
+      await addressApi.updateAddress(primary.id, input);
+      return true;
     }
+    const id = await addressApi.createAddress(input);
+    return id !== null;
   },
 
-  // POST /api/user/ — tambah alamat
+  // POST /api/user/ — tambah alamat. THROW error BE (validasi dll) biar caller bisa tampilkan.
   createAddress: async (input: AddressInput): Promise<number | null> => {
-    try {
-      const res = await request<{ data: { id: number } }>('/user/', {
-        method: 'POST',
-        body: { ...input, is_primary: input.is_primary ? 1 : 0 },
-        auth: true,
-      });
-      return res?.data?.id ?? null;
-    } catch {
-      return null;
-    }
+    const res = await request<{ data: { id: number } }>('/user/', {
+      method: 'POST',
+      body: { ...input, is_primary: input.is_primary ? 1 : 0 },
+      auth: true,
+    });
+    return res?.data?.id ?? null;
   },
 
-  // PUT /api/user/:id — update alamat
+  // PUT /api/user/:id — update alamat. THROW error BE biar caller bisa tampilkan.
   updateAddress: async (id: string, input: Partial<AddressInput>): Promise<boolean> => {
-    try {
-      await request(`/user/${id}`, {
-        method: 'PUT',
-        body: input.is_primary !== undefined ? { ...input, is_primary: input.is_primary ? 1 : 0 } : input,
-        auth: true,
-      });
-      return true;
-    } catch {
-      return false;
-    }
+    await request(`/user/${id}`, {
+      method: 'PUT',
+      body: input.is_primary !== undefined ? { ...input, is_primary: input.is_primary ? 1 : 0 } : input,
+      auth: true,
+    });
+    return true;
   },
 
-  // DELETE /api/user/:id — hapus alamat
+  // DELETE /api/user/:id — hapus alamat. THROW error BE biar caller bisa tampilkan.
   deleteAddress: async (id: string): Promise<boolean> => {
-    try {
-      await request(`/user/${id}`, { method: 'DELETE', auth: true });
-      return true;
-    } catch {
-      return false;
-    }
+    await request(`/user/${id}`, { method: 'DELETE', auth: true });
+    return true;
   },
 };

@@ -9,7 +9,7 @@ interface CheckoutPageProps {
   cart: CartItem[];
   onNavigateCart: () => void;
   onOrderComplete: (order: Order, paymentMethod: 'cod' | 'qris') => void;
-  showToast?: (message: string) => void;
+  showToast?: (message: string, type?: 'success' | 'error') => void;
 }
 
 export const CheckoutPage: React.FC<CheckoutPageProps> = ({
@@ -192,7 +192,7 @@ ${
     } catch (err: any) {
       console.error('Checkout error:', err);
       const msg = err?.message || 'Gagal membuat pesanan. Silakan coba lagi.';
-      showToast(msg);
+      showToast(msg, 'error');
     } finally {
       setIsSubmitting(false);
     }

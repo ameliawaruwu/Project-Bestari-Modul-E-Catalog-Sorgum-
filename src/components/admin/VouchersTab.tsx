@@ -15,7 +15,7 @@ interface Voucher {
 }
 
 interface VouchersTabProps {
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
@@ -75,7 +75,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
       setShowForm(false);
       resetForm();
       refresh();
-    } catch { showToast('Gagal menyimpan voucher.'); }
+    } catch (e: any) { showToast(e?.message || 'Gagal menyimpan voucher.', 'error'); }
   };
 
   const handleDelete = async () => {
@@ -85,7 +85,7 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
       showToast('Voucher berhasil dihapus.');
       setDeletingId(null);
       refresh();
-    } catch { showToast('Gagal menghapus voucher.'); }
+    } catch (e: any) { showToast(e?.message || 'Gagal menghapus voucher.', 'error'); }
   };
 
   if (loading) return <div className="text-center py-12 text-[#555555]">Memuat data voucher...</div>;

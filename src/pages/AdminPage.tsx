@@ -26,7 +26,7 @@ interface AdminPageProps {
   user: User | null;
   onNavigateHome: () => void;
   onLogout?: () => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const AdminPage: React.FC<AdminPageProps> = ({
@@ -225,7 +225,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       // Update local state (BE dulu, context kedua — context cuma mirror)
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengupdate status pesanan.');
+      showToast(e?.message || 'Gagal mengupdate status pesanan.', 'error');
       return;
     }
     updateOrderStatus(orderId, newStatus);
@@ -239,7 +239,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       await orderAdminApi.updatePaymentStatus(orderId, newPayment);
       setOrders((prevOrders) => prevOrders.map((o) => (o.id === orderId ? { ...o, paymentStatus: newPayment } : o)));
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengupdate status pembayaran.');
+      showToast(e?.message || 'Gagal mengupdate status pembayaran.', 'error');
       return;
     }
     showToast(`Status pembayaran ${orderId} diperbarui ke ${newPayment}`);
@@ -250,7 +250,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       const { orderAdminApi } = await import('../api/adminApi');
       await orderAdminApi.updateOrderStatus(id, 'cancelled');
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus pesanan.');
+      showToast(e?.message || 'Gagal menghapus pesanan.', 'error');
       return;
     }
     setOrders((prev) => prev.filter((o) => o.id !== id));
@@ -294,7 +294,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       // Update state admin lokal langsung (UI toggle sinkron tanpa reload)
       setAdminBanners((prev) => prev.map((b) => (b.id === id ? { ...b, active: newActive } : b)));
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengubah status banner.');
+      showToast(e?.message || 'Gagal mengubah status banner.', 'error');
       return;
     }
     toggleBanner(id);
@@ -307,7 +307,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       await bannerAdminApi.deleteBanner(id);
       setAdminBanners((prev) => prev.filter((b) => b.id !== id));
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus banner.');
+      showToast(e?.message || 'Gagal menghapus banner.', 'error');
       return;
     }
     deleteBanner(id);
@@ -333,7 +333,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         });
       }
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menyimpan banner.');
+      showToast(e?.message || 'Gagal menyimpan banner.', 'error');
       return;
     }
     saveBanner(data);
@@ -363,7 +363,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       // Re-fetch produk dari BE supaya is_active & stock sinkron (bukan map mock)
       await refreshProducts();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengubah status produk.');
+      showToast(e?.message || 'Gagal mengubah status produk.', 'error');
       return;
     }
     showToast('Status keaktifan produk berhasil diperbarui.');
@@ -379,7 +379,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       await refreshProducts().catch(() => {});
       showToast(`Produk "${name}" berhasil dihapus dari katalog.`);
     } catch (e: any) {
-      showToast(e?.message || `Gagal menghapus produk "${name}".`);
+      showToast(e?.message || `Gagal menghapus produk "${name}".`, 'error');
     }
   };
 
@@ -478,7 +478,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         }
       }
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menyimpan produk ke server.');
+      showToast(e?.message || 'Gagal menyimpan produk ke server.', 'error');
       return;
     }
 
@@ -501,7 +501,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       refreshAdminArticles();
       showToast('Artikel berhasil dihapus.');
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus artikel.');
+      showToast(e?.message || 'Gagal menghapus artikel.', 'error');
     }
   };
 
@@ -553,35 +553,51 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         refreshAdminArticles();
       }
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menyimpan artikel.');
+      showToast(e?.message || 'Gagal menyimpan artikel.', 'error');
     }
     setEditingArticle(null);
   };
 
   // Handlers for FAQs
   const handleDeleteFaq = async (id: string) => {
-    await deleteFaq(id);
-    refreshAdminFaqs();
-    showToast('FAQ berhasil dihapus.');
+    try {
+      await deleteFaq(id);
+      refreshAdminFaqs();
+      showToast('FAQ berhasil dihapus.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menghapus FAQ.', 'error');
+    }
   };
 
   const handleSaveFaq = async (data: any) => {
-    await saveFaq(data);
-    refreshAdminFaqs();
-    showToast(data.id ? 'Perubahan FAQ berhasil disimpan!' : 'FAQ baru berhasil ditambahkan!');
-    setEditingFaq(null);
+    try {
+      await saveFaq(data);
+      refreshAdminFaqs();
+      showToast(data.id ? 'Perubahan FAQ berhasil disimpan!' : 'FAQ baru berhasil ditambahkan!');
+      setEditingFaq(null);
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menyimpan FAQ.', 'error');
+    }
   };
 
   const handleToggleFaqStatus = async (id: string) => {
-    await toggleFaqStatus(id);
-    refreshAdminFaqs();
-    showToast('Status keaktifan FAQ berhasil diperbarui.');
+    try {
+      await toggleFaqStatus(id);
+      refreshAdminFaqs();
+      showToast('Status keaktifan FAQ berhasil diperbarui.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengubah status FAQ.', 'error');
+    }
   };
 
   const handleReorderFaq = async (id: string, direction: 'UP' | 'DOWN') => {
-    await reorderFaq(id, direction);
-    refreshAdminFaqs();
-    showToast('Urutan tampilan FAQ berhasil diperbarui!');
+    try {
+      await reorderFaq(id, direction);
+      refreshAdminFaqs();
+      showToast('Urutan tampilan FAQ berhasil diperbarui!');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengubah urutan FAQ.', 'error');
+    }
   };
 
   // Switch tab resets editing states

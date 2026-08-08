@@ -11,7 +11,7 @@ interface ProfilePageProps {
   onNavigateProducts: () => void;
   onAddToCart: (product: Product) => void;
   onSelectProduct: (product: Product) => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
   onNavigateAdmin?: () => void;
 }
 
@@ -38,7 +38,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       showToast('Pesanan berhasil dibatalkan.');
       updateOrderStatus(orderId, 'Dibatalkan');
     } catch (e: any) {
-      showToast(e?.message || 'Gagal membatalkan pesanan.');
+      showToast(e?.message || 'Gagal membatalkan pesanan.', 'error');
     }
   };
 
@@ -278,8 +278,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       });
       setIsEditingAddress(false);
       showToast('Alamat pengiriman berhasil disimpan!');
-    } catch {
-      showToast('Gagal menyimpan alamat.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menyimpan alamat.');
     } finally {
       setAddressSaving(false);
     }

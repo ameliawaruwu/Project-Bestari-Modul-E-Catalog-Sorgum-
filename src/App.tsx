@@ -61,6 +61,7 @@ export function App() {
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
 
   // Guard protected routes when user is not logged in
   useEffect(() => {
@@ -76,11 +77,12 @@ export function App() {
     }
   }, [user, activeTab]);
 
-  const showToast = (message: string) => {
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToastType(type);
     setToastMessage(message);
     setTimeout(() => {
       setToastMessage(null);
-    }, 3000);
+    }, 3500);
   };
 
   const handleAddToCart = (product: Product, quantity: number = 1) => {
@@ -231,10 +233,16 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EFECE6] text-[#1B5E20] font-['Poppins'] selection:bg-[#fde08b] selection:text-[#231b00] relative pb-16 md:pb-0">
-      {/* Toast Notification — top center */}
+      {/* Toast Notification — top center (hijau=sukses, merah=error) */}
       {toastMessage && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-[#2E7D32] text-white px-6 py-3 rounded-xl shadow-2xl border border-[#fade88]/40 text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw]">
-          <span className="material-symbols-outlined text-[#fde08b]">check_circle</span>
+        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[100] text-white px-6 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-['Poppins'] font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw] ${
+          toastType === 'error'
+            ? 'bg-[#D32F2F] border-[#FFCDD2]/60'
+            : 'bg-[#2E7D32] border-[#fade88]/40'
+        }`}>
+          <span className={`material-symbols-outlined ${toastType === 'error' ? 'text-[#FFCDD2]' : 'text-[#fde08b]'}`}>
+            {toastType === 'error' ? 'error' : 'check_circle'}
+          </span>
           <span>{toastMessage}</span>
         </div>
       )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { categoryAdminApi, CategoryItem } from '../../api/adminApi';
 
 interface CategoryManagementProps {
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
   onCategoriesChange?: (categories: CategoryItem[]) => void;
 }
 
@@ -57,7 +57,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
       setNewName('');
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menambah kategori');
+      showToast(e?.message || 'Gagal menambah kategori', 'error');
     } finally {
       setSaving(false);
     }
@@ -76,7 +76,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
       setEditingId(null);
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal mengupdate kategori');
+      showToast(e?.message || 'Gagal mengupdate kategori', 'error');
     } finally {
       setSaving(false);
     }
@@ -89,7 +89,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showToast, onCa
       showToast('Kategori berhasil dihapus');
       await load();
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus kategori');
+      showToast(e?.message || 'Gagal menghapus kategori', 'error');
     }
   };
 

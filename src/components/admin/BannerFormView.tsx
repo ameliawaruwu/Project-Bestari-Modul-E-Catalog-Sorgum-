@@ -5,7 +5,7 @@ interface BannerFormViewProps {
   initialBanner?: BannerSlide | null;
   onSave: (bannerData: { title: string; titleEn?: string; targetLink: string; image: string; id?: string }) => void;
   onCancel: () => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const BannerFormView: React.FC<BannerFormViewProps> = ({
@@ -153,8 +153,8 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                           if (!url) throw new Error('upload gagal');
                           setImageInput(url);
                           showToast('Gambar berhasil diunggah.');
-                        } catch {
-                          showToast('Gagal mengunggah gambar.');
+                        } catch (e: any) {
+                          showToast(e?.message || 'Gagal mengunggah gambar.', 'error');
                         } finally {
                           setUploading(false);
                           // Reset input supaya file yang sama bisa dipilih ulang

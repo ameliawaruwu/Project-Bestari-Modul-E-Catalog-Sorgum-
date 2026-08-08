@@ -27,7 +27,7 @@ interface ArticleFormViewProps {
     excerpt?: string;
   }) => void;
   onCancel: () => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
 const uid = () => `blk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
@@ -288,8 +288,8 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                       const url = await uploadImage(file);
                       setHeroImage(url);
                       showToast('Gambar berhasil diunggah.');
-                    } catch {
-                      showToast('Gagal mengunggah gambar.');
+                    } catch (e: any) {
+                      showToast(e?.message || 'Gagal mengunggah gambar.', 'error');
                     } finally {
                       setUploading(false);
                       e.target.value = '';
@@ -432,8 +432,8 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                                   const url = await uploadImage(file);
                                   updateBlock(b.id, { image_url: url });
                                   showToast('Gambar berhasil diunggah.');
-                                } catch {
-                                  showToast('Gagal mengunggah gambar.');
+                                } catch (e: any) {
+                                  showToast(e?.message || 'Gagal mengunggah gambar.', 'error');
                                 } finally {
                                   setUploading(false);
                                   e.target.value = '';
