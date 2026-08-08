@@ -19,6 +19,7 @@ export interface Product {
   attributes?: string;
   shippingInfo?: string;
   stock?: number;
+  isActive?: boolean;
 }
 
 export type ArticleContentBlock =

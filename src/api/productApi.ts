@@ -71,6 +71,7 @@ function mapProduct(row: ProductRow): Product {
     attributes: row.attributes || undefined,
     shippingInfo: 'Dikirim dari Yogyakarta.',
     stock: row.stock,
+    isActive: !!row.is_active,
   };
 }
 

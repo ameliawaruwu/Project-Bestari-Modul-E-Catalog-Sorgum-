@@ -172,7 +172,7 @@ export async function createProduct(input: CreateProductInput) {
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'is_featured', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'is_featured', 'is_active', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   // Harga: simpan persis apa yang FE kirim — FE (admin) adalah single source of truth.

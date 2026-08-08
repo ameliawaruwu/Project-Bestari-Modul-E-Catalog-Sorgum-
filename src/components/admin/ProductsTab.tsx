@@ -165,6 +165,20 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-1.5">
+                        {/* Toggle aktif/nonaktif — produk nonaktif tidak muncul di katalog user.
+                            Dipakai juga untuk mengaktifkan kembali produk hasil soft-delete. */}
+                        <button
+                          type="button"
+                          onClick={() => onToggleProductStatus(prod.id)}
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer shadow-2xs ${
+                            prod.isActive
+                              ? 'bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20]'
+                              : 'bg-[#FFF8E1] hover:bg-[#FFE082] text-[#C89B3C]'
+                          }`}
+                          title={prod.isActive ? 'Nonaktifkan produk (sembunyikan dari katalog)' : 'Aktifkan produk (tampilkan di katalog)'}
+                        >
+                          <span className="material-symbols-outlined text-lg">{prod.isActive ? 'visibility_off' : 'visibility'}</span>
+                        </button>
                         <button
                           type="button"
                           onClick={() => onOpenEditProduct(prod)}
