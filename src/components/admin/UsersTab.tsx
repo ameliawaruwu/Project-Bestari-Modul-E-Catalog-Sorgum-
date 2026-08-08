@@ -268,8 +268,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
           <table className="w-full text-left text-xs">
             <thead>
               <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
-                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pl-5 font-black uppercase tracking-wider text-[#1B5E20]">ID User</th>
-                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Nama Konsumen</th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pl-5 font-black uppercase tracking-wider text-[#1B5E20]">Nama Konsumen</th>
                 <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">No. WhatsApp</th>
                 <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Bergabung</th>
                 <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Status</th>
@@ -279,13 +278,13 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
             <tbody className="divide-y divide-[#E0E0E0]">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                  <td colSpan={5} className="p-8 text-center text-gray-500">
                     <p className="font-medium text-xs">Memuat data pengguna...</p>
                   </td>
                 </tr>
               ) : paginatedUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                  <td colSpan={5} className="p-8 text-center text-gray-500">
                     <span className="material-symbols-outlined text-3xl mb-1 text-gray-300">person_off</span>
                     <p className="font-medium text-xs">Tidak ada data konsumen yang cocok dengan pencarian/filter.</p>
                   </td>
@@ -307,9 +306,6 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
                       className={`hover:bg-[#f5efe6] transition-colors ${isSoftDeleted ? 'bg-[#f4efe8]/80 opacity-75' : ''
                         }`}
                     >
-                      {/* ID User */}
-                      <td className="p-3.5 pl-5 font-mono font-bold text-[#1B5E20]">{u.id}</td>
-
                       {/* Nama Konsumen */}
                       <td className="p-3.5">
                         <div className="flex items-center gap-2.5">

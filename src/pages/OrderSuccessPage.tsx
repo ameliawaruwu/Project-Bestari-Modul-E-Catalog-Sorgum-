@@ -14,7 +14,7 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
   onNavigateHome,
 }) => {
   const { t, shopSettings } = useApp();
-  const orderId = order?.orderNumber || order?.id || '(tidak diketahui)';
+  const orderId = order?.orderNumber || 'pesanan';
 
   const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waMessage = encodeURIComponent(

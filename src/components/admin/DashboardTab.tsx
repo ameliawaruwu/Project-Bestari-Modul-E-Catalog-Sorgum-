@@ -162,7 +162,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             <table className="w-full text-left text-xs sm:text-sm">
               <thead>
                 <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-y border-[#C8E6C9]">
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">ID PESANAN</strong></th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">NO. PESANAN</strong></th>
                   <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">PELANGGAN</strong></th>
                   <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">WAKTU</strong></th>
                   <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="px-6 py-3.5 text-xs sm:text-sm font-extrabold tracking-wide uppercase"><strong className="font-black text-[#1B5E20]">TOTAL</strong></th>
@@ -173,7 +173,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <tbody className="divide-y divide-[#E0E0E0]">
                 {orders.slice(0, 5).map((ord) => (
                   <tr key={ord.id} className="bg-[#FFFFFF] hover:bg-[#E8F5E9]/60 transition-colors">
-                    <td className="px-6 py-4 font-bold font-mono-custom text-[#1B5E20]">{ord.id}</td>
+                    <td className="px-6 py-4 font-bold font-mono-custom text-[#1B5E20]">{ord.orderNumber || '-'}</td>
                     <td className="px-6 py-4">
                       <p className="font-bold text-[#1B5E20]">{ord.customerName || 'Pelanggan'}</p>
                       <p className="text-[10px] font-mono-custom text-[#555555] mt-0.5">{ord.paymentMethod?.toUpperCase()}</p>

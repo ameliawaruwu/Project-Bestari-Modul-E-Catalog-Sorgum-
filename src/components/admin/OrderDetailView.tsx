@@ -87,7 +87,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
             </ol>
           </nav>
           <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
-            Detail Pesanan {order.id}
+            Detail Pesanan {order.orderNumber ? `#${order.orderNumber}` : ''}
           </h2>
         </div>
 

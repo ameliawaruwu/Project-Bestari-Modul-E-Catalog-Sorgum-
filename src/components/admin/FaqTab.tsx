@@ -189,8 +189,7 @@ export const FaqTab: React.FC<FaqTabProps> = ({
             <table className="w-full text-left text-xs">
               <thead>
                 <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pl-5 font-black uppercase tracking-wider text-[#1B5E20]">ID</th>
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Kategori</th>
+                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pl-5 font-black uppercase tracking-wider text-[#1B5E20]">Kategori</th>
                   <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Pertanyaan</th>
                   <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Jawaban Ringkas</th>
                   <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Status</th>
@@ -202,8 +201,7 @@ export const FaqTab: React.FC<FaqTabProps> = ({
                   const isDraft = f.status === 'DRAFT';
                   return (
                     <tr key={f.id} className="hover:bg-[#E8F5E9]/60 transition-colors">
-                      <td className="p-3.5 pl-5 font-mono font-bold text-[#1B5E20]">{f.id}</td>
-                      <td className="p-3.5">
+                      <td className="p-3.5 pl-5">
                         <span className="px-2.5 py-1 bg-[#E8F5E9] text-[#1B5E20] font-bold rounded-md border border-[#A5D6A7] text-[10px]">
                           {f.category}
                         </span>

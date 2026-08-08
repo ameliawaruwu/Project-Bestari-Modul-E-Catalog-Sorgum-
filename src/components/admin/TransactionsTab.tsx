@@ -93,7 +93,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
           <table className="w-full text-left text-xs sm:text-sm">
             <thead>
               <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-y border-[#C8E6C9]">
-                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">ID &amp; TANGGAL</strong></th>
+                <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">NO. PESANAN &amp; TANGGAL</strong></th>
                 <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">PELANGGAN</strong></th>
                 <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">PRODUK DIPESAN</strong></th>
                 <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-4 text-xs font-extrabold uppercase tracking-wider"><strong className="font-black text-[#1B5E20]">METODE BAYAR</strong></th>

@@ -1070,7 +1070,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-[#E0E0E0] pb-3">
                             <div className="flex items-center gap-3">
                               <span className="font-['Playfair_Display'] font-bold text-lg text-[#1B5E20]">
-                                {ord.id}
+                                {ord.orderNumber ? `#${ord.orderNumber}` : 'Pesanan'}
                               </span>
                               {ord.items[0]?.product.badge && (
                                 <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase">
