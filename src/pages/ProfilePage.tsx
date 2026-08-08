@@ -690,7 +690,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     </button>
                     <span>/</span>
                     <span className="font-bold text-[#1B5E20]">
-                      Detail Pesanan {selectedOrderDetail.id}
+                      Detail Pesanan {selectedOrderDetail.orderNumber ? `#${selectedOrderDetail.orderNumber}` : ''}
                     </span>
                   </nav>
 
@@ -698,7 +698,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   <div className="flex flex-col sm:flex-row justify-between sm:items-center bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs gap-4">
                     <div>
                       <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#1B5E20]">
-                        Order {selectedOrderDetail.id}
+                        {selectedOrderDetail.orderNumber ? `Pesanan #${selectedOrderDetail.orderNumber}` : 'Detail Pesanan'}
                       </h2>
                       <p className="text-xs text-[#555555] mt-1">
                         Pesanan dibuat: {selectedOrderDetail.createdAt}

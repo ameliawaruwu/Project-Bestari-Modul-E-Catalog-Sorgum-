@@ -118,7 +118,7 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-[#E0E0E0] pb-4 mb-4 gap-2">
                 <div>
                   <span className="text-xs text-[#555555] block">
-                    {t('No. Pesanan:', 'Order No.')} <strong className="text-[#1B5E20] font-bold">{ord.orderNumber || ord.id}</strong>
+                    {t('No. Pesanan:', 'Order No.')} <strong className="text-[#1B5E20] font-bold">{ord.orderNumber || '-'}</strong>
                   </span>
                   <span className="text-xs text-[#555555]">
                     {t('Tanggal:', 'Date:')} {ord.createdAt}

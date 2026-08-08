@@ -43,8 +43,11 @@ function normalizeEventDate(d: string | null | undefined): string | null {
 }
 
 export async function setTracking(orderId: number, courier: string, trackingNumber: string) {
-  // Validasi state machine: OPSI B (longgar) — admin bebas set/ubah resi dari status apa pun,
-  // kecuali status terminal (delivered/cancelled). Konsisten dgn ALLOWED_ORDER_TRANSITIONS.
+  // VALIDASI RESI DULU (sebelum update DB): cek-resi tidak bisa dipercaya 100%,
+  // tapi setidaknya HTTP error / valid:false / data kosong harus ditolak — admin
+  // wajib tahu resi gagal, bukan diam-diam sukses lalu pesanan berubah status.
+  const validation = await validateResi(trackingNumber);
+
   const conn = await dbPool.getConnection();
   try {
     await conn.beginTransaction();
@@ -78,22 +81,49 @@ export async function setTracking(orderId: number, courier: string, trackingNumb
     conn.release();
   }
 
-  await fetchTrackingStatus(orderId, courier, trackingNumber);
+  // Simpan hasil validasi ke tracking_logs + history (status sebenarnya dari cek-resi).
+  await persistTrackingResult(orderId, courier, trackingNumber, validation);
+  return validation;
 }
 
-export async function fetchTrackingStatus(orderId: number, courier: string, trackingNumber: string) {
+// Validasi resi ke layanan cek-resi. Return hasil parsing; THROW AppError kalau
+// layanan down / HTTP error / resi tidak valid — supaya admin dapat pesan jelas.
+async function validateResi(trackingNumber: string) {
   let apiResponse: CekResiApiResponse;
-
+  let httpStatus = 200;
   try {
-    const res = await fetch(`${CEK_RESI_URL}/${trackingNumber}`);
+    const res = await fetch(`${CEK_RESI_URL}/${trackingNumber}`, { signal: AbortSignal.timeout(20000) });
+    httpStatus = res.status;
     apiResponse = await res.json() as CekResiApiResponse;
   } catch {
-    apiResponse = { status: 500 };
+    throw new AppError(
+      'Layanan cek resi sedang bermasalah. Coba lagi beberapa saat — nomor resi belum disimpan.',
+      502,
+    );
+  }
+
+  if (httpStatus >= 400) {
+    throw new AppError(
+      'Nomor resi tidak valid atau tidak ditemukan di sistem ekspedisi. Periksa kembali nomor resi Anda.',
+      400,
+    );
   }
 
   const outer = apiResponse.data;
   const isValid = outer?.valid === true && !!outer?.data;
   const resi = outer?.data;
+  if (!isValid || !resi?.noResi) {
+    throw new AppError(
+      'Nomor resi tidak valid atau tidak ditemukan di sistem ekspedisi. Periksa kembali nomor resi Anda.',
+      400,
+    );
+  }
+
+  return { isValid, status: resi.status, expedisi: resi.expedisi, resi, apiResponse };
+}
+
+async function persistTrackingResult(orderId: number, courier: string, trackingNumber: string, validation: Awaited<ReturnType<typeof validateResi>>) {
+  const { isValid, resi, apiResponse } = validation;
 
   // Insert tracking log
   await dbPool.query(
@@ -125,11 +155,18 @@ export async function fetchTrackingStatus(orderId: number, courier: string, trac
   }
 
   // Update order status if delivered (case-insensitive — kurir beda format: Delivered/delivered/ON DELIVERY)
-  if (resi?.status && String(resi.status).toUpperCase().includes('DELIVER')) {
+  if (isValid && resi?.status && String(resi.status).toUpperCase().includes('DELIVER')) {
     await dbPool.query('UPDATE orders SET order_status = ?, shipped_at = COALESCE(shipped_at, NOW()) WHERE id = ?', ['delivered', orderId]);
   }
 
   return { isValid, status: resi?.status, expedisi: resi?.expedisi };
+}
+
+export async function fetchTrackingStatus(orderId: number, courier: string, trackingNumber: string) {
+  // Polling status resi — pakai validasi yang sama dengan setTracking supaya konsisten:
+  // kalau cek-resi error / resi invalid, polling juga lempar error (admin diberi tahu).
+  const validation = await validateResi(trackingNumber);
+  return await persistTrackingResult(orderId, courier, trackingNumber, validation);
 }
 
 export async function getTrackingHistory(orderId: number) {

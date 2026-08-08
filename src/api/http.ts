@@ -79,10 +79,12 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
 
   let res: Response;
   try {
-    // Timeout 20s biar request tidak menggantung selamanya kalau BE lambat/hang
-    // (default fetch tanpa AbortController = nunggu sampai browser timeout, bisa menit).
+    // Timeout 45s biar request tidak menggantung selamanya kalau BE lambat/hang.
+    // 45s (bukan 20s) karena endpoint tracking/cek-resi bisa lambat (API ekspedisi
+    // eksternal www.cekresi.com sering >20s). Timeout 20s bikin false-positive
+    // "Tidak dapat terhubung ke server" padahal BE sehat cuma lambat.
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 20000);
+    const timer = setTimeout(() => controller.abort(), 45000);
     try {
       res = await fetch(`${API_BASE}${path}`, {
         method,
@@ -93,7 +95,10 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
     } finally {
       clearTimeout(timer);
     }
-  } catch {
+  } catch (e: any) {
+    if (e?.name === 'AbortError') {
+      throw new ApiError(0, 'Waktu permintaan habis. Server sibuk — coba lagi sebentar lagi.');
+    }
     throw new ApiError(0, 'Tidak dapat terhubung ke server. Pastikan backend berjalan.');
   }
 
