@@ -29,7 +29,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   const [promoCode, setPromoCode] = useState('');
   const [showPromoModal, setShowPromoModal] = useState(false);
   const [promoError, setPromoError] = useState('');
-  const [activeVouchers, setActiveVouchers] = useState<{ code: string; discount_amount: number; min_purchase: number }[]>([]);
+  const [activeVouchers, setActiveVouchers] = useState<{ code: string; type: 'fixed' | 'percent'; discount_amount: number; min_purchase: number; max_uses: number | null; used_count: number }[]>([]);
 
   // Fetch voucher aktif dari BE (public) — supaya promo tampil sinkron dengan yang dibuat admin
   useEffect(() => {
@@ -353,7 +353,9 @@ export const CartPage: React.FC<CartPageProps> = ({
                     <div>
                       <p className="font-bold text-sm text-[#1B5E20]">{v.code}</p>
                       <p className="text-[11px] text-[#555555]">
-                        {t('Diskon Rp', 'Discount Rp')} {v.discount_amount.toLocaleString('id-ID')}
+                        {v.type === 'percent'
+                          ? `${t('Diskon', 'Discount')} ${v.discount_amount}%`
+                          : `${t('Diskon Rp', 'Discount Rp')} ${v.discount_amount.toLocaleString('id-ID')}`}
                         {v.min_purchase > 0 ? ` ${t('min. belanja Rp', 'min. purchase Rp')} ${v.min_purchase.toLocaleString('id-ID')}` : ''}
                       </p>
                     </div>

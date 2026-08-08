@@ -32,6 +32,24 @@ export async function updateCategory(id: number, name: string, slug: string): Pr
 }
 
 export async function deleteCategory(id: number): Promise<boolean> {
-  const [result] = await dbPool.query('DELETE FROM categories WHERE id = ?', [id]);
-  return (result as any).affectedRows > 0;
+  // Kategori yang masih punya produk (FK products.category_id → categories.id RESTRICT)
+  // tidak bisa di-hapus baris → 500. Solusi: kalau masih ada produk, TOLAK dengan pesan
+  // jelas (admin harus pindahkan/hapus produk dulu); kalau kosong, hapus baris.
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [prods] = await conn.query('SELECT id FROM products WHERE category_id = ? LIMIT 1', [id]);
+    if ((prods as any[]).length > 0) {
+      await conn.rollback();
+      throw new Error('Kategori tidak bisa dihapus: masih ada produk di dalamnya. Pindahkan atau hapus produk dulu.');
+    }
+    const [result] = await conn.query('DELETE FROM categories WHERE id = ?', [id]);
+    await conn.commit();
+    return (result as any).affectedRows > 0;
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
 }

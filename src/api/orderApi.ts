@@ -327,14 +327,20 @@ export const orderApi = {
     return res;
   },
 
-  // Daftar voucher aktif (public) — ditampilkan di cart agar user tahu promo yang berlaku
-  getActiveVouchers: async (): Promise<{ code: string; discount_amount: number; min_purchase: number }[]> => {
+  // Daftar voucher aktif (public) — ditampilkan di cart agar user tahu promo yang berlaku.
+  // Sertakan `type` ('fixed' | 'percent') + max_uses/used_count supaya FE bisa
+  // menampilkan diskon dengan BENAR (persen vs nominal) — tanpa type, voucher
+  // persen tampil salah (mis. "Rp 15.000" padahal 15% dari subtotal).
+  getActiveVouchers: async (): Promise<{ code: string; type: 'fixed' | 'percent'; discount_amount: number; min_purchase: number; max_uses: number | null; used_count: number }[]> => {
     try {
-      const res = await request<{ data: { code: string; discount_amount: number; min_purchase: number }[] }>('/vouchers');
+      const res = await request<{ data: { code: string; type?: string; discount_amount: number; min_purchase: number; max_uses?: number | null; used_count?: number }[] }>('/vouchers');
       return (res?.data || []).map((v) => ({
         code: v.code,
+        type: v.type === 'percent' ? 'percent' : 'fixed',
         discount_amount: v.discount_amount,
         min_purchase: v.min_purchase,
+        max_uses: v.max_uses ?? null,
+        used_count: v.used_count ?? 0,
       }));
     } catch {
       return [];

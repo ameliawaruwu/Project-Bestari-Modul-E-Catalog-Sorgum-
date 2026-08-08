@@ -40,9 +40,14 @@ router.delete('/:id', async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id));
   if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
 
-  const deleted = await deleteCategory(id);
-  if (!deleted) { res.status(404).json({ error: 'Kategori tidak ditemukan' }); return; }
-  res.json({ message: 'Kategori berhasil dihapus' });
+  try {
+    const deleted = await deleteCategory(id);
+    if (!deleted) { res.status(404).json({ error: 'Kategori tidak ditemukan' }); return; }
+    res.json({ message: 'Kategori berhasil dihapus' });
+  } catch (e: any) {
+    // Pesan error jelas (mis. "masih ada produk") — bukan 500 mentah
+    res.status(400).json({ error: e?.message || 'Gagal menghapus kategori' });
+  }
 });
 
 export default router;

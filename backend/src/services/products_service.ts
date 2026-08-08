@@ -149,25 +149,19 @@ export async function getFeaturedProducts(limit = 8) {
 
 // === ADMIN ===
 
-// Hitung harga final & original_price dari harga dasar + diskon%
-// - hargaDasar: harga sebelum diskon (original_price)
-// - diskon%: 0-90
-// price = original_price × (1 - diskon/100), dibulatkan ke 50 terdekat (rupiah rapi)
-function applyDiscount(hargaDasar: number, diskonPersen: number) {
-  const pct = Math.max(0, Math.min(90, diskonPersen || 0));
-  const original = Math.round(hargaDasar);
-  let price = original;
-  if (pct > 0) {
-    price = Math.round((original * (100 - pct)) / 100);
-    // bulatkan ke 50 terdekat supaya harga jual rapi (misal 48000 → 38400)
-    price = Math.round(price / 50) * 50;
-  }
-  return { originalPrice: original, price, discountPercent: pct };
-}
-
 export async function createProduct(input: CreateProductInput) {
   const { category_id, name, slug, description, stock, weight_spec, origin, is_featured } = input;
-  const { originalPrice, price, discountPercent } = applyDiscount(input.price ?? 0, input.discount_percent ?? 0);
+  // Harga: FE (admin) adalah single source of truth. FE mengirim TIGA nilai konsisten:
+  //   original_price (harga dasar/asli), price (harga jual final = original × (1 - diskon/100)),
+  //   discount_percent (0-90).
+  // JANGAN hitung ulang di sini (applyDiscount) — kalau FE mengirim price yang SUDAH
+  // didiskon (mis. 38.400 dari 48.000 - 20%), applyDiscount akan menghitung diskon dari
+  // 38.400 → harga melenceng. Simpan persis apa yang FE kirim.
+  const originalPrice = input.original_price != null ? Number(input.original_price) : Number(input.price) || 0;
+  const discountPercent = Math.max(0, Math.min(90, Number(input.discount_percent) || 0));
+  // Kalau FE TIDAK mengirim original_price/discount_percent (payload lama), kompatibilitas:
+  // price dianggap harga jual final & original = price (tanpa diskon) — jangan hitung ulang.
+  const price = Number(input.price) || originalPrice;
   const [result] = await dbPool.query(
     `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -181,13 +175,21 @@ export async function createProduct(input: CreateProductInput) {
 const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'is_featured', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
+  // Harga: simpan persis apa yang FE kirim — FE (admin) adalah single source of truth.
+  // FE selalu mengirim harga LENGKAP: original_price + price (final) + discount_percent.
+  // JANGAN hitung ulang di sini — kalau FE kirim price yang sudah didiskon, hitung ulang
+  // akan double-apply (harga melenceng lagi).
   const fields: string[] = [];
   const params: any[] = [];
 
-  // Diskon: FE sudah hitung price (harga jual final) & original_price (harga asli).
-  // Simpan apa adanya — jangan hitung ulang (kalau FE kirim price yg sudah diskon,
-  // hitung ulang akan double-apply).
-  for (const [key, val] of Object.entries(input)) {
+  // Normalisasi: kalau price dikirim tanpa original_price, original = price (tanpa diskon).
+  const cleanInput: Record<string, any> = { ...input };
+  if (cleanInput.price !== undefined && cleanInput.original_price === undefined) {
+    cleanInput.original_price = Number(cleanInput.price) || 0;
+    cleanInput.discount_percent = 0;
+  }
+
+  for (const [key, val] of Object.entries(cleanInput)) {
     if (val !== undefined && ALLOWED_COLUMNS.includes(key)) {
       fields.push(`${key} = ?`);
       if (key === 'is_featured' || key === 'gluten_free' || key === 'organic') {
@@ -211,8 +213,33 @@ export async function toggleProductActive(id: number) {
 }
 
 export async function deleteProduct(id: number) {
-  const [result] = await dbPool.query('DELETE FROM products WHERE id = ?', [id]);
-  return (result as any).affectedRows > 0;
+  // Produk yang sudah pernah dipesan TIDAK bisa di-hapus baris (FK order_items →
+  // products RESTRICT) → 500 error. Solusi: soft-delete = nonaktifkan + bersihkan
+  // relasi yang aman (cart, wishlist, gambar). Riwayat order TETAP utuh.
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    // Cek apakah produk pernah dipesan (ada di order_items)
+    const [ordered] = await conn.query('SELECT id FROM order_items WHERE product_id = ? LIMIT 1', [id]);
+    const hasOrder = (ordered as any[]).length > 0;
+    if (hasOrder) {
+      // Soft-delete: nonaktifkan (hilang dari katalog user), simpan data untuk riwayat
+      await conn.query('UPDATE products SET is_active = 0 WHERE id = ?', [id]);
+    } else {
+      // Produk belum pernah dipesan → hapus baris aman (bersihkan relasi dulu)
+      await conn.query('DELETE FROM cart_items WHERE product_id = ?', [id]);
+      await conn.query('DELETE FROM wishlists WHERE product_id = ?', [id]);
+      await conn.query('DELETE FROM product_images WHERE product_id = ?', [id]);
+      await conn.query('DELETE FROM products WHERE id = ?', [id]);
+    }
+    await conn.commit();
+    return true;
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
 }
 
 // === IMAGES ===

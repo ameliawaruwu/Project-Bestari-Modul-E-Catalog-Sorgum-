@@ -14,6 +14,36 @@ export interface Voucher {
   updated_at: string;
 }
 
+// Normalisasi payload voucher dari admin (create/update) — jaga integritas data:
+// - code di-uppercase & trim (konsisten dengan validate() yang query UPPER)
+// - type HANYA 'fixed' | 'percent' (selain itu → 'fixed' supaya diskon tidak salah hitung)
+// - discount_amount/min_purchase dipaksa angka ≥ 0
+// - max_uses: '' / undefined / <1 → null (unlimited); angka → integer
+// - expires_at: '' / null → null (tanpa kadaluarsa)
+// - is_active dipaksa boolean
+function normalizeVoucherInput(data: Partial<Voucher>): Record<string, any> {
+  const out: Record<string, any> = { ...data };
+  if (out.code !== undefined) out.code = String(out.code).trim().toUpperCase();
+  if (out.type !== undefined) {
+    out.type = out.type === 'percent' ? 'percent' : 'fixed';
+  }
+  if (out.discount_amount !== undefined) {
+    out.discount_amount = Math.max(0, Math.round(Number(out.discount_amount) || 0));
+  }
+  if (out.min_purchase !== undefined) {
+    out.min_purchase = Math.max(0, Math.round(Number(out.min_purchase) || 0));
+  }
+  if (out.max_uses !== undefined) {
+    const n = parseInt(String(out.max_uses), 10);
+    out.max_uses = Number.isFinite(n) && n > 0 ? n : null;
+  }
+  if (out.expires_at !== undefined) {
+    out.expires_at = out.expires_at ? String(out.expires_at) : null;
+  }
+  if (out.is_active !== undefined) out.is_active = out.is_active ? 1 : 0;
+  return out;
+}
+
 export const voucherService = {
   async list(): Promise<Voucher[]> {
     const [rows] = await dbPool.query('SELECT * FROM vouchers ORDER BY created_at DESC');
@@ -33,12 +63,14 @@ export const voucherService = {
   },
 
   async create(data: Partial<Voucher>) {
-    const [res] = await dbPool.query('INSERT INTO vouchers SET ?', data);
+    const clean = normalizeVoucherInput(data);
+    const [res] = await dbPool.query('INSERT INTO vouchers SET ?', clean);
     return res;
   },
 
   async update(id: number, data: Partial<Voucher>) {
-    await dbPool.query('UPDATE vouchers SET ? WHERE id = ?', [data, id]);
+    const clean = normalizeVoucherInput(data);
+    await dbPool.query('UPDATE vouchers SET ? WHERE id = ?', [clean, id]);
   },
 
   async remove(id: number) {

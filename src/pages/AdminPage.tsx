@@ -374,6 +374,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       const { productAdminApi } = await import('../api/adminApi');
       await productAdminApi.deleteProduct(id);
       deleteProduct(id);
+      // Re-fetch produk dari BE — biar user (home/cart/katalog) yang sedang buka
+      // langsung lihat produk terhapus/ternonaktifkan (bukan menunggu reload).
+      await refreshProducts().catch(() => {});
       showToast(`Produk "${name}" berhasil dihapus dari katalog.`);
     } catch (e: any) {
       showToast(e?.message || `Gagal menghapus produk "${name}".`);
@@ -480,6 +483,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
 
     saveProduct(data);
+    // Re-fetch dari BE — produk baru/edit harus langsung tampil sinkron di admin
+    // panel MAUPUN sisi user (home/cart/katalog) yang sedang terbuka.
+    await refreshProducts().catch(() => {});
     showToast(data.id
       ? `Katalog produk "${data.name}" berhasil diperbarui!`
       : `Produk baru "${data.name}" berhasil ditambahkan!`);

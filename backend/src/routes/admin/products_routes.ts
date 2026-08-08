@@ -12,7 +12,7 @@ router.get('/', async (_req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { category_id, name, slug, description, price, stock, weight_spec, origin, is_featured, discount_percent, composition, shelf_life, attributes } = req.body;
+  const { category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, is_featured, composition, shelf_life, attributes } = req.body;
 
   if (!category_id || !name || !slug || price === undefined || stock === undefined) {
     res.status(400).json({ error: 'category_id, name, slug, price, stock wajib diisi' });
@@ -25,12 +25,17 @@ router.post('/', async (req: Request, res: Response) => {
     res.status(400).json({ error: 'Diskon harus antara 0-90%' });
     return;
   }
+  if (original_price !== undefined && (original_price < 0 || original_price < price)) {
+    res.status(400).json({ error: 'original_price tidak boleh negatif atau lebih kecil dari harga jual' });
+    return;
+  }
 
   try {
     const id = await createProduct({
       category_id, name, slug,
       description: description || '',
-      price, stock,
+      price, original_price,
+      stock,
       weight_spec: weight_spec || '',
       origin: origin || '',
       is_featured: !!is_featured,

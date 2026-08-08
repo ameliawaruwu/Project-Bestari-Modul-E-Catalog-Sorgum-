@@ -87,6 +87,10 @@ export const productAdminApi = {
         slug,
         description: fields.description || '',
         price: fields.price,
+        // PENTING: terusan original_price + discount_percent — kalau tidak dikirim,
+        // backend simpan diskon 0 → harga "tidak sesuai" (produk diskon jadi tanpa diskon).
+        original_price: fields.original_price != null ? fields.original_price : fields.price,
+        discount_percent: fields.discount_percent || 0,
         stock: fields.stock,
         weight_spec: fields.weight_spec || '',
         origin: fields.origin || '',
