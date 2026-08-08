@@ -82,6 +82,10 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setStockInput(initialStock);
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
+      // Badge yang sudah tidak terdaftar di Kelola Badge → reset ke kosong (cegah badge yatim tampil)
+      if (initialProduct.badge && badgeOptions && badgeOptions.length > 0 && !badgeOptions.includes(initialProduct.badge)) {
+        setBadgeInput('');
+      }
     } else {
       setIdInput('');
       setNameInput('');
@@ -378,10 +382,15 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none cursor-pointer"
               >
                 <option value="">Tidak Ada Badge</option>
-                {(badgeOptions && badgeOptions.length > 0 ? badgeOptions : ['BEST SELLER', 'DISKON 15%', 'BARU']).map((b) => (
+                {(badgeOptions && badgeOptions.length > 0 ? badgeOptions : []).map((b) => (
                   <option key={b} value={b}>{b}</option>
                 ))}
               </select>
+              {(!badgeOptions || badgeOptions.length === 0) && (
+                <p className="text-[10px] text-[#C89B3C]">
+                  Belum ada badge. Tambahkan dulu di Kelola Lain → Kelola Badge.
+                </p>
+              )}
             </div>
           </div>
 

@@ -149,6 +149,19 @@ export async function getFeaturedProducts(limit = 8) {
 
 // === ADMIN ===
 
+/**
+ * Validasi badge: badge produk WAJIB ada di tabel badges (dikelola via Kelola Badge).
+ * Kalau badge tidak dikenal → return null (badge yatim dicegah sejak input).
+ * Ini mencegah badge "yatim" (string bebas yang tidak bisa dikelola) muncul lagi.
+ */
+async function normalizeBadge(badge: string | null | undefined): Promise<string | null> {
+  if (!badge || typeof badge !== 'string' || badge.trim() === '') return null;
+  const trimmed = badge.trim();
+  const [rows] = await dbPool.query('SELECT id FROM badges WHERE name = ? LIMIT 1', [trimmed]);
+  if ((rows as any[]).length === 0) return null;
+  return trimmed;
+}
+
 export async function createProduct(input: CreateProductInput) {
   const { category_id, name, slug, description, stock, weight_spec, origin, is_featured } = input;
   // Harga: FE (admin) adalah single source of truth. FE mengirim TIGA nilai konsisten:
@@ -162,11 +175,12 @@ export async function createProduct(input: CreateProductInput) {
   // Kalau FE TIDAK mengirim original_price/discount_percent (payload lama), kompatibilitas:
   // price dianggap harga jual final & original = price (tanpa diskon) — jangan hitung ulang.
   const price = Number(input.price) || originalPrice;
+  const badge = await normalizeBadge(input.badge ?? null);
   const [result] = await dbPool.query(
     `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [category_id, name, slug, description, price, originalPrice, discountPercent, stock, weight_spec, origin, is_featured ? 1 : 0,
-     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.badge ?? null, input.composition ?? null, input.shelf_life ?? null,
+     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, badge, input.composition ?? null, input.shelf_life ?? null,
      input.attributes ?? null],
   );
   return (result as any).insertId;
@@ -187,6 +201,11 @@ export async function updateProduct(id: number, input: Partial<CreateProductInpu
   if (cleanInput.price !== undefined && cleanInput.original_price === undefined) {
     cleanInput.original_price = Number(cleanInput.price) || 0;
     cleanInput.discount_percent = 0;
+  }
+  // Normalisasi badge: WAJIB ada di tabel badges (dikelola via Kelola Badge).
+  // Badge tidak dikenal → NULL (cegah badge yatim).
+  if (cleanInput.badge !== undefined) {
+    cleanInput.badge = await normalizeBadge(cleanInput.badge ?? null);
   }
 
   for (const [key, val] of Object.entries(cleanInput)) {
