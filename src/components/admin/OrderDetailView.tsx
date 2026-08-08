@@ -270,35 +270,47 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
               </div>
             )}
 
-            {/* Form set resi */}
+            {/* Form set resi — HANYA utk order non-terminal (delivered/cancelled = terkunci) */}
             <div className="pt-3 border-t border-[#E0E0E0]">
-              <p className="text-[11px] text-[#555555] font-semibold mb-2">
-                Set Kurir &amp; Nomor Resi (order otomatis jadi Dikirim):
-              </p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <input
-                  type="text"
-                  value={courierInput}
-                  onChange={(e) => setCourierInput(e.target.value)}
-                  placeholder="Kurir (JNE, J&T, SiCepat...)"
-                  className="px-3 py-2 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-xs text-[#1B5E20] outline-none focus:border-[#2E7D32] flex-1 font-medium"
-                />
-                <input
-                  type="text"
-                  value={resiInput}
-                  onChange={(e) => setResiInput(e.target.value)}
-                  placeholder="Nomor Resi"
-                  className="px-3 py-2 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-xs text-[#1B5E20] outline-none focus:border-[#2E7D32] flex-1 font-mono font-medium"
-                />
-                <button
-                  type="button"
-                  onClick={handleSetTracking}
-                  disabled={trackingSaving || !courierInput.trim() || !resiInput.trim()}
-                  className="px-4 py-2 rounded-lg bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
-                >
-                  {trackingSaving ? 'Menyimpan...' : 'Simpan Resi'}
-                </button>
-              </div>
+              {order.status === 'Selesai' || order.status === 'Dibatalkan' ? (
+                <div className="flex items-start gap-2 bg-[#F7F8F6] border border-[#E0E0E0] rounded-lg px-3 py-2.5">
+                  <span className="material-symbols-outlined text-sm text-[#C89B3C] mt-0.5">lock</span>
+                  <p className="text-[11px] text-[#555555]">
+                    Nomor resi terkunci — pesanan sudah berstatus <strong>{order.status}</strong> (status akhir,
+                    tidak bisa diubah). Set kurir &amp; resi hanya bisa dilakukan sebelum pesanan selesai/dibatalkan.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-[11px] text-[#555555] font-semibold mb-2">
+                    Set Kurir &amp; Nomor Resi (order otomatis jadi Dikirim):
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      value={courierInput}
+                      onChange={(e) => setCourierInput(e.target.value)}
+                      placeholder="Kurir (JNE, J&T, SiCepat...)"
+                      className="px-3 py-2 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-xs text-[#1B5E20] outline-none focus:border-[#2E7D32] flex-1 font-medium"
+                    />
+                    <input
+                      type="text"
+                      value={resiInput}
+                      onChange={(e) => setResiInput(e.target.value)}
+                      placeholder="Nomor Resi"
+                      className="px-3 py-2 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-xs text-[#1B5E20] outline-none focus:border-[#2E7D32] flex-1 font-mono font-medium"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSetTracking}
+                      disabled={trackingSaving || !courierInput.trim() || !resiInput.trim()}
+                      className="px-4 py-2 rounded-lg bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+                    >
+                      {trackingSaving ? 'Menyimpan...' : 'Simpan Resi'}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
