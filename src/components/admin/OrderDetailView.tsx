@@ -118,27 +118,39 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
 
           <div className="flex items-center gap-3">
             <span className="text-xs font-bold text-[#1B5E20]">Status Pesanan:</span>
-            <select
-              value={order.status}
-              onChange={(e) =>
-                onUpdateOrderStatus(order.id, e.target.value as Order['status'])
-              }
-              className={`px-4 py-2 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-colors ${
-                order.status === 'Selesai'
-                  ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
-                  : order.status === 'Diproses'
-                  ? 'bg-[#FFF8E1] border-[#FFE082] text-[#C89B3C]'
-                  : order.status === 'Dikirim'
-                  ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
-                  : order.status === 'Pending'
-                  ? 'bg-[#FFF3E0] border-[#FFCC80] text-[#E65100]'
-                  : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
-              }`}
-            >
-              {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
-                <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
-              ))}
-            </select>
+            {order.status === 'Selesai' || order.status === 'Dibatalkan' ? (
+              <span
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border ${
+                  order.status === 'Selesai'
+                    ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
+                    : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
+                }`}
+              >
+                <span className="material-symbols-outlined text-sm leading-none">lock</span>
+                {order.status}
+                <span className="font-medium text-[10px] opacity-80">(terkunci)</span>
+              </span>
+            ) : (
+              <select
+                value={order.status}
+                onChange={(e) =>
+                  onUpdateOrderStatus(order.id, e.target.value as Order['status'])
+                }
+                className={`px-4 py-2 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-colors ${
+                  order.status === 'Diproses'
+                    ? 'bg-[#FFF8E1] border-[#FFE082] text-[#C89B3C]'
+                    : order.status === 'Dikirim'
+                    ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
+                    : order.status === 'Pending'
+                    ? 'bg-[#FFF3E0] border-[#FFCC80] text-[#E65100]'
+                    : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
+                }`}
+              >
+                {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
+                  <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
