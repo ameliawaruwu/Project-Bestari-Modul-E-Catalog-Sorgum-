@@ -23,6 +23,15 @@ export async function getAddresses(userId: number): Promise<AddressRow[]> {
 
 export const MAX_ADDRESSES_PER_USER = 3;
 
+// Invariant: SATU user hanya punya SATU alamat primary.
+// Saat create/update menetapkan is_primary=1, reset semua alamat lain user ke 0.
+async function ensureSinglePrimary(userId: number, excludeAddressId?: number) {
+  await dbPool.query(
+    'UPDATE user_addresses SET is_primary = 0 WHERE user_id = ? AND (? IS NULL OR id <> ?)',
+    [userId, excludeAddressId ?? null, excludeAddressId ?? null],
+  );
+}
+
 export async function createAddress(userId: number, fields: Record<string, any>) {
   const [[{ cnt }]] = (await dbPool.query(
     'SELECT COUNT(*) AS cnt FROM user_addresses WHERE user_id = ?',
@@ -33,12 +42,14 @@ export async function createAddress(userId: number, fields: Record<string, any>)
     err.status = 400;
     throw err;
   }
+  const wantPrimary = !!fields.is_primary;
+  if (wantPrimary) await ensureSinglePrimary(userId);
   const [r] = await dbPool.query(
     `INSERT INTO user_addresses (user_id, label, recipient_name, phone, address_line, city, district, province, postal_code, is_primary)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [userId, fields.label, fields.recipient_name, fields.phone,
      fields.address_line, fields.city, fields.district || null, fields.province, fields.postal_code,
-     fields.is_primary ? 1 : 0],
+     wantPrimary ? 1 : 0],
   );
   return (r as any).insertId;
 }
@@ -56,6 +67,8 @@ export async function updateAddress(addressId: number, userId: number, fields: R
     vals.push(k === 'is_primary' ? (v ? 1 : 0) : v);
   }
   if (sets.length === 0) return false;
+  const wantPrimary = !!fields.is_primary;
+  if (wantPrimary) await ensureSinglePrimary(userId, addressId);
   vals.push(addressId, userId);
   const [r] = await dbPool.query(`UPDATE user_addresses SET ${sets.join(', ')} WHERE id = ? AND user_id = ?`, vals);
   return (r as any).affectedRows > 0;

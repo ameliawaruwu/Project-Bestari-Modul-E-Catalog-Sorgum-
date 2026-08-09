@@ -39,6 +39,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     paymentMethod: 'cod',
   });
 
+  // Alamat tersimpan dari profil user — user bisa pilih untuk mengisi form otomatis.
+  const [savedAddresses, setSavedAddresses] = useState<Awaited<ReturnType<typeof addressApi.getAddresses>>>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>('');
+
   // Prefill alamat default (is_primary) dari profil user — kalau login & punya alamat.
   // User tetap bisa ubah manual di form; ini cuma mengisi awal biar tidak kosong.
   useEffect(() => {
@@ -48,8 +52,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       try {
         const list = await addressApi.getAddresses();
         if (cancelled) return;
+        setSavedAddresses(list);
         const primary = list.find((a) => a.isPrimary) || list[0];
         if (primary) {
+          setSelectedAddressId(primary.id);
           setFormData((prev) => ({
             ...prev,
             customerName: prev.customerName || primary.recipientName,
@@ -67,6 +73,23 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     })();
     return () => { cancelled = true; };
   }, [currentUser]);
+
+  // Pilih alamat tersimpan → isi form otomatis (biar user tidak ketik ulang).
+  const handleSelectSavedAddress = (id: string) => {
+    setSelectedAddressId(id);
+    const addr = savedAddresses.find((a) => a.id === id);
+    if (!addr) return;
+    setFormData((prev) => ({
+      ...prev,
+      customerName: addr.recipientName,
+      customerPhone: addr.phone,
+      address: addr.addressLine,
+      district: addr.district || '',
+      city: addr.city,
+      province: addr.province,
+      postalCode: addr.postalCode,
+    }));
+  };
 
   // Idempotency key per checkout session: retry/submit ulang (mis. double-click)
   // pakai key SAMA → BE replay order yang sama, bukan bikin order baru.
@@ -174,7 +197,7 @@ ${
       // dan tersedia untuk checkout berikutnya. Gagal di sini TIDAK menggagalkan order.
       if (currentUser) {
         const input = {
-          label: 'Alamat Utama',
+          label: selectedAddressId ? 'Alamat Utama' : 'Alamat Checkout',
           recipient_name: formData.customerName,
           phone: formData.customerPhone,
           address_line: formData.address,
@@ -184,8 +207,18 @@ ${
           postal_code: formData.postalCode,
           is_primary: true,
         };
+        const save = async () => {
+          if (selectedAddressId) {
+            // Update alamat yang dipilih (data terbaru dari form)
+            await addressApi.updateAddress(selectedAddressId, input);
+          } else {
+            // Alamat baru (custom) — simpan sebagai primary kalau masih muat.
+            // Kalau sudah 3, BE tolak → biarkan (order tetap sukses).
+            await addressApi.createAddress(input);
+          }
+        };
         // Fire-and-forget: jangan tahan halaman sukses menunggu save alamat.
-        addressApi.upsertPrimaryAddress(input).catch((err) => {
+        save().catch((err) => {
           console.warn('Simpan alamat checkout gagal (non-fatal):', err);
         });
       }
@@ -277,6 +310,30 @@ ${
                   className="bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl p-3 text-xs sm:text-sm text-[#1B5E20] focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
                 />
               </div>
+
+              {/* Pilih Alamat Tersimpan — dari profil user (maks 3 alamat) */}
+              {savedAddresses.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-[#555555]">
+                    {t('Pilih Alamat Tersimpan', 'Choose Saved Address')}
+                  </label>
+                  <select
+                    value={selectedAddressId}
+                    onChange={(e) => handleSelectSavedAddress(e.target.value)}
+                    className="bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl p-3 text-xs sm:text-sm text-[#1B5E20] focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none appearance-none cursor-pointer font-bold"
+                  >
+                    <option value="">{t('-- Pilih alamat --', '-- Choose address --')}</option>
+                    {savedAddresses.map((addr) => (
+                      <option key={addr.id} value={addr.id}>
+                        {addr.label} — {addr.recipientName}, {addr.addressLine}, {addr.district ? `${addr.district}, ` : ''}{addr.city} {addr.postalCode}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-[#555555]">
+                    {t('Pilih alamat yang tersimpan untuk mengisi form secara otomatis.', 'Select a saved address to auto-fill the form.')}
+                  </p>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
