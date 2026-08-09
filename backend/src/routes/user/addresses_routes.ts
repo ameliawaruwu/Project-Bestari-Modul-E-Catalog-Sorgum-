@@ -16,8 +16,13 @@ router.post('/', async (req: Request, res: Response) => {
     res.status(400).json({ error: 'label, recipient_name, phone, address_line wajib' });
     return;
   }
-  const id = await createAddress(req.user!.userId, req.body);
-  res.status(201).json({ message: 'Alamat ditambahkan', data: { id } });
+  try {
+    const id = await createAddress(req.user!.userId, req.body);
+    res.status(201).json({ message: 'Alamat ditambahkan', data: { id } });
+  } catch (e: any) {
+    // Limit maks 3 alamat per user — err.status=400 sudah diset di service
+    res.status(e?.status || 400).json({ error: e?.message || 'Gagal menambahkan alamat' });
+  }
 });
 
 router.put('/:id', async (req: Request, res: Response) => {

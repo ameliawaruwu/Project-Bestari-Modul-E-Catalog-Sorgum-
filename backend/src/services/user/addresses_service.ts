@@ -21,7 +21,18 @@ export async function getAddresses(userId: number): Promise<AddressRow[]> {
   return rows as AddressRow[];
 }
 
+export const MAX_ADDRESSES_PER_USER = 3;
+
 export async function createAddress(userId: number, fields: Record<string, any>) {
+  const [[{ cnt }]] = (await dbPool.query(
+    'SELECT COUNT(*) AS cnt FROM user_addresses WHERE user_id = ?',
+    [userId],
+  )) as any;
+  if (cnt >= MAX_ADDRESSES_PER_USER) {
+    const err: any = new Error(`Maksimal ${MAX_ADDRESSES_PER_USER} alamat per akun. Hapus salah satu alamat dulu untuk menambah alamat baru.`);
+    err.status = 400;
+    throw err;
+  }
   const [r] = await dbPool.query(
     `INSERT INTO user_addresses (user_id, label, recipient_name, phone, address_line, city, district, province, postal_code, is_primary)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,

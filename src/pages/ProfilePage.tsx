@@ -152,6 +152,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   });
 
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [addressSaving, setAddressSaving] = useState(false);
 
   // Password state
@@ -234,6 +235,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     setAddressSaving(true);
     try {
       const { addressApi } = await import('../api/addressApi');
+      const { createAddress, updateAddress } = addressApi;
       const input = {
         label: addressData.label,
         recipient_name: addressData.recipient,
@@ -245,42 +247,33 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         postal_code: addressData.postalCode,
         is_primary: true, // alamat yang disimpan selalu jadi alamat utama
       };
-      const ok = await addressApi.upsertPrimaryAddress(input);
-      if (!ok) throw new Error('upsert gagal');
-      // Merge hasil ke state lokal — tanpa fetch ulang (hemat 1 round-trip).
-      setAddresses((prev) => {
-        const primary = prev.find((a) => a.isPrimary) || prev[0];
-        const merged = {
-          id: primary?.id || String(Date.now()),
-          label: input.label,
-          recipientName: input.recipient_name,
-          phone: input.phone,
-          addressLine: input.address_line,
-          city: input.city,
-          district: input.district || '',
-          province: input.province,
-          postalCode: input.postal_code,
-          isPrimary: true,
-        };
-        if (primary) {
-          return prev.map((a) => (a.id === primary.id ? merged : a));
-        }
-        return [...prev, merged];
-      });
+      // Mode edit (salah satu alamat sedang dipilih/diubah) → UPDATE, bukan create baru.
+      const editingId = editingAddressId;
+      if (editingId) {
+        await updateAddress(editingId, input);
+      } else {
+        await createAddress(input);
+      }
+      // Reload list alamat dari BE — biar count/is_primary akurat, dan error limit
+      // dari BE (maks 3) tampil via showToast merah.
+      const list = await addressApi.getAddresses();
+      setAddresses(list);
+      const primary = list.find((a) => a.isPrimary) || list[0];
       setAddressData({
-        label: input.label,
-        recipient: input.recipient_name,
-        phone: input.phone,
-        address: input.address_line,
-        district: input.district || '',
-        city: input.city,
-        province: input.province,
-        postalCode: input.postal_code,
+        label: primary?.label || '',
+        recipient: primary?.recipientName || '',
+        phone: primary?.phone || '',
+        address: primary?.addressLine || '',
+        district: primary?.district || '',
+        city: primary?.city || '',
+        province: primary?.province || '',
+        postalCode: primary?.postalCode || '',
       });
+      setEditingAddressId(null);
       setIsEditingAddress(false);
       showToast('Alamat pengiriman berhasil disimpan!');
     } catch (e: any) {
-      showToast(e?.message || 'Gagal menyimpan alamat.');
+      showToast(e?.message || 'Gagal menyimpan alamat.', 'error');
     } finally {
       setAddressSaving(false);
     }
@@ -512,8 +505,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     </h3>
                   </div>
                   <button
-                    onClick={() => setIsEditingAddress(!isEditingAddress)}
-                    className="text-xs font-bold text-[#2E7D32] hover:underline cursor-pointer border border-[#A5D6A7] px-4 py-2 rounded-xl bg-[#E8F5E9]"
+                    onClick={() => {
+                      setIsEditingAddress(!isEditingAddress);
+                      // Saat mulai tambah baru (bukan edit), kosongkan ID edit
+                      if (!isEditingAddress) setEditingAddressId(null);
+                    }}
+                    disabled={!isEditingAddress && addresses.length >= 3}
+                    className={`text-xs font-bold px-4 py-2 rounded-xl border transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                      !isEditingAddress && addresses.length >= 3
+                        ? 'text-[#999999] bg-[#F0F0F0] border-[#E0E0E0]'
+                        : 'text-[#2E7D32] border-[#A5D6A7] bg-[#E8F5E9] hover:underline'
+                    }`}
                   >
                     {isEditingAddress ? 'Batal Edit' : 'Tambah Alamat Baru'}
                   </button>
@@ -631,7 +633,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                         </p>
                       </div>
                     ) : (
-                      addresses.map((addr) => (
+                      <>
+                        {addresses.map((addr) => (
                         <div key={addr.id} className="bg-[#F7F8F6] rounded-2xl p-6 border border-[#E0E0E0] relative">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-bold text-sm text-[#1B5E20]">{addr.label}</h4>
@@ -649,6 +652,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           </p>
                           <button
                             onClick={() => {
+                              setEditingAddressId(addr.id);
                               setAddressData({
                                 label: addr.label,
                                 recipient: addr.recipientName,
@@ -667,7 +671,13 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             <span>Ubah Alamat</span>
                           </button>
                         </div>
-                      ))
+                        ))}
+                        {addresses.length >= 3 && (
+                          <p className="text-xs text-[#999999] text-center pt-2">
+                            Kamu sudah punya maksimal 3 alamat. Hapus salah satu untuk menambah alamat baru.
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                 )}
