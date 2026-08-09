@@ -171,19 +171,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         const list = await addressApi.getAddresses();
         if (cancelled) return;
         setAddresses(list);
-        const primary = list.find((a) => a.isPrimary) || list[0];
-        if (primary) {
-          setAddressData({
-            label: primary.label,
-            recipient: primary.recipientName,
-            phone: primary.phone,
-            address: primary.addressLine,
-            district: primary.district || '',
-            city: primary.city,
-            province: primary.province,
-            postalCode: primary.postalCode,
-          });
-        }
       } catch { /* BE unavailable -> tetap kosong */ }
     })();
     return () => { cancelled = true; };
@@ -276,6 +263,25 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       showToast(e?.message || 'Gagal menyimpan alamat.', 'error');
     } finally {
       setAddressSaving(false);
+    }
+  };
+
+  // Hapus alamat — konfirmasi dulu, panggil BE DELETE, lalu reload list.
+  const handleDeleteAddress = async (id: string, label: string) => {
+    if (!window.confirm(`Hapus alamat "${label}"?`)) return;
+    try {
+      const { addressApi } = await import('../api/addressApi');
+      await addressApi.deleteAddress(id);
+      const list = await addressApi.getAddresses();
+      setAddresses(list);
+      // Kalau alamat yang dihapus sedang diedit, tutup form & kosongkan
+      if (editingAddressId === id) {
+        setEditingAddressId(null);
+        setIsEditingAddress(false);
+      }
+      showToast('Alamat berhasil dihapus.');
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menghapus alamat.', 'error');
     }
   };
 
@@ -506,9 +512,21 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   </div>
                   <button
                     onClick={() => {
+                      // Klik "Tambah Alamat Baru" → buka form KOSONG (bukan data alamat lama)
+                      if (!isEditingAddress) {
+                        setEditingAddressId(null);
+                        setAddressData({
+                          label: '',
+                          recipient: '',
+                          phone: '',
+                          address: '',
+                          district: '',
+                          city: '',
+                          province: '',
+                          postalCode: '',
+                        });
+                      }
                       setIsEditingAddress(!isEditingAddress);
-                      // Saat mulai tambah baru (bukan edit), kosongkan ID edit
-                      if (!isEditingAddress) setEditingAddressId(null);
                     }}
                     disabled={!isEditingAddress && addresses.length >= 3}
                     className={`text-xs font-bold px-4 py-2 rounded-xl border transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
@@ -650,26 +668,35 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                           <p className="text-xs text-[#555555] leading-relaxed mb-4">
                             {addr.addressLine}, {addr.district ? `${addr.district}, ` : ''}{addr.city}, {addr.province} {addr.postalCode}
                           </p>
-                          <button
-                            onClick={() => {
-                              setEditingAddressId(addr.id);
-                              setAddressData({
-                                label: addr.label,
-                                recipient: addr.recipientName,
-                                phone: addr.phone,
-                                address: addr.addressLine,
-                                district: addr.district || '',
-                                city: addr.city,
-                                province: addr.province,
-                                postalCode: addr.postalCode,
-                              });
-                              setIsEditingAddress(true);
-                            }}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5E20] hover:underline cursor-pointer"
-                          >
-                            <span className="material-symbols-outlined text-sm">edit</span>
-                            <span>Ubah Alamat</span>
-                          </button>
+                          <div className="flex flex-wrap gap-3">
+                            <button
+                              onClick={() => {
+                                setEditingAddressId(addr.id);
+                                setAddressData({
+                                  label: addr.label,
+                                  recipient: addr.recipientName,
+                                  phone: addr.phone,
+                                  address: addr.addressLine,
+                                  district: addr.district || '',
+                                  city: addr.city,
+                                  province: addr.province,
+                                  postalCode: addr.postalCode,
+                                });
+                                setIsEditingAddress(true);
+                              }}
+                              className="inline-flex items-center gap-1 text-xs font-bold text-[#1B5E20] hover:underline cursor-pointer"
+                            >
+                              <span className="material-symbols-outlined text-sm">edit</span>
+                              <span>Ubah Alamat</span>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteAddress(addr.id, addr.label)}
+                              className="inline-flex items-center gap-1 text-xs font-bold text-[#C62828] hover:underline cursor-pointer"
+                            >
+                              <span className="material-symbols-outlined text-sm">delete</span>
+                              <span>Hapus</span>
+                            </button>
+                          </div>
                         </div>
                         ))}
                         {addresses.length >= 3 && (
