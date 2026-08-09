@@ -80,10 +80,23 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   }, [currentUser]);
 
   // Pilih alamat tersimpan → isi form otomatis (biar user tidak ketik ulang).
+  // Pilih "Isi alamat baru (manual)" → kosongkan field alamat biar user mulai dari nol.
   const handleSelectSavedAddress = (id: string) => {
     setSelectedAddressId(id);
     const addr = savedAddresses.find((a) => a.id === id);
-    if (!addr) return;
+    if (!addr) {
+      setFormData((prev) => ({
+        ...prev,
+        customerName: currentUser?.name || '',
+        customerPhone: '',
+        address: '',
+        district: '',
+        city: 'Bandung',
+        province: 'Jawa Barat',
+        postalCode: '',
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       customerName: addr.recipientName,
@@ -264,6 +277,45 @@ ${
                 {t('Informasi Pembeli', 'Buyer Information')}
               </h2>
 
+              {/* Pilih Alamat Tersimpan — dari profil user (maks 3 alamat).
+                  Ditaruh PALING ATAS: user pilih alamat DULU, form terisi otomatis.
+                  Kalau pilih "manual", form tetap bisa diisi dari nol. */}
+              {savedAddresses.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-[#555555]">
+                    {t('Pilih Alamat Pengiriman', 'Choose Shipping Address')}
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={selectedAddressId}
+                      onChange={(e) => handleSelectSavedAddress(e.target.value)}
+                      className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl p-3 pr-10 text-xs sm:text-sm text-[#1B5E20] focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none appearance-none cursor-pointer font-bold"
+                    >
+                      <option value="">
+                        {t('Isi alamat baru (manual)', 'Enter a new address (manual)')}
+                      </option>
+                      {savedAddresses.map((addr) => (
+                        <option key={addr.id} value={addr.id}>
+                          {addr.label}
+                          {addr.isPrimary ? ' (Utama)' : ''}
+                          {addr.recipientName ? ` — ${addr.recipientName}` : ''}
+                          {addr.city ? ` — ${addr.city}` : ''}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#1B5E20] text-lg">
+                      expand_more
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#555555]">
+                    {t(
+                      'Pilih alamat tersimpan dan form akan terisi otomatis.',
+                      'Pick a saved address and the form fills in automatically.'
+                    )}
+                  </p>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-[#555555]">{t('Nama Lengkap', 'Full Name')}</label>
@@ -315,30 +367,6 @@ ${
                   className="bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl p-3 text-xs sm:text-sm text-[#1B5E20] focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
                 />
               </div>
-
-              {/* Pilih Alamat Tersimpan — dari profil user (maks 3 alamat) */}
-              {savedAddresses.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-[#555555]">
-                    {t('Pilih Alamat Tersimpan', 'Choose Saved Address')}
-                  </label>
-                  <select
-                    value={selectedAddressId}
-                    onChange={(e) => handleSelectSavedAddress(e.target.value)}
-                    className="bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl p-3 text-xs sm:text-sm text-[#1B5E20] focus:ring-2 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none appearance-none cursor-pointer font-bold"
-                  >
-                    <option value="">{t('-- Pilih alamat --', '-- Choose address --')}</option>
-                    {savedAddresses.map((addr) => (
-                      <option key={addr.id} value={addr.id}>
-                        {addr.label} — {addr.recipientName}, {addr.addressLine}, {addr.district ? `${addr.district}, ` : ''}{addr.city} {addr.postalCode}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-[11px] text-[#555555]">
-                    {t('Pilih alamat yang tersimpan untuk mengisi form secara otomatis.', 'Select a saved address to auto-fill the form.')}
-                  </p>
-                </div>
-              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
