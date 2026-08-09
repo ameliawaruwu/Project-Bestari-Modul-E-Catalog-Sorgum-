@@ -67,8 +67,13 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
             postalCode: primary.postalCode,
           }));
         }
-      } catch {
+      } catch (e: any) {
         // Abaikan — alamat default tidak wajib; form tetap bisa diisi manual.
+        // TAPI kalau 401 (token expired), kasih tahu user biar login ulang —
+        // kalau tidak, dropdown alamat diam-diam tidak muncul = user bingung.
+        if (e?.status === 401) {
+          showToast?.('Sesi berakhir. Silakan login ulang untuk memuat alamat tersimpan.', 'error');
+        }
       }
     })();
     return () => { cancelled = true; };

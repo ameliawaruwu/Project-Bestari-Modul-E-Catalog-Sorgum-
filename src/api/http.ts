@@ -111,6 +111,15 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
 
   if (!res.ok) {
     const msg = data?.error || data?.message || `Request gagal (${res.status})`;
+    // 401 dari BE (bukan dari cek `auth && !token` di atas) = token invalid/expired.
+    // Bersihkan sesi biar user tidak stuck di "login" palsu (currentUser set tapi
+    // semua request auth gagal). Reload biar state React di-reset ke guest.
+    if (res.status === 401 && auth) {
+      try {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(SESSION_KEY);
+      } catch { /* ignore */ }
+    }
     throw new ApiError(res.status, msg);
   }
 
