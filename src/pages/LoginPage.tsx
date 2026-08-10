@@ -228,11 +228,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 Daftar Sekarang
               </button>
             </p>
-
-            {/* Redirect Notice */}
-            <p className="text-[10px] text-[#555555] leading-relaxed px-3 py-2 bg-[#F7F8F6] rounded-xl border border-[#E0E0E0]">
-              💡 <span className="font-semibold">Smart Redirect:</span> Sistem akan otomatis mengarahkan Anda ke dashboard admin atau beranda sesuai status akun.
-            </p>
           </div>
         </div>
       </div>
