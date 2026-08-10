@@ -8,6 +8,11 @@ export interface ShopSettings {
   whatsappNumber: string;
   qrisStatus: 'AKTIF' | 'NONAKTIF';
   shippingCost?: number;
+  faviconUrl?: string;
+  storeAddress?: string;
+  storeEmail?: string;
+  businessHours?: string;
+  orderNumberPrefix?: string;
 }
 
 export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
@@ -29,6 +34,14 @@ function mapSettings(map: Record<string, string>): ShopSettings {
     whatsappNumber: map.whatsapp_number || DEFAULT_SHOP_SETTINGS.whatsappNumber,
     qrisStatus: (map.qris_status === 'NONAKTIF' ? 'NONAKTIF' : 'AKTIF'),
     shippingCost: map.shipping_cost ? parseInt(String(map.shipping_cost), 10) || 0 : undefined,
+    // Field ini ADA di DB/API tapi sebelumnya TIDAK dipetakan → di halaman user
+    // selalu fallback (mis. Email footer selalu "halo@sorgum.id" padahal admin
+    // set "halo@bestari.id"). (Keputusan user 2026-08-10)
+    faviconUrl: map.favicon_url || '',
+    storeAddress: map.store_address || '',
+    storeEmail: map.store_email || '',
+    businessHours: map.business_hours || '',
+    orderNumberPrefix: map.order_number_prefix || 'BST-',
   };
 }
 
@@ -73,6 +86,11 @@ export const shopSettingsApi = {
       qris_status: settings.qrisStatus || 'AKTIF',
     };
     if (settings.shippingCost !== undefined) body.shipping_cost = String(settings.shippingCost);
+    // Field informasi toko — simpan kalau ada di state (agar edit tersimpan ke BE)
+    if (settings.storeAddress !== undefined) body.store_address = settings.storeAddress;
+    if (settings.storeEmail !== undefined) body.store_email = settings.storeEmail;
+    if (settings.businessHours !== undefined) body.business_hours = settings.businessHours;
+    if (settings.faviconUrl !== undefined) body.favicon_url = settings.faviconUrl;
     if (getToken()) {
       try {
         await request('/admin/settings', { method: 'PUT', body, auth: true });

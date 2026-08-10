@@ -48,13 +48,20 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     };
   }, []);
 
-  // Filter out promotional articles — they appear only in Checkout
-  const publicArticles = allArticles.filter(
-    (a) => a.category !== 'Promosi'
-  );
+  // Semua artikel publik (termasuk Promosi) — artikel Promosi HARUS tampil di
+  // halaman user. (Keputusan user 2026-08-10: sebelumnya di-filter out dengan
+  // komentar "appear only in Checkout", tapi tidak ada logika Checkout yang
+  // memakainya → artikel Promosi admin buat tidak pernah muncul di user.)
+  const publicArticles = allArticles;
 
 
-  const categories = [t('Semua', 'All'), t('Budidaya', 'Cultivation'), t('Nutrisi', 'Nutrition'), t('Inspirasi', 'Inspiration')];
+  const categories = [
+    t('Semua', 'All'),
+    t('Budidaya', 'Cultivation'),
+    t('Nutrisi', 'Nutrition'),
+    t('Inspirasi', 'Inspiration'),
+    t('Promosi', 'Promotion'),
+  ];
 
   const filteredArticles = publicArticles.filter((art) => {
     const matchesCategory = selectedCategory === 'Semua' || art.category === selectedCategory;

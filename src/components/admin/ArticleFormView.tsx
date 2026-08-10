@@ -39,7 +39,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
   showToast,
 }) => {
   const [titleInput, setTitleInput] = useState('');
-  const [categoryInput, setCategoryInput] = useState('Kesehatan & Nutrisi');
+  const [categoryInput, setCategoryInput] = useState('Budidaya');
   const [authorInput, setAuthorInput] = useState('Tim Nutrisi Sorgum');
   const [createdAtText, setCreatedAtText] = useState('');
   const [heroImage, setHeroImage] = useState('');
@@ -84,7 +84,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       }
     } else {
       setTitleInput('');
-      setCategoryInput('Kesehatan & Nutrisi');
+      setCategoryInput('Budidaya');
       setAuthorInput('Tim Nutrisi Sorgum');
       setCreatedAtText('');
       setHeroImage('');
@@ -227,10 +227,9 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 onChange={(e) => setCategoryInput(e.target.value)}
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none cursor-pointer font-medium"
               >
-                <option value="Kesehatan & Nutrisi">Kesehatan &amp; Nutrisi</option>
-                <option value="Resep & Kuliner">Resep &amp; Kuliner</option>
-                <option value="Budidaya Sorgum">Budidaya Sorgum</option>
-                <option value="Berita & Event">Berita &amp; Event</option>
+                <option value="Budidaya">Budidaya</option>
+                <option value="Nutrisi">Nutrisi</option>
+                <option value="Inspirasi">Inspirasi</option>
                 <option value="Promosi">Promosi</option>
               </select>
             </div>
