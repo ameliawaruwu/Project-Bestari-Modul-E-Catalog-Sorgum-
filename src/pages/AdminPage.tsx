@@ -252,19 +252,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   const handleDeleteOrder = async (id: string) => {
-    try {
-      const { orderAdminApi } = await import('../api/adminApi');
-      await orderAdminApi.updateOrderStatus(id, 'cancelled');
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus pesanan.', 'error');
-      return;
-    }
+    // HAPUS HANYA UI — data transaksi TETAP di DB (keputusan user 2026-08-10).
+    // Sebelumnya panggil BE updateOrderStatus(id,'cancelled') → status asli order
+    // berubah jadi Dibatalkan di DB. Sekarang cukup hapus dari state lokal FE.
     setOrders((prev) => prev.filter((o) => o.id !== id));
     deleteOrder(id);
     if (selectedOrderId === id) {
       setSelectedOrderId(null);
     }
-    showToast(`Pesanan ${id} berhasil dihapus.`);
+    showToast(`Pesanan ${id} dihapus dari tampilan.`);
   };
 
   const handleExportCSV = () => {

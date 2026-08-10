@@ -364,7 +364,10 @@ export async function updateOrderStatus(orderId: number, status: string) {
   }
 }
 
-// User cancel order sendiri (auth + owner check + hanya status belum dikirim)
+// User cancel order sendiri (auth + owner check)
+// Hanya status pending/confirmed/processed/shipped yang bisa dicancel user.
+// delivered (Selesai) & cancelled (Dibatalkan) TIDAK bisa diubah user lagi —
+// biarkan apa adanya (keputusan user 2026-08-10).
 // Balikin stok (sama kayak cancel admin via updateOrderStatus)
 export async function cancelOrderByUser(orderId: number, userId: number) {
   const conn = await dbPool.getConnection();
@@ -380,7 +383,7 @@ export async function cancelOrderByUser(orderId: number, userId: number) {
     if (!order || order.user_id !== userId) {
       throw new AppError('Pesanan tidak ditemukan', 404);
     }
-    if (['shipped', 'delivered', 'cancelled'].includes(order.order_status)) {
+    if (['delivered', 'cancelled'].includes(order.order_status)) {
       throw new AppError(`Pesanan tidak bisa dibatalkan (status: ${order.order_status})`, 400);
     }
 
