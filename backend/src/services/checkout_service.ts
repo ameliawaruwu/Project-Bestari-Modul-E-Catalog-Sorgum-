@@ -365,9 +365,9 @@ export async function updateOrderStatus(orderId: number, status: string) {
 }
 
 // User cancel order sendiri (auth + owner check)
-// Hanya status pending/confirmed/processed/shipped yang bisa dicancel user.
-// delivered (Selesai) & cancelled (Dibatalkan) TIDAK bisa diubah user lagi —
-// biarkan apa adanya (keputusan user 2026-08-10).
+// HANYA status pending yang bisa dicancel user — setelah diproses/dikirim,
+// user tidak bisa membatalkan lagi (keputusan user 2026-08-10, koreksi:
+// awalnya shipped ikut dibolehkan, ternyata harus pending saja).
 // Balikin stok (sama kayak cancel admin via updateOrderStatus)
 export async function cancelOrderByUser(orderId: number, userId: number) {
   const conn = await dbPool.getConnection();
@@ -383,8 +383,8 @@ export async function cancelOrderByUser(orderId: number, userId: number) {
     if (!order || order.user_id !== userId) {
       throw new AppError('Pesanan tidak ditemukan', 404);
     }
-    if (['delivered', 'cancelled'].includes(order.order_status)) {
-      throw new AppError(`Pesanan tidak bisa dibatalkan (status: ${order.order_status})`, 400);
+    if (order.order_status !== 'pending') {
+      throw new AppError(`Pesanan hanya bisa dibatalkan saat status Pending (status saat ini: ${order.order_status})`, 400);
     }
 
     // Balikin stok produk

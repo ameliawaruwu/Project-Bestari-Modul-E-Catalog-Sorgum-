@@ -1028,8 +1028,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                       </div>
 
                       <div className="flex gap-3">
-                        {selectedOrderDetail.status !== 'Selesai' &&
-                          selectedOrderDetail.status !== 'Dibatalkan' && (
+                        {selectedOrderDetail.status === 'Pending' && (
                             <button
                               onClick={() => handleCancelOrder(selectedOrderDetail.id)}
                               className="flex-1 bg-[#D32F2F] text-white py-3 rounded-xl font-bold text-xs hover:bg-[#B71C1C] cursor-pointer"
