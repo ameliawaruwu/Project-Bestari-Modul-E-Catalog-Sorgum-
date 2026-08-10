@@ -197,11 +197,20 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
             {/* Featured Hero Image */}
             <div className="relative rounded-2xl overflow-hidden h-80 md:h-[450px] shadow-2xs bg-[#F7F8F6] border border-[#E0E0E0]">
-              <img
-                src={activeArticle.image}
-                alt={activeArticle.title}
-                className="w-full h-full object-cover"
-              />
+              {activeArticle.image ? (
+                <img
+                  src={activeArticle.image}
+                  alt={activeArticle.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[#C89B3C]">
+                  <span className="material-symbols-outlined text-6xl">article</span>
+                  <span className="text-xs font-bold text-[#555555] uppercase tracking-wider">
+                    {t('Tanpa Gambar', 'No Image')}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Article Body Content */}

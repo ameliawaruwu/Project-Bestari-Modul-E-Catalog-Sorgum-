@@ -15,12 +15,21 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, onSelectArtic
       className="bg-[#FFFFFF] rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-md group cursor-pointer border border-[#E0E0E0] shadow-2xs"
     >
       <div className="h-56 w-full overflow-hidden relative bg-[#F7F8F6] border-b border-[#E0E0E0]">
-        <img
-          src={article.image}
-          alt={article.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
+        {article.image ? (
+          <img
+            src={article.image}
+            alt={article.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[#C89B3C]">
+            <span className="material-symbols-outlined text-5xl">article</span>
+            <span className="text-xs font-bold text-[#555555] uppercase tracking-wider">
+              {t('Tanpa Gambar', 'No Image')}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="p-6 sm:p-7 flex flex-col flex-grow">

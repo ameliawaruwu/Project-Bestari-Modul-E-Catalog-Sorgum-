@@ -154,7 +154,11 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       createdAt: createdAtText,
       content: buildContent(),
       contentBlocks: blocks,
-      image: heroImage || firstImg || initialArticle?.image,
+      // image = apa yang ada di field Hero (atau gambar blok pertama utk artikel
+      // baru). TANPA fallback ke initialArticle.image — sebelumnya gambar hero
+      // yang dihapus SELALU muncul lagi (bug "gabisa hapus gambar hero").
+      // Kalau hero dikosongkan & tidak ada blok image → '' → tersimpan kosong.
+      image: heroImage || firstImg || '',
       subImage: undefined,
       quote: undefined,
       excerpt: buildContent().slice(0, 150),

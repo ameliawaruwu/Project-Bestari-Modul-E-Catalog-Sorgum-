@@ -765,7 +765,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             content: articleData.content,
             contentBlocks: articleData.contentBlocks || a.contentBlocks,
             snippet: articleData.content ? articleData.content.substring(0, 150) + '...' : a.snippet,
-            image: articleData.image || a.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
+            // Tanpa fallback gambar — kalau admin hapus gambar (articleData.image=''),
+            // state harus kosong juga (sebelumnya fallback a.image/unsplash membuat
+            // gambar yang dihapus tetap muncul).
+            image: articleData.image || '',
           };
         }
         return a;
@@ -780,7 +783,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         snippet: articleData.content ? articleData.content.substring(0, 150) + '...' : '',
         content: articleData.content,
         contentBlocks: articleData.contentBlocks,
-        image: articleData.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80',
+        image: articleData.image || '',
         date: dateStr,
         author: articleData.author || 'Tim Sorgum',
       };
