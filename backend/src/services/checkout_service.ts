@@ -282,10 +282,31 @@ async function attachItems(orders: any[]): Promise<any[]> {
 
 // Admin
 export async function getAllOrders() {
+  // Soft-delete: order yang dihapus admin (deleted_at SET) TIDAK muncul di
+  // panel admin, tapi barisnya tetap di DB (arsip, bisa di-restore).
   const [rows] = await dbPool.query(
-    'SELECT * FROM orders ORDER BY created_at DESC LIMIT 100',
+    'SELECT * FROM orders WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 100',
   );
   return attachItems(rows as any[]);
+}
+
+// Soft-delete order oleh admin — data TETAP di DB, hanya di-set deleted_at.
+// (Keputusan user 2026-08-10: "hapus" = hilang dari tampilan admin, arsip tetap.)
+export async function softDeleteOrder(orderId: number): Promise<boolean> {
+  const [result] = await dbPool.query(
+    'UPDATE orders SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL',
+    [orderId],
+  );
+  return (result as any).affectedRows > 0;
+}
+
+// Restore order yang di-soft-delete (kalau admin salah hapus).
+export async function restoreOrder(orderId: number): Promise<boolean> {
+  const [result] = await dbPool.query(
+    'UPDATE orders SET deleted_at = NULL WHERE id = ?',
+    [orderId],
+  );
+  return (result as any).affectedRows > 0;
 }
 
 const VALID_ORDER_STATUS = ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'];

@@ -252,15 +252,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   const handleDeleteOrder = async (id: string) => {
-    // HAPUS HANYA UI — data transaksi TETAP di DB (keputusan user 2026-08-10).
-    // Sebelumnya panggil BE updateOrderStatus(id,'cancelled') → status asli order
-    // berubah jadi Dibatalkan di DB. Sekarang cukup hapus dari state lokal FE.
+    // SOFT-DELETE: panggil BE DELETE /admin/orders/:id → order di-set deleted_at
+    // (hilang dari tampilan admin, data TETAP di DB sebagai arsip, bisa di-restore).
+    // Sebelumnya cuma hapus state lokal → muncul lagi saat refresh (keluhan user).
+    try {
+      const { orderAdminApi } = await import('../api/adminApi');
+      await orderAdminApi.deleteOrder(id);
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal menghapus pesanan.', 'error');
+      return;
+    }
     setOrders((prev) => prev.filter((o) => o.id !== id));
     deleteOrder(id);
     if (selectedOrderId === id) {
       setSelectedOrderId(null);
     }
-    showToast(`Pesanan ${id} dihapus dari tampilan.`);
+    showToast(`Pesanan ${id} dihapus dari tampilan (data tetap di database).`);
   };
 
   const handleExportCSV = () => {

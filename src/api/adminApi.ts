@@ -160,6 +160,16 @@ export const orderAdminApi = {
     return request<{ message: string; unchanged?: boolean }>(`/admin/orders/${id}/status`, { method: 'PATCH', body: { status }, auth: true });
   },
 
+  // DELETE /api/admin/orders/:id — soft-delete (hilang dari tampilan admin, data tetap DB)
+  deleteOrder: async (id: string) => {
+    return request<{ message: string }>(`/admin/orders/${id}`, { method: 'DELETE', auth: true });
+  },
+
+  // POST /api/admin/orders/:id/restore — kembalikan order yang dihapus
+  restoreOrder: async (id: string) => {
+    return request<{ message: string }>(`/admin/orders/${id}/restore`, { method: 'POST', auth: true });
+  },
+
   // PATCH /api/admin/orders/:id/payment
   updatePaymentStatus: async (id: string, status: string) => {
     await request(`/admin/orders/${id}/payment`, { method: 'PATCH', body: { status }, auth: true });

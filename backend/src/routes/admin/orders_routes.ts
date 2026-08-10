@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getAllOrders, getOrderById, updateOrderStatus, updatePaymentStatus } from '../../services/checkout_service';
+import { getAllOrders, getOrderById, updateOrderStatus, updatePaymentStatus, softDeleteOrder, restoreOrder } from '../../services/checkout_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
 
 const router = Router();
@@ -47,6 +47,26 @@ router.patch('/:id/payment', async (req: Request, res: Response) => {
   const updated = await updatePaymentStatus(id, status);
   if (!updated) { res.status(404).json({ error: 'Pesanan tidak ditemukan' }); return; }
   res.json({ message: 'Status pembayaran diupdate' });
+});
+
+// Soft-delete order (admin): hilang dari panel admin, data TETAP di DB (arsip).
+router.delete('/:id', async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id));
+  if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
+
+  const deleted = await softDeleteOrder(id);
+  if (!deleted) { res.status(404).json({ error: 'Pesanan tidak ditemukan atau sudah dihapus' }); return; }
+  res.json({ message: 'Pesanan dihapus dari tampilan admin (data tetap di database).' });
+});
+
+// Restore order yang di-soft-delete (kalau admin salah hapus).
+router.post('/:id/restore', async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id));
+  if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
+
+  const restored = await restoreOrder(id);
+  if (!restored) { res.status(404).json({ error: 'Pesanan tidak ditemukan' }); return; }
+  res.json({ message: 'Pesanan dikembalikan ke daftar transaksi.' });
 });
 
 export default router;
