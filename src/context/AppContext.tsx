@@ -479,10 +479,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // state lokal. Sebelumnya fire-and-forget: kalau PUT gagal (403/sesi admin tidak
   // valid/network), state lokal tetap berubah → UI tampak "berhasil" padahal tidak
   // tersimpan → setelah reload hilang (bug "produk pilihan tidak berubah").
+  // PENTING: update state pakai data HASIL BE (res.data), BUKAN objek kiriman —
+  // BE return field *En hasil auto-translate; objek kiriman (contentForm admin)
+  // tidak punya *En baru → halaman bahasa EN menampilkan terjemahan lama yang
+  // tidak cocok dengan teks ID yang baru diedit ("form dan isi tidak sesuai").
   const saveLandingContent = async (content: LandingContent): Promise<boolean> => {
-    const ok = await landingContentApi.saveLandingContent(content as unknown as Record<string, string>);
-    if (ok) {
-      setLandingContent(content);
+    const fresh = await landingContentApi.saveLandingContent(content as unknown as Record<string, string>);
+    if (fresh) {
+      setLandingContent((prev) => ({ ...prev, ...fresh }));
       return true;
     }
     return false;

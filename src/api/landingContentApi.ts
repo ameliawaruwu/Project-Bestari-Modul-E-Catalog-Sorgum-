@@ -14,13 +14,21 @@ export const landingContentApi = {
     }
   },
 
-  // Save landing content (admin only) — partial update
-  saveLandingContent: async (fields: Record<string, string>): Promise<boolean> => {
+  // Save landing content (admin only) — partial update.
+  // Return data landing content TERBARU dari BE (termasuk field *En hasil
+  // auto-translate), atau null kalau gagal. Pemanggil (AppContext) wajib pakai
+  // return ini untuk update state — JANGAN pakai objek kiriman (yang tidak punya
+  // *En baru → halaman bahasa EN jadi mismatch setelah save).
+  saveLandingContent: async (fields: Record<string, string>): Promise<Record<string, string> | null> => {
     try {
-      await request('/landing-content', { method: 'PUT', body: { data: fields }, auth: true });
-      return true;
+      const res = await request<{ message: string; data: Record<string, string> }>('/landing-content', {
+        method: 'PUT',
+        body: { data: fields },
+        auth: true,
+      });
+      return res?.data || null;
     } catch {
-      return false;
+      return null;
     }
   },
 };
