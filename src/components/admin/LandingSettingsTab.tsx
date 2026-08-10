@@ -335,7 +335,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Hero (ID)</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Hero</label>
                 <input
                   type="text"
                   value={contentForm.heroTitleId}
@@ -343,30 +343,12 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Hero Title (EN)</label>
-                <input
-                  type="text"
-                  value={contentForm.heroTitleEn}
-                  onChange={(e) => setContentForm({ ...contentForm, heroTitleEn: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Deskripsi Hero (ID)</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Deskripsi Hero</label>
                 <textarea
                   rows={3}
                   value={contentForm.heroDescId}
                   onChange={(e) => setContentForm({ ...contentForm, heroDescId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Hero Description (EN)</label>
-                <textarea
-                  rows={3}
-                  value={contentForm.heroDescEn}
-                  onChange={(e) => setContentForm({ ...contentForm, heroDescEn: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
                 />
               </div>
@@ -379,21 +361,12 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
               2. Kisah Kami (Brand Story)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Story (ID)</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Story</label>
                 <input
                   type="text"
                   value={contentForm.storyTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, storyTitleId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Story Title (EN)</label>
-                <input
-                  type="text"
-                  value={contentForm.storyTitleEn}
-                  onChange={(e) => setContentForm({ ...contentForm, storyTitleEn: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
                 />
               </div>
@@ -438,21 +411,12 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                   />
                 )}
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Paragraf 1 (ID)</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Paragraf 1</label>
                 <textarea
                   rows={3}
                   value={contentForm.storyDesc1Id}
                   onChange={(e) => setContentForm({ ...contentForm, storyDesc1Id: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Paragraph 1 (EN)</label>
-                <textarea
-                  rows={3}
-                  value={contentForm.storyDesc1En}
-                  onChange={(e) => setContentForm({ ...contentForm, storyDesc1En: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
                 />
               </div>
@@ -465,21 +429,12 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
               3. Seksi Keunggulan (Why Choose Sorghum)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Seksi (ID)</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Seksi</label>
                 <input
                   type="text"
                   value={contentForm.benefitsTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, benefitsTitleId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Section Title (EN)</label>
-                <input
-                  type="text"
-                  value={contentForm.benefitsTitleEn}
-                  onChange={(e) => setContentForm({ ...contentForm, benefitsTitleEn: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
                 />
               </div>

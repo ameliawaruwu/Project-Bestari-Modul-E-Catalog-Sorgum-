@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getLandingContent, upsertLandingContent } from '../services/landing_content_service';
+import { translateFieldsIdToEn } from '../services/translate_service';
 import { authRequired, adminOnly } from '../middleware/auth';
 
 const router = Router();
@@ -14,7 +15,9 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-// Admin only — simpan/ubah konten beranda (partial update per field)
+// Admin only — simpan/ubah konten beranda (partial update per field).
+// Admin isi bahasa ID saja; semua field `*En` DI-GENERATE OTOMATIS dari `*Id`
+// lewat translate_service (Google Translate endpoint publik, tanpa API key).
 router.put('/', authRequired, adminOnly, async (req: Request, res: Response) => {
   try {
     const fields = (req.body && req.body.data) || req.body || {};
@@ -27,7 +30,9 @@ router.put('/', authRequired, adminOnly, async (req: Request, res: Response) => 
     for (const [k, v] of Object.entries(fields)) {
       if (typeof v === 'string') clean[k] = v;
     }
-    const n = await upsertLandingContent(clean);
+    // Auto-translate ID -> EN (field `*En` dari client diabaikan/di-generate ulang)
+    const withTranslations = await translateFieldsIdToEn(clean);
+    const n = await upsertLandingContent(withTranslations);
     res.json({ message: `${n} konten beranda disimpan`, data: await getLandingContent() });
   } catch (e: any) {
     res.status(500).json({ error: e.message || 'Gagal menyimpan konten landing page' });

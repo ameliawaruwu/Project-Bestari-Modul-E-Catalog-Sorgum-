@@ -326,14 +326,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
       if (data.id) {
         await bannerAdminApi.updateBanner(data.id, {
           title: data.title,
-          title_en: data.titleEn || null,
           target_link: data.targetLink || null,
           image_url: data.image,
         });
       } else {
         await bannerAdminApi.createBanner({
           title: data.title,
-          title_en: data.titleEn || null,
           image_url: data.image,
           target_link: data.targetLink || null,
         });
