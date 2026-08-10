@@ -10,9 +10,11 @@ import fetch from 'node-fetch';
 
 const GTX_URL = 'https://translate.googleapis.com/translate_a/single';
 
-// Jeda antar request ke Google (rate-limit per IP). Sequential + jeda kecil
-// supaya simpan konten (banyak field) tidak kena HTTP 429.
-const REQUEST_INTERVAL_MS = 1200;
+// Jeda antar request ke Google (rate-limit per IP). Dulu 1200ms SEKUENSIAL —
+// save konten (17 field) makan ~20-30s (admin komplain "telat banget").
+// Sekarang translate diparalelkan (Promise.all) + interval 250ms per request
+// → total ~3-5s. Rate-limit gtx toleran; ada retry (2 attempt) + jeda 3.5s.
+const REQUEST_INTERVAL_MS = 250;
 let lastRequestAt = 0;
 
 async function throttle() {
@@ -72,18 +74,23 @@ export async function translateIdToEn(text: string): Promise<string> {
 // Terjemahkan semua field berakhiran `Id` menjadi pasangan `En` (hapus akhiran `Id` -> `En`).
 // Contoh: { heroTitleId: 'Halo' } -> { heroTitleId: 'Halo', heroTitleEn: 'Hello' }.
 // Field `En` yang dikirim pemanggil DIABAIKAN (sumber EN = otomatis).
+// DIPARALELKAN (Promise.all) dengan throttle per-request — sebelumnya sekuensial
+// (17 field * 1.2s = ~20-30s), sekarang total ~3-5s.
 export async function translateFieldsIdToEn(
   fields: Record<string, string>,
 ): Promise<Record<string, string>> {
   const result: Record<string, string> = { ...fields };
 
+  const jobs: Array<{ key: string; enKey: string; value: string }> = [];
   for (const [key, value] of Object.entries(fields)) {
     if (!key.endsWith('Id')) continue;
     const enKey = key.slice(0, -2) + 'En'; // "heroTitleId" -> "heroTitleEn"
     if (!value || typeof value !== 'string') continue;
-    if (result[enKey] !== undefined) {
-      delete result[enKey]; // jangan percaya EN manual
-    }
+    delete result[enKey]; // jangan percaya EN manual
+    jobs.push({ key, enKey, value });
+  }
+
+  await Promise.all(jobs.map(async ({ key, enKey, value }) => {
     try {
       const translated = await translateIdToEn(value);
       if (translated) result[enKey] = translated;
@@ -91,7 +98,7 @@ export async function translateFieldsIdToEn(
       console.warn(`[translate] gagal terjemahkan ${key}:`, (e as Error).message);
       // gagal = biarkan EN kosong; FE fallback ke ID saat bahasa EN aktif
     }
-  }
+  }));
 
   return result;
 }

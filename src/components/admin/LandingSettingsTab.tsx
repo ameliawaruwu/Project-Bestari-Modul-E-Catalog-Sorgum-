@@ -27,6 +27,10 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
   const [contentForm, setContentForm] = useState<LandingContent>(landingContent);
   const [activeTab, setActiveTab] = useState<'banners' | 'text' | 'produk'>('banners');
   const [searchProduk, setSearchProduk] = useState('');
+  // Loading simpan — BE auto-translate 17 field (~3-5s), tombol harus disabled
+  // biar admin tidak klik ganda / bingung "telat banget".
+  const [savingContent, setSavingContent] = useState(false);
+  const [savingProducts, setSavingProducts] = useState(false);
 
   // Produk terpilih utk section "Koleksi Produk Pilihan" (string JSON di landingContent)
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>(() => {
@@ -52,11 +56,17 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
 
   const handleSaveContent = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await saveLandingContent(contentForm);
-    if (ok) {
-      showToast('Konten Landing Page berhasil disimpan!');
-    } else {
-      showToast('Gagal menyimpan konten. Periksa sesi admin atau coba lagi.', 'error');
+    if (savingContent) return; // cegah double-click
+    setSavingContent(true);
+    try {
+      const ok = await saveLandingContent(contentForm);
+      if (ok) {
+        showToast('Konten Landing Page berhasil disimpan!');
+      } else {
+        showToast('Gagal menyimpan konten. Periksa sesi admin atau coba lagi.', 'error');
+      }
+    } finally {
+      setSavingContent(false);
     }
   };
 
@@ -79,13 +89,19 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
   };
 
   const handleSaveFeaturedProducts = async () => {
-    // Kirim SELURUH contentForm + featuredProductIds — saveLandingContent replace seluruh state,
-    // jadi jangan kirim cuma satu field (nanti field lain hilang).
-    const ok = await saveLandingContent({ ...contentForm, featuredProductIds: JSON.stringify(selectedProductIds) });
-    if (ok) {
-      showToast('Produk Pilihan berhasil disimpan!');
-    } else {
-      showToast('Gagal menyimpan Produk Pilihan. Periksa sesi admin atau coba lagi.', 'error');
+    if (savingProducts) return; // cegah double-click
+    setSavingProducts(true);
+    try {
+      // Kirim SELURUH contentForm + featuredProductIds — saveLandingContent replace seluruh state,
+      // jadi jangan kirim cuma satu field (nanti field lain hilang).
+      const ok = await saveLandingContent({ ...contentForm, featuredProductIds: JSON.stringify(selectedProductIds) });
+      if (ok) {
+        showToast('Produk Pilihan berhasil disimpan!');
+      } else {
+        showToast('Gagal menyimpan Produk Pilihan. Periksa sesi admin atau coba lagi.', 'error');
+      }
+    } finally {
+      setSavingProducts(false);
     }
   };
 
@@ -327,9 +343,10 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
               <button
                 type="button"
                 onClick={handleSaveFeaturedProducts}
-                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-5 py-2 rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer"
+                disabled={savingProducts}
+                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-5 py-2 rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Simpan Produk Pilihan
+                {savingProducts ? 'Menyimpan...' : 'Simpan Produk Pilihan'}
               </button>
             </div>
           </div>
@@ -573,9 +590,10 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer"
+              disabled={savingContent}
+              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Simpan Konten Landing Page
+              {savingContent ? 'Menyimpan...' : 'Simpan Konten Landing Page'}
             </button>
           </div>
         </form>

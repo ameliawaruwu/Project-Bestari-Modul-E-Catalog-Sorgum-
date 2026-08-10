@@ -24,9 +24,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  const currentTitle = activeBanners.length > 0 && activeBanners[currentIdx]
-    ? t(activeBanners[currentIdx].title, activeBanners[currentIdx].titleEn || activeBanners[currentIdx].title)
-    : t(landingContent.heroTitleId, landingContent.heroTitleEn);
+  // Judul hero SELALU dari form admin (landingContent.heroTitleId/En).
+  // Banner hanya gambar background carousel — judul/title banner TIDAK boleh
+  // meng-override teks hero, supaya "landing page hanya menampilkan apa yang
+  // ada di form landing page admin" (sebelumnya: ada banner aktif → judul hero
+  // jadi judul banner → admin edit "Judul Hero" di form tapi landing tetap
+  // nampilin judul banner → form dan isi tidak sesuai).
+  const currentTitle = t(landingContent.heroTitleId, landingContent.heroTitleEn);
 
   return (
     <section className="relative min-h-[75vh] md:min-h-[85vh] flex items-center overflow-hidden pt-20">
