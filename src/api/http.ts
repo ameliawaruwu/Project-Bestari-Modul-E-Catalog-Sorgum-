@@ -120,6 +120,12 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
         localStorage.removeItem(SESSION_KEY);
       } catch { /* ignore */ }
     }
+    // 403 = akses ditolak (biasanya sesi bukan admin / role tidak cukup). Pesan
+    // default BE ("Akses ditolak. Hanya admin.") sudah jelas; kalau BE tidak
+    // mengirim pesan, beri konteks yang actionable biar tester tidak bingung.
+    if (res.status === 403 && !data?.error && !data?.message) {
+      throw new ApiError(403, 'Akses ditolak. Pastikan Anda login sebagai admin.');
+    }
     throw new ApiError(res.status, msg);
   }
 

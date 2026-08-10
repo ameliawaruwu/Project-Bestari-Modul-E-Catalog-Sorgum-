@@ -112,7 +112,7 @@ interface AppContextProps {
 
   // Landing Page Content
   landingContent: LandingContent;
-  saveLandingContent: (content: LandingContent) => void;
+  saveLandingContent: (content: LandingContent) => Promise<boolean>;
 
   // Orders
   orders: Order[];
@@ -475,10 +475,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return ok;
   };
 
-  const saveLandingContent = (content: LandingContent) => {
-    setLandingContent(content);
-    // Simpan ke BE (admin only) — localStorage TIDAK dipakai lagi.
-    landingContentApi.saveLandingContent(content as unknown as Record<string, string>);
+  // Simpan konten landing (admin only) — TUNGGU hasil PUT dari BE, baru update
+  // state lokal. Sebelumnya fire-and-forget: kalau PUT gagal (403/sesi admin tidak
+  // valid/network), state lokal tetap berubah → UI tampak "berhasil" padahal tidak
+  // tersimpan → setelah reload hilang (bug "produk pilihan tidak berubah").
+  const saveLandingContent = async (content: LandingContent): Promise<boolean> => {
+    const ok = await landingContentApi.saveLandingContent(content as unknown as Record<string, string>);
+    if (ok) {
+      setLandingContent(content);
+      return true;
+    }
+    return false;
   };
 
   const updateOrders = (newOrders: Order[]) => {

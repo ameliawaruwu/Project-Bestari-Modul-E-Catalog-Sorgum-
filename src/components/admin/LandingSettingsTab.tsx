@@ -50,10 +50,14 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
     }
   }, [landingContent]);
 
-  const handleSaveContent = (e: React.FormEvent) => {
+  const handleSaveContent = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveLandingContent(contentForm);
-    showToast('Konten Landing Page berhasil disimpan!');
+    const ok = await saveLandingContent(contentForm);
+    if (ok) {
+      showToast('Konten Landing Page berhasil disimpan!');
+    } else {
+      showToast('Gagal menyimpan konten. Periksa sesi admin atau coba lagi.', 'error');
+    }
   };
 
   const filteredBanners = banners.filter(
@@ -74,11 +78,15 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
     );
   };
 
-  const handleSaveFeaturedProducts = () => {
+  const handleSaveFeaturedProducts = async () => {
     // Kirim SELURUH contentForm + featuredProductIds — saveLandingContent replace seluruh state,
     // jadi jangan kirim cuma satu field (nanti field lain hilang).
-    saveLandingContent({ ...contentForm, featuredProductIds: JSON.stringify(selectedProductIds) });
-    showToast('Produk Pilihan berhasil disimpan!');
+    const ok = await saveLandingContent({ ...contentForm, featuredProductIds: JSON.stringify(selectedProductIds) });
+    if (ok) {
+      showToast('Produk Pilihan berhasil disimpan!');
+    } else {
+      showToast('Gagal menyimpan Produk Pilihan. Periksa sesi admin atau coba lagi.', 'error');
+    }
   };
 
   return (

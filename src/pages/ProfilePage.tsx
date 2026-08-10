@@ -161,6 +161,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     newPassword: '',
     confirmPassword: '',
   });
+  // Toggle tampil/sembunyi kata sandi (ikon mata) di form Ubah Kata Sandi
+  const [showPassword, setShowPassword] = useState(false);
 
   // Load addresses dari BE saat mount (kalau login)
   useEffect(() => {
@@ -1304,45 +1306,81 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     <label className="block text-xs font-bold uppercase text-[#555555] mb-1.5">
                       Kata Sandi Saat Ini
                     </label>
-                    <input
-                      type="password"
-                      value={passwordData.currentPassword}
-                      onChange={(e) =>
-                        setPasswordData({ ...passwordData, currentPassword: e.target.value })
-                      }
-                      placeholder="••••••••"
-                      className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={passwordData.currentPassword}
+                        onChange={(e) =>
+                          setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                        }
+                        placeholder="••••••••"
+                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 pr-11 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#2E7D32] transition-colors cursor-pointer flex items-center justify-center"
+                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                      >
+                        <span className="material-symbols-outlined text-lg">
+                          {showPassword ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold uppercase text-[#555555] mb-1.5">
                       Kata Sandi Baru
                     </label>
-                    <input
-                      type="password"
-                      value={passwordData.newPassword}
-                      onChange={(e) =>
-                        setPasswordData({ ...passwordData, newPassword: e.target.value })
-                      }
-                      placeholder="Min. 8 karakter"
-                      className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={passwordData.newPassword}
+                        onChange={(e) =>
+                          setPasswordData({ ...passwordData, newPassword: e.target.value })
+                        }
+                        placeholder="Min. 8 karakter"
+                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 pr-11 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#2E7D32] transition-colors cursor-pointer flex items-center justify-center"
+                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                      >
+                        <span className="material-symbols-outlined text-lg">
+                          {showPassword ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold uppercase text-[#555555] mb-1.5">
                       Konfirmasi Kata Sandi Baru
                     </label>
-                    <input
-                      type="password"
-                      value={passwordData.confirmPassword}
-                      onChange={(e) =>
-                        setPasswordData({ ...passwordData, confirmPassword: e.target.value })
-                      }
-                      placeholder="Ulangi kata sandi baru"
-                      className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={passwordData.confirmPassword}
+                        onChange={(e) =>
+                          setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                        }
+                        placeholder="Ulangi kata sandi baru"
+                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 pr-11 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#2E7D32] transition-colors cursor-pointer flex items-center justify-center"
+                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                      >
+                        <span className="material-symbols-outlined text-lg">
+                          {showPassword ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   <div className="pt-2">
