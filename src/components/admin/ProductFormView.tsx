@@ -25,6 +25,7 @@ interface ProductFormViewProps {
     organic?: boolean;
     specification?: string;
     shippingInfo?: string;
+    origin?: string;
   }) => void;
   onCancel: () => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
@@ -56,6 +57,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [attributesInput, setAttributesInput] = useState('');
   const [unitInput, setUnitInput] = useState('');
   const [weightInput, setWeightInput] = useState('');
+  const [originInput, setOriginInput] = useState('');
   const [badgeInput, setBadgeInput] = useState<string>('');
   const [imageInput, setImageInput] = useState('');
   const [stockInput, setStockInput] = useState<number | ''>('');
@@ -77,6 +79,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setAttributesInput(initialProduct.attributes || '');
       setUnitInput(initialProduct.unitInfo || '');
       setWeightInput(initialProduct.weight || '');
+      setOriginInput(initialProduct.origin || '');
       setBadgeInput(initialProduct.badge || '');
       setImageInput(initialProduct.image || '');
       setStockInput(initialStock);
@@ -98,6 +101,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setAttributesInput('');
       setUnitInput('');
       setWeightInput('');
+      setOriginInput('');
       setBadgeInput('');
       setImageInput('');
       setStockInput('');
@@ -159,6 +163,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       attributes: attributesInput,
       unitInfo: unitInput || `${weightInput || '1kg'} / Premium`,
       weight: weightInput || '1kg',
+      origin: originInput,
       badge: (badgeInput as any) || undefined,
       image: finalImage,
       stock: stockNum,
@@ -438,6 +443,19 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   value={shelfLifeInput}
                   onChange={(e) => setShelfLifeInput(e.target.value)}
                   placeholder="Contoh: 12 bulan sejak produksi"
+                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-[#1B5E20]">
+                  Asal Produk (Origin)
+                </label>
+                <input
+                  type="text"
+                  value={originInput}
+                  onChange={(e) => setOriginInput(e.target.value)}
+                  placeholder="Contoh: Yogyakarta, Flores NTT"
                   className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
                 />
               </div>

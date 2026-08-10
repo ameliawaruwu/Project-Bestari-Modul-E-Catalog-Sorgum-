@@ -12,6 +12,7 @@ export interface ProductRow {
   stock: number;
   weight_spec: string | null;
   origin: string | null;
+  shipping_info: string | null;
   composition: string | null;
   shelf_life: string | null;
   is_active: number;
@@ -49,6 +50,7 @@ interface CreateProductInput {
   stock: number;
   weight_spec: string;
   origin: string;
+  shipping_info?: string | null;
   is_featured: boolean;
   gluten_free?: boolean;
   organic?: boolean;
@@ -62,7 +64,7 @@ interface CreateProductInput {
 
 const LIST_SELECT = `
   SELECT p.id, p.name, p.slug, p.description, p.price, p.original_price, p.discount_percent,
-         p.stock, p.weight_spec, p.origin, p.composition, p.shelf_life, p.attributes,
+         p.stock, p.weight_spec, p.origin, p.shipping_info, p.composition, p.shelf_life, p.attributes,
          p.is_active, p.is_featured, p.category_id, p.created_at,
          p.gluten_free, p.organic, p.badge,
          c.name AS category_name,
@@ -177,16 +179,16 @@ export async function createProduct(input: CreateProductInput) {
   const price = Number(input.price) || originalPrice;
   const badge = await normalizeBadge(input.badge ?? null);
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [category_id, name, slug, description, price, originalPrice, discountPercent, stock, weight_spec, origin, is_featured ? 1 : 0,
+    `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [category_id, name, slug, description, price, originalPrice, discountPercent, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
      input.gluten_free ? 1 : 0, input.organic ? 1 : 0, badge, input.composition ?? null, input.shelf_life ?? null,
      input.attributes ?? null],
   );
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'is_featured', 'is_active', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   // Harga: simpan persis apa yang FE kirim — FE (admin) adalah single source of truth.

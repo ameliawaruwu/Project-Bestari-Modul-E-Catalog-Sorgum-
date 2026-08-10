@@ -408,6 +408,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     organic?: boolean;
     specification?: string;
     shippingInfo?: string;
+    origin?: string;
   }) => {
     // Sinkron: kalau kategoriOptions dari Kelola Kategori tersedia, pakai id asli BE.
     // Fallback: map key FE -> id (perilaku lama, aman kalau BE kategori default).
@@ -441,6 +442,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
+          origin: data.origin || null,
+          shipping_info: data.shippingInfo || null,
           composition: data.composition || null,
           shelf_life: data.shelfLife || null,
           attributes: data.attributes || null,
@@ -464,6 +467,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
+          origin: data.origin || null,
+          shipping_info: data.shippingInfo || null,
           composition: data.composition || null,
           shelf_life: data.shelfLife || null,
           attributes: data.attributes || null,

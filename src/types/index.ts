@@ -18,6 +18,7 @@ export interface Product {
   shelfLife?: string;
   attributes?: string;
   shippingInfo?: string;
+  origin?: string;
   stock?: number;
   isActive?: boolean;
 }

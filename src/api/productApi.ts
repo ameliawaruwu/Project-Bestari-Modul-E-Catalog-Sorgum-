@@ -15,6 +15,7 @@ interface ProductRow {
   stock: number;
   weight_spec: string | null;
   origin: string | null;
+  shipping_info: string | null;
   composition: string | null;
   shelf_life: string | null;
   attributes: string | null;
@@ -69,7 +70,8 @@ function mapProduct(row: ProductRow): Product {
     composition: row.composition || undefined,
     shelfLife: row.shelf_life || undefined,
     attributes: row.attributes || undefined,
-    shippingInfo: 'Dikirim dari Yogyakarta.',
+    shippingInfo: row.shipping_info || 'Dikirim dari Yogyakarta.',
+    origin: row.origin || undefined,
     stock: row.stock,
     isActive: !!row.is_active,
   };

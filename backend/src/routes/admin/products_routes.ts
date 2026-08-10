@@ -12,7 +12,7 @@ router.get('/', async (_req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, is_featured, composition, shelf_life, attributes } = req.body;
+  const { category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes } = req.body;
 
   if (!category_id || !name || !slug || price === undefined || stock === undefined) {
     res.status(400).json({ error: 'category_id, name, slug, price, stock wajib diisi' });
@@ -38,6 +38,7 @@ router.post('/', async (req: Request, res: Response) => {
       stock,
       weight_spec: weight_spec || '',
       origin: origin || '',
+      shipping_info: shipping_info || null,
       is_featured: !!is_featured,
       discount_percent: discount_percent || 0,
       composition: composition || null,

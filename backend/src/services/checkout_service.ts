@@ -291,17 +291,19 @@ export async function getAllOrders() {
 const VALID_ORDER_STATUS = ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'];
 const VALID_PAYMENT_STATUS = ['unpaid', 'paid', 'confirmed'];
 
-// State machine transisi status order — OPSI B (longgar): admin bebas set status apa pun,
-// termasuk mundur (mis. Dikirim → Diproses, kalau salah input). Satu-satunya batasan:
-// status terminal (delivered/cancelled) TIDAK bisa berubah lagi.
-// (Keputusan user 2026-08-06: dropdown FE menampilkan SEMUA status, bukan filter per transisi.)
+// State machine transisi status order — OPSI B+ (longgar total): admin bebas set
+// status apa pun, termasuk mundur (mis. Dikirim → Diproses) DAN dari status terminal
+// (delivered/cancelled) ke status lain. 
+// (Keputusan user 2026-08-06: dropdown FE menampilkan SEMUA status.
+//  Keputusan user 2026-08-10: delivered/cancelled TIDAK boleh dikunci — admin harus
+//  bisa mengubah status selesai/dibatalkan kalau ada apa-apa setelahnya.)
 const ALLOWED_ORDER_TRANSITIONS: Record<string, string[]> = {
   pending: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
   confirmed: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
   processed: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
   shipped: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
-  delivered: [],
-  cancelled: [],
+  delivered: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
+  cancelled: ['pending', 'confirmed', 'processed', 'shipped', 'delivered', 'cancelled'],
 };
 
 export async function updateOrderStatus(orderId: number, status: string) {

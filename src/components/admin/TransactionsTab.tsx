@@ -193,37 +193,27 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                       )}
                     </td>
                     <td className="p-4">
-                      {ord.status === 'Selesai' || ord.status === 'Dibatalkan' ? (
-                        <span
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border ${
-                            ord.status === 'Selesai'
-                              ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
-                              : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
-                          }`}
-                        >
-                          {ord.status}
-                        </span>
-                      ) : (
-                        <select
-                          value={ord.status}
-                          onChange={(e) =>
-                            onUpdateOrderStatus(ord.id, e.target.value as Order['status'])
-                          }
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-colors ${
-                            ord.status === 'Diproses'
-                              ? 'bg-[#FFF8E1] border-[#FFE082] text-[#C89B3C]'
-                              : ord.status === 'Dikirim'
-                              ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
-                              : ord.status === 'Pending'
-                              ? 'bg-[#FFF3E0] border-[#FFCC80] text-[#E65100]'
-                              : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
-                          }`}
-                        >
-                          {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
-                            <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
-                          ))}
-                        </select>
-                      )}
+                      <select
+                        value={ord.status}
+                        onChange={(e) =>
+                          onUpdateOrderStatus(ord.id, e.target.value as Order['status'])
+                        }
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-colors ${
+                          ord.status === 'Diproses'
+                            ? 'bg-[#FFF8E1] border-[#FFE082] text-[#C89B3C]'
+                            : ord.status === 'Dikirim'
+                            ? 'bg-[#E3F2FD] border-[#90CAF9] text-[#1976D2]'
+                            : ord.status === 'Pending'
+                            ? 'bg-[#FFF3E0] border-[#FFCC80] text-[#E65100]'
+                            : ord.status === 'Selesai'
+                            ? 'bg-[#E8F5E9] border-[#A5D6A7] text-[#2E7D32]'
+                            : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
+                        }`}
+                      >
+                        {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
+                          <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
+                        ))}
+                      </select>
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center gap-2">
