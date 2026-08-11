@@ -36,12 +36,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         password,
         rememberMe,
       });
+      // TEMP DEBUG: hapus setelah root cause ketemu
+      try { console.log('[LOGIN-DEBUG] res:', JSON.stringify({ success: res?.success, hasUser: !!res?.user, user: res?.user?.email, msg: res?.message })); } catch {}
 
       // Login sukses — LANGSUNG panggil onLoginSuccess (tanpa setTimeout 300ms
       // yang bisa "hilang" kalau komponen re-render/unmount di antara; ini yang
       // bikin "login gak langsung masuk, harus refresh dulu").
       // Fallback: kalau res.user kosong (mis. BE aneh), pakai currentUser context.
       if (res.success && res.user) {
+        // TEMP DEBUG
+        try { console.log('[LOGIN-DEBUG] calling onLoginSuccess'); } catch {}
         setSuccessMsg(res.message);
         onLoginSuccess(res.user);
       } else if (res.success && currentUser) {
@@ -51,7 +55,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       } else {
         setErrorMsg(res.message || 'Gagal masuk. Periksa kembali data login Anda.');
       }
-    } catch {
+    } catch (e) {
+      // TEMP DEBUG
+      try { console.log('[LOGIN-DEBUG] exception:', String(e)); } catch {}
       setErrorMsg('Terjadi kesalahan pada sistem. Silakan coba lagi.');
     } finally {
       setLoading(false);
