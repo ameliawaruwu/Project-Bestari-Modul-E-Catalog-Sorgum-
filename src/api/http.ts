@@ -94,6 +94,16 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
   const MAX_ATTEMPTS = 3; // 1x normal + 2x retry
   const RETRY_DELAYS = [800, 1600];
 
+  // ─── Connection error event ───────────────────────────────────────────────
+  // Kalau semua attempt gagal di level koneksi → publish event biar UI bisa
+  // tampilkan modal "Koneksi bermasalah / backend mati" + tombol refresh.
+  // Saat request berikutnya sukses → publish restored → modal auto-tutup.
+  const notifyConnError = () => {
+    try {
+      window.dispatchEvent(new CustomEvent('app:connection-error', { detail: { at: Date.now() } }));
+    } catch { /* ignore */ }
+  };
+
   let res: Response; // diisi di dalam loop; dipakai setelah loop (response handling)
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     if (attempt > 0) {
@@ -119,16 +129,22 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
       }
     } catch (e: any) {
       // Gagal di level koneksi (network error / timeout) — retry diam-diam.
-      // Kalau sudah attempt terakhir, throw error yang jelas.
+      // Kalau sudah attempt terakhir, notif ke UI (modal) + throw error yang jelas.
       if (attempt < MAX_ATTEMPTS - 1) {
         continue; // retry diam-diam (tanpa notif)
       }
+      notifyConnError();
       if (e?.name === 'AbortError') {
         throw new ApiError(0, 'Waktu permintaan habis. Server sibuk — coba lagi sebentar lagi.');
       }
       throw new ApiError(0, 'Tidak dapat terhubung ke server. Pastikan backend berjalan.');
     }
   } // end for-loop (auto-retry)
+
+  // Request sukses — koneksi pulih. Kabari UI (kalau modal error lagi terbuka, tutup).
+  try {
+    window.dispatchEvent(new CustomEvent('app:connection-restored', { detail: { at: Date.now() } }));
+  } catch { /* ignore */ }
 
   let data: any = null;
   try {

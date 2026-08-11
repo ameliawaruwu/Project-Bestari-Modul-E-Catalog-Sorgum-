@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
+import { ConnectionErrorModal } from './components/ConnectionErrorModal';
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ArticlesPage } from './pages/ArticlesPage';
@@ -452,6 +453,9 @@ export function App() {
         onRemoveItem={handleRemoveCartItem}
         onCheckout={handleCheckoutFromDrawer}
       />
+
+      {/* Connection Error Modal — global pop-up saat backend tidak bisa dihubungi */}
+      <ConnectionErrorModal />
     </div>
   );
 }
