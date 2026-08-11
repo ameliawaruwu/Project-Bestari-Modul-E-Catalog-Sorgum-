@@ -10,6 +10,7 @@ import { authApi } from '../api/authApi';
 import { wishlistApi } from '../api/wishlistApi';
 import { landingContentApi } from '../api/landingContentApi';
 import { request, getToken } from '../api/http';
+import { realtimeApi } from '../api/realtimeApi';
 import i18n from '../i18n';
 
 export interface ShopSettings {
@@ -412,6 +413,74 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
   }, []);
 
+  // ─── REAL-TIME SYNC (SSE) ───────────────────────────────────────────────
+  // Admin mutasi data → BE publish event → semua client (admin & user) refetch
+  // data yang berubah → tampilan user langsung update tanpa refresh manual.
+  // Data admin == data user, realtime. Subscribe sekali, auto-reconnect di client.
+  useEffect(() => {
+    const refreshProducts = () => {
+      productApi.getProducts().then((list) => setProducts(list)).catch(() => {});
+    };
+    const refreshArticles = () => {
+      articleApi.getArticles().then((list) => setArticles(list)).catch(() => {});
+    };
+    const refreshFaqs = () => {
+      faqApi.getFaqs().then((list) => setFaqs(list)).catch(() => {});
+    };
+    const refreshBanners = () => {
+      request('/banners').then((res: any) => {
+        if (res?.data) {
+          const mapped: BannerSlide[] = (res.data as any[]).map((b: any) => ({
+            id: String(b.id),
+            title: b.title,
+            titleEn: b.title_en || undefined,
+            uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+            targetLink: b.target_link || '',
+            image: b.image_url || '',
+            active: !!b.is_active,
+          }));
+          setBanners(mapped);
+        }
+      }).catch(() => {});
+    };
+    const refreshLanding = () => {
+      landingContentApi.getLandingContent().then((content) => {
+        setLandingContent((prev) => ({ ...prev, ...content }));
+      }).catch(() => {});
+    };
+    const refreshSettings = () => {
+      shopSettingsApi.getSettingsAsync().then((s) => {
+        setShopSettings(s as unknown as ShopSettings);
+      }).catch(() => {});
+    };
+    const refreshOrders = () => {
+      if (getToken()) {
+        orderApi.getOrders().then((list) => setOrders(list)).catch(() => {});
+      }
+    };
+    const refreshVouchers = () => {
+      // Voucher public list — cart/checkout fetch sendiri, tapi biarkan
+      // sinkron kalau ada komponen yang pakai state voucher.
+      // (Tidak ada state voucher di context — voucher di-fetch per halaman.)
+    };
+
+    const unsubs = [
+      realtimeApi.on('products', refreshProducts),
+      realtimeApi.on('articles', refreshArticles),
+      realtimeApi.on('faqs', refreshFaqs),
+      realtimeApi.on('banners', refreshBanners),
+      realtimeApi.on('landing', refreshLanding),
+      realtimeApi.on('settings', refreshSettings),
+      realtimeApi.on('orders', refreshOrders),
+      realtimeApi.on('vouchers', refreshVouchers),
+    ];
+
+    return () => {
+      unsubs.forEach((u) => u());
+      realtimeApi.disconnect();
+    };
+  }, []);
+
   // Sync localStorage with State updates
   useEffect(() => {
     localStorage.setItem('app-language', language);
@@ -565,7 +634,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCurrentUser(null);
     setCart([]);
     setWishlistIds({});
+    // Reset promo/voucher — kalau tidak di-clear, kode voucher user sebelumnya
+    // nyangkut di state → user berikutnya checkout auto-validasi kode basi
+    // → error "kode voucher tidak valid" padahal tidak pakai voucher (bug sesi).
     setAppliedDiscount(0);
+    setAppliedVoucherCode(null);
     try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
   };
 

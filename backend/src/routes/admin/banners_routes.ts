@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { getAllBanners, createBanner, updateBanner, deleteBanner } from '../../services/banners_service';
 import { translateBannerTitle } from '../../services/translate_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
+import { eventBus, EVENTS } from '../../lib/eventBus';
 
 const router = Router();
 router.use(authRequired, adminOnly);
@@ -18,6 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
   const title_en = await translateBannerTitle(title);
   const id = await createBanner(title, title_en, image_url, target_type || 'store', target_link);
   res.status(201).json({ message: 'Banner berhasil dibuat', data: { id } });
+  eventBus.emit(EVENTS.BANNERS, { action: 'create', id });
 });
 
 router.put('/:id', async (req: Request, res: Response) => {
@@ -31,6 +33,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   const updated = await updateBanner(id, body);
   if (!updated) { res.status(404).json({ error: 'Banner tidak ditemukan' }); return; }
   res.json({ message: 'Banner diupdate' });
+  eventBus.emit(EVENTS.BANNERS, { action: 'update', id });
 });
 
 router.delete('/:id', async (req: Request, res: Response) => {
@@ -39,6 +42,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
   const deleted = await deleteBanner(id);
   if (!deleted) { res.status(404).json({ error: 'Banner tidak ditemukan' }); return; }
   res.json({ message: 'Banner dihapus' });
+  eventBus.emit(EVENTS.BANNERS, { action: 'delete', id });
 });
 
 export default router;

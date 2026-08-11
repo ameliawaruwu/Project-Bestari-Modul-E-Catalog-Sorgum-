@@ -101,12 +101,23 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
 
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {order.items.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs text-[#1B5E20]">
-                    <div className="truncate max-w-[200px] sm:max-w-[260px]">
+                  <div key={idx} className="flex items-center gap-3 text-xs text-[#1B5E20]">
+                    {item.product?.image ? (
+                      <img
+                        src={item.product.image}
+                        alt={item.product.name}
+                        className="w-10 h-10 object-cover rounded-lg bg-[#F7F8F6] border border-[#E0E0E0] flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-[#F7F8F6] border border-[#E0E0E0] flex-shrink-0 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-base text-[#C4C8BC]">image</span>
+                      </div>
+                    )}
+                    <div className="truncate max-w-[160px] sm:max-w-[220px]">
                       <span className="font-semibold">{item.product.name}</span>
                       <span className="text-[#555555] ml-1">x{item.quantity}</span>
                     </div>
-                    <span className="font-semibold font-mono">
+                    <span className="font-semibold font-mono ml-auto">
                       Rp {(item.product.price * item.quantity).toLocaleString('id-ID')}
                     </span>
                   </div>

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getSettings, updateSettings } from '../../services/admin/settings_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
+import { eventBus, EVENTS } from '../../lib/eventBus';
 
 const router = Router();
 router.use(authRequired, adminOnly);
@@ -17,6 +18,7 @@ router.put('/', async (req: Request, res: Response) => {
   }
   await updateSettings(req.body);
   res.json({ message: 'Pengaturan disimpan' });
+  eventBus.emit(EVENTS.SETTINGS, { action: 'update' });
 });
 
 export default router;

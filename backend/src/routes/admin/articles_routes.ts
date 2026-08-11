@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getAllArticles, createArticle, updateArticle, deleteArticle, getFaqs, createFaq, updateFaq, deleteFaq } from '../../services/articles_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
+import { eventBus, EVENTS } from '../../lib/eventBus';
 
 const router = Router();
 router.use(authRequired, adminOnly);
@@ -19,6 +20,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
   const id = await createArticle(req.body);
   res.status(201).json({ message: 'Artikel dibuat', data: { id } });
+  eventBus.emit(EVENTS.ARTICLES, { action: 'create', id });
 });
 
 router.put('/:id', async (req: Request, res: Response) => {
@@ -27,6 +29,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   const updated = await updateArticle(id, req.body);
   if (!updated) { res.status(404).json({ error: 'Artikel tidak ditemukan' }); return; }
   res.json({ message: 'Artikel diupdate' });
+  eventBus.emit(EVENTS.ARTICLES, { action: 'update', id });
 });
 
 router.delete('/:id', async (req: Request, res: Response) => {
@@ -35,6 +38,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
   const deleted = await deleteArticle(id);
   if (!deleted) { res.status(404).json({ error: 'Artikel tidak ditemukan' }); return; }
   res.json({ message: 'Artikel dihapus' });
+  eventBus.emit(EVENTS.ARTICLES, { action: 'delete', id });
 });
 
 // FAQ
@@ -48,6 +52,7 @@ router.post('/faq', async (req: Request, res: Response) => {
   if (!question || !answer) { res.status(400).json({ error: 'question dan answer wajib' }); return; }
   const id = await createFaq(req.body);
   res.status(201).json({ message: 'FAQ dibuat', data: { id } });
+  eventBus.emit(EVENTS.FAQS, { action: 'create', id });
 });
 
 router.put('/faq/:id', async (req: Request, res: Response) => {
@@ -56,6 +61,7 @@ router.put('/faq/:id', async (req: Request, res: Response) => {
   const updated = await updateFaq(id, req.body);
   if (!updated) { res.status(404).json({ error: 'FAQ tidak ditemukan' }); return; }
   res.json({ message: 'FAQ diupdate' });
+  eventBus.emit(EVENTS.FAQS, { action: 'update', id });
 });
 
 router.delete('/faq/:id', async (req: Request, res: Response) => {
@@ -64,6 +70,7 @@ router.delete('/faq/:id', async (req: Request, res: Response) => {
   const deleted = await deleteFaq(id);
   if (!deleted) { res.status(404).json({ error: 'FAQ tidak ditemukan' }); return; }
   res.json({ message: 'FAQ dihapus' });
+  eventBus.emit(EVENTS.FAQS, { action: 'delete', id });
 });
 
 export default router;

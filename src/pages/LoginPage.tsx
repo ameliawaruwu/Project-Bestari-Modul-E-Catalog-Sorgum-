@@ -167,6 +167,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t('Masukkan Password Anda', 'Enter Your Password')}
                   required
+                  autoComplete="current-password"
                   className="w-full h-12 pl-12 pr-12 bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl text-xs sm:text-sm text-[#1B5E20] placeholder-[#555555]/60 focus:outline-none focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
                 />
                 <button

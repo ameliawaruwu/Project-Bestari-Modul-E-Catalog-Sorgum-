@@ -138,7 +138,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
           )}
 
           {/* Register Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4">
             {/* Nama Lengkap */}
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-[#555555] ml-0.5">
@@ -198,6 +198,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    autoComplete="new-password"
                     className="w-full h-11 pl-4 pr-10 bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl text-xs sm:text-sm text-[#1B5E20] placeholder-[#555555]/60 focus:outline-none focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
                   />
                   <button
@@ -223,6 +224,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
+                    autoComplete="new-password"
                     className="w-full h-11 pl-4 pr-10 bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl text-xs sm:text-sm text-[#1B5E20] placeholder-[#555555]/60 focus:outline-none focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
                   />
                   <button

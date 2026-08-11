@@ -36,10 +36,15 @@ export function setToken(token: string | null) {
 
 export function getSessionId(): string {
   try {
-    let sid = localStorage.getItem(SESSION_KEY);
+    // Guest session id — key TERPISAH dari `bestari_current_user` (cache user JSON).
+    // Sebelumnya pakai key SAMA (bestari_current_user): saat login, saveUser() menimpa
+    // session id guest dengan JSON user → session guest hilang → cart guest tidak
+    // bisa di-merge/refresh dengan benar saat ganti user (bug sesi).
+    const GUEST_KEY = 'bestari_guest_session';
+    let sid = localStorage.getItem(GUEST_KEY);
     if (!sid) {
       sid = `sess-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-      localStorage.setItem(SESSION_KEY, sid);
+      localStorage.setItem(GUEST_KEY, sid);
     }
     return sid;
   } catch {

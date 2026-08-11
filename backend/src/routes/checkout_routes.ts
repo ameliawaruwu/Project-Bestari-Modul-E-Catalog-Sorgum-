@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { createOrder, getOrders, getOrderById, cancelOrderByUser } from '../services/checkout_service';
 import { authRequired, authOptional } from '../middleware/auth';
+import { eventBus, EVENTS } from '../lib/eventBus';
 
 const router = Router();
 
@@ -48,6 +49,7 @@ router.post('/', authOptional, async (req: Request, res: Response) => {
       data: result.order,
       wa_link: result.wa_link,
     });
+    eventBus.emit(EVENTS.ORDERS, { action: 'create', id: result.order?.id });
   } catch (e: any) {
     const status = e.status || 500;
     res.status(status).json({ error: e.message || 'Terjadi kesalahan' });
@@ -71,6 +73,7 @@ router.patch('/:id/cancel', async (req: Request, res: Response) => {
   try {
     await cancelOrderByUser(id, req.user!.userId);
     res.json({ message: 'Pesanan berhasil dibatalkan' });
+    eventBus.emit(EVENTS.ORDERS, { action: 'cancel', id });
   } catch (e: any) {
     res.status(e.status || 500).json({ error: e.message || 'Gagal membatalkan pesanan' });
   }

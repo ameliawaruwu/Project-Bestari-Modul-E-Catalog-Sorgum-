@@ -30,6 +30,7 @@ import adminTrackingRoutes from './routes/admin/tracking_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
 import adminBadgesRoutes from './routes/admin/badges_routes';
 import voucherRoutes from './routes/voucher_routes';
+import eventsRoutes from './routes/events_routes';
 
 const app = express();
 
@@ -79,6 +80,9 @@ app.use('/api/admin/tracking', adminTrackingRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
 app.use('/api/admin/badges', adminBadgesRoutes);
 app.use('/api', voucherRoutes);
+
+// SSE realtime — harus sebelum 404 catch-all
+app.use('/api/events', eventsRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authRequired, adminOnly } from '../middleware/auth';
 import { voucherService } from '../services/voucher_service';
+import { eventBus, EVENTS } from '../lib/eventBus';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.post('/admin/vouchers', authRequired, adminOnly, async (req, res) => {
   try {
     await voucherService.create(req.body);
     res.json({ message: 'Voucher berhasil dibuat' });
+    eventBus.emit(EVENTS.VOUCHERS, { action: 'create' });
   } catch (e: any) {
     res.status(500).json({ error: e.message || 'Gagal membuat voucher' });
   }
@@ -36,6 +38,7 @@ router.put('/admin/vouchers/:id', authRequired, adminOnly, async (req, res) => {
   try {
     await voucherService.update(Number(req.params.id), req.body);
     res.json({ message: 'Voucher berhasil diperbarui' });
+    eventBus.emit(EVENTS.VOUCHERS, { action: 'update' });
   } catch (e: any) {
     res.status(500).json({ error: e.message || 'Gagal memperbarui voucher' });
   }
@@ -45,6 +48,7 @@ router.delete('/admin/vouchers/:id', authRequired, adminOnly, async (req, res) =
   try {
     await voucherService.remove(Number(req.params.id));
     res.json({ message: 'Voucher berhasil dihapus' });
+    eventBus.emit(EVENTS.VOUCHERS, { action: 'delete' });
   } catch (e: any) {
     res.status(500).json({ error: e.message || 'Gagal menghapus voucher' });
   }
