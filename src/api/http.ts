@@ -82,30 +82,53 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
     throw new ApiError(401, 'Anda harus login sebagai admin untuk melakukan aksi ini.');
   }
 
-  let res: Response;
-  try {
-    // Timeout 45s biar request tidak menggantung selamanya kalau BE lambat/hang.
-    // 45s (bukan 20s) karena endpoint tracking/cek-resi bisa lambat (API ekspedisi
-    // eksternal www.cekresi.com sering >20s). Timeout 20s bikin false-positive
-    // "Tidak dapat terhubung ke server" padahal BE sehat cuma lambat.
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 45000);
+  // ─── Auto-retry untuk kegagalan KONEKSI (network error / timeout) ─────────
+  // Latar belakang: di beberapa jaringan (ISP/proxy kantor, laptop teman),
+  // koneksi ke server kadang putus sesaat ("Tidak dapat terhubung ke server"
+  // muncul tiba-tiba padahal server sehat). Retry diam-diam 2x (800ms, 1600ms)
+  // sebelum menyerah — di kondisi normal request langsung sukses, notif error
+  // tidak pernah muncul. Retry HANYA untuk gagal di level koneksi (fetch throw /
+  // abort timeout) — TIDAK untuk response HTTP error (4xx/5xx) supaya mutasi
+  // (POST/PUT/DELETE) tidak dobel. Request mutasi tetap aman: kalau koneksi
+  // gagal, request tidak sampai ke server (tidak ada side-effect ganda).
+  const MAX_ATTEMPTS = 3; // 1x normal + 2x retry
+  const RETRY_DELAYS = [800, 1600];
+
+  let res: Response; // diisi di dalam loop; dipakai setelah loop (response handling)
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, RETRY_DELAYS[attempt - 1]));
+    }
+
     try {
-      res = await fetch(`${API_BASE}${path}`, {
-        method,
-        headers,
-        body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timer);
+      // Timeout 45s biar request tidak menggantung selamanya kalau BE lambat/hang.
+      // 45s (bukan 20s) karena endpoint tracking/cek-resi bisa lambat (API ekspedisi
+      // eksternal www.cekresi.com sering >20s). Timeout 20s bikin false-positive
+      // "Tidak dapat terhubung ke server" padahal BE sehat cuma lambat.
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 45000);
+      try {
+        res = await fetch(`${API_BASE}${path}`, {
+          method,
+          headers,
+          body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+    } catch (e: any) {
+      // Gagal di level koneksi (network error / timeout) — retry diam-diam.
+      // Kalau sudah attempt terakhir, throw error yang jelas.
+      if (attempt < MAX_ATTEMPTS - 1) {
+        continue; // retry diam-diam (tanpa notif)
+      }
+      if (e?.name === 'AbortError') {
+        throw new ApiError(0, 'Waktu permintaan habis. Server sibuk — coba lagi sebentar lagi.');
+      }
+      throw new ApiError(0, 'Tidak dapat terhubung ke server. Pastikan backend berjalan.');
     }
-  } catch (e: any) {
-    if (e?.name === 'AbortError') {
-      throw new ApiError(0, 'Waktu permintaan habis. Server sibuk — coba lagi sebentar lagi.');
-    }
-    throw new ApiError(0, 'Tidak dapat terhubung ke server. Pastikan backend berjalan.');
-  }
+  } // end for-loop (auto-retry)
 
   let data: any = null;
   try {
