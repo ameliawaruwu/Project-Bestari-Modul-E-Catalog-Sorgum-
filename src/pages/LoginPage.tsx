@@ -31,37 +31,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setLoading(true);
 
     try {
-      // TEMP DEBUG: dipanggil?
-      try { (window as any).__submitEntered = ((window as any).__submitEntered || 0) + 1; } catch {}
       const res = await login({
         email,
         password,
         rememberMe,
       });
-      // TEMP DEBUG: hapus setelah root cause ketemu
-      try { (window as any).__afterLoginCall = ((window as any).__afterLoginCall || 0) + 1; (window as any).__resSuccess = res?.success; (window as any).__resHasUser = !!res?.user; (window as any).__resMsg = res?.message; } catch {}
 
-      // Login sukses — LANGSUNG panggil onLoginSuccess (tanpa setTimeout 300ms
-      // yang bisa "hilang" kalau komponen re-render/unmount di antara; ini yang
-      // bikin "login gak langsung masuk, harus refresh dulu").
-      // Fallback: kalau res.user kosong (mis. BE aneh), pakai currentUser context.
+      // Login sukses — langsung pindah halaman (tanpa setTimeout biar tidak
+      // "harus refresh dulu"). Kalau res.user kosong, pakai currentUser context.
       if (res.success && res.user) {
-        // TEMP DEBUG
-        try { (window as any).__loginRes = ((window as any).__loginRes || 0) + 1; } catch {}
         setSuccessMsg(res.message);
         onLoginSuccess(res.user);
-        // TEMP DEBUG
-        try { (window as any).__afterOnLogin = ((window as any).__afterOnLogin || 0) + 1; } catch {}
       } else if (res.success && currentUser) {
-        // res.user undefined tapi context sudah punya user — pakai context.
         setSuccessMsg(res.message);
         onLoginSuccess(currentUser);
       } else {
         setErrorMsg(res.message || 'Gagal masuk. Periksa kembali data login Anda.');
       }
-    } catch (e) {
-      // TEMP DEBUG
-      try { console.log('[LOGIN-DEBUG] exception:', String(e)); } catch {}
+    } catch {
       setErrorMsg('Terjadi kesalahan pada sistem. Silakan coba lagi.');
     } finally {
       setLoading(false);

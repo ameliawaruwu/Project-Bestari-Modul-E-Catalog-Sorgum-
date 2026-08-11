@@ -216,8 +216,6 @@ export function App() {
   };
 
   const handleAuthSuccess = (loggedInUser: User) => {
-    // TEMP DEBUG: cek apakah dipanggil (side-effect nyata, bukan console — prod strip console)
-    try { (window as any).__authSuccessCalled = ((window as any).__authSuccessCalled || 0) + 1; } catch {}
     // User non-admin TIDAK boleh diarahkan ke panel admin meski redirectAfterLogin === 'admin'
     // (mis. sempat akses tab admin saat logout → guard effect set redirectAfterLogin='admin',
     // lalu login sebagai user biasa → tanpa guard ini dia kelempark ke admin panel).

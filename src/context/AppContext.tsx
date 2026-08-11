@@ -641,14 +641,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         bumpAuthGeneration();
         setCurrentUser(res.user);
 
-        // ─── Cart di login (server-authoritative) ─────────────────────────
-        // 1) Merge cart guest (localStorage key '') ke server cart user —
-        //    item guest di-add kalau belum ada, item server TETAP.
-        // 2) Refresh cart dari SERVER — sumber kebenaran DB per-user.
-        await orderApi.mergeCart().catch(() => {});
-        await refreshCart();
-
-        // Load orders for logged-in user
+        // ─── Cart di login (server-authoritative) — TIDAK ngeblokir navigasi ─
+        // Merge cart guest + refresh cart + load orders dijalankan FIRE-AND-
+        // FORGET (background). Sebelumnya di-await → login() nunggu endpoint
+        // /cart/merge & /cart resolve → kalau lambat/hang (jaringan user),
+        // UI tidak pindah ("login gk langsung masuk, harus refresh dulu").
+        // User langsung masuk; cart/orders muncul beberapa detik kemudian.
+        orderApi.mergeCart().then(() => refreshCart()).catch(() => {});
         orderApi.getOrders().then((list) => {
           setOrders(list);
         }).catch(() => {});
@@ -673,11 +672,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         bumpAuthGeneration();
         setCurrentUser(res.user);
 
-        // ─── Cart di register (server-authoritative) ──────────────────────
-        // User baru: server cart kosong. Merge cart guest (localStorage key '')
-        // ke akun baru biar gak hilang setelah daftar, lalu refresh dari server.
-        await orderApi.mergeCart().catch(() => {});
-        await refreshCart();
+        // Cart di register: merge + refresh fire-and-forget (tidak blokir navigasi)
+        orderApi.mergeCart().then(() => refreshCart()).catch(() => {});
       }
       return res;
     } catch (e: any) {
