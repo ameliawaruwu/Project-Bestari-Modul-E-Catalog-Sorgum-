@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { User, Order, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
+import { realtimeApi } from '../api/realtimeApi';
 
 import { AdminSidebar } from '../components/admin/AdminSidebar';
 import { AdminHeader } from '../components/admin/AdminHeader';
@@ -59,6 +60,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // Orders admin: source of truth = BE /api/admin/orders (SEMUA order, bukan /mine)
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
+
+  const refreshAdminOrders = useCallback(async () => {
+    try {
+      const { orderAdminApi } = await import('../api/adminApi');
+      const { mapOrder } = await import('../api/orderApi');
+      const list = await orderAdminApi.listOrders();
+      setOrders(list.map((o: any) => mapOrder(o)));
+    } catch {
+      // admin orders unavailable -> keep empty
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -204,6 +218,22 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     refreshAdminFaqs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ─── SSE realtime di panel admin ─────────────────────────────────────────
+  // User checkout → BE publish 'orders' event → admin lihat order baru
+  // langsung tanpa refresh. Admin edit produk/artikel/FAQ dari tab lain
+  // → panel admin ikut sinkron (data admin == user, realtime dua arah).
+  useEffect(() => {
+    const unsubs = [
+      realtimeApi.on('orders', () => refreshAdminOrders()),
+      realtimeApi.on('products', () => refreshProducts().catch(() => {})),
+      realtimeApi.on('articles', () => refreshAdminArticles()),
+      realtimeApi.on('faqs', () => refreshAdminFaqs()),
+    ];
+    return () => unsubs.forEach((u) => u());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [editingArticle, setEditingArticle] = useState<{ isEditing: boolean; article?: ArticleItem | null } | null>(null);
   const [editingFaq, setEditingFaq] = useState<{ isEditing: boolean; faq?: FAQItem | null } | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);

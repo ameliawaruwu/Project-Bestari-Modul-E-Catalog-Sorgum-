@@ -408,8 +408,45 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }).catch(() => {});
     }
 
+    // ─── Multi-tab sync (anti "kecolongan" sesi) ─────────────────────────────
+    // Browser: 1 localStorage per origin → 2 tab (admin & user) berbagi token.
+    // Kalau tab A logout/login user lain, tab B tidak tahu → state React tab B
+    // tetap user lama → tampil data lama / pakai token basi ("kecolongan").
+    // Solusi: dengarkan `storage` event (dipicu saat localStorage berubah di
+    // TAB LAIN) → validasi ulang sesi + refresh data → tab B ikut sync.
+    const onStorageChange = (e: StorageEvent) => {
+      if (e.key === null || e.key === 'bestari_session_id' || e.key === 'bestari_current_user' || e.key === 'bestari_guest_session') {
+        // Token/user/session berubah di tab lain — validasi ulang sesi di tab ini.
+        authApi.getCurrentUser().then((fresh) => {
+          if (!cancelled) {
+            setCurrentUser(fresh);
+            if (!fresh) {
+              // Sesuai sesi baru: reset state pribadi (cart, wishlist, voucher)
+              setCart([]);
+              setWishlistIds({});
+              setAppliedDiscount(0);
+              setAppliedVoucherCode(null);
+            } else {
+              // User login (bisa beda user) — refresh cart & wishlist miliknya
+              refreshCart().catch(() => {});
+              wishlistApi.getWishlist().then((items) => {
+                if (cancelled) return;
+                const idMap: Record<string, number> = {};
+                items.forEach((w) => {
+                  if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0);
+                });
+                setWishlistIds(idMap);
+              }).catch(() => {});
+            }
+          }
+        });
+      }
+    };
+    window.addEventListener('storage', onStorageChange);
+
     return () => {
       cancelled = true;
+      window.removeEventListener('storage', onStorageChange);
     };
   }, []);
 
