@@ -37,7 +37,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         rememberMe,
       });
       // TEMP DEBUG: hapus setelah root cause ketemu
-      try { console.log('[LOGIN-DEBUG] res:', JSON.stringify({ success: res?.success, hasUser: !!res?.user, user: res?.user?.email, msg: res?.message })); } catch {}
+      try { (window as any).__afterLoginCall = ((window as any).__afterLoginCall || 0) + 1; (window as any).__resSuccess = res?.success; (window as any).__resHasUser = !!res?.user; (window as any).__resMsg = res?.message; } catch {}
 
       // Login sukses — LANGSUNG panggil onLoginSuccess (tanpa setTimeout 300ms
       // yang bisa "hilang" kalau komponen re-render/unmount di antara; ini yang
