@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { Product, Article, FaqItem, CartItem, User, Order, LoginPayload, RegisterPayload, AuthResponse } from '../types';
 import { BannerSlide } from '../types/admin';
 import { productApi } from '../api/productApi';
@@ -287,6 +287,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  // ─── Auth generation guard (anti race login) ──────────────────────────────
+  // Bug "login gk langsung masuk, harus refresh dulu" = race condition:
+  // getCurrentUser() async (dipanggil saat mount) selesai BELAKANGAN setelah
+  // login() sukses setCurrentUser(user) → response lama (null/guest) MENIMPA
+  // user baru → UI balik jadi guest → harus refresh supaya jalan ulang.
+  // Fix: generation counter. Setiap login/logout/register naikkan; hasil async
+  // (getCurrentUser, refreshCart, dll) hanya di-apply kalau generation masih
+  // sama — kalau sudah login ulang, response basi diabaikan.
+  const authGenerationRef = useRef(0);
+  const bumpAuthGeneration = () => { authGenerationRef.current += 1; };
+
   // ─── Cart = SERVER-AUTHORITATIVE (DB) ──────────────────────────────────
   // Cart TIDAK disimpan di localStorage lagi — sumber kebenaran = DB (cart_items),
   // per-user_id (login) / session_id (guest). localStorage cuma nyimpen
@@ -322,11 +333,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Validasi sesi ke backend: kalau token ada tapi invalid/expired,
     // getCurrentUser bersihin cache + return null — sesi admin/user lama
     // yang nyangkut di localStorage gak bakal ke-render lagi.
+    const mountGen = authGenerationRef.current;
     authApi.getCurrentUser().then((fresh) => {
-      if (!cancelled) setCurrentUser(fresh);
-      // Gak ada sesi valid → hapus cache lama (admin/user basi) biar gak ke-render lagi
-      if (!fresh) {
-        try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
+      // Guard anti race: kalau user SUDAH login/register (generation naik)
+      // saat request ini berjalan, JANGAN timpa user baru dengan hasil basi.
+      if (!cancelled && authGenerationRef.current === mountGen) {
+        setCurrentUser(fresh);
+        // Gak ada sesi valid → hapus cache lama (admin/user basi) biar gak ke-render lagi
+        if (!fresh) {
+          try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
+        }
       }
     });
 
@@ -417,8 +433,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const onStorageChange = (e: StorageEvent) => {
       if (e.key === null || e.key === 'bestari_session_id' || e.key === 'bestari_current_user' || e.key === 'bestari_guest_session') {
         // Token/user/session berubah di tab lain — validasi ulang sesi di tab ini.
+        const genAtEvent = authGenerationRef.current;
         authApi.getCurrentUser().then((fresh) => {
-          if (!cancelled) {
+          // Guard anti race: kalau user login/logout di tab INI (generation naik)
+          // saat validasi berjalan, jangan timpa state dengan hasil basi.
+          if (!cancelled && authGenerationRef.current === genAtEvent) {
             setCurrentUser(fresh);
             if (!fresh) {
               // Sesuai sesi baru: reset state pribadi (cart, wishlist, voucher)
@@ -430,7 +449,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               // User login (bisa beda user) — refresh cart & wishlist miliknya
               refreshCart().catch(() => {});
               wishlistApi.getWishlist().then((items) => {
-                if (cancelled) return;
+                if (cancelled || authGenerationRef.current !== genAtEvent) return;
                 const idMap: Record<string, number> = {};
                 items.forEach((w) => {
                   if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0);
@@ -616,6 +635,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await authApi.login(payload);
       if (res.success && res.user) {
+        // Naikkan generation DULU — hasil async lain yang masih berjalan
+        // (getCurrentUser mount, refreshCart lama) dianggap basi, tidak
+        // akan menimpa user baru ini.
+        bumpAuthGeneration();
         setCurrentUser(res.user);
 
         // ─── Cart di login (server-authoritative) ─────────────────────────
@@ -647,6 +670,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const res = await authApi.register(payload);
       if (res.success && res.user) {
+        bumpAuthGeneration();
         setCurrentUser(res.user);
 
         // ─── Cart di register (server-authoritative) ──────────────────────
@@ -666,6 +690,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Sebelumnya cuma set state React — localStorage `bestari_session_id` & `bestari_current_user`
     // masih ada → setelah reload readUser() baca user lama → session nyangkut, gabisa logout/login.
     await authApi.logout();
+    // Naikkan generation — hasil async (getCurrentUser, refreshCart) yang masih
+    // berjalan dianggap basi; JANGAN set currentUser dari response lama.
+    bumpAuthGeneration();
     // Cart server-authoritative: gak usah simpan ke localStorage — sumber di DB.
     // Kosongin state — jangan sampai cart user A kebawa ke user B/guest.
     setCurrentUser(null);
