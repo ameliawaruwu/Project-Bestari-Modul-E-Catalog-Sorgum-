@@ -45,9 +45,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       // Fallback: kalau res.user kosong (mis. BE aneh), pakai currentUser context.
       if (res.success && res.user) {
         // TEMP DEBUG
-        try { console.log('[LOGIN-DEBUG] calling onLoginSuccess'); } catch {}
+        try { (window as any).__loginRes = ((window as any).__loginRes || 0) + 1; } catch {}
         setSuccessMsg(res.message);
         onLoginSuccess(res.user);
+        // TEMP DEBUG
+        try { (window as any).__afterOnLogin = ((window as any).__afterOnLogin || 0) + 1; } catch {}
       } else if (res.success && currentUser) {
         // res.user undefined tapi context sudah punya user — pakai context.
         setSuccessMsg(res.message);
