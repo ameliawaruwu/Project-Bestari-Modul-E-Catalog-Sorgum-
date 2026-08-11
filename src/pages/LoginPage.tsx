@@ -15,7 +15,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onNavigateHome,
   onNavigateForgot,
 }) => {
-  const { t, login } = useApp();
+  const { t, login, currentUser } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -37,11 +37,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         rememberMe,
       });
 
+      // Login sukses — LANGSUNG panggil onLoginSuccess (tanpa setTimeout 300ms
+      // yang bisa "hilang" kalau komponen re-render/unmount di antara; ini yang
+      // bikin "login gak langsung masuk, harus refresh dulu").
+      // Fallback: kalau res.user kosong (mis. BE aneh), pakai currentUser context.
       if (res.success && res.user) {
         setSuccessMsg(res.message);
-        setTimeout(() => {
-          onLoginSuccess(res.user!);
-        }, 300);
+        onLoginSuccess(res.user);
+      } else if (res.success && currentUser) {
+        // res.user undefined tapi context sudah punya user — pakai context.
+        setSuccessMsg(res.message);
+        onLoginSuccess(currentUser);
       } else {
         setErrorMsg(res.message || 'Gagal masuk. Periksa kembali data login Anda.');
       }

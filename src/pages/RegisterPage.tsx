@@ -50,10 +50,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
 
       if (res.success && res.user) {
         setSuccessMsg(res.message);
-        setTimeout(() => {
-          onRegisterSuccess(res.user!);
-          onNavigateHome();
-        }, 600);
+        // Langsung pindah (tanpa setTimeout — delay bikin "harus refresh dulu").
+        onRegisterSuccess(res.user);
+        onNavigateHome();
       } else {
         setErrorMsg(res.message || 'Gagal mendaftar. Silakan periksa data Anda.');
       }
