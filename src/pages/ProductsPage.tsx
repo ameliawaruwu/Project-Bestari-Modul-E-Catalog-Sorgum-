@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ProductCard } from '../components/ProductCard';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { productApi } from '../api/productApi';
+import { realtimeApi } from '../api/realtimeApi';
 
 interface ProductsPageProps {
   onClickProduct: (product: Product) => void;
@@ -28,7 +29,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   }, [searchQuery]);
 
   // Load products from backend
-  useEffect(() => {
+  const loadProducts = useCallback(() => {
     let cancelled = false;
     setLoading(true);
     productApi
@@ -42,10 +43,22 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [selectedCategory, localSearchQuery, sortBy]);
+
+  useEffect(() => {
+    return loadProducts();
+  }, [loadProducts]);
+
+  // Realtime: admin ubah produk → refetch list supaya user lihat langsung.
+  // (AppContext juga refetch context products, tapi halaman ini pakai local
+  //  state sendiri — subscribe di sini biar list yang terbuka ikut update.)
+  useEffect(() => {
+    const unsub = realtimeApi.on('products', () => {
+      loadProducts();
+    });
+    return () => unsub();
+  }, [loadProducts]);
 
   const categories = [
     { id: 'semua', label: t('Semua', 'All') },
