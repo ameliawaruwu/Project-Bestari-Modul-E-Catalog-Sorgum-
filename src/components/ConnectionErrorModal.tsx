@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 // ───────────────────────────────────────────────────────────────────────────
 // ConnectionErrorModal — pop-up global saat koneksi ke backend bermasalah.
@@ -6,26 +6,57 @@ import React, { useEffect, useState, useCallback } from 'react';
 // retry gagal) — bukan toast kecil, tapi modal tegas yang kasih tahu:
 //   "Koneksi bermasalah / Backend tidak dapat dihubungi"
 // + tombol "Muat Ulang Halaman" (refresh) & "Coba Lagi" (retry).
-// Auto-tutup kalau koneksi pulih ('app:connection-restored').
+//
+// ANTI-FLICKER: modal minimal tampil MIN_VISIBLE_MS (3 detik) sebelum bisa
+// auto-tutup. Tanpa ini, request gagal → sukses → gagal → sukses dalam waktu
+// cepat bikin modal kedip-kedip (masalah notif sebelumnya). 'connection-
+// restored' yang datang terlalu cepat DITUNDA sampai waktu minimal terpenuhi;
+// error baru membatalkan penundaan itu (modal tetap tampil).
 // ───────────────────────────────────────────────────────────────────────────
+
+const MIN_VISIBLE_MS = 3000; // minimal tampil sebelum auto-tutup
 
 export const ConnectionErrorModal: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [retrying, setRetrying] = useState(false);
+  const shownAtRef = useRef(0);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const show = useCallback(() => setVisible(true), []);
-  const hide = useCallback(() => setVisible(false), []);
+  const show = useCallback(() => {
+    shownAtRef.current = Date.now();
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+    setVisible(true);
+  }, []);
+
+  // Hide yang menghormati waktu minimal tampil — kalau belum lewat
+  // MIN_VISIBLE_MS, tunda sampai sisa waktu (error baru → show() batalkan).
+  const hide = useCallback(() => {
+    // Kalau modal memang sedang tidak tampil, abaikan (hindari timer sia-sia).
+    setVisible((wasVisible) => {
+      if (!wasVisible) return false;
+      const elapsed = Date.now() - shownAtRef.current;
+      const remaining = MIN_VISIBLE_MS - elapsed;
+      if (remaining <= 0) return false;
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = setTimeout(() => setVisible(false), remaining);
+      return true; // tetap tampil sampai timer selesai
+    });
+  }, []);
 
   useEffect(() => {
     window.addEventListener('app:connection-error', show);
     window.addEventListener('app:connection-restored', hide);
-    window.addEventListener('online', show); // browser detect offline
-    window.addEventListener('offline', show);
+    window.addEventListener('offline', show); // browser offline → tampil
+    window.addEventListener('online', hide); // browser online lagi → tutup (setelah min time)
     return () => {
       window.removeEventListener('app:connection-error', show);
       window.removeEventListener('app:connection-restored', hide);
-      window.removeEventListener('online', show);
       window.removeEventListener('offline', show);
+      window.removeEventListener('online', hide);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
   }, [show, hide]);
 
