@@ -31,6 +31,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setLoading(true);
 
     try {
+      // TEMP DEBUG: dipanggil?
+      try { (window as any).__submitEntered = ((window as any).__submitEntered || 0) + 1; } catch {}
       const res = await login({
         email,
         password,
