@@ -131,21 +131,30 @@ export const OrderSuccessPage: React.FC<OrderSuccessPageProps> = ({
                 </span>
               </div>
 
-              {/* Keterangan ongkir: belum termasuk, menyusul setelah konfirmasi */}
-              <div className="bg-[#FFF8E1] border border-[#FFE0B2] rounded-xl p-3 space-y-1">
-                <p className="text-[11px] text-[#555555] leading-relaxed">
-                  {t(
-                    'Pembayaran QRIS hanya untuk harga barang. Biaya ongkir belum termasuk — akan dikirim oleh admin setelah konfirmasi pesanan.',
-                    'QRIS payment covers the product price only. Shipping fee is not included — it will be arranged by admin after order confirmation.'
-                  )}
-                </p>
-                <p className="text-[11px] font-semibold text-[#1B5E20]">
-                  {t(
-                    'Silakan konfirmasi pembelian Anda ke admin untuk melanjutkan proses pengiriman.',
-                    'Please confirm your purchase to admin to continue the shipping process.'
-                  )}
-                </p>
-              </div>
+              {/* Keterangan ongkir — beda per metode pembayaran */}
+              {order.paymentMethod === 'qris' ? (
+                <div className="bg-[#FFF8E1] border border-[#FFE0B2] rounded-xl p-3 space-y-1">
+                  <p className="text-[11px] text-[#555555] leading-relaxed">
+                    {t(
+                      'Pembayaran QRIS hanya untuk harga barang. Biaya ongkir belum termasuk — akan dikirim oleh admin setelah konfirmasi pesanan.',
+                      'QRIS payment covers the product price only. Shipping fee is not included — it will be arranged by admin after order confirmation.'
+                    )}
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-[#FFF8E1] border-2 border-[#FFE0B2] rounded-2xl p-5 sm:p-6 space-y-2 text-left">
+                  <p className="font-extrabold text-[#1B5E20] flex items-center gap-2 text-sm sm:text-base">
+                    <span className="material-symbols-outlined text-[#C89B3C]">local_shipping</span>
+                    {t('Biaya Ongkir Diberitahukan via WhatsApp', 'Shipping Fee Will Be Notified via WhatsApp')}
+                  </p>
+                  <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-medium">
+                    {t(
+                      'Biaya ongkir (pengiriman) untuk pesanan COD Anda akan diinformasikan oleh admin melalui WhatsApp setelah pesanan dikonfirmasi. Mohon pantau WhatsApp Anda.',
+                      'The shipping fee for your COD order will be notified by admin via WhatsApp once your order is confirmed. Please keep an eye on your WhatsApp.'
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

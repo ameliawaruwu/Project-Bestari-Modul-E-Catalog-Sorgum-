@@ -32,6 +32,16 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
   const orderId = order?.orderNumber || order?.id || '(tidak diketahui)';
   const totalAmount = order?.totalAmount || 0;
 
+  // Link WA konfirmasi pembayaran — user kirim bukti transfer ke admin
+  const waNumber = (qris.whatsappNumber || shopSettings.whatsappNumber).replace(/[^0-9]/g, '').replace(/^0/, '62');
+  const waMessage = encodeURIComponent(
+    `Halo Admin ${qris.storeName || shopSettings.storeName || 'SORGUM'}, saya telah melakukan pembayaran pesanan *${orderId}* via QRIS.\n\n` +
+    `Total: Rp ${totalAmount.toLocaleString('id-ID')}\n` +
+    `Metode: QRIS\n\n` +
+    `Berikut bukti pembayarannya, mohon segera diverifikasi. Terima kasih!`
+  );
+  const waUrl = `https://wa.me/${waNumber}?text=${waMessage}`;
+
   return (
     <main className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center justify-center text-[#1B5E20] animate-fadeIn bg-[#F7F8F6]">
       <div className="max-w-[520px] w-full bg-[#FFFFFF] rounded-2xl p-6 sm:p-10 text-center border border-[#E0E0E0] shadow-2xs space-y-6">
@@ -109,19 +119,36 @@ export const QrisPaymentPage: React.FC<QrisPaymentPageProps> = ({
               'QRIS payment covers the product price only. Shipping fee is not included — it will be arranged by admin after order confirmation.'
             )}
           </p>
-          <p className="font-semibold text-[#1B5E20]">
+        </div>
+
+        {/* Konfirmasi pembayaran: user kirim bukti transfer ke admin via WA */}
+        <div className="bg-[#E8F5E9] border border-[#A5D6A7] rounded-xl p-4 text-left text-xs text-[#555555] space-y-1.5 shadow-2xs">
+          <p className="font-bold text-[#1B5E20] flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-sm text-[#2E7D32]">check_circle</span>
+            {t('Setelah Membayar', 'After Payment')}
+          </p>
+          <p>
             {t(
-              'Silakan konfirmasi pembelian Anda ke admin untuk melanjutkan proses pengiriman.',
-              'Please confirm your purchase to admin to continue the shipping process.'
+              'Silakan konfirmasi pembayaran Anda ke admin via WhatsApp beserta bukti transfer, agar pesanan segera diproses.',
+              'Please confirm your payment to admin via WhatsApp along with the transfer proof, so your order can be processed right away.'
             )}
           </p>
         </div>
 
-        {/* Action Button — langsung lanjut ke status pesanan */}
-        <div className="space-y-4 pt-2">
+        {/* Action Buttons — konfirmasi via WA, lalu lihat status pesanan */}
+        <div className="space-y-3 pt-2">
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-[#25D366] hover:bg-[#1eb958] text-white font-bold text-xs sm:text-sm rounded-xl shadow-2xs transition-all active:scale-[0.98]"
+          >
+            <span className="material-symbols-outlined text-sm">chat</span>
+            <span>{t('Konfirmasi ke Admin via WhatsApp', 'Confirm to Admin via WhatsApp')}</span>
+          </a>
           <button
             onClick={onCompleteOrder}
-            className="mt-4 w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white py-4 px-6 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-2xs"
+            className="w-full bg-[#2E7D32] hover:bg-[#1B5E20] text-white py-4 px-6 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-2xs"
           >
             <span>{t('Selesai / Lihat Status Pesanan', 'Done / View Order Status')}</span>
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
