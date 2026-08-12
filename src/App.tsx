@@ -378,7 +378,6 @@ export function App() {
                 onLogout={handleLogout}
                 onNavigateProducts={() => setActiveTab('produk')}
                 onAddToCart={(p) => handleAddToCart(p, 1)}
-                onSelectProduct={handleSelectProduct}
                 showToast={showToast}
                 onNavigateAdmin={() => setActiveTab('admin')}
               />
