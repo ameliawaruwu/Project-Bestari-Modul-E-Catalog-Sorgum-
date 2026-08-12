@@ -13,6 +13,8 @@ import { landingContentApi } from '../api/landingContentApi';
 import { request, getToken } from '../api/http';
 import { realtimeApi } from '../api/realtimeApi';
 import i18n from '../i18n';
+import { LandingContent, DEFAULT_LANDING_CONTENT } from './defaults';
+import { mapBannerRow } from './mappers';
 
 export interface ShopSettings {
   storeName: string;
@@ -25,49 +27,6 @@ export interface ShopSettings {
   storeAddress?: string;
   storeEmail?: string;
   shippingCost?: number;
-}
-
-export interface LandingContent {
-  heroTitleId: string;
-  heroTitleEn: string;
-  heroDescId: string;
-  heroDescEn: string;
-  heroBtnId: string;
-  heroBtnEn: string;
-  storyTaglineId: string;
-  storyTaglineEn: string;
-  storyTitleId: string;
-  storyTitleEn: string;
-  storyDesc1Id: string;
-  storyDesc1En: string;
-  storyDesc2Id: string;
-  storyDesc2En: string;
-  storyImageUrl: string;
-  benefitsTitleId: string;
-  benefitsTitleEn: string;
-  benefitsDescId: string;
-  benefitsDescEn: string;
-  benefit1TitleId: string;
-  benefit1TitleEn: string;
-  benefit1DescId: string;
-  benefit1DescEn: string;
-  benefit1Icon: string;
-  benefit2TitleId: string;
-  benefit2TitleEn: string;
-  benefit2DescId: string;
-  benefit2DescEn: string;
-  benefit2Icon: string;
-  benefit3TitleId: string;
-  benefit3TitleEn: string;
-  benefit3DescId: string;
-  benefit3DescEn: string;
-  benefit3Icon: string;
-  featuredTitleId: string;
-  featuredTitleEn: string;
-  featuredDescId: string;
-  featuredDescEn: string;
-  // JSON array of product ids untuk section "Koleksi Produk Pilihan" (diatur admin)
-  featuredProductIds: string;
 }
 
 type Language = 'id' | 'en';
@@ -144,54 +103,6 @@ interface AppContextProps {
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
-// Initial default data definitions
-const INITIAL_PRODUCTS: Product[] = [];
-const INITIAL_FAQS: FaqItem[] = [];
-const INITIAL_ARTICLES: Article[] = [];
-const INITIAL_BANNERS: BannerSlide[] = [];
-
-const DEFAULT_LANDING_CONTENT: LandingContent = {
-  heroTitleId: 'Kemurnian Alam dalam Tiap Butir Sorgum Pilihan',
-  heroTitleEn: 'Purity of Nature in Every Premium Sorghum Grain',
-  heroDescId: 'Nikmati kebaikan nutrisi lokal yang diproses dengan standar kualitas tinggi untuk gaya hidup sehat Anda.',
-  heroDescEn: 'Enjoy the goodness of local nutrition processed with high quality standards for your healthy lifestyle.',
-  heroBtnId: 'Belanja Sekarang',
-  heroBtnEn: 'Shop Now',
-  storyTaglineId: 'Kisah Kami',
-  storyTaglineEn: 'Our Story',
-  storyTitleId: 'Kembalinya Warisan Pangan Leluhur Nusantara',
-  storyTitleEn: 'The Return of the Ancestral Food Heritage of Nusantara',
-  storyDesc1Id: 'Di Sorgum, kami percaya bahwa kesehatan sejati dimulai dari apa yang ditanam oleh alam secara murni. Bersama para petani mitra lokal, kami menghidupkan kembali sorgum—tanaman super (*superfood*) kaya serat and bebas gluten yang telah menutrisi generasi sebelum kita.',
-  storyDesc1En: 'At Sorgum, we believe that true health starts from what nature grows purely. Together with local partner farmers, we revive sorghum—a fiber-rich and gluten-free superfood that has nourished generations before us.',
-  storyDesc2Id: 'Setiap butir Sorgum adalah wujud komitmen kami untuk menghadirkan kualitas terbaik dari tanah Indonesia langsung ke meja makan keluarga Anda, sambil melestarikan keseimbangan ekosistem bumi.',
-  storyDesc2En: 'Every grain of Sorgum is a testament to our commitment to bringing the finest quality from Indonesian soil straight to your family dining table, while preserving the balance of the Earth\'s ecosystem.',
-  storyImageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1920',
-  benefitsTitleId: 'Mengapa Memilih Sorgum?',
-  benefitsTitleEn: 'Why Choose Sorghum?',
-  benefitsDescId: 'Kami berkomitmen menghadirkan produk pangan berkelanjutan yang sehat untuk tubuh dan ramah bagi bumi.',
-  benefitsDescEn: 'We are committed to delivering sustainable food products that are healthy for the body and friendly to the planet.',
-  benefit1TitleId: 'Bebas Gluten',
-  benefit1TitleEn: 'Gluten Free',
-  benefit1DescId: 'Alternatif gandum yang aman bagi penderita celiac dan mereka yang menjalani diet bebas gluten.',
-  benefit1DescEn: 'A safe alternative to wheat for celiac disease and those on a gluten-free diet.',
-  benefit1Icon: 'eco',
-  benefit2TitleId: '100% Organik Lokal',
-  benefit2TitleEn: '100% Organic & Local',
-  benefit2DescId: 'Ditanam secara alami tanpa pestisida kimia oleh petani mitra kami di tanah Nusantara.',
-  benefit2DescEn: 'Grown naturally without chemical pesticides by our partner farmers across the archipelago.',
-  benefit2Icon: 'verified',
-  benefit3TitleId: 'Berdampak Sosial',
-  benefit3TitleEn: 'Social Impact',
-  benefit3DescId: 'Setiap pembelian Anda mendukung kesejahteraan komunitas petani sorgum di pelosok daerah.',
-  benefit3DescEn: 'Your purchase supports the welfare of sorghum farming communities in remote regions.',
-  benefit3Icon: 'groups',
-  featuredTitleId: 'Koleksi Produk Pilihan',
-  featuredTitleEn: 'Featured Product Collection',
-  featuredDescId: 'Temukan berbagai olahan sorgum organik berkualitas tinggi, mulai dari beras sehat, tepung serbaguna, hingga camilan bergizi',
-  featuredDescEn: 'Discover a variety of high-quality organic sorghum products, ranging from healthy rice, all-purpose flour, to nutritious snacks.',
-  featuredProductIds: '',
-};
-
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Lang & Theme
   const [language, setLanguage] = useState<Language>(() => {
@@ -236,51 +147,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [shopSettings, setShopSettings] = useState<ShopSettings>({
     storeName: 'SORGUM', logoUrl: '', qrisImageUrl: '', qrisNmid: '', whatsappNumber: '', qrisStatus: 'AKTIF',
   });
-
-  // Default konten landing page — data UI saja (disimpan di localStorage,
-  // TIDAK pernah dikirim ke backend). Dipakai agar beranda tidak kosong saat
-  // localStorage belum terisi (hero, "Kisah Kami", benefits, featured).
-  const DEFAULT_LANDING_CONTENT: LandingContent = {
-    heroTitleId: 'Sorgum Pilihan Terbaik untuk Hidup Sehat',
-    heroTitleEn: 'Premium Sorghum for a Healthier Life',
-    heroDescId: 'Temukan produk olahan sorgum berkualitas tinggi dari petani Indonesia untuk keluarga Anda.',
-    heroDescEn: 'Discover high-quality sorghum products from Indonesian farmers for your family.',
-    heroBtnId: 'Belanja Sekarang',
-    heroBtnEn: 'Shop Now',
-    storyTaglineId: 'Kisah Kami',
-    storyTaglineEn: 'Our Story',
-    storyTitleId: 'Dari Lahan Petani ke Meja Anda',
-    storyTitleEn: 'From Farm to Your Table',
-    storyDesc1Id: 'SORGUM hadir untuk menghidupkan kembali sorgum, biji-bijian kaya nutrisi yang menjadi warisan pangan Nusantara.',
-    storyDesc1En: 'SORGUM brings back sorghum, a nutrient-rich grain that is part of Indonesia heritage.',
-    storyDesc2Id: 'Kami bekerja langsung dengan petani lokal untuk menghadirkan produk berkualitas dan berkelanjutan.',
-    storyDesc2En: 'We work directly with local farmers to deliver quality, sustainable products.',
-    storyImageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80',
-    benefitsTitleId: 'Mengapa Memilih SORGUM?',
-    benefitsTitleEn: 'Why Choose SORGUM?',
-    benefitsDescId: 'Produk sorgum berkualitas tinggi yang baik untuk Anda dan lingkungan.',
-    benefitsDescEn: 'High-quality sorghum products, good for you and the environment.',
-    benefit1TitleId: '100% Alami',
-    benefit1TitleEn: '100% Natural',
-    benefit1DescId: 'Sorgum ditanam tanpa bahan kimia berbahaya.',
-    benefit1DescEn: 'Sorghum grown without harmful chemicals.',
-    benefit1Icon: 'eco',
-    benefit2TitleId: 'Kaya Nutrisi',
-    benefit2TitleEn: 'Nutrient Rich',
-    benefit2DescId: 'Bebas gluten, tinggi serat, dan kaya antioksidan.',
-    benefit2DescEn: 'Gluten-free, high in fiber, rich in antioxidants.',
-    benefit2Icon: 'verified',
-    benefit3TitleId: 'Mendukung Petani Lokal',
-    benefit3TitleEn: 'Support Local Farmers',
-    benefit3DescId: 'Setiap pembelian membantu kesejahteraan petani nusantara.',
-    benefit3DescEn: 'Every purchase supports Indonesian farmers livelihoods.',
-    benefit3Icon: 'groups',
-    featuredTitleId: 'Produk Pilihan',
-    featuredTitleEn: 'Featured Products',
-    featuredDescId: 'Jelajahi produk sorgum terbaik pilihan kami.',
-    featuredDescEn: 'Explore our best-selected sorghum products.',
-    featuredProductIds: '',
-  };
 
   const [landingContent, setLandingContent] = useState<LandingContent>(DEFAULT_LANDING_CONTENT);
 
@@ -385,16 +251,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // harus langsung hilang dari beranda (bukan snapshot basi).
     request('/banners').then((res: any) => {
       if (!cancelled && res?.data) {
-        const mapped: BannerSlide[] = (res.data as any[]).map((b: any) => ({
-          id: String(b.id),
-          title: b.title,
-          titleEn: b.title_en || undefined,
-          uploadDate: formatDate(b.created_at, 'short'),
-          targetLink: b.target_link || '',
-          image: b.image_url || '',
-          active: !!b.is_active,
-        }));
-        setBanners(mapped);
+        setBanners((res.data as any[]).map(mapBannerRow));
       }
     }).catch(() => {});
 
@@ -487,16 +344,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const refreshBanners = () => {
       request('/banners').then((res: any) => {
         if (res?.data) {
-          const mapped: BannerSlide[] = (res.data as any[]).map((b: any) => ({
-            id: String(b.id),
-            title: b.title,
-            titleEn: b.title_en || undefined,
-            uploadDate: formatDate(b.created_at, 'short'),
-            targetLink: b.target_link || '',
-            image: b.image_url || '',
-            active: !!b.is_active,
-          }));
-          setBanners(mapped);
+          setBanners((res.data as any[]).map(mapBannerRow));
         }
       }).catch(() => {});
     };

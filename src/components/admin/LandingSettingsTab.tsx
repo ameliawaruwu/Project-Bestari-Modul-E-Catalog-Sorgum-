@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BannerSlide } from '../../types/admin';
 import { Product } from '../../types';
-import { useApp, LandingContent } from '../../context/AppContext';
+import { useApp } from '../../context/AppContext';
+import { LandingContent } from '../../context/defaults';
 
 interface LandingSettingsTabProps {
   banners: BannerSlide[];
