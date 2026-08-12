@@ -48,7 +48,7 @@ function formatRupiah(value: number): string {
   return `IDR ${value.toLocaleString('id-ID')}`;
 }
 
-function mapProduct(row: ProductRow): Product {
+export function mapProduct(row: ProductRow): Product {
   const weight = row.weight_spec || '1kg';
   const originalPrice = row.original_price ?? null;
   return {

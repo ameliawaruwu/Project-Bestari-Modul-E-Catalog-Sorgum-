@@ -3,7 +3,8 @@ import { User, Order, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
 import { realtimeApi } from '../api/realtimeApi';
-import { productApi } from '../api/productApi';
+import { productAdminApi } from '../api/adminApi';
+import { mapProduct } from '../api/productApi';
 
 import { AdminSidebar } from '../components/admin/AdminSidebar';
 import { AdminHeader } from '../components/admin/AdminHeader';
@@ -763,11 +764,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 onDeleteProduct={(product) => setDeletingProduct(product)}
                 onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
                 onOpenEditProduct={(product) => {
-                  // Fetch detail produk (getProductById) supaya galeri images[] ikut
-                  // terisi di form — list produk tidak membawa images.
+                  // Fetch detail produk by id (endpoint admin) supaya galeri images[]
+                  // ikut terisi di form — list produk tidak membawa images.
                   setEditingProduct({ isEditing: true, product });
-                  productApi.getProductById(String(product.id)).then((detail) => {
-                    if (detail) setEditingProduct({ isEditing: true, product: detail });
+                  productAdminApi.getProductById(String(product.id)).then((detail) => {
+                    if (detail) {
+                      // Response admin = raw row (snake_case) → map ke Product FE (camelCase)
+                      const mapped = mapProduct(detail);
+                      setEditingProduct({ isEditing: true, product: mapped });
+                    }
                   }).catch(() => {});
                 }}
               />

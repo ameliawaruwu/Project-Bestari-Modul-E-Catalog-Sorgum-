@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getProducts, createProduct, updateProduct, toggleProductActive, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages } from '../../services/products_service';
+import { getProducts, createProduct, updateProduct, toggleProductActive, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
 import { AppError } from '../../lib/errors_utils';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
@@ -10,6 +10,15 @@ router.use(authRequired, adminOnly);
 router.get('/', async (_req: Request, res: Response) => {
   const result = await getProducts({ page: 1, limit: 1000, includeInactive: true });
   res.json({ data: result.data, meta: result.meta });
+});
+
+// Detail produk by id (admin) — termasuk nonaktif + galeri images[].
+router.get('/:id', async (req: Request, res: Response) => {
+  const id = parseInt(String(req.params.id));
+  if (isNaN(id)) { res.status(400).json({ error: 'id tidak valid' }); return; }
+  const product = await getProductByIdAdmin(id);
+  if (!product) { res.status(404).json({ error: 'Produk tidak ditemukan' }); return; }
+  res.json({ data: product });
 });
 
 router.post('/', async (req: Request, res: Response) => {

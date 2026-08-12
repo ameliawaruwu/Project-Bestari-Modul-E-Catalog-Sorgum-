@@ -150,6 +150,12 @@ export const productAdminApi = {
       auth: true,
     });
   },
+
+  // GET /api/admin/products/:id — detail produk by id (termasuk nonaktif + galeri)
+  getProductById: async (id: string) => {
+    const res = await request<{ data?: any }>(`/admin/products/${id}`, { auth: true });
+    return res?.data || null;
+  },
 };
 
 export const orderAdminApi = {
