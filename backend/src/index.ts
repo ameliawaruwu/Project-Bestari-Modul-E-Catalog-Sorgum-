@@ -75,6 +75,15 @@ app.use(cors({ origin: config.corsOrigins }));
 app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.resolve(config.upload.dir)));
 
+// API tidak boleh di-cache heuristic oleh browser — data berubah realtime
+// (SSE) & dikontrol admin. Tanpa ini, sebagian browser meng-cache respons GET
+// (ETag/Last-Modified) → user bisa lihat data lama sampai revalidate. no-store
+// memaksa tiap load ambil data terbaru dari server.
+app.use('/api', (_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
 if (!config.jwt.secret) {
   console.error('[FATAL] ECATALOG_BESTARI_JWT_SECRET wajib diisi di .env');
   process.exit(1);
