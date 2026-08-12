@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Order } from '../../types';
+import { formatDate } from '../../utils/formatDate';
 
 interface OrderDetailViewProps {
   order: Order | null;
@@ -243,7 +244,7 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                   </span>
                   {trackingData.tracking.checked_at && (
                     <span className="text-[10px] text-[#555555]">
-                      {new Date(trackingData.tracking.checked_at).toLocaleString('id-ID')}
+                      {formatDate(trackingData.tracking.checked_at, 'full')}
                     </span>
                   )}
                 </div>

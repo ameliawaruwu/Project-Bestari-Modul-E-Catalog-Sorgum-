@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Order } from '../types';
 import { useApp } from '../context/AppContext';
 import { request } from '../api/http';
+import { formatDate } from '../utils/formatDate';
 
 interface TrackingData {
   tracking: {
@@ -206,12 +207,8 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
                           <p className="font-semibold text-[#1B5E20] mt-0.5">
                             {(() => {
                               const raw = tk.checked_at;
-                              if (!raw) return '-';
-                              const d = new Date(raw);
-                              const ok = !isNaN(d.getTime());
-                              return ok
-                                ? d.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-                                : raw;
+                              const formatted = formatDate(raw, 'datetime');
+                              return formatted || raw;
                             })()}
                           </p>
                         </div>

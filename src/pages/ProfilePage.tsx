@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { wishlistApi } from '../api/wishlistApi';
 import { PhoneInput } from '../components/PhoneInput';
 import { discountBadgeLabel } from '../utils/discountBadge';
+import { formatDate } from '../utils/formatDate';
 
 interface ProfilePageProps {
   user: User | null;
@@ -895,9 +896,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                             <div className="col-span-2 sm:col-span-1">
                               <p className="text-[10px] uppercase tracking-wide text-[#555555] font-bold">Update Terakhir</p>
                               <p className="font-semibold text-[#1B5E20] mt-0.5">
-                                {trackingData.tracking.checked_at
-                                  ? new Date(trackingData.tracking.checked_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-                                  : '-'}
+                                {formatDate(trackingData.tracking.checked_at, 'datetime')}
                               </p>
                             </div>
                           </div>

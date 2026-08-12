@@ -1,5 +1,6 @@
 import { Article } from '../types';
 import { request } from './http';
+import { formatDate } from '../utils/formatDate';
 
 // Backend article row shape
 interface ArticleRow {
@@ -23,10 +24,7 @@ interface ArticleRow {
 }
 
 function mapArticle(a: ArticleRow): Article {
-  const date = new Date(a.published_at || a.created_at);
-  const dateStr = isNaN(date.getTime())
-    ? ''
-    : date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateStr = formatDate(a.published_at || a.created_at, 'long');
 
   return {
     id: String(a.id),

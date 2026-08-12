@@ -5,6 +5,7 @@ import { useApp } from '../context/AppContext';
 import { realtimeApi } from '../api/realtimeApi';
 import { productAdminApi } from '../api/adminApi';
 import { mapProduct } from '../api/productApi';
+import { formatDate } from '../utils/formatDate';
 
 import { AdminSidebar } from '../components/admin/AdminSidebar';
 import { AdminHeader } from '../components/admin/AdminHeader';
@@ -130,7 +131,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         const mapped: BannerSlide[] = (list || []).map((b: any) => ({
           id: String(b.id),
           title: b.title,
-          uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          uploadDate: formatDate(b.created_at, 'short'),
           targetLink: b.target_link || '',
           image: b.image_url || '',
           active: !!b.is_active,
@@ -160,10 +161,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         id: String(a.id),
         title: a.title,
         category: a.category,
-        date: a.published_at || a.created_at
-          ? new Date(a.published_at || a.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
-          : '',
-        createdAt: a.created_at ? new Date(a.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '',
+        date: formatDate(a.published_at || a.created_at, 'long'),
+        createdAt: formatDate(a.created_at, 'long'),
         author: a.author || 'Tim Sorgum',
         views: 0,
         content: a.content || '',
@@ -385,7 +384,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         id: String(b.id),
         title: b.title,
         titleEn: b.title_en || undefined,
-        uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+        uploadDate: formatDate(b.created_at, 'short'),
         targetLink: b.target_link || '',
         image: b.image_url || '',
         active: !!b.is_active,

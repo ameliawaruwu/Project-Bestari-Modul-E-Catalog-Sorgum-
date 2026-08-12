@@ -3,6 +3,7 @@ import { AdminUser } from '../../types/admin';
 import { UserFormView } from './UserFormView';
 import { SoftDeleteConfirmModal } from './SoftDeleteConfirmModal';
 import { userAdminApi } from '../../api/adminApi';
+import { formatDate } from '../../utils/formatDate';
 
 interface UsersTabProps {
   showToast: (msg: string, type?: 'success' | 'error') => void;
@@ -16,11 +17,7 @@ function mapAdminUser(u: { id: number; name: string; email: string; phone: strin
     name: u.name,
     email: u.email,
     phone: u.phone || '-',
-    joinedDate: new Date(u.created_at).toLocaleDateString('id-ID', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    }),
+    joinedDate: formatDate(u.created_at, 'long'),
     orderCount: 0,
     status: isDeleted ? 'NONAKTIF' : 'AKTIF',
     isDeleted,

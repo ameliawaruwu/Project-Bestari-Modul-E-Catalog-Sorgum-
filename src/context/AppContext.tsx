@@ -6,6 +6,7 @@ import { articleApi } from '../api/articleApi';
 import { faqApi } from '../api/faqApi';
 import { shopSettingsApi, ShopSettings as ApiShopSettings } from '../api/shopSettingsApi';
 import { orderApi } from '../api/orderApi';
+import { formatDate } from '../utils/formatDate';
 import { authApi } from '../api/authApi';
 import { wishlistApi } from '../api/wishlistApi';
 import { landingContentApi } from '../api/landingContentApi';
@@ -388,7 +389,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           id: String(b.id),
           title: b.title,
           titleEn: b.title_en || undefined,
-          uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+          uploadDate: formatDate(b.created_at, 'short'),
           targetLink: b.target_link || '',
           image: b.image_url || '',
           active: !!b.is_active,
@@ -490,7 +491,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             id: String(b.id),
             title: b.title,
             titleEn: b.title_en || undefined,
-            uploadDate: b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+            uploadDate: formatDate(b.created_at, 'short'),
             targetLink: b.target_link || '',
             image: b.image_url || '',
             active: !!b.is_active,
@@ -895,12 +896,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Article CRUD
   const saveArticle = (articleData: any) => {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+    const dateStr = formatDate(new Date(), 'long');
 
     if (articleData.id) {
       const updated = articles.map((a) => {

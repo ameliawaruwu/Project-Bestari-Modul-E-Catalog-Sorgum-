@@ -1,5 +1,6 @@
 import { CartItem, Order, CheckoutData, Product } from '../types';
 import { request, getSessionId, getToken } from './http';
+import { formatDate } from '../utils/formatDate';
 
 // ---------------------------------------------------------------------------
 // Cart rows from backend (GET /api/cart) — server-side cart via x-session-id / token
@@ -122,9 +123,7 @@ export function mapOrder(o: BackendOrder): Order {
     totalAmount: o.total,
     status: STATUS_MAP[o.order_status] || 'Pending',
     statusRaw: o.order_status || 'pending',
-    createdAt: new Date(o.created_at).toLocaleDateString('id-ID', {
-      day: 'numeric', month: 'long', year: 'numeric',
-    }),
+    createdAt: formatDate(o.created_at, 'long'),
     shippingAddress,
     paymentMethod: o.payment_method,
     paymentStatus: (o.payment_status as Order['paymentStatus']) || undefined,
