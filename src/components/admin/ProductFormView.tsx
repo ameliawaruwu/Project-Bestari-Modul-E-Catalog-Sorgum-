@@ -26,6 +26,7 @@ interface ProductFormViewProps {
     specification?: string;
     shippingInfo?: string;
     origin?: string;
+    galleryImages?: string[];
   }) => void;
   onCancel: () => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
@@ -63,6 +64,9 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [stockInput, setStockInput] = useState<number | ''>('');
   const [descInput, setDescInput] = useState('');
   const [shippingInfoInput, setShippingInfoInput] = useState('');
+  // Galeri produk (maks 4 gambar, diedit admin): URL gambar galeri + file upload per slot
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryFiles, setGalleryFiles] = useState<(File | null)[]>([null, null, null, null]);
 
   useEffect(() => {
     if (initialProduct) {
@@ -85,6 +89,8 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setStockInput(initialStock);
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
+      // Galeri dari DB (product.images) — max 4, urut sort_order
+      setGalleryImages((initialProduct.images || []).map((img) => img.image_url).slice(0, 4));
       // Badge yang sudah tidak terdaftar di Kelola Badge → reset ke kosong (cegah badge yatim tampil)
       if (initialProduct.badge && badgeOptions && badgeOptions.length > 0 && !badgeOptions.includes(initialProduct.badge)) {
         setBadgeInput('');
@@ -107,6 +113,8 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setStockInput('');
       setDescInput('');
       setShippingInfoInput('');
+      setGalleryImages([]);
+      setGalleryFiles([null, null, null, null]);
     }
   }, [initialProduct, initialStock, categoryOptions]);
 
@@ -122,6 +130,39 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     }
   };
 
+  // Upload gambar ke slot galeri tertentu (0-3) — preview dataURL, upload final saat save.
+  const handleGalleryFileChange = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setGalleryImages((prev) => {
+        const next = [...prev];
+        next[idx] = reader.result as string;
+        return next;
+      });
+      setGalleryFiles((prev) => {
+        const next = [...prev];
+        next[idx] = file;
+        return next;
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeGalleryImage = (idx: number) => {
+    setGalleryImages((prev) => {
+      const next = [...prev];
+      next[idx] = '';
+      return next;
+    });
+    setGalleryFiles((prev) => {
+      const next = [...prev];
+      next[idx] = null;
+      return next;
+    });
+  };
+
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,6 +174,31 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
     const priceNum = Number(priceInput) || 0;
     const stockNum = Number(stockInput) || 0;
+
+    // Upload galeri: file baru (dataURL) → kompres → upload → URL final.
+    // Slot kosong/URL lama dibiarkan (URL lama tidak perlu di-upload ulang).
+    const finalGallery: string[] = [];
+    for (let i = 0; i < galleryImages.length; i++) {
+      const val = galleryImages[i];
+      if (!val) continue;
+      const file = galleryFiles[i];
+      if (file) {
+        try {
+          const { productAdminApi } = await import('../../api/adminApi');
+          const { compressImage } = await import('../../utils/imageCompress');
+          const toUpload = await compressImage(file, 800);
+          const uploadedUrl = await productAdminApi.uploadImage(toUpload);
+          if (uploadedUrl) finalGallery.push(uploadedUrl);
+          else showToast(`Gagal upload gambar galeri #${i + 1}.`);
+        } catch (err: any) {
+          showToast(err?.message || `Gagal upload gambar galeri #${i + 1}.`);
+          return;
+        }
+      } else {
+        // URL lama / dataURL yang tidak punya file (user paste URL)
+        finalGallery.push(val);
+      }
+    }
 
     // Kalau ada file baru → kompres dulu (lolos limit nginx/multer), upload, dapat URL
     let finalImage = imageInput; // dataURL preview / URL lama
@@ -169,6 +235,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       stock: stockNum,
       description: descInput,
       shippingInfo: shippingInfoInput,
+      galleryImages: finalGallery,
     });
   };
 
@@ -253,6 +320,74 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 </div>
               </div>
             </label>
+          </div>
+
+          {/* Galeri Produk (4 Gambar) — foto tambahan di halaman detail produk */}
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-bold text-[#1B5E20]">
+                Galeri Produk (maks. 4 Gambar)
+              </label>
+              <p className="text-xs text-[#555555] mt-0.5">
+                Gambar tambahan yang tampil di halaman detail produk. Slot kosong diabaikan.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[0, 1, 2, 3].map((idx) => {
+                const val = galleryImages[idx] || '';
+                return (
+                  <div key={idx} className="relative">
+                    <input
+                      type="file"
+                      id={`gallery-file-input-${idx}`}
+                      accept="image/*"
+                      onChange={(e) => handleGalleryFileChange(idx, e)}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor={`gallery-file-input-${idx}`}
+                      className={`block border-2 border-dashed rounded-xl overflow-hidden cursor-pointer transition-all ${
+                        val
+                          ? 'border-[#A5D6A7] bg-[#F7F8F6]'
+                          : 'border-[#E0E0E0] bg-[#F7F8F6] hover:border-[#2E7D32]'
+                      }`}
+                    >
+                      {val ? (
+                        <div className="relative aspect-square">
+                          <img
+                            src={val}
+                            alt={`Galeri ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <span className="text-white text-xs font-bold">Ganti</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="aspect-square flex flex-col items-center justify-center gap-1">
+                          <span className="material-symbols-outlined text-2xl text-[#2E7D32]">
+                            add_photo_alternate
+                          </span>
+                          <span className="text-[10px] text-[#555555] font-semibold">
+                            Gambar {idx + 1}
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                    {val && (
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryImage(idx)}
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#D32F2F] text-white flex items-center justify-center shadow-md hover:bg-[#B71C1C] transition-colors cursor-pointer"
+                        title="Hapus gambar ini"
+                      >
+                        <span className="material-symbols-outlined text-sm">close</span>
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Row 1: Nama & Kategori */}

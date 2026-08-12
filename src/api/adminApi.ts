@@ -140,6 +140,16 @@ export const productAdminApi = {
       auth: true,
     });
   },
+
+  // PUT /api/admin/products/:id/images — ganti semua gambar galeri sekaligus
+  // (editor galeri Kelola Produk). Gambar pertama jadi primary.
+  replaceImages: async (productId: string, images: string[]) => {
+    await request(`/admin/products/${productId}/images`, {
+      method: 'PUT',
+      body: { images },
+      auth: true,
+    });
+  },
 };
 
 export const orderAdminApi = {

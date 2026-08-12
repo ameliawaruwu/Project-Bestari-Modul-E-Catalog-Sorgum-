@@ -21,6 +21,8 @@ export interface Product {
   origin?: string;
   stock?: number;
   isActive?: boolean;
+  // Galeri gambar produk (dari product_images, diatur admin di Kelola Produk)
+  images?: { id: number; image_url: string; is_primary: number; sort_order: number }[];
 }
 
 export type ArticleContentBlock =

@@ -442,6 +442,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     specification?: string;
     shippingInfo?: string;
     origin?: string;
+    galleryImages?: string[];
   }) => {
     // Sinkron: kalau kategoriOptions dari Kelola Kategori tersedia, pakai id asli BE.
     // Fallback: map key FE -> id (perilaku lama, aman kalau BE kategori default).
@@ -490,6 +491,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         if (data.image && !data.image.startsWith('data:') && data.image !== existingImage) {
           await productAdminApi.addImage(data.id, data.image, true);
         }
+        // Galeri produk (4 gambar) — replace semua kalau admin mengubahnya.
+        const gallery = data.galleryImages || [];
+        if (gallery.length) {
+          // Gambar utama wajib jadi slot pertama (primary) kalau belum ada di galeri.
+          const urls = data.image && !data.image.startsWith('data:')
+            ? [data.image, ...gallery.filter((u) => u !== data.image)]
+            : gallery;
+          await productAdminApi.replaceImages(data.id, urls);
+        }
       } else {
         const created = await productAdminApi.createProduct({
           name: data.name,
@@ -512,6 +522,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         // Gambar baru → daftarkan sebagai primary image produk baru
         if (data.image && !data.image.startsWith('data:')) {
           await productAdminApi.addImage(String(created?.id || data.id), data.image, true);
+        }
+        // Galeri produk (4 gambar) — simpan sekaligus untuk produk baru
+        const galleryNew = data.galleryImages || [];
+        if (galleryNew.length && created?.id) {
+          const urls = data.image && !data.image.startsWith('data:')
+            ? [data.image, ...galleryNew.filter((u) => u !== data.image)]
+            : galleryNew;
+          await productAdminApi.replaceImages(String(created.id), urls);
         }
         // Penting: pakai id ASLI dari BE (bukan prod-<timestamp>) supaya edit/delete
         // produk baru jalan (id string palsu → parseInt NaN → 400/404)

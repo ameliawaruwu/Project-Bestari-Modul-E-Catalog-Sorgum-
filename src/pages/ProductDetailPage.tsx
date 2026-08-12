@@ -34,13 +34,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     toggleWishlist(product.id);
   };
 
-  // Gallery thumbnail images
-  const galleryImages = [
-    product.image,
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuAxAom7UgxRzy5wiuynpsvZ83tKJ9gO8T8nqCFbn1eMWTHIqArmPa-76rKpcUeBBcKhNub-FngJ3ajeXJ96RnhfzuANVPHyAJHXyTSDmavrKYPNmNRj9hvdH5XUImI-R_6AKF2fwewgs-QneBabX07o09iC01ygYakq3l4MtvuGDNEGcxvbk_V8EHQALDk4v2gSb70129LevbmxnlGm16_OVQ-3DT4JisSN0jxsuiJVr2OW3UJvEY8',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBafVp-lUk22nkYhS1JGf-xDDuQMXzdvoRx7g_wPR9pXMDzq5Vi6wpCDQf1CVEtsj2MC5FJfISVZ5CQG4r60wWbaLfejpvXXCTDssFJIi5BKiqAQxD449BBRQmyBxBK3IT_AZ1rmXTTacMUjKVKOuvmps1Noa9OBt5ulk5AJquxcwMlqaFoGqI7Idhes5jSi7x7EvJNeaifDmxNTHPar3MVr_L73H5VtxJRof1lDMEfCwU8tN7WfU8',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuAXfgzY3a3ytjZ9oN2Thh9dbgQ3O3fVvra6HOUak37j0NzhxCGS-BzYkoDfkscX1gNoVfgUYPdGZzT0Soxp1G8Z5Wr6nPMQDombPoYYX9I1AA_7YgzZ8aTmenwnUfgTTQ7KibDk9a5IPzJupiGe5dq9bhaA3PIcPQgberVoQ6jc4uEVx56LWLS0c-ZpoTflmwEhvwYmISqAY3t_E4YxQvAAHL-BujbrlGXR4vUBH5yWwsUcM9gS9ZM',
-  ];
+  // Gallery images — dari DB (product_images, diedit admin di Kelola Produk).
+  // Urutan: sort_order ASC; kalau kosong fallback ke gambar utama produk.
+  const galleryImages = (product.images && product.images.length
+    ? product.images.map((img) => img.image_url)
+    : [product.image]
+  ).slice(0, 4);
 
   // Load related products from backend (same category, exclude current)
   useEffect(() => {

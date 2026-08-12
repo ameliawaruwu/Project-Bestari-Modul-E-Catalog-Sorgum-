@@ -74,6 +74,8 @@ function mapProduct(row: ProductRow): Product {
     origin: row.origin || undefined,
     stock: row.stock,
     isActive: !!row.is_active,
+    // Galeri gambar (hanya ada di detail; list tidak membawa images[])
+    images: (row as any).images?.length ? (row as any).images : undefined,
   };
 }
 

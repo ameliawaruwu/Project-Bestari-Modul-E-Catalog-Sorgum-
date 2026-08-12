@@ -282,3 +282,28 @@ export async function deleteProductImage(imageId: number, productId: number) {
   const [result] = await dbPool.query('DELETE FROM product_images WHERE id = ? AND product_id = ?', [imageId, productId]);
   return (result as any).affectedRows > 0;
 }
+
+// Ganti SEMUA gambar galeri produk sekaligus (dipakai editor galeri di Kelola Produk).
+// Idempotent & transactional: hapus semua gambar lama, insert ulang dari array URL.
+// Gambar pertama = primary (is_primary=1); sisanya sort_order berurutan.
+export async function replaceProductImages(productId: number, urls: string[]) {
+  const clean = (urls || []).map((u) => String(u).trim()).filter((u) => u.length > 0 && u !== 'data:');
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    await conn.query('DELETE FROM product_images WHERE product_id = ?', [productId]);
+    for (let i = 0; i < clean.length; i++) {
+      await conn.query(
+        'INSERT INTO product_images (product_id, image_url, alt_text, is_primary, sort_order) VALUES (?, ?, NULL, ?, ?)',
+        [productId, clean[i], i === 0 ? 1 : 0, i],
+      );
+    }
+    await conn.commit();
+    return clean.length;
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
+}

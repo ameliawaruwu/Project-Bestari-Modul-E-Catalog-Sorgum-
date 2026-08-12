@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getProducts, createProduct, updateProduct, toggleProductActive, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage } from '../../services/products_service';
+import { getProducts, createProduct, updateProduct, toggleProductActive, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages } from '../../services/products_service';
 import { AppError } from '../../lib/errors_utils';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
@@ -96,6 +96,17 @@ router.post('/:id/images', async (req: Request, res: Response) => {
   if (isNaN(productId) || !image_url) { res.status(400).json({ error: 'id dan image_url wajib' }); return; }
   const imgId = await addProductImage(productId, image_url, alt_text, !!is_primary);
   res.status(201).json({ message: 'Gambar ditambahkan', data: { id: imgId } });
+});
+
+// Ganti semua gambar galeri sekaligus (editor galeri di Kelola Produk).
+// Body: { images: string[] } — gambar pertama jadi primary. Idempotent.
+router.put('/:id/images', async (req: Request, res: Response) => {
+  const productId = parseInt(String(req.params.id));
+  const images = Array.isArray(req.body?.images) ? req.body.images : [];
+  if (isNaN(productId)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
+  const count = await replaceProductImages(productId, images);
+  res.json({ message: 'Galeri produk diperbarui', data: { count } });
+  eventBus.emit(EVENTS.PRODUCTS, { action: 'update', id: productId });
 });
 
 router.put('/:id/images/:imageId/primary', async (req: Request, res: Response) => {
