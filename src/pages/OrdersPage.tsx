@@ -29,30 +29,17 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
 
   // Live tracking per order (dari BE /api/tracking/:orderId)
   const [trackingMap, setTrackingMap] = useState<Record<string, TrackingData>>({});
-  // Live orders (polling /orders/mine — biar set resi/status admin langsung ke-liat)
-  const [liveOrders, setLiveOrders] = useState<Order[] | null>(null);
-
-  const displayOrders = liveOrders ?? orders;
 
   useEffect(() => {
-    let cancelled = false;
-    const loadOrders = async () => {
-      try {
-        const { orderApi } = await import('../api/orderApi');
-        const list = await orderApi.getOrders();
-        if (!cancelled) setLiveOrders(list);
-      } catch { /* keep previous */ }
-    };
-    loadOrders();
-    const interval = setInterval(loadOrders, 20000);
-    return () => { cancelled = true; clearInterval(interval); };
-  }, []);
-
-  useEffect(() => {
+    // List orders realtime via SSE (AppContext refreshOrders saat event 'orders'
+    // dari BE — admin update status/payment). Tidak perlu polling 20s lagi.
+    // Tracking tetap polling (status ekspedisi berubah dari pihak ketiga,
+    // tidak ada event SSE untuk itu), interval diperpanjang ke 60s biar
+    // tidak membebani server untuk N order per user.
     let cancelled = false;
     const load = async () => {
       const map: Record<string, TrackingData> = {};
-      for (const o of displayOrders) {
+      for (const o of orders) {
         if (!o.courier || !o.trackingNumber) continue;
         try {
           const res = await request<{ data: TrackingData }>(`/tracking/${o.id}`, { auth: true });
@@ -64,11 +51,12 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
       if (!cancelled) setTrackingMap(map);
     };
     load();
-    // Auto-refresh tracking tiap 20 detik biar update admin (set resi/status) langsung ke-liat user tanpa reload
-    const interval = setInterval(load, 20000);
+    // Auto-refresh tracking tiap 60 detik (ekspedisi update tidak sering;
+    // 20s terlalu boros untuk N order per user)
+    const interval = setInterval(load, 60000);
     return () => { cancelled = true; clearInterval(interval); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayOrders.length, liveOrders === null]);
+  }, [orders.length]);
 
   const loading = false;
 
@@ -87,7 +75,7 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
         </p>
       </div>
 
-      {displayOrders.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-8 shadow-2xs">
           <span className="material-symbols-outlined text-6xl text-[#C89B3C] mb-3">
             receipt_long
@@ -110,7 +98,7 @@ export const OrdersPage: React.FC<OrdersPageProps> = ({ onNavigateProducts }) =>
         </div>
       ) : (
         <div className="space-y-6">
-          {displayOrders.map((ord) => (
+          {orders.map((ord) => (
             <div
               key={ord.id}
               className="bg-[#FFFFFF] rounded-2xl p-6 border border-[#E0E0E0] shadow-2xs"
