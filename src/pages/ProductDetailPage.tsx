@@ -463,19 +463,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center pt-2 border-t border-[#E0E0E0]">
+                <div className="flex items-center pt-2 border-t border-[#E0E0E0]">
                   <span className="font-['Plus_Jakarta_Sans'] font-bold text-sm text-[#1B5E20]">
                     Rp {rel.price.toLocaleString('id-ID')}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(rel, 1);
-                    }}
-                    className="w-9 h-9 rounded-xl bg-[#2E7D32] text-white flex items-center justify-center hover:bg-[#1B5E20] transition-colors cursor-pointer shadow-2xs"
-                  >
-                    <span className="material-symbols-outlined text-lg">shopping_cart</span>
-                  </button>
                 </div>
               </div>
             ))}
