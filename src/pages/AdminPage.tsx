@@ -3,6 +3,7 @@ import { User, Order, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
 import { realtimeApi } from '../api/realtimeApi';
+import { productApi } from '../api/productApi';
 
 import { AdminSidebar } from '../components/admin/AdminSidebar';
 import { AdminHeader } from '../components/admin/AdminHeader';
@@ -761,7 +762,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 onToggleProductStatus={handleToggleProductStatus}
                 onDeleteProduct={(product) => setDeletingProduct(product)}
                 onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
-                onOpenEditProduct={(product) => setEditingProduct({ isEditing: true, product })}
+                onOpenEditProduct={(product) => {
+                  // Fetch detail produk (getProductById) supaya galeri images[] ikut
+                  // terisi di form — list produk tidak membawa images.
+                  setEditingProduct({ isEditing: true, product });
+                  productApi.getProductById(String(product.id)).then((detail) => {
+                    if (detail) setEditingProduct({ isEditing: true, product: detail });
+                  }).catch(() => {});
+                }}
               />
             ))}
 
