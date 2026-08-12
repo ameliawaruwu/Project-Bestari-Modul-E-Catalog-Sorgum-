@@ -155,15 +155,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [addressSaving, setAddressSaving] = useState(false);
 
-  // Password state
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-  // Toggle tampil/sembunyi kata sandi (ikon mata) di form Ubah Kata Sandi
-  const [showPassword, setShowPassword] = useState(false);
-
   // Load addresses dari BE saat mount (kalau login)
   useEffect(() => {
     let cancelled = false;
@@ -194,28 +185,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         email: res.user!.email || p.email,
         phone: res.user!.phone || p.phone,
       }));
-    }
-  };
-
-  const handleSavePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!passwordData.currentPassword) {
-      showToast('Masukkan kata sandi saat ini.');
-      return;
-    }
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showToast('Konfirmasi kata sandi tidak cocok.');
-      return;
-    }
-    if (passwordData.newPassword.length < 6) {
-      showToast('Password baru minimal 6 karakter.');
-      return;
-    }
-    const { authApi } = await import('../api/authApi');
-    const res = await authApi.changePassword(passwordData.currentPassword, passwordData.newPassword);
-    showToast(res.message);
-    if (res.success) {
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
     }
   };
 
@@ -1290,108 +1259,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           {/* TAB 4: PENGATURAN AKUN */}
           {activeTab === 'pengaturan' && (
             <div className="space-y-6 animate-fadeIn">
-              {/* Ubah Kata Sandi */}
-              <div className="bg-[#FFFFFF] rounded-2xl p-6 sm:p-8 border border-[#E0E0E0] shadow-2xs max-w-xl">
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#E0E0E0]">
-                  <span className="material-symbols-outlined text-2xl text-[#1B5E20]">lock</span>
-                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#1B5E20]">
-                    Ubah Kata Sandi
-                  </h3>
-                </div>
-
-                <form onSubmit={handleSavePassword} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-[#555555] mb-1.5">
-                      Kata Sandi Saat Ini
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={passwordData.currentPassword}
-                        onChange={(e) =>
-                          setPasswordData({ ...passwordData, currentPassword: e.target.value })
-                        }
-                        placeholder="••••••••"
-                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 pr-11 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#2E7D32] transition-colors cursor-pointer flex items-center justify-center"
-                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          {showPassword ? 'visibility_off' : 'visibility'}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-[#555555] mb-1.5">
-                      Kata Sandi Baru
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={passwordData.newPassword}
-                        onChange={(e) =>
-                          setPasswordData({ ...passwordData, newPassword: e.target.value })
-                        }
-                        placeholder="Min. 8 karakter"
-                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 pr-11 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#2E7D32] transition-colors cursor-pointer flex items-center justify-center"
-                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          {showPassword ? 'visibility_off' : 'visibility'}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-[#555555] mb-1.5">
-                      Konfirmasi Kata Sandi Baru
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={passwordData.confirmPassword}
-                        onChange={(e) =>
-                          setPasswordData({ ...passwordData, confirmPassword: e.target.value })
-                        }
-                        placeholder="Ulangi kata sandi baru"
-                        className="w-full bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl px-4 py-3 pr-11 text-sm text-[#1B5E20] focus:outline-none focus:ring-2 focus:ring-[#2E7D32]"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#2E7D32] transition-colors cursor-pointer flex items-center justify-center"
-                        aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-                      >
-                        <span className="material-symbols-outlined text-lg">
-                          {showPassword ? 'visibility_off' : 'visibility'}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-2xs active:scale-95 cursor-pointer"
-                    >
-                      Perbarui Kata Sandi
-                    </button>
-                  </div>
-                </form>
-              </div>
-
               {/* Privasi & Data */}
               <div className="bg-[#FFFFFF] rounded-2xl p-6 sm:p-8 border border-[#E0E0E0] shadow-2xs max-w-xl space-y-4">
                 <div className="flex items-center gap-3 mb-2 pb-4 border-b border-[#E0E0E0]">

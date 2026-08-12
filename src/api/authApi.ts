@@ -140,20 +140,6 @@ export const authApi = {
     }
   },
 
-  // Change password (PUT /api/user/change-password)
-  changePassword: async (old_password: string, new_password: string): Promise<{ success: boolean; message: string }> => {
-    try {
-      const res = await request<{ message: string }>('/user/change-password', {
-        method: 'PUT',
-        body: { old_password, new_password },
-        auth: true,
-      });
-      return { success: true, message: res.message || 'Password berhasil diubah' };
-    } catch (e: any) {
-      return { success: false, message: e?.message || 'Gagal mengubah password.' };
-    }
-  },
-
   // Lupa password — minta OTP dikirim ke WhatsApp (POST /api/auth/forgot-password)
   forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
     try {
