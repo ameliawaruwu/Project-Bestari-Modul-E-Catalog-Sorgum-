@@ -88,7 +88,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               title={favorite ? t('Hapus dari Favorit', 'Remove from Favorites') : t('Tambah ke Favorit', 'Add to Favorites')}
               aria-label={favorite ? t('Hapus dari Favorit', 'Remove from Favorites') : t('Tambah ke Favorit', 'Add to Favorites')}
             >
-              <span className="material-symbols-outlined text-lg">{favorite ? 'favorite' : 'favorite_border'}</span>
+              <span className={`material-symbols-outlined text-lg ${favorite ? 'filled' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
             </button>
           )}
         </div>

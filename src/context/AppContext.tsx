@@ -708,9 +708,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const toggleWishlist = async (productId: string): Promise<boolean> => {
     const pid = String(productId);
     const existingId = wishlistIds[pid];
-    if (existingId) {
-      // Hapus dari favorit
+    if (existingId !== undefined && existingId !== 0) {
+      // Hapus dari favorit (pakai wishlist_id yang tersimpan)
       const ok = await wishlistApi.removeFromWishlist(existingId);
+      if (ok) {
+        const next = { ...wishlistIds };
+        delete next[pid];
+        setWishlistIds(next);
+        return true;
+      }
+      return false;
+    }
+    // State tidak yakin (wishlist_id 0/absent tapi produk mungkin sudah di wishlist) —
+    // cek server dulu: kalau ada, HAPUS (bukan add) supaya unlike tidak berubah jadi
+    // "sudah ada" yang tetap nyangkut di DB.
+    const list = await wishlistApi.getWishlist().catch(() => null);
+    const existing = list?.find((w) => String(w.id) === pid);
+    if (existing) {
+      const ok = await wishlistApi.removeFromWishlist(existing.wishlist_id || 0);
       if (ok) {
         const next = { ...wishlistIds };
         delete next[pid];
@@ -723,8 +738,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const ok = await wishlistApi.addToWishlist(pid);
     if (ok) {
       // Dapatkan wishlist_id dari server (untuk bisa hapus nanti)
-      const list = await wishlistApi.getWishlist().catch(() => null);
-      const row = list?.find((w) => String(w.id) === pid);
+      const freshList = await wishlistApi.getWishlist().catch(() => null);
+      const row = freshList?.find((w) => String(w.id) === pid);
       setWishlistIds((prev) => ({
         ...prev,
         [pid]: Number(row?.wishlist_id || 0),

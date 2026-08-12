@@ -237,7 +237,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   : 'border-[#E0E0E0] text-[#555555] hover:border-[#D32F2F] hover:text-[#D32F2F]'
               }`}
             >
-              <span className={`material-symbols-outlined text-xl ${favorite ? 'text-[#D32F2F]' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
+              <span className={`material-symbols-outlined text-xl ${favorite ? 'filled text-[#D32F2F]' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
               <span>
                 {favorite
                   ? t('Hapus dari Favorit', 'Remove from Favorites')

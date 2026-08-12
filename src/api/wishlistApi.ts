@@ -18,7 +18,7 @@ export type WishlistProduct = Product & { wishlist_id?: number };
 
 function mapWishlistRow(r: WishlistRow): WishlistProduct {
   return {
-    id: String(r.id),
+    id: String(r.id), // product id — dipakai toggleWishlist utk lookup wishlist_id
     name: r.name,
     slug: r.slug,
     price: r.price,
