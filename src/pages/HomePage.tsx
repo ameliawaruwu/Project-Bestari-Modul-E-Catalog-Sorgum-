@@ -4,7 +4,6 @@ import { ProductCard } from '../components/ProductCard';
 import { BenefitsSection } from '../components/BenefitsSection';
 import { Product, Article } from '../types';
 import { useApp } from '../context/AppContext';
-import { productApi } from '../api/productApi';
 
 interface HomePageProps {
   onClickProduct: (product: Product) => void;
@@ -18,15 +17,31 @@ export const HomePage: React.FC<HomePageProps> = ({
   setActiveTab,
   searchQuery,
 }) => {
-  const { t, landingContent, currentUser } = useApp();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
+  const { t, landingContent, currentUser, products } = useApp();
+  // Produk dari context (AppContext hydrate fetch sekali saat mount). Dulu
+  // halaman ini fetch sendiri (getProducts) → dobel request dengan context
+  // (products di-fetch 2-6x). Sekarang pakai state context; skeleton hanya
+  // tampil kalau context belum terisi.
+  const [loadingProducts, setLoadingProducts] = useState(products.length === 0);
+
+  // Filter search client-side (dulu di dalam fetch; sekarang dari context —
+  // search di home tetap bekerja tanpa fetch ulang).
+  const visibleProducts = useMemo(() => {
+    if (!searchQuery || searchQuery.trim() === '') return products;
+    const q = searchQuery.toLowerCase().trim();
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.categoryLabel.toLowerCase().includes(q)
+    );
+  }, [products, searchQuery]);
 
   // Produk yang tampil di section "Koleksi Produk Pilihan" —
   // diatur admin lewat Pengaturan Landing Page (featuredProductIds, JSON array of id).
   // Kosong (tidak ada dicentang) => section KOSONG, tidak ada fallback.
   const featuredProducts = useMemo(() => {
-    if (!products.length) return [];
+    if (!visibleProducts.length) return [];
     let featuredIds: string[] = [];
     try {
       const raw = landingContent.featuredProductIds || '';
@@ -36,40 +51,20 @@ export const HomePage: React.FC<HomePageProps> = ({
       featuredIds = [];
     }
     return featuredIds
-      .map((id) => products.find((p) => String(p.id) === id))
+      .map((id) => visibleProducts.find((p) => String(p.id) === id))
       .filter(Boolean) as Product[];
-  }, [products, landingContent.featuredProductIds]);
+  }, [visibleProducts, landingContent.featuredProductIds]);
 
-  // Load products from backend (filter by search client-side)
+  // Skeleton hilang otomatis saat context sudah menyediakan products
+  // (AppContext hydrate fetch sekali saat mount; SSE sync update juga masuk
+  // ke state yang sama — halaman tinggal render). Fallback timeout 3.5s:
+  // kalau products benar-benar kosong (toko belum punya produk / fetch gagal),
+  // skeleton tetap hilang → tampil "Produk Tidak Ditemukan".
   useEffect(() => {
-    let cancelled = false;
-    setLoadingProducts(true);
-    productApi
-      .getProducts()
-      .then((list) => {
-        if (cancelled) return;
-        let result = [...list];
-        if (searchQuery && searchQuery.trim() !== '') {
-          const q = searchQuery.toLowerCase().trim();
-          result = result.filter(
-            (p) =>
-              p.name.toLowerCase().includes(q) ||
-              p.description.toLowerCase().includes(q) ||
-              p.categoryLabel.toLowerCase().includes(q)
-          );
-        }
-        setProducts(result);
-      })
-      .catch(() => {
-        if (!cancelled) setProducts([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingProducts(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [searchQuery]);
+    if (products.length > 0) setLoadingProducts(false);
+    const timer = setTimeout(() => setLoadingProducts(false), 3500);
+    return () => clearTimeout(timer);
+  }, [products]);
 
   return (
     <div className="animate-fadeIn bg-[#F7F8F6]">
@@ -135,7 +130,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 {t('Menampilkan hasil pencarian untuk', 'Showing search results for')} &quot;<span className="font-bold text-[#1B5E20]">{searchQuery}</span>&quot;
               </p>
               <span className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#1B5E20] bg-[#E8F5E9] px-2.5 py-0.5 rounded-md border border-[#A5D6A7]">
-                {products.length} {t('produk ditemukan', 'products found')}
+                {visibleProducts.length} {t('produk ditemukan', 'products found')}
               </span>
             </div>
           )}
@@ -149,7 +144,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 ></div>
               ))}
             </div>
-          ) : products.length === 0 ? (
+          ) : visibleProducts.length === 0 ? (
             <div className="text-center py-16 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-8 shadow-2xs">
               <span className="material-symbols-outlined text-5xl text-[#C89B3C] mb-2 animate-pulse">search_off</span>
               <h3 className="font-['Playfair_Display'] text-xl font-bold text-[#1B5E20] mb-1">

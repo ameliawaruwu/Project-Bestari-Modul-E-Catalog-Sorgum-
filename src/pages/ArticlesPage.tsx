@@ -13,12 +13,11 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   selectedArticle,
   onClearSelectedArticle,
 }) => {
-  const { t } = useApp();
+  const { t, articles } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(articles.length === 0);
   const [activeArticle, setActiveArticle] = useState<Article | null>(selectedArticle || null);
-  const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 6;
 
@@ -28,31 +27,21 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     }
   }, [selectedArticle]);
 
-  // Load articles from backend
+  // Articles diambil dari context (AppContext hydrate fetch sekali saat mount).
+  // Dulu halaman ini fetch sendiri (getArticles) → dobel request dengan context.
+  // Sekarang pakai state context; loading cukup kalau context belum terisi.
+  // Fallback timeout: kalau context kosong (fetch gagal), loading tetap hilang.
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    articleApi
-      .getArticles()
-      .then((list) => {
-        if (!cancelled) setAllArticles(list);
-      })
-      .catch(() => {
-        if (!cancelled) setAllArticles([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    if (articles.length > 0) setLoading(false);
+    const timer = setTimeout(() => setLoading(false), 3500);
+    return () => clearTimeout(timer);
+  }, [articles]);
 
   // Semua artikel publik (termasuk Promosi) — artikel Promosi HARUS tampil di
   // halaman user. (Keputusan user 2026-08-10: sebelumnya di-filter out dengan
   // komentar "appear only in Checkout", tapi tidak ada logika Checkout yang
   // memakainya → artikel Promosi admin buat tidak pernah muncul di user.)
-  const publicArticles = allArticles;
+  const publicArticles = articles;
 
 
   const categories = [
