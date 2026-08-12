@@ -127,6 +127,13 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
       } finally {
         clearTimeout(timer);
       }
+
+      // Fetch sukses (response diterima, apa pun status HTTP-nya) — keluar dari
+      // loop retry. Tanpa `break` ini, loop lanjut ke attempt berikutnya walau
+      // request sudah sukses → SETIAP request di-fetch 3x dengan delay 800/1600ms
+      // (bug: semua endpoint dobel/triple, load lambat). Retry hanya untuk
+      // kegagalan KONEKSI (fetch throw), di-handle oleh catch di bawah.
+      break;
     } catch (e: any) {
       // Gagal di level koneksi (network error / timeout) — retry diam-diam.
       // Kalau sudah attempt terakhir, notif ke UI (modal) + throw error yang jelas.
