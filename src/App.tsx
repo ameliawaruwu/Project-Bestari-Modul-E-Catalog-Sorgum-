@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { productApi } from './api/productApi';
 import { Header } from './components/Header';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Footer } from './components/Footer';
@@ -128,7 +129,13 @@ export function App() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    // Set segera (responsif), lalu fetch detail by id supaya galeri images[] terisi.
     setSelectedProduct(product);
+    if (product.id) {
+      productApi.getProductById(String(product.id)).then((detail) => {
+        if (detail) setSelectedProduct(detail);
+      }).catch(() => {});
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

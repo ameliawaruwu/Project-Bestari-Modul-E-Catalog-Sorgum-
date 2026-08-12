@@ -164,6 +164,27 @@ export async function getProductByIdAdmin(id: number): Promise<ProductDetail | n
   return { ...product, images: images as any[] };
 }
 
+// Detail produk by ID (publik) — hanya aktif, + galeri images[].
+export async function getProductByIdPublic(id: number): Promise<ProductDetail | null> {
+  const sql = `
+    SELECT p.*, c.name AS category_name,
+           (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) AS primary_image
+    FROM products p
+    JOIN categories c ON c.id = p.category_id
+    WHERE p.id = ? AND p.is_active = 1
+  `;
+  const [rows] = await dbPool.query(sql, [id]);
+  const product = (rows as ProductRow[])[0];
+  if (!product) return null;
+
+  const [images] = await dbPool.query(
+    'SELECT id, image_url, alt_text, is_primary, sort_order FROM product_images WHERE product_id = ? ORDER BY sort_order ASC',
+    [product.id],
+  );
+
+  return { ...product, images: images as any[] };
+}
+
 export async function getFeaturedProducts(limit = 8) {
   const sql = `${LIST_SELECT} WHERE p.is_active = 1 AND p.is_featured = 1 ORDER BY p.created_at DESC LIMIT ?`;
   const [rows] = await dbPool.query(sql, [limit]);

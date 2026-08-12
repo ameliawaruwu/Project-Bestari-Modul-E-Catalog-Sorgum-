@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import {
   getProducts,
   getProductBySlug,
+  getProductByIdPublic,
   getFeaturedProducts,
   createProduct,
   updateProduct,
@@ -39,7 +40,10 @@ router.get('/featured', async (_req: Request, res: Response) => {
 
 router.get('/:slug', async (req: Request, res: Response) => {
   const slug = String(req.params.slug);
-  const product = await getProductBySlug(slug);
+  const isNumeric = /^\d+$/.test(slug);
+  const product = isNumeric
+    ? await getProductByIdPublic(parseInt(slug))
+    : await getProductBySlug(slug);
   if (!product) {
     res.status(404).json({ error: 'Produk tidak ditemukan' });
     return;
