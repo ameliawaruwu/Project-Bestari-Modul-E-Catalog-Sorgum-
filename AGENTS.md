@@ -27,7 +27,7 @@ E-commerce sorgum: React 19 + Vite 6 frontend (`src/`) + Express 5 + TypeScript 
 - **UI rules** (`aturan-ui.md`): jangan ubah localStorage keys `bestari_*`, API contract (`primary_image`, `order_status`), schema DB. Hati di baris kategori, card TANPA ikon mata/badge -X% (harga coret tetap), tabel Kelola Produk 6 kolom id DESC tanpa scroll, ID produk tidak tampil di UI, palet `#162809/#2b3e1d/#f9f3ec/#c4c8bc/#fade88`, font Plus Jakarta Sans + JetBrains Mono, ikon Material Symbols.
 - **Admin API**: panel fetch `/api/admin/*` ke state sendiri; admin FAQ endpoint `/admin/articles/faq` (jangan public); `LIST_SELECT` kategori wajib `p.description`; mysql2 JSON col kadang objek.
 - **Commit style**: `feat:` / `fix:` / `refactor:` / `merge:` + deskripsi singkat (lihat git log). JANGAN commit/push/deploy tanpa perintah eksplisit user.
-- **Kode**: KISS/YAGNI/DRY (REFACTOR.md + SKILL.md) — pahami dulu, reuse, perubahan sekecil mungkin.
+- **Kode**: KISS/YAGNI/DRY — pahami dulu, reuse, perubahan sekecil mungkin.
 
 ## Pitfalls
 

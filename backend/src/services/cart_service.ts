@@ -74,7 +74,3 @@ export async function removeFromCart(cartId: number, userId?: number, sessionId?
   return (result as any).affectedRows > 0;
 }
 
-export async function clearCart(userId?: number, sessionId?: string) {
-  const { clause, param } = getOwnerClause(userId, sessionId);
-  await dbPool.query(`DELETE c FROM cart_items c WHERE ${clause}`, [param]);
-}
