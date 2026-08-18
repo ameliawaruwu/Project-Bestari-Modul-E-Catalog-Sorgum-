@@ -88,13 +88,9 @@ export function App() {
   };
 
   const handleAddToCart = (product: Product, quantity: number = 1) => {
-    if (!user) {
-      showToast('Silakan masuk (login) terlebih dahulu untuk menambahkan produk.');
-      setRedirectAfterLogin(activeTab);
-      setActiveTab('login');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+    // Guest BOLEH tambah ke keranjang (guest cart server-side via x-session-id);
+    // keranjang di-merge otomatis saat login/register. (Keputusan 2026-08-18,
+    // konsisten dengan handleSelectProduct — sebelumnya guest diblokir ke login.)
     addToCart(product, quantity);
     showToast(`${product.name} ditambahkan ke keranjang.`);
   };
