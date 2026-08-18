@@ -121,15 +121,10 @@ export function App() {
   };
 
   const handleSelectProduct = (product: Product) => {
-    // Guest belum login: klik produk (card / ikon mata / favorit) → arahkan ke login + notif
-    if (!user) {
-      showToast('Silakan masuk (login) terlebih dahulu untuk melihat detail produk.');
-      setRedirectAfterLogin(activeTab);
-      setActiveTab('login');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    // Set segera (responsif), lalu fetch detail by id supaya galeri images[] terisi.
+    // Guest BOLEH lihat detail produk & tambah ke keranjang (guest cart server-side
+    // via x-session-id). Saat login/register, keranjang guest di-merge otomatis.
+    // (Keputusan 2026-08-18: sebelumnya guest diblokir ke login — tapi C2-1
+    // "merge cart guest" tidak pernah terpakai karena guest tak bisa belanja.)
     setSelectedProduct(product);
     if (product.id) {
       productApi.getProductById(String(product.id)).then((detail) => {
