@@ -136,7 +136,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Input 1: Email / WhatsApp */}
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-[#555555] ml-0.5" htmlFor="email">
-                {t('Email / No. WhatsApp', 'Email / WhatsApp No.')}
+                Email
               </label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#555555] text-lg select-none">
@@ -144,10 +144,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 </span>
                 <input
                   id="email"
-                  type="text"
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('Email atau Nomor WhatsApp', 'Email or WhatsApp Number')}
+                  placeholder={t('Masukkan Email Anda', 'Enter Your Email')}
                   required
                   className="w-full h-12 pl-12 pr-4 bg-[#F7F8F6] focus:bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl text-xs sm:text-sm text-[#1B5E20] placeholder-[#555555]/60 focus:outline-none focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
                 />
