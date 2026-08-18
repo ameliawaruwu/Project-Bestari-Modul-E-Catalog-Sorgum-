@@ -22,6 +22,8 @@ interface UserRow {
   password_hash: string;
   role: 'user' | 'admin';
   is_deleted?: number;
+  gender?: string | null;
+  birth_date?: string | null;
 }
 
 export async function register(input: RegisterInput) {
@@ -44,7 +46,7 @@ export async function register(input: RegisterInput) {
 
   const insertId = (result as any).insertId;
   const [rows] = await dbPool.query(
-    'SELECT id, name, email, phone, role FROM users WHERE id = ?',
+    'SELECT id, name, email, phone, gender, birth_date, role FROM users WHERE id = ?',
     [insertId],
   );
   return (rows as UserRow[])[0];
@@ -54,7 +56,7 @@ export async function login(input: LoginInput) {
   const { email, password } = input;
 
   const [rows] = await dbPool.query(
-    'SELECT id, name, email, phone, password_hash, role, is_deleted FROM users WHERE email = ?',
+    'SELECT id, name, email, phone, gender, birth_date, password_hash, role, is_deleted FROM users WHERE email = ?',
     [email],
   );
 
@@ -80,5 +82,7 @@ export async function login(input: LoginInput) {
     email: user.email,
     phone: user.phone,
     role: user.role,
+    gender: user.gender ?? null,
+    birth_date: user.birth_date ?? null,
   };
 }

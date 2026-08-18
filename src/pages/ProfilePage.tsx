@@ -59,8 +59,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     fullName: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    gender: '',
-    birthDate: '',
+    gender: user?.gender || '',
+    birthDate: user?.birthDate || '',
   });
 
   // Shipping Address state — dari BE /api/user/ (bukan mock)
@@ -104,6 +104,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       name: profileData.fullName,
       email: profileData.email,
       phone: profileData.phone,
+      // F1: tanggal lahir & jenis kelamin TIDAK pernah dikirim sebelumnya —
+      // state ada di form tapi updateProfile hanya kirim name/email/phone.
+      birth_date: profileData.birthDate || null,
+      gender: profileData.gender || null,
     });
     showToast(res.message);
     if (res.success && res.user) {

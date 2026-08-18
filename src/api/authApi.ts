@@ -10,6 +10,8 @@ interface BackendUser {
   email: string;
   role: 'user' | 'admin';
   phone?: string;
+  birth_date?: string | null;
+  gender?: string | null;
 }
 
 function saveUser(user: User) {
@@ -30,7 +32,15 @@ function readUser(): User | null {
 }
 
 function mapUser(u: BackendUser): User {
-  return { id: String(u.id), name: u.name, email: u.email, role: u.role, phone: u.phone };
+  return {
+    id: String(u.id),
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    phone: u.phone,
+    birthDate: u.birth_date || undefined,
+    gender: u.gender || undefined,
+  };
 }
 
 export const authApi = {
@@ -125,7 +135,7 @@ export const authApi = {
   },
 
   // Update profile (PUT /api/user/profile) — name/email/phone
-  updateProfile: async (fields: { name?: string; email?: string; phone?: string }): Promise<{ success: boolean; message: string; user?: User }> => {
+  updateProfile: async (fields: { name?: string; email?: string; phone?: string; birth_date?: string | null; gender?: string | null }): Promise<{ success: boolean; message: string; user?: User }> => {
     try {
       const res = await request<{ message: string; data: BackendUser }>('/user/profile', {
         method: 'PUT',

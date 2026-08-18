@@ -74,6 +74,8 @@ export interface User {
   email: string;
   role?: 'admin' | 'user';
   phone?: string;
+  birthDate?: string;
+  gender?: string;
 }
 
 export interface RegisterPayload {

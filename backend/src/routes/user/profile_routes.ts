@@ -11,7 +11,9 @@ router.get('/profile', async (req: Request, res: Response) => {
 });
 
 router.put('/profile', async (req: Request, res: Response) => {
-  const allowed = ['name', 'email', 'phone'];
+  // Whitelist field — birth_date/gender ditambahkan (F1: tanggal lahir & jenis
+  // kelamin tidak pernah tersimpan karena tidak ada di whitelist).
+  const allowed = ['name', 'email', 'phone', 'birth_date', 'gender'];
   const fields: Record<string, any> = {};
   for (const k of allowed) {
     if (req.body[k] !== undefined) fields[k] = req.body[k];
@@ -19,6 +21,24 @@ router.put('/profile', async (req: Request, res: Response) => {
   if (Object.keys(fields).length === 0) {
     res.status(400).json({ error: 'Tidak ada data yang diupdate' });
     return;
+  }
+  // Validasi gender: kosong/null/'' berarti hapus (netral), selain itu harus salah satu nilai valid.
+  if (fields.gender !== undefined) {
+    const g = fields.gender;
+    if (g === null || g === '') fields.gender = null;
+    else if (!['Laki-laki', 'Perempuan', 'Pria', 'Wanita'].includes(g)) {
+      res.status(400).json({ error: 'Jenis kelamin tidak valid' });
+      return;
+    }
+  }
+  // Validasi birth_date: string kosong → null (hapus); selain itu harus YYYY-MM-DD valid
+  if (fields.birth_date !== undefined) {
+    const b = fields.birth_date;
+    if (b === null || b === '') fields.birth_date = null;
+    else if (!/^\d{4}-\d{2}-\d{2}$/.test(String(b))) {
+      res.status(400).json({ error: 'Format tanggal lahir harus YYYY-MM-DD' });
+      return;
+    }
   }
   const profile = await updateProfile(req.user!.userId, fields);
   res.json({ message: 'Profil diupdate', data: profile });

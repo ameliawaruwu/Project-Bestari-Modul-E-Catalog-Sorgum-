@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 export async function getProfile(userId: number) {
   const [rows] = await dbPool.query(
-    'SELECT id, name, email, phone, role, created_at FROM users WHERE id = ?',
+    'SELECT id, name, email, phone, gender, birth_date, role, created_at FROM users WHERE id = ?',
     [userId],
   );
   return (rows as any[])[0] || null;
@@ -20,7 +20,7 @@ export async function updateProfile(userId: number, fields: Record<string, any>)
   await dbPool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`, vals);
 
   const [rows] = await dbPool.query(
-    'SELECT id, name, email, phone, role FROM users WHERE id = ?',
+    'SELECT id, name, email, phone, gender, birth_date, role FROM users WHERE id = ?',
     [userId],
   );
   return (rows as any[])[0];
