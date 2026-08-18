@@ -188,6 +188,20 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     }
   };
 
+  // F3-4: jadikan alamat sebagai alamat utama (default) tanpa mengubah isi alamat.
+  // Backend ensureSinglePrimary memastikan hanya satu alamat primary per user.
+  const handleSetPrimaryAddress = async (id: string, label: string) => {
+    try {
+      const { addressApi } = await import('../api/addressApi');
+      await addressApi.updateAddress(id, { is_primary: true });
+      const list = await addressApi.getAddresses();
+      setAddresses(list);
+      showToast(`"${label}" kini menjadi alamat utama.`);
+    } catch (e: any) {
+      showToast(e?.message || 'Gagal mengubah alamat utama.', 'error');
+    }
+  };
+
   return (
     <div className="pt-24 pb-20 px-4 md:px-10 max-w-7xl mx-auto font-['Plus_Jakarta_Sans'] text-[#1B5E20] animate-fadeIn min-h-screen">
       <div className="flex flex-col md:flex-row gap-8">
@@ -583,6 +597,15 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                               <span className="material-symbols-outlined text-sm">delete</span>
                               <span>Hapus</span>
                             </button>
+                            {!addr.isPrimary && (
+                              <button
+                                onClick={() => handleSetPrimaryAddress(addr.id, addr.label)}
+                                className="inline-flex items-center gap-1 text-xs font-bold text-[#2E7D32] hover:underline cursor-pointer"
+                              >
+                                <span className="material-symbols-outlined text-sm">star</span>
+                                <span>Jadikan Utama</span>
+                              </button>
+                            )}
                           </div>
                         </div>
                         ))}
