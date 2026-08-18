@@ -7,7 +7,7 @@ const router = Router();
 
 // === PUBLIC (guest + user login via optional token) ===
 router.post('/', authOptional, async (req: Request, res: Response) => {
-  const { customer_name, customer_phone, shipping_address, notes, payment_method, voucher_code, idempotency_key } = req.body;
+  const { customer_name, customer_phone, shipping_address, notes, payment_method, voucher_code, idempotency_key, courier } = req.body;
 
   if (!['cod', 'qris'].includes(payment_method)) {
     res.status(400).json({ error: 'Metode pembayaran: cod atau qris' });
@@ -43,6 +43,7 @@ router.post('/', authOptional, async (req: Request, res: Response) => {
       voucher_code,
       idempotency_key,
       payment_method,
+      courier,
     });
     res.status(201).json({
       message: 'Pesanan berhasil dibuat',

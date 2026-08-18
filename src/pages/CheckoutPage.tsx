@@ -37,6 +37,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     postalCode: '',
     notes: '',
     paymentMethod: 'cod',
+    courier: 'JNE',
   });
 
   // Alamat tersimpan dari profil user — user bisa pilih untuk mengisi form otomatis.
@@ -163,6 +164,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     setFormData((prev) => ({ ...prev, paymentMethod: method }));
   };
 
+  const handleCourierChange = (courier: string) => {
+    setFormData((prev) => ({ ...prev, courier }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -186,7 +191,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
       const fullMessage = `Halo Admin SORGUM, saya ingin melakukan pemesanan:${
         formData.paymentMethod === 'qris' ? ' (Metode: QRIS)' : ' (Metode: COD)'
-      }
+      } (Kurir: ${formData.courier || 'JNE'})
 
 *Detail Pesanan:*
 ${itemsSummary}
@@ -536,6 +541,49 @@ ${
                 )}
               </div>
             )}
+
+            {/* Courier Selection Card */}
+            <div className="bg-[#FFFFFF] rounded-2xl p-6 sm:p-8 shadow-2xs border border-[#E0E0E0]">
+              <h2 className="font-['Playfair_Display'] text-2xl font-bold text-[#1B5E20] mb-6">
+                {t('Pilih Kurir', 'Select Courier')}
+              </h2>
+
+              <div className="space-y-4">
+                {[
+                  { id: 'JNE', icon: 'local_shipping', desc: t('Reguler — estimasi 2-4 hari', 'Regular — est. 2-4 days') },
+                  { id: 'J&T', icon: 'local_shipping', desc: t('Express — estimasi 1-3 hari', 'Express — est. 1-3 days') },
+                  { id: 'SiCepat', icon: 'rocket_launch', desc: t('Express — estimasi 1-2 hari', 'Express — est. 1-2 days') },
+                ].map((c) => (
+                  <label
+                    key={c.id}
+                    onClick={() => handleCourierChange(c.id)}
+                    className={`relative flex items-center p-4 rounded-xl border cursor-pointer transition-all ${
+                      formData.courier === c.id
+                        ? 'border-[#2E7D32] bg-[#E8F5E9]/50 ring-2 ring-[#2E7D32]/20 shadow-2xs'
+                        : 'border-[#E0E0E0] bg-[#FFFFFF] hover:bg-[#F7F8F6]'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="courier"
+                      value={c.id}
+                      checked={formData.courier === c.id}
+                      onChange={() => handleCourierChange(c.id)}
+                      className="w-4 h-4 text-[#2E7D32] focus:ring-[#2E7D32] cursor-pointer"
+                    />
+                    <div className="ml-4 flex items-center gap-3">
+                      <div className="w-10 h-10 flex items-center justify-center bg-[#E8F5E9] rounded-xl border border-[#A5D6A7]">
+                        <span className="material-symbols-outlined text-[#1B5E20]">{c.icon}</span>
+                      </div>
+                      <div>
+                        <p className="font-bold text-xs sm:text-sm text-[#1B5E20] leading-tight">{c.id}</p>
+                        <p className="text-[11px] text-[#555555]">{c.desc}</p>
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
 
             {/* Payment Method Card */}
             <div className="bg-[#FFFFFF] rounded-2xl p-6 sm:p-8 shadow-2xs border border-[#E0E0E0]">

@@ -301,6 +301,7 @@ export const orderApi = {
         voucher_code: checkoutData?.voucherCode || undefined,
         idempotency_key: idempotencyKey,
         payment_method: checkoutData?.paymentMethod || 'cod',
+        courier: checkoutData?.courier || undefined,
       },
     });
 

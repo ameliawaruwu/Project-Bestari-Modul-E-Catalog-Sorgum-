@@ -136,6 +136,7 @@ export interface CheckoutData {
   postalCode: string;
   notes?: string;
   paymentMethod: 'cod' | 'qris';
+  courier?: string;
   voucherCode?: string;
   idempotencyKey?: string;
 }

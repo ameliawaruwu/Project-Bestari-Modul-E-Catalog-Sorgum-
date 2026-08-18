@@ -25,6 +25,7 @@ interface CreateOrderInput {
   voucher_code?: string;
   idempotency_key?: string;
   payment_method: 'cod' | 'qris';
+  courier?: string;
 }
 
 export interface OrderRow {
@@ -117,8 +118,8 @@ export async function createOrder(input: CreateOrderInput) {
     try {
       const [orderResult] = await conn.query(
         `INSERT INTO orders (order_number, idempotency_key, user_id, customer_name, customer_email, customer_phone,
-          shipping_address, notes, subtotal, shipping_cost, discount, total, payment_method)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          shipping_address, notes, subtotal, shipping_cost, discount, total, payment_method, courier)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           orderNumber,
           input.idempotency_key || null,
@@ -133,6 +134,7 @@ export async function createOrder(input: CreateOrderInput) {
           discount,
           total,
           input.payment_method,
+          input.courier || null,
         ],
       );
       orderId = (orderResult as any).insertId;
