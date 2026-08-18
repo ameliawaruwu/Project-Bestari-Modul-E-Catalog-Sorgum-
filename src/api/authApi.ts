@@ -48,10 +48,10 @@ function mapUser(u: BackendUser): User {
   }
   let gender: string | undefined;
   if (u.gender) {
-    gender = String(u.gender)
-      .split(/[\s-]+/)
-      .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w))
-      .join('-');
+    const raw = String(u.gender).trim();
+    // Kapitalisasi huruf pertama saja, sisanya dipertahankan — supaya
+    // "laki-laki" → "Laki-laki" (match option select), bukan "Laki-Laki".
+    gender = raw.charAt(0).toUpperCase() + raw.slice(1);
   }
   return {
     id: String(u.id),
