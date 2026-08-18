@@ -14,6 +14,7 @@ interface ProfilePageProps {
   onAddToCart: (product: Product) => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
   onNavigateAdmin?: () => void;
+  onSelectProduct?: (product: Product) => void;
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({
@@ -24,6 +25,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   onAddToCart,
   showToast,
   onNavigateAdmin,
+  onSelectProduct,
 }) => {
   const { t, orders: allOrders, products: allProducts, currentUser, updateOrderStatus, wishlistIds: ctxWishlistIds, toggleWishlist } = useApp();
   const [activeTab, setActiveTab] = useState<'profil' | 'pesanan' | 'favorit' | 'pengaturan'>(
@@ -642,6 +644,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               onAddToCart={onAddToCart}
               onToggleWishlist={toggleWishlist}
               showToast={showToast}
+              onSelectProduct={onSelectProduct || (() => {})}
             />
           )}
 

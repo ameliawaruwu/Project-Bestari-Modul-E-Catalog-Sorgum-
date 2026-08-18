@@ -10,6 +10,8 @@ interface ProfileFavoritesSectionProps {
   onAddToCart: (product: Product) => void;
   onToggleWishlist: (productId: string) => Promise<boolean>;
   showToast: (msg: string, type?: 'success' | 'error') => void;
+  // F4-5: klik card favorit → buka detail produk (bukan hanya like/unlike)
+  onSelectProduct: (product: Product) => void;
 }
 
 /**
@@ -23,6 +25,7 @@ export const ProfileFavoritesSection: React.FC<ProfileFavoritesSectionProps> = (
   onAddToCart,
   onToggleWishlist,
   showToast,
+  onSelectProduct,
 }) => {
   // Favorite Products — real dari BE wishlist (bukan mock allProducts.slice)
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
@@ -67,11 +70,13 @@ export const ProfileFavoritesSection: React.FC<ProfileFavoritesSectionProps> = (
       {favoriteProducts.map((prod) => (
         <div
           key={prod.id}
-          className="bg-[#FFFFFF] rounded-2xl p-4 border border-[#E0E0E0] relative flex flex-col justify-between group hover:shadow-md transition-shadow"
+          onClick={() => onSelectProduct(prod)}
+          className="bg-[#FFFFFF] rounded-2xl p-4 border border-[#E0E0E0] relative flex flex-col justify-between group hover:shadow-md transition-shadow cursor-pointer"
         >
-          {/* Heart Button */}
+          {/* Heart Button — stopPropagation supaya klik heart TIDAK buka detail */}
           <button
-            onClick={async () => {
+            onClick={async (e) => {
+              e.stopPropagation();
               const ok = await onToggleWishlist(prod.id);
               if (ok) {
                 setFavoriteProducts(favoriteProducts.filter((p) => p.id !== prod.id));
@@ -117,24 +122,12 @@ export const ProfileFavoritesSection: React.FC<ProfileFavoritesSectionProps> = (
             </p>
           </div>
 
-          {/* Price & Action */}
-          <div className="pt-3 border-t border-[#E0E0E0] flex items-center justify-between">
-            <div>
-              <span className="text-[10px] text-[#555555] block">{prod.unitInfo}</span>
-              <span className="font-bold text-sm text-[#1B5E20]">
-                {prod.formattedPrice}
-              </span>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => onAddToCart(prod)}
-                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white p-2 rounded-xl transition-all cursor-pointer"
-                title="Tambah ke keranjang"
-              >
-                <span className="material-symbols-outlined text-lg">shopping_cart</span>
-              </button>
-            </div>
+          {/* Price — F4-6: tombol keranjang dihapus (klik card buka detail produk) */}
+          <div className="pt-3 border-t border-[#E0E0E0]">
+            <span className="text-[10px] text-[#555555] block">{prod.unitInfo}</span>
+            <span className="font-bold text-sm text-[#1B5E20]">
+              {prod.formattedPrice}
+            </span>
           </div>
         </div>
       ))}

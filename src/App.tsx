@@ -371,6 +371,7 @@ export function App() {
                 onAddToCart={(p) => handleAddToCart(p, 1)}
                 showToast={showToast}
                 onNavigateAdmin={() => setActiveTab('admin')}
+                onSelectProduct={handleSelectProduct}
               />
             )}
 
