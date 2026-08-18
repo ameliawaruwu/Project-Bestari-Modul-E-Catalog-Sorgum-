@@ -17,7 +17,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   onRequireLogin,
 }) => {
   const { t } = useApp();
-  const [selectedCategory, setSelectedCategory] = useState('semua');
   const [sortBy, setSortBy] = useState<'populer' | 'harga-terendah' | 'harga-tertinggi' | 'terbaru'>('populer');
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
   const [products, setProducts] = useState<Product[]>([]);
@@ -33,7 +32,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     let cancelled = false;
     setLoading(true);
     productApi
-      .getProducts({ category: selectedCategory, searchQuery: localSearchQuery, sortBy })
+      .getProducts({ searchQuery: localSearchQuery, sortBy })
       .then((list) => {
         if (!cancelled) setProducts(list);
       })
@@ -59,14 +58,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     });
     return () => unsub();
   }, [loadProducts]);
-
-  const categories = [
-    { id: 'semua', label: t('Semua', 'All') },
-    { id: 'beras', label: t('Beras Sorgum', 'Sorghum Rice') },
-    { id: 'tepung', label: t('Tepung Sorgum', 'Sorghum Flour') },
-    { id: 'camilan', label: t('Camilan', 'Snacks') },
-    { id: 'benih', label: t('Benih', 'Seeds') },
-  ];
 
   return (
     <div className="pt-28 sm:pt-32 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
@@ -111,26 +102,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               <option value="terbaru">{t('Terbaru', 'Newest')}</option>
             </select>
           </div>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2.5 sm:gap-3 pt-5 border-t border-[#E0E0E0]">
-          {categories.map((cat) => {
-            const isActive = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-semibold transition-all duration-200 focus:outline-none cursor-pointer ${
-                  isActive
-                    ? 'bg-[#2E7D32] hover:bg-[#1B5E20] text-white shadow-2xs'
-                    : 'bg-[#F7F8F6] hover:bg-[#E8F5E9] text-[#1B5E20] border border-[#E0E0E0]'
-                }`}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
         </div>
       </div>
 
