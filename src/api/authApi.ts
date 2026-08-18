@@ -32,14 +32,35 @@ function readUser(): User | null {
 }
 
 function mapUser(u: BackendUser): User {
+  // Normalisasi birth_date (ISO "1995-05-19T17:00:00.000Z" → "1995-05-20" date input)
+  // & gender ("laki-laki" → "Laki-laki") supaya form edit profil terisi benar.
+  let birthDate: string | undefined;
+  if (u.birth_date) {
+    const iso = new Date(u.birth_date);
+    if (!Number.isNaN(iso.getTime())) {
+      const y = iso.getFullYear();
+      const m = String(iso.getMonth() + 1).padStart(2, '0');
+      const d = String(iso.getDate()).padStart(2, '0');
+      birthDate = `${y}-${m}-${d}`;
+    } else {
+      birthDate = String(u.birth_date).slice(0, 10);
+    }
+  }
+  let gender: string | undefined;
+  if (u.gender) {
+    gender = String(u.gender)
+      .split(/[\s-]+/)
+      .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w))
+      .join('-');
+  }
   return {
     id: String(u.id),
     name: u.name,
     email: u.email,
     role: u.role,
     phone: u.phone,
-    birthDate: u.birth_date || undefined,
-    gender: u.gender || undefined,
+    birthDate,
+    gender,
   };
 }
 
