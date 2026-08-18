@@ -43,7 +43,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [selectedCategory, localSearchQuery, sortBy]);
+  }, [localSearchQuery, sortBy]);
 
   useEffect(() => {
     return loadProducts();
