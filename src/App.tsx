@@ -397,6 +397,7 @@ export function App() {
                 onRegisterSuccess={handleAuthSuccess}
                 onNavigateLogin={() => setActiveTab('login')}
                 onNavigateHome={() => handleTabChange('beranda')}
+                onNavigateProducts={() => handleTabChange('produk')}
               />
             )}
 

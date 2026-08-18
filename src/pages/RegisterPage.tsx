@@ -7,12 +7,14 @@ interface RegisterPageProps {
   onRegisterSuccess: (user: User) => void;
   onNavigateLogin: () => void;
   onNavigateHome: () => void;
+  onNavigateProducts: () => void;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({
   onRegisterSuccess,
   onNavigateLogin,
   onNavigateHome,
+  onNavigateProducts,
 }) => {
   const { t, register } = useApp();
   const [name, setName] = useState('');
@@ -52,7 +54,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
         setSuccessMsg(res.message);
         // Langsung pindah (tanpa setTimeout — delay bikin "harus refresh dulu").
         onRegisterSuccess(res.user);
-        onNavigateHome();
+        onNavigateProducts();
       } else {
         setErrorMsg(res.message || 'Gagal mendaftar. Silakan periksa data Anda.');
       }
