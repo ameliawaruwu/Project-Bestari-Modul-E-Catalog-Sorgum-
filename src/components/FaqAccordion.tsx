@@ -23,6 +23,20 @@ export const FaqAccordion: React.FC<FaqAccordionProps> = ({ faqs, showContactCar
   // Get unique categories from faqs
   const uniqueCategories = ['Semua', ...Array.from(new Set(faqs.map((f) => f.category)))];
 
+  // Terjemahan kategori (data dari DB dalam Bahasa Indonesia — tampilan saja)
+  const translateCategory = (cat: string): string => {
+    if (cat === 'Semua') return t('Semua', 'All');
+    const map: Record<string, [string, string]> = {
+      'Tentang Produk': ['Tentang Produk', 'About Products'],
+      'Pemesanan & Pembayaran': ['Pemesanan & Pembayaran', 'Ordering & Payment'],
+      'Pengiriman': ['Pengiriman', 'Shipping'],
+      'Promosi': ['Promosi', 'Promotions'],
+      'Bantuan': ['Bantuan', 'Help'],
+    };
+    const pair = map[cat];
+    return pair ? t(pair[0], pair[1]) : cat;
+  };
+
   // Filter FAQs based on search query and category tab
   const filteredFaqs = faqs.filter((item) => {
     // 1. Category Filter
@@ -61,7 +75,7 @@ export const FaqAccordion: React.FC<FaqAccordionProps> = ({ faqs, showContactCar
                     : 'bg-[#FFFFFF] text-[#1B5E20] border-[#E0E0E0] hover:bg-[#E8F5E9]'
                 }`}
               >
-                {cat === 'Semua' ? t('Semua', 'All') : cat}
+                {translateCategory(cat)}
               </button>
             );
           })}
