@@ -139,6 +139,10 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
 app.listen(config.port, () => {
   console.log(`[Server] E-Catalog BESTARI running on port ${config.port}`);
   console.log(`[Server] Environment: ${config.nodeEnv}`);
+  // Auto-sync status pengiriman (poll cekresi berkala utk order 'shipped')
+  // — import di sini biar tidak circular dengan tracking_service.
+  const { startTrackingSync } = require('./services/tracking_sync');
+  startTrackingSync();
 });
 
 export default app;
