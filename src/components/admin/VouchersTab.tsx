@@ -232,9 +232,19 @@ export const VouchersTab: React.FC<VouchersTabProps> = ({ showToast }) => {
                   <td className="p-3.5 font-mono-custom text-[#555555]">Rp {v.min_purchase.toLocaleString('id-ID')}</td>
                   <td className="p-3.5 text-[#555555] font-mono-custom">{v.used_count}{v.max_uses ? `/${v.max_uses}` : ''}</td>
                   <td className="p-3.5">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${v.is_active ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-gray-100 text-gray-500'}`}>
-                      {v.is_active ? 'Aktif' : 'Nonaktif'}
-                    </span>
+                    {(() => {
+                      const expired = !!v.expires_at && new Date(v.expires_at).getTime() < Date.now();
+                      const badge = !v.is_active
+                        ? { label: 'Nonaktif', cls: 'bg-gray-100 text-gray-500' }
+                        : expired
+                          ? { label: 'Kadaluarsa', cls: 'bg-amber-50 border border-amber-200 text-amber-800' }
+                          : { label: 'Aktif', cls: 'bg-emerald-50 border border-emerald-200 text-emerald-800' };
+                      return (
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badge.cls}`}>
+                          {badge.label}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td className="p-3.5 text-right">
                     <div className="flex items-center justify-end gap-2">
