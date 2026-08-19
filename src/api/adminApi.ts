@@ -121,6 +121,11 @@ export const productAdminApi = {
 
   // POST /api/admin/upload — upload file gambar, dapat URL
   uploadImage: async (file: File | Blob): Promise<string> => {
+    // H8: enforce 1MB di FE — error jelas sebelum POST (hindari 413 nginx / 400 multer)
+    const size = (file as File).size ?? (file as Blob).size;
+    if (size > 1024 * 1024) {
+      throw new Error('File terlalu besar. Maksimal 1MB. Gunakan gambar yang lebih kecil atau kompres dulu.');
+    }
     const form = new FormData();
     form.append('image', file, (file as File).name || 'image.jpg');
     const res = await request<{ data: { url: string } }>('/admin/upload', {

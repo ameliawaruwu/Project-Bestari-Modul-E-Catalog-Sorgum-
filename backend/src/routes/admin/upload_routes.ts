@@ -8,7 +8,7 @@ router.use(authRequired, adminOnly);
 function handleUploadError(err: any, req: Request, res: Response, next: any) {
   if (err) {
     if (err.code === 'LIMIT_FILE_SIZE') {
-      res.status(400).json({ error: 'File terlalu besar. Maksimal 5MB.' });
+      res.status(400).json({ error: 'File terlalu besar. Maksimal 1MB.' });
       return;
     }
     if (err.code === 'LIMIT_FILE_COUNT') {
