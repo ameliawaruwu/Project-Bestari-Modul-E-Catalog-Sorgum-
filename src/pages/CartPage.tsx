@@ -313,7 +313,11 @@ export const CartPage: React.FC<CartPageProps> = ({
             </div>
 
             <p className="text-xs text-[#555555]">
-              {t('Gunakan kode', 'Use code')} <strong className="text-[#1B5E20]">SORGUM10</strong> {t('untuk mendapatkan potongan promo.', 'to get a discount.')}
+              {t('Gunakan kode', 'Use code')}{' '}
+              <strong className="text-[#1B5E20]">
+                {activeVouchers[0]?.code || t('promo', 'promo')}
+              </strong>{' '}
+              {t('untuk mendapatkan potongan promo.', 'to get a discount.')}
             </p>
 
             <div className="space-y-2">
