@@ -135,7 +135,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               {t('Layanan Pelanggan', 'Customer Service')}
             </h5>
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">WhatsApp: {shopSettings.whatsappNumber}</p>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-4 text-white/90">Email: {shopSettings.storeEmail || 'halo@sorgum.id'}</p>
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">Email: {shopSettings.storeEmail || 'halo@sorgum.id'}</p>
+            {shopSettings.storeAddress && (
+              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm mb-2 text-white/90">
+                Alamat: {shopSettings.storeAddress}
+              </p>
+            )}
             <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/70">
               {t('Senin - Jumat: 09:00 - 18:00 WIB', 'Monday - Friday: 09:00 - 18:00 WIB')}
             </p>
