@@ -68,6 +68,18 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryFiles, setGalleryFiles] = useState<(File | null)[]>([null, null, null, null]);
 
+  // H3-5: jadikan gambar galeri idx sebagai gambar utama (primary).
+  // Gambar index 0 = primary (replaceProductImages di BE menjadikan elemen
+  // pertama is_primary=1). Cukup pindahkan URL ke posisi 0.
+  const setPrimaryGallery = (idx: number) => {
+    setGalleryImages((prev) => {
+      const url = prev[idx];
+      if (!url) return prev;
+      const next = [url, ...prev.filter((_, i) => i !== idx)];
+      return next.slice(0, 4);
+    });
+  };
+
   useEffect(() => {
     if (initialProduct) {
       setIdInput(initialProduct.id);
@@ -375,14 +387,31 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                       )}
                     </label>
                     {val && (
-                      <button
-                        type="button"
-                        onClick={() => removeGalleryImage(idx)}
-                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#D32F2F] text-white flex items-center justify-center shadow-md hover:bg-[#B71C1C] transition-colors cursor-pointer"
-                        title="Hapus gambar ini"
-                      >
-                        <span className="material-symbols-outlined text-sm">close</span>
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => removeGalleryImage(idx)}
+                          className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#D32F2F] text-white flex items-center justify-center shadow-md hover:bg-[#B71C1C] transition-colors cursor-pointer"
+                          title="Hapus gambar ini"
+                        >
+                          <span className="material-symbols-outlined text-sm">close</span>
+                        </button>
+                        {/* H3-5: badge Utama (index 0) / tombol Jadikan Utama (slot lain) */}
+                        {idx === 0 ? (
+                          <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#2E7D32] text-white text-[9px] font-extrabold uppercase tracking-wide shadow">
+                            Utama
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setPrimaryGallery(idx)}
+                            className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[9px] font-bold uppercase tracking-wide hover:bg-[#2E7D32] transition-colors cursor-pointer whitespace-nowrap"
+                            title="Jadikan gambar utama"
+                          >
+                            Jadikan Utama
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 );

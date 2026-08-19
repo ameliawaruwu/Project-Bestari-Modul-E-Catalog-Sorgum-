@@ -189,10 +189,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   Rp {product.price.toLocaleString('id-ID')}
                 </span>
               )}
-              <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#2E7D32] inline-block animate-pulse"></span>
-                {t('Stok Tersedia', 'In Stock')}
-              </span>
+              {product.stock === 0 ? (
+                <span className="bg-[#FFEBEE] text-[#D32F2F] border border-[#FFCDD2] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-[#D32F2F] inline-block"></span>
+                  {t('Habis', 'Sold Out')}
+                </span>
+              ) : (
+                <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-[#2E7D32] inline-block animate-pulse"></span>
+                  {t('Stok Tersedia', 'In Stock')}
+                </span>
+              )}
             </div>
 
             {/* Description */}
@@ -248,15 +255,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={handleAddToCartClick}
-                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                disabled={product.stock === 0}
+                className={`${product.stock === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#2E7D32] hover:bg-[#1B5E20] cursor-pointer'} text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2`}
               >
                 <span className="material-symbols-outlined text-xl">shopping_cart</span>
-                <span>{t('Tambah ke Keranjang', 'Add to Cart')}</span>
+                <span>{product.stock === 0 ? t('Stok Habis', 'Out of Stock') : t('Tambah ke Keranjang', 'Add to Cart')}</span>
               </button>
 
               <button
                 onClick={handleBuyNowClick}
-                className="bg-[#C89B3C] hover:bg-[#B38728] text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                disabled={product.stock === 0}
+                className={`${product.stock === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#C89B3C] hover:bg-[#B38728] cursor-pointer'} text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2`}
               >
                 <span className="material-symbols-outlined text-xl">bolt</span>
                 <span>{t('Beli Sekarang', 'Buy Now')}</span>

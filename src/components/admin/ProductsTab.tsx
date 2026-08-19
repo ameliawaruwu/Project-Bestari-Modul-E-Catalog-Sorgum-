@@ -173,19 +173,22 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-1.5">
-                        {/* Toggle aktif/nonaktif — produk nonaktif tidak muncul di katalog user.
-                            Dipakai juga untuk mengaktifkan kembali produk hasil soft-delete. */}
+                        {/* Toggle aktif/nonaktif — switch on/off (H3-7: bukan ikon mata lagi).
+                            Produk nonaktif tidak muncul di katalog user. Dipakai juga untuk
+                            mengaktifkan kembali produk hasil soft-delete. */}
                         <button
                           type="button"
                           onClick={() => onToggleProductStatus(prod.id)}
-                          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer shadow-2xs ${
-                            prod.isActive
-                              ? 'bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20]'
-                              : 'bg-[#FFF8E1] hover:bg-[#FFE082] text-[#C89B3C]'
-                          }`}
                           title={prod.isActive ? 'Nonaktifkan produk (sembunyikan dari katalog)' : 'Aktifkan produk (tampilkan di katalog)'}
+                          className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 cursor-pointer self-center ${prod.isActive ? 'bg-[#2E7D32]' : 'bg-gray-300'
+                            }`}
+                          style={{ height: '22px', width: '40px' }}
                         >
-                          <span className="material-symbols-outlined text-lg">{prod.isActive ? 'visibility_off' : 'visibility'}</span>
+                          <div
+                            className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${prod.isActive ? 'translate-x-4.5' : 'translate-x-0'
+                              }`}
+                            style={{ width: '16px', height: '16px', transform: prod.isActive ? 'translateX(20px)' : 'translateX(0)' }}
+                          />
                         </button>
                         <button
                           type="button"

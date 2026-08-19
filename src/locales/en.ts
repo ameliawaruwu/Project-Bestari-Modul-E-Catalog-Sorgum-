@@ -163,6 +163,8 @@ export const enLocale: Record<string, string> = {
   "total-pembayaran-2": "Total Payment",
   "kembali": "Back",
   "stok-tersedia": "In Stock",
+  "habis": "Sold Out",
+  "stok-habis": "Out of Stock",
   "jumlah": "QUANTITY",
   "kurangi-jumlah": "Decrease quantity",
   "tambah-jumlah": "Increase quantity",

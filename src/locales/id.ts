@@ -163,6 +163,8 @@ export const idLocale: Record<string, string> = {
   "total-pembayaran-2": "Total Pembayaran",
   "kembali": "Kembali",
   "stok-tersedia": "Stok Tersedia",
+  "habis": "Habis",
+  "stok-habis": "Stok Habis",
   "jumlah": "JUMLAH",
   "kurangi-jumlah": "Kurangi jumlah",
   "tambah-jumlah": "Tambah jumlah",

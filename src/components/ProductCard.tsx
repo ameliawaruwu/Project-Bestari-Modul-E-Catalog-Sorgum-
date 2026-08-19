@@ -71,6 +71,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+        {/* H3-9: badge "Habis" — stok 0 (produk tetap bisa dilihat detailnya) */}
+        {product.stock === 0 && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span className="px-3 py-1.5 rounded-lg bg-[#D32F2F] text-white text-xs font-extrabold uppercase tracking-wider shadow-lg">
+              {t('Habis', 'Sold Out')}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Details Container */}
