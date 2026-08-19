@@ -332,6 +332,40 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
                   </p>
                 </div>
               )}
+
+              {/* Status FAQ — aktif/nonaktif (H6: tampil di publik hanya yg AKTIF) */}
+              <div>
+                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
+                  Status FAQ
+                </label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setStatus('AKTIF')}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      status === 'AKTIF'
+                        ? 'bg-[#2E7D32] text-white border-[#2E7D32]'
+                        : 'bg-[#F7F8F6] border-[#E0E0E0] text-[#555555]'
+                    }`}
+                  >
+                    Aktif
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStatus('DRAFT')}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      status === 'DRAFT'
+                        ? 'bg-[#E65100] text-white border-[#E65100]'
+                        : 'bg-[#F7F8F6] border-[#E0E0E0] text-[#555555]'
+                    }`}
+                  >
+                    Draft (Nonaktif)
+                  </button>
+                </div>
+                <p className="text-[11px] text-gray-400 mt-1">
+                  FAQ dengan status Draft tidak tampil di halaman FAQ publik.
+                </p>
+              </div>
             </div>
           </div>
         </div>

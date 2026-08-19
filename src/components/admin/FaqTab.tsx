@@ -225,12 +225,15 @@ export const FaqTab: React.FC<FaqTabProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleStatus(f.id)}
-                              className="w-9 h-9 rounded-xl bg-[#F7F8F6] hover:bg-[#E8F5E9] text-[#1B5E20] inline-flex items-center justify-center transition-colors cursor-pointer border border-[#E0E0E0]"
-                              title="Ubah Status"
+                              title={isDraft ? 'Aktifkan FAQ (tampilkan di publik)' : 'Nonaktifkan FAQ (sembunyikan dari publik)'}
+                              className={`w-10 rounded-full transition-colors relative p-0.5 cursor-pointer self-center ${isDraft ? 'bg-gray-300' : 'bg-[#2E7D32]'
+                                }`}
+                              style={{ height: '22px', width: '40px' }}
                             >
-                              <span className="material-symbols-outlined text-base">
-                                {isDraft ? 'visibility' : 'visibility_off'}
-                              </span>
+                              <div
+                                className="rounded-full bg-white shadow-sm"
+                                style={{ width: '16px', height: '16px', transform: isDraft ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s' }}
+                              />
                             </button>
                           )}
                           <button
