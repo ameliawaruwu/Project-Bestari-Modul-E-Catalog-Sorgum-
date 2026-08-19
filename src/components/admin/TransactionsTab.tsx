@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Order } from '../../types';
+import { getAllowedStatusOptions } from '../../utils/orderStatusTransitions';
 
 interface TransactionsTabProps {
   orders: Order[];
@@ -210,7 +211,7 @@ export const TransactionsTab: React.FC<TransactionsTabProps> = ({
                             : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
                         }`}
                       >
-                        {(['Pending', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'] as Order['status'][]).map((s) => (
+                        {getAllowedStatusOptions(ord.statusRaw, ord.status).map((s) => (
                           <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
                         ))}
                       </select>

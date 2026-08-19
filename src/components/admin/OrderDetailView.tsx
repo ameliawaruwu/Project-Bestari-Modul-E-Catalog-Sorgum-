@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Order } from '../../types';
 import { formatDate } from '../../utils/formatDate';
+import { getAllowedStatusOptions } from '../../utils/orderStatusTransitions';
 
 interface OrderDetailViewProps {
   order: Order | null;
@@ -136,29 +137,9 @@ export const OrderDetailView: React.FC<OrderDetailViewProps> = ({
                   : 'bg-[#FFEBEE] border-[#FFCDD2] text-[#D32F2F]'
               }`}
             >
-              {(() => {
-                // I2-5: hanya tampilkan transisi status yang VALID dari status sekarang
-                // (sinkron dgn state machine BE — mundur & keluar dari terminal diblokir).
-                const labelMap: Record<string, Order['status']> = {
-                  pending: 'Pending', confirmed: 'Diproses', processed: 'Diproses',
-                  shipped: 'Dikirim', delivered: 'Selesai', cancelled: 'Dibatalkan',
-                };
-                const transitionMap: Record<string, string[]> = {
-                  pending: ['pending', 'confirmed', 'cancelled'],
-                  confirmed: ['confirmed', 'processed', 'cancelled'],
-                  processed: ['processed', 'shipped', 'cancelled'],
-                  shipped: ['shipped', 'delivered'],
-                  delivered: ['delivered'],
-                  cancelled: ['cancelled'],
-                };
-                const currentKey = order.statusRaw || (Object.entries(labelMap).find(([, v]) => v === order.status)?.[0] || 'pending');
-                const options = (transitionMap[currentKey] || [currentKey]).map((k) => labelMap[k]).filter(Boolean);
-                // pastikan status sekarang selalu ada di opsi (jaga konsistensi)
-                const merged = options.includes(order.status) ? options : [order.status, ...options];
-                return [...new Set(merged)].map((s) => (
-                  <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
-                ));
-              })()}
+              {getAllowedStatusOptions(order.statusRaw, order.status).map((s) => (
+                <option key={s} value={s} className="text-[#1B5E20] bg-white">{s}</option>
+              ))}
             </select>
           </div>
         </div>
