@@ -38,7 +38,10 @@ export async function updateUserByAdmin(userId: number, fields: Record<string, a
   if (sets.length === 0) return false;
   vals.push(userId);
 
-  const [r] = await dbPool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ? AND role = 'user'`, vals);
+  // Kalau ada field role, izinkan mengubah akun admin (mis. menurunkan admin →
+  // user). Tanpa role, tetap amankan: hanya bisa mengubah user biasa (bukan admin).
+  const whereRoleClause = fields.role !== undefined ? '' : " AND role = 'user'";
+  const [r] = await dbPool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ?${whereRoleClause}`, vals);
   return (r as any).affectedRows > 0;
 }
 
