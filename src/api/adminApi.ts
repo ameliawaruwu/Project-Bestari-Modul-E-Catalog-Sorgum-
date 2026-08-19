@@ -269,7 +269,7 @@ export const userAdminApi = {
   },
 
   // PUT /api/admin/dashboard/users/:id
-  updateUser: async (id: number, fields: { name?: string; email?: string; phone?: string; password?: string; is_deleted?: number }) => {
+  updateUser: async (id: number, fields: { name?: string; email?: string; phone?: string; password?: string; is_deleted?: number; role?: string }) => {
     await request(`/admin/dashboard/users/${id}`, { method: 'PUT', body: fields, auth: true });
   },
 

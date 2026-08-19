@@ -31,6 +31,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<'AKTIF' | 'NONAKTIF'>('AKTIF');
+  const [role, setRole] = useState<'user' | 'admin'>('user');
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
 
   // Add Address Form state
@@ -49,6 +50,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
       setEmail(initialUser.email);
       setPhone(initialUser.phone);
       setStatus(initialUser.status);
+      setRole(initialUser.role || 'user');
       setAddresses(initialUser.addresses || []);
       setPassword('');
     } else {
@@ -56,6 +58,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
       setEmail('');
       setPhone('');
       setStatus('AKTIF');
+      setRole('user');
       setAddresses([]);
       setPassword('');
     }
@@ -91,6 +94,7 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
       status,
       isDeleted: status === 'NONAKTIF',
       deletedAt: status === 'NONAKTIF' ? (initialUser?.deletedAt || new Date().toISOString().replace('T', ' ').substring(0, 16)) : undefined,
+      role,
       addresses,
       orderHistory: initialUser?.orderHistory || [],
     };
@@ -217,11 +221,6 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                   Informasi Utama Akun
                 </h3>
               </div>
-              {isEditing && (
-                <span className="px-3 py-1 bg-[#E8F5E9] text-[#1B5E20] font-mono text-xs font-bold rounded-lg border border-[#A5D6A7]">
-                  {initialUser?.id}
-                </span>
-              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -306,6 +305,26 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
                 </div>
                 {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
               </div>
+
+              {/* Role Akun (hanya saat edit — create selalu 'user') */}
+              {isEditing && (
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
+                    Peran Akun (Role)
+                  </label>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as 'user' | 'admin')}
+                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] text-[#1B5E20] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] font-medium cursor-pointer"
+                  >
+                    <option value="user">User (Pelanggan)</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <p className="text-[11px] text-[#555555] mt-1">
+                    Menjadikan user sebagai admin memberinya akses ke panel admin.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

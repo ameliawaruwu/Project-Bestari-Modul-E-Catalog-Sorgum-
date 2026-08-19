@@ -10,7 +10,7 @@ interface UsersTabProps {
 }
 
 // BE user row -> AdminUser (FE shape)
-function mapAdminUser(u: { id: number; name: string; email: string; phone: string | null; is_deleted?: number; created_at: string }): AdminUser {
+function mapAdminUser(u: { id: number; name: string; email: string; phone: string | null; role?: string; is_deleted?: number; created_at: string }): AdminUser {
   const isDeleted = !!u.is_deleted;
   return {
     id: String(u.id),
@@ -21,6 +21,7 @@ function mapAdminUser(u: { id: number; name: string; email: string; phone: strin
     orderCount: 0,
     status: isDeleted ? 'NONAKTIF' : 'AKTIF',
     isDeleted,
+    role: u.role === 'admin' ? 'admin' : 'user',
     addresses: [],
   };
 }
@@ -109,6 +110,7 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
           email: userData.email,
           phone: userData.phone !== '-' ? userData.phone : undefined,
           ...(password ? { password } : {}),
+          role: userData.role,
         });
         showToast(`Data user ${userData.name} berhasil diperbarui!`);
       } catch (e: any) {

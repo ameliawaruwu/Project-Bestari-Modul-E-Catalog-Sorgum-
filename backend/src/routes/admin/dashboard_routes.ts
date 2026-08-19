@@ -37,10 +37,15 @@ router.put('/users/:id', async (req: Request, res: Response) => {
   const id = parseInt(String(req.params.id));
   if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
 
-  const allowed = ['name', 'email', 'phone', 'password', 'is_deleted'];
+  const allowed = ['name', 'email', 'phone', 'password', 'is_deleted', 'role'];
   const fields: Record<string, any> = {};
   for (const k of allowed) {
     if (req.body[k] !== undefined) fields[k] = req.body[k];
+  }
+  // Validasi role — hanya 'user' | 'admin' yang diterima (mencegah nilai liar).
+  if (fields.role !== undefined && !['user', 'admin'].includes(fields.role)) {
+    res.status(400).json({ error: 'Role tidak valid. Gunakan "user" atau "admin".' });
+    return;
   }
 
   const updated = await updateUserByAdmin(id, fields);

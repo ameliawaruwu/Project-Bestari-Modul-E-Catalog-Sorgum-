@@ -38,6 +38,7 @@ export interface AdminUser {
   status: 'AKTIF' | 'NONAKTIF';
   isDeleted: boolean;
   deletedAt?: string;
+  role: 'user' | 'admin';
   addresses: UserAddress[];
   orderHistory?: UserOrderHistoryItem[];
 }
