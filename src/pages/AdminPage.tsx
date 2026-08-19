@@ -99,24 +99,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // Badge & Category options (dari Kelola Badge / Kelola Kategori — sinkron ke dropdown produk)
+  // Badge options (dari Kelola Badge — sinkron ke dropdown produk).
+  // (H4: Kelola Kategori dihapus — kategori bukan fitur mandiri lagi.)
   const [badgeOptions, setBadgeOptions] = useState<string[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<{ id: number; name: string; slug: string }[]>([]);
 
-  const loadBadgeCategoryOptions = async () => {
+  const loadBadgeOptions = async () => {
     try {
-      const { badgeAdminApi, categoryAdminApi } = await import('../api/adminApi');
+      const { badgeAdminApi } = await import('../api/adminApi');
       const badges = await badgeAdminApi.list();
       setBadgeOptions(badges.filter((b) => b.is_active).map((b) => b.name));
-      const cats = await categoryAdminApi.list();
-      setCategoryOptions(cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug })));
+      // Kategori: pertahankan dari endpoint publik (produk masih pakai kategori)
+      const res = await fetch('/api/categories');
+      const cats = await res.json();
+      setCategoryOptions((cats?.data || []).map((c: any) => ({ id: c.id, name: c.name, slug: c.slug })));
     } catch {
       // fallback: biarkan kosong (ProductFormView pakai default hardcode)
     }
   };
 
   useEffect(() => {
-    loadBadgeCategoryOptions();
+    loadBadgeOptions();
   }, []);
 
   // Banner ADMIN: fetch dari /api/admin/banners (semua, termasuk nonaktif).
@@ -848,7 +851,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             <OtherSettingsTab
               showToast={showToast}
               onBadgesChange={(badges) => setBadgeOptions(badges.filter((b) => b.is_active).map((b) => b.name))}
-              onCategoriesChange={(cats) => setCategoryOptions(cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug })))}
             />
           )}
         </main>

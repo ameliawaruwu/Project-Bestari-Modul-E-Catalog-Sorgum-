@@ -317,28 +317,3 @@ export const badgeAdminApi = {
     await request(`/admin/badges/${id}`, { method: 'DELETE', auth: true });
   },
 };
-
-// ─── Category management (Kelola Kategori) ────────────────────────────────
-export interface CategoryItem {
-  id: number;
-  name: string;
-  slug: string;
-  image_url?: string | null;
-  sort_order?: number;
-}
-
-export const categoryAdminApi = {
-  list: async (): Promise<CategoryItem[]> => {
-    const res = await request<{ data: CategoryItem[] }>('/admin/categories', { auth: true });
-    return res?.data || [];
-  },
-  create: async (name: string, slug: string) => {
-    await request('/admin/categories', { method: 'POST', body: { name, slug }, auth: true });
-  },
-  update: async (id: number, name: string, slug: string) => {
-    await request(`/admin/categories/${id}`, { method: 'PUT', body: { name, slug }, auth: true });
-  },
-  remove: async (id: number) => {
-    await request(`/admin/categories/${id}`, { method: 'DELETE', auth: true });
-  },
-};
