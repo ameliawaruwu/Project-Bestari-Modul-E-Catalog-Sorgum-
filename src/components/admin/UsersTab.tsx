@@ -18,7 +18,6 @@ function mapAdminUser(u: { id: number; name: string; email: string; phone: strin
     email: u.email,
     phone: u.phone || '-',
     joinedDate: formatDate(u.created_at, 'long'),
-    orderCount: 0,
     status: isDeleted ? 'NONAKTIF' : 'AKTIF',
     isDeleted,
     role: u.role === 'admin' ? 'admin' : 'user',
@@ -171,9 +170,6 @@ export const UsersTab: React.FC<UsersTabProps> = ({ showToast }) => {
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => u.status === 'AKTIF' && !u.isDeleted).length;
   const inactiveUsers = users.filter((u) => u.status === 'NONAKTIF' || u.isDeleted).length;
-  const avgOrders = (
-    users.reduce((acc, u) => acc + u.orderCount, 0) / (totalUsers || 1)
-  ).toFixed(1);
 
   // IF IN CREATE OR EDIT MODE -> RENDER DEDICATED FULL USER FORM PAGE
   if (viewMode === 'create' || viewMode === 'edit') {

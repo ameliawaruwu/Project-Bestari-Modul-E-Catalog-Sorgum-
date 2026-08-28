@@ -60,14 +60,6 @@ export interface FaqItem {
   viewsCount?: number;
 }
 
-export interface CartItem {
-  product: Product;
-  quantity: number;
-  // ID row cart_items di DB (server) — dipakai mutasi (update qty / delete).
-  // Diisi oleh orderApi.getCart() dari backend; item lokal (belum sync) bisa undefined.
-  __cartRowId?: number;
-}
-
 export interface User {
   id: string;
   name: string;
@@ -98,47 +90,4 @@ export interface AuthResponse {
   message: string;
   user?: User;
   token?: string;
-}
-
-export interface Order {
-  id: string;
-  userId?: string;
-  orderNumber?: string;
-  items: CartItem[];
-  totalAmount: number;
-  status: 'Pending' | 'Diproses' | 'Dikirim' | 'Selesai' | 'Dibatalkan';
-  // Status enum BE asli (pending/confirmed/processed/shipped/delivered/cancelled) —
-  // FE tampilkan label gabungan (confirmed & processed sama-sama 'Diproses'),
-  // tapi untuk transisi status perlu tahu enum asli.
-  statusRaw?: string;
-  createdAt: string;
-  shippingAddress?: string;
-  paymentMethod?: 'cod' | 'qris';
-  paymentStatus?: 'unpaid' | 'paid' | 'confirmed';
-  customerName?: string;
-  customerPhone?: string;
-  customerEmail?: string;
-  province?: string;
-  city?: string;
-  district?: string;
-  postalCode?: string;
-  notes?: string;
-  courier?: string;
-  trackingNumber?: string;
-}
-
-export interface CheckoutData {
-  customerName: string;
-  customerPhone: string;
-  customerEmail: string;
-  address: string;
-  province: string;
-  city: string;
-  district: string;
-  postalCode: string;
-  notes?: string;
-  paymentMethod: 'cod' | 'qris';
-  courier?: string;
-  voucherCode?: string;
-  idempotencyKey?: string;
 }

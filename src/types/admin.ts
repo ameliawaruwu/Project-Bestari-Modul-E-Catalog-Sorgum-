@@ -1,10 +1,9 @@
-import { Order, Product } from './index';
+import { Product } from './index';
 
 export type AdminActiveNav =
   | 'dashboard'
   | 'landing'
   | 'produk'
-  | 'transaksi'
   | 'info'
   | 'user'
   | 'faq'
@@ -20,27 +19,17 @@ export interface UserAddress {
   isPrimary: boolean;
 }
 
-export interface UserOrderHistoryItem {
-  orderId: string;
-  date: string;
-  amount: number;
-  formattedAmount: string;
-  status: 'Selesai' | 'Diproses' | 'Dikirim' | 'Pending' | 'Dibatalkan';
-}
-
 export interface AdminUser {
   id: string;
   name: string;
   email: string;
   phone: string;
   joinedDate: string;
-  orderCount: number;
   status: 'AKTIF' | 'NONAKTIF';
   isDeleted: boolean;
   deletedAt?: string;
   role: 'user' | 'admin';
   addresses: UserAddress[];
-  orderHistory?: UserOrderHistoryItem[];
 }
 
 export interface BannerSlide {

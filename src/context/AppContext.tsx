@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { Product, Article, FaqItem, CartItem, User, Order, LoginPayload, RegisterPayload, AuthResponse } from '../types';
+import { Product, Article, FaqItem, User, LoginPayload, RegisterPayload, AuthResponse } from '../types';
 import { BannerSlide } from '../types/admin';
 import { productApi } from '../api/productApi';
 import { articleApi } from '../api/articleApi';
 import { faqApi } from '../api/faqApi';
 import { shopSettingsApi, ShopSettings as ApiShopSettings } from '../api/shopSettingsApi';
-import { orderApi } from '../api/orderApi';
 import { formatDate } from '../utils/formatDate';
 import { authApi } from '../api/authApi';
 import { wishlistApi } from '../api/wishlistApi';
@@ -75,29 +74,12 @@ interface AppContextProps {
   landingContent: LandingContent;
   saveLandingContent: (content: LandingContent) => Promise<boolean>;
 
-  // Orders
-  orders: Order[];
-  addOrder: (order: Order) => void;
-  updateOrderStatus: (orderId: string, status: Order['status']) => void;
-  deleteOrder: (id: string) => void;
-
   // Auth
   currentUser: User | null;
   login: (payload: LoginPayload) => Promise<AuthResponse>;
   register: (payload: RegisterPayload) => Promise<AuthResponse>;
   logout: () => Promise<void>;
 
-  // Cart
-  cart: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
-  updateCartQuantity: (productId: string, delta: number) => void;
-  removeCartItem: (productId: string) => void;
-  clearCart: () => void;
-  resetCartLocal: () => void;
-  appliedDiscount: number;
-  setAppliedDiscount: (val: number) => void;
-  appliedVoucherCode: string | null;
-  setAppliedVoucherCode: (val: string | null) => void;
   refreshProducts: () => Promise<Product[]>;
 }
 
@@ -150,8 +132,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [landingContent, setLandingContent] = useState<LandingContent>(DEFAULT_LANDING_CONTENT);
 
-  const [orders, setOrders] = useState<Order[]>([]);
-
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // ─── Auth generation guard (anti race login) ──────────────────────────────
@@ -165,22 +145,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const authGenerationRef = useRef(0);
   const bumpAuthGeneration = () => { authGenerationRef.current += 1; };
 
-  // ─── Cart = SERVER-AUTHORITATIVE (DB) ──────────────────────────────────
-  // Cart TIDAK disimpan di localStorage lagi — sumber kebenaran = DB (cart_items),
-  // per-user_id (login) / session_id (guest). localStorage cuma nyimpen
-  // session id (bestari_cart_items_) sebagai identifier guest, bukan data cart.
-  // Guest cart juga server-side (session_id) — login/register merge via
-  // endpoint BE POST /cart/merge (session -> user). Key 'bestari_cart_items_'
-  // di localStorage cuma sisa versi lama, dihapus pas merge (cleanup).
-  const [cart, setCart] = useState<CartItem[]>([]);
-
-  // Load cart dari server (dipakai mount/hydrate, login, register, refresh)
-  const refreshCart = async () => {
-    const serverCart = await orderApi.getCart().catch(() => []);
-    setCart(serverCart);
-    return serverCart;
-  };
-
   // Load products dari server (dipakai admin toggle status / setelah edit)
   const refreshProducts = async () => {
     const list = await productApi.getProducts().catch(() => []);
@@ -188,8 +152,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return list;
   };
 
-  const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
-  const [appliedVoucherCode, setAppliedVoucherCode] = useState<string | null>(null);
+  // ─── Promo/voucher (state checkout) — dihapus bersama fitur checkout (2026-08-27)
 
   // ============================================================
   // HYDRATE FROM BACKEND — ganti data mock/localStorage dengan data BE
@@ -212,11 +175,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       }
     });
-
-    // Cart dari SERVER (sumber kebenaran DB) — user login via token,
-    // guest via x-session-id (request() kirim otomatis). Refresh biar
-    // cart muncul walau halaman di-refresh / buka tab baru.
-    refreshCart().catch(() => {});
 
     // Products
     productApi.getProducts().then((list) => {
@@ -263,15 +221,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     }).catch(() => {});
 
-    // Orders (auth required — hanya kalau ada token)
+    // Wishlist (auth required) — load favorit user
     if (getToken()) {
-      orderApi.getOrders().then((list) => {
-        if (!cancelled) {
-          setOrders(list);
-        }
-      }).catch(() => {});
-
-      // Wishlist (auth required) — load favorit user
       wishlistApi.getWishlist().then((items) => {
         if (cancelled) return;
         const idMap: Record<string, number> = {};
@@ -298,14 +249,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (!cancelled && authGenerationRef.current === genAtEvent) {
             setCurrentUser(fresh);
             if (!fresh) {
-              // Sesuai sesi baru: reset state pribadi (cart, wishlist, voucher)
-              setCart([]);
+              // Sesuai sesi baru: reset state pribadi (wishlist)
               setWishlistIds({});
-              setAppliedDiscount(0);
-              setAppliedVoucherCode(null);
             } else {
-              // User login (bisa beda user) — refresh cart & wishlist miliknya
-              refreshCart().catch(() => {});
+              // User login (bisa beda user) — refresh wishlist miliknya
               wishlistApi.getWishlist().then((items) => {
                 if (cancelled || authGenerationRef.current !== genAtEvent) return;
                 const idMap: Record<string, number> = {};
@@ -358,11 +305,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setShopSettings(s as unknown as ShopSettings);
       }).catch(() => {});
     };
-    const refreshOrders = () => {
-      if (getToken()) {
-        orderApi.getOrders().then((list) => setOrders(list)).catch(() => {});
-      }
-    };
     const refreshVouchers = () => {
       // Voucher public list — cart/checkout fetch sendiri, tapi biarkan
       // sinkron kalau ada komponen yang pakai state voucher.
@@ -376,7 +318,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       realtimeApi.on('banners', refreshBanners),
       realtimeApi.on('landing', refreshLanding),
       realtimeApi.on('settings', refreshSettings),
-      realtimeApi.on('orders', refreshOrders),
       realtimeApi.on('vouchers', refreshVouchers),
     ];
 
@@ -466,15 +407,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return false;
   };
 
-  const updateOrders = (newOrders: Order[]) => {
-    setOrders(newOrders);
-  };
-
-  const updateCart = (newCart: CartItem[]) => {
-    // Cart server-authoritative: state cuma mirror dari DB, tidak ditulis ke localStorage.
-    setCart(newCart);
-  };
-
   // Auth Helpers
   const login = async (payload: LoginPayload): Promise<AuthResponse> => {
     if (!payload.email || !payload.password) {
@@ -489,17 +421,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // akan menimpa user baru ini.
         bumpAuthGeneration();
         setCurrentUser(res.user);
-
-        // ─── Cart di login (server-authoritative) — TIDAK ngeblokir navigasi ─
-        // Merge cart guest + refresh cart + load orders dijalankan FIRE-AND-
-        // FORGET (background). Sebelumnya di-await → login() nunggu endpoint
-        // /cart/merge & /cart resolve → kalau lambat/hang (jaringan user),
-        // UI tidak pindah ("login gk langsung masuk, harus refresh dulu").
-        // User langsung masuk; cart/orders muncul beberapa detik kemudian.
-        orderApi.mergeCart().then(() => refreshCart()).catch(() => {});
-        orderApi.getOrders().then((list) => {
-          setOrders(list);
-        }).catch(() => {});
       }
       return res;
     } catch (e: any) {
@@ -520,9 +441,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (res.success && res.user) {
         bumpAuthGeneration();
         setCurrentUser(res.user);
-
-        // Cart di register: merge + refresh fire-and-forget (tidak blokir navigasi)
-        orderApi.mergeCart().then(() => refreshCart()).catch(() => {});
       }
       return res;
     } catch (e: any) {
@@ -535,20 +453,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Sebelumnya cuma set state React — localStorage `bestari_session_id` & `bestari_current_user`
     // masih ada → setelah reload readUser() baca user lama → session nyangkut, gabisa logout/login.
     await authApi.logout();
-    // Naikkan generation — hasil async (getCurrentUser, refreshCart) yang masih
-    // berjalan dianggap basi; JANGAN set currentUser dari response lama.
+    // Naikkan generation — hasil async selebihnya cukup dianggap basi;
+    // JANGAN set currentUser dari response lama.
     bumpAuthGeneration();
-    // Cart server-authoritative: gak usah simpan ke localStorage — sumber di DB.
-    // Kosongin state — jangan sampai cart user A kebawa ke user B/guest.
     setCurrentUser(null);
-    setCart([]);
     setWishlistIds({});
-    // Reset promo/voucher — kalau tidak di-clear, kode voucher user sebelumnya
-    // nyangkut di state → user berikutnya checkout auto-validasi kode basi
-    // → error "kode voucher tidak valid" padahal tidak pakai voucher (bug sesi).
-    setAppliedDiscount(0);
-    setAppliedVoucherCode(null);
-    try { localStorage.removeItem('bestari_cart_items_'); } catch { /* ignore */ }
   };
 
   // Wishlist / Favorit helpers
@@ -827,91 +736,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateBanners(updated);
   };
 
-  // Orders CRUD
-  const addOrder = (order: Order) => {
-    const updated = [order, ...orders];
-    updateOrders(updated);
-  };
-
-  const updateOrderStatus = (orderId: string, status: Order['status']) => {
-    const updated = orders.map((o) => (o.id === orderId ? { ...o, status } : o));
-    updateOrders(updated);
-  };
-
-  const deleteOrder = (id: string) => {
-    const filtered = orders.filter((o) => o.id !== id);
-    updateOrders(filtered);
-  };
-
-  // Cart Helpers
-  const addToCart = (product: Product, quantity: number = 1) => {
-    // Optimistic UI: tambah ke state dulu, sync ke DB (fire-and-forget).
-    const existingIndex = cart.findIndex((item) => item.product.id === product.id);
-    let updated: CartItem[];
-    if (existingIndex > -1) {
-      updated = [...cart];
-      updated[existingIndex].quantity += quantity;
-    } else {
-      updated = [...cart, { product, quantity }];
-    }
-    updateCart(updated);
-    // Server-authoritative: add via API (snapshot owner di dalam request).
-    // Refresh di sukses DAN gagal: item hasil optimistic update tidak punya
-    // __cartRowId, dan mutasi qty/hapus berikutnya butuh row id dari server.
-    // Tanpa ini tombol qty +/- di keranjang tidak mengubah apa-apa (bug).
-    orderApi.addToCartServer(product, quantity).finally(() => {
-      refreshCart();
-    });
-  };
-
-  const updateCartQuantity = (productId: string, delta: number) => {
-    const target = cart.find((item) => item.product.id === productId);
-    if (!target) return;
-    const newQty = target.quantity + delta;
-    const updated = cart
-      .map((item) => (item.product.id === productId ? { ...item, quantity: newQty } : item))
-      .filter((item) => item.quantity > 0);
-    updateCart(updated);
-    // API: kalau qty <= 0 hapus item, kalau > 0 update qty.
-    const rowId = target.__cartRowId;
-    if (newQty <= 0) {
-      if (rowId) orderApi.removeCartItemServer(rowId).catch(() => refreshCart());
-    } else if (rowId) {
-      orderApi.updateCartQtyServer(rowId, newQty).catch(() => refreshCart());
-    } else {
-      // Row id belum ada (mis. item baru dari guest merge?) — fallback refresh
-      refreshCart();
-    }
-  };
-
-  const removeCartItem = (productId: string) => {
-    const target = cart.find((item) => item.product.id === productId);
-    if (!target) return;
-    const updated = cart.filter((item) => item.product.id !== productId);
-    updateCart(updated);
-    // Server-authoritative: hapus dari DB kalau rowId ada.
-    // Kalau rowId undefined (item baru, belum sync dari server), hapus dari
-    // state saja — jangan refreshCart() karena item masih ada di server
-    // dan akan balik lagi (ghosting).
-    const rowId = target.__cartRowId;
-    if (rowId) {
-      orderApi.removeCartItemServer(rowId).catch(() => refreshCart());
-    }
-    // no rowId: item belum di server, tidak perlu aksi
-  };
-
-  const clearCart = () => {
-    const rowIds = cart.map((item) => item.__cartRowId).filter(Boolean) as number[];
-    updateCart([]);
-    if (rowIds.length) orderApi.clearCartServer(rowIds).catch(() => refreshCart());
-  };
-
-  // Reset state cart LOCAL saja (tanpa panggil server). Dipakai setelah checkout:
-  // BE sudah hapus cart_items saat order dibuat, jadi panggil DELETE lagi = 404.
-  const resetCartLocal = () => {
-    updateCart([]);
-  };
-
   // Translation helper — delegate ke i18next (sumber kebenaran TUNGGAL: i18n.language).
   // i18next dibentuk oleh src/i18n.ts dari src/locales/{id,en}.ts (generate
   // otomatis oleh tools/extract-i18n.mjs dari pasangan t('id','en')).
@@ -967,24 +791,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         saveShopSettings,
         landingContent,
         saveLandingContent,
-        orders,
-        addOrder,
-        updateOrderStatus,
-        deleteOrder,
         currentUser,
         login,
         register,
         logout,
-        cart,
-        addToCart,
-        updateCartQuantity,
-        removeCartItem,
-        clearCart,
-        resetCartLocal,
-        appliedDiscount,
-        setAppliedDiscount,
-        appliedVoucherCode,
-        setAppliedVoucherCode,
         refreshProducts,
       }}
     >

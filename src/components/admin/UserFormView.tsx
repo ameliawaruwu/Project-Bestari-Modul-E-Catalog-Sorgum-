@@ -90,13 +90,11 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
       email,
       phone: formattedPhone,
       joinedDate: initialUser?.joinedDate || '',
-      orderCount: initialUser?.orderCount || 0,
       status,
       isDeleted: status === 'NONAKTIF',
       deletedAt: status === 'NONAKTIF' ? (initialUser?.deletedAt || new Date().toISOString().replace('T', ' ').substring(0, 16)) : undefined,
       role,
       addresses,
-      orderHistory: initialUser?.orderHistory || [],
     };
 
     onSave(userPayload, password || undefined);
@@ -470,64 +468,6 @@ export const UserFormView: React.FC<UserFormViewProps> = ({
               )}
             </div>
           </div>
-
-          {/* Card 3: Riwayat Pesanan (Only displayed in edit mode if orders exist) */}
-          {isEditing && (
-            <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-              <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3">
-                <div className="flex items-center gap-2.5">
-                  <span className="material-symbols-outlined text-xl text-[#1B5E20]">shopping_bag</span>
-                  <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
-                    Riwayat Transaksi Pesanan ({initialUser?.orderHistory?.length || 0})
-                  </h3>
-                </div>
-              </div>
-
-              {(!initialUser?.orderHistory || initialUser.orderHistory.length === 0) ? (
-                <div className="p-6 text-center text-[#555555] text-xs">
-                  <span className="material-symbols-outlined text-3xl mb-1 text-gray-300">shopping_cart_checkout</span>
-                  <p>User ini belum pernah melakukan transaksi pesanan.</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto rounded-xl border border-[#E0E0E0]">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
-                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">ID Pesanan</th>
-                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">Tanggal</th>
-                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">Total Jumlah</th>
-                        <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3 font-black uppercase tracking-wider text-[#1B5E20]">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#E0E0E0]">
-                      {initialUser.orderHistory.map((order) => (
-                        <tr key={order.orderId} className="hover:bg-[#E8F5E9]/60 transition-colors">
-                          <td className="p-3 font-mono font-bold text-[#1B5E20]">{order.orderId}</td>
-                          <td className="p-3 text-[#555555]">{order.date}</td>
-                          <td className="p-3 font-bold text-[#1B5E20]">{order.formattedAmount}</td>
-                          <td className="p-3">
-                            <span
-                              className={`px-2.5 py-0.5 font-bold rounded-full text-[10px] ${
-                                order.status === 'Selesai'
-                                  ? 'bg-[#E8F5E9] text-[#2E7D32]'
-                                  : order.status === 'Diproses'
-                                  ? 'bg-[#FFF8E1] text-[#C89B3C]'
-                                  : order.status === 'Dikirim'
-                                  ? 'bg-[#E3F2FD] text-[#1976D2]'
-                                  : 'bg-[#F7F8F6] text-[#555555]'
-                              }`}
-                            >
-                              {order.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </form>
     </div>

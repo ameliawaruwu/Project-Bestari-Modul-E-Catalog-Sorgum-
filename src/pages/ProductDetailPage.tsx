@@ -6,33 +6,20 @@ import { discountBadgeLabel } from '../utils/discountBadge';
 
 interface ProductDetailPageProps {
   product: Product;
-  onAddToCart: (product: Product, quantity: number) => void;
   onSelectProduct: (product: Product) => void;
   setActiveTab: (tab: string) => void;
-  onBuyNow?: (product: Product, quantity: number) => void;
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   product,
-  onAddToCart,
   onSelectProduct,
   setActiveTab,
-  onBuyNow,
 }) => {
   const { t, shopSettings, currentUser, isFavorite, toggleWishlist } = useApp();
-  const [quantity, setQuantity] = useState(1);
   const [activeInfoTab, setActiveInfoTab] = useState<'spesifikasi' | 'deskripsi' | 'pengiriman'>('spesifikasi');
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const favorite = isFavorite(product.id);
-
-  const handleToggleFavorite = () => {
-    if (!currentUser) {
-      setActiveTab('login');
-      return;
-    }
-    toggleWishlist(product.id);
-  };
 
   // Gallery images — dari DB (product_images, diedit admin di Kelola Produk).
   // Urutan: sort_order ASC; kalau kosong fallback ke gambar utama produk.
@@ -61,25 +48,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   useEffect(() => {
     setSelectedImage(product.image);
-    setQuantity(1);
   }, [product]);
 
-  const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () => setQuantity((prev) => Math.max(1, prev - 1));
-
-  const handleAddToCartClick = () => {
-    onAddToCart(product, quantity);
-  };
-
-  const handleBuyNowClick = () => {
-    onAddToCart(product, quantity);
-    if (onBuyNow) {
-      onBuyNow(product, quantity);
+  const handleToggleFavorite = () => {
+    if (!currentUser) {
+      setActiveTab('login');
+      return;
     }
+    toggleWishlist(product.id);
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Halo Sorgum, saya ingin bertanya mengenai produk: ${product.name} (Rp ${product.price.toLocaleString('id-ID')})`
+    `Halo Sorgum, saya ingin bertanya/memesan produk: ${product.name} (Rp ${product.price.toLocaleString('id-ID')})`
   );
   const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const whatsappUrl = `https://wa.me/${waNumber}?text=${whatsappMessage}`;
@@ -206,32 +186,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#555555] mb-8 leading-relaxed font-normal">
               {product.description}
             </p>
-
-            {/* Quantity Selector */}
-            <div className="mb-8">
-              <label className="block text-xs font-bold text-[#555555] mb-3 uppercase tracking-wider">
-                {t('JUMLAH', 'QUANTITY')}
-              </label>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleDecrement}
-                  className="w-12 h-12 flex items-center justify-center border border-[#E0E0E0] rounded-xl hover:bg-[#E8F5E9] active:scale-95 transition-all text-[#1B5E20] cursor-pointer"
-                  aria-label={t('Kurangi jumlah', 'Decrease quantity')}
-                >
-                  <span className="material-symbols-outlined text-xl">remove</span>
-                </button>
-                <span className="w-16 h-12 flex items-center justify-center bg-[#E8F5E9] border border-[#A5D6A7] rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-base text-[#1B5E20] select-none">
-                  {quantity}
-                </span>
-                <button
-                  onClick={handleIncrement}
-                  className="w-12 h-12 flex items-center justify-center border border-[#E0E0E0] rounded-xl hover:bg-[#E8F5E9] active:scale-95 transition-all text-[#1B5E20] cursor-pointer"
-                  aria-label={t('Tambah jumlah', 'Increase quantity')}
-                >
-                  <span className="material-symbols-outlined text-xl">add</span>
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Action Buttons */}
@@ -252,36 +206,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </span>
             </button>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button
-                onClick={handleAddToCartClick}
-                disabled={product.stock === 0}
-                className={`${product.stock === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#2E7D32] hover:bg-[#1B5E20] cursor-pointer'} text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2`}
-              >
-                <span className="material-symbols-outlined text-xl">shopping_cart</span>
-                <span>{product.stock === 0 ? t('Stok Habis', 'Out of Stock') : t('Tambah ke Keranjang', 'Add to Cart')}</span>
-              </button>
-
-              <button
-                onClick={handleBuyNowClick}
-                disabled={product.stock === 0}
-                className={`${product.stock === 0 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#C89B3C] hover:bg-[#B38728] cursor-pointer'} text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all flex items-center justify-center gap-2`}
-              >
-                <span className="material-symbols-outlined text-xl">bolt</span>
-                <span>{t('Beli Sekarang', 'Buy Now')}</span>
-              </button>
-            </div>
-
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 border border-[#1B5E20] text-[#1B5E20] hover:bg-[#1B5E20] hover:text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base transition-all active:scale-[0.98] cursor-pointer"
+              className={`w-full flex items-center justify-center gap-2 text-white h-14 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm sm:text-base shadow-2xs active:scale-[0.98] transition-all cursor-pointer ${
+                product.stock === 0 ? 'bg-gray-300 cursor-not-allowed pointer-events-none' : 'bg-[#2E7D32] hover:bg-[#1B5E20]'
+              }`}
             >
               <span className="material-symbols-outlined text-2xl" style={{ color: '#25D366' }}>
                 chat
               </span>
-              <span>{t('Hubungi via WhatsApp', 'Contact via WhatsApp')}</span>
+              <span>{product.stock === 0 ? t('Stok Habis', 'Out of Stock') : t('Pesan via WhatsApp', 'Order via WhatsApp')}</span>
             </a>
           </div>
         </div>

@@ -5,8 +5,6 @@ import { useApp } from '../context/AppContext';
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  cartCount: number;
-  onOpenCart: () => void;
   user: User | null;
   onNavigateAuth: (mode: 'login' | 'register') => void;
   searchQuery?: string;
@@ -18,8 +16,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
-  cartCount,
-  onOpenCart,
   user,
   onNavigateAuth,
   onLogout,
@@ -158,22 +154,6 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </button>
 
-        {/* Shopping Cart Button — hanya untuk user yang LOGIN & bukan admin */}
-        {user && user.role !== 'admin' && (
-          <button
-            onClick={onOpenCart}
-            className="relative p-2 hover:bg-[#2E7D32] rounded-lg transition-all active:scale-95 focus:outline-none cursor-pointer"
-            aria-label={t('Keranjang Belanja', 'Shopping Cart')}
-          >
-            <span className="material-symbols-outlined text-white text-lg sm:text-xl">shopping_cart</span>
-            {cartCount > 0 && (
-              <span className="absolute top-0.5 right-0.5 bg-[#C89B3C] text-white text-[9px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold shadow-2xs">
-                {cartCount}
-              </span>
-            )}
-          </button>
-        )}
-
         {/* User Account / Auth */}
         <div className="relative" ref={userMenuRef}>
           {user ? (
@@ -220,16 +200,6 @@ export const Header: React.FC<HeaderProps> = ({
                   </button>
                   {user.role !== 'admin' && (
                     <>
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          setActiveTab('pesanan');
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#E8F5E9] text-[#1B5E20] flex items-center gap-2 cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-lg">history</span>
-                        {t('Pesanan Saya', 'My Orders')}
-                      </button>
                       <button
                         onClick={() => {
                           setShowUserMenu(false);

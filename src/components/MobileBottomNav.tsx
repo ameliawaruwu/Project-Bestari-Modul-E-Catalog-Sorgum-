@@ -5,16 +5,12 @@ import { useApp } from '../context/AppContext';
 interface MobileBottomNavProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  cartCount: number;
-  onOpenCart: () => void;
   user?: User | null;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   activeTab,
   setActiveTab,
-  cartCount,
-  onOpenCart,
   user,
 }) => {
   const { t } = useApp();
@@ -50,24 +46,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           </button>
         );
       })}
-
-      {/* Cart Item in Bottom Nav — hanya untuk user yang LOGIN & bukan admin */}
-      {user && user.role !== 'admin' && (
-        <button
-          onClick={onOpenCart}
-          className="relative flex flex-col items-center justify-center py-1 px-3 rounded-xl text-white/70 hover:text-white transition-all active:scale-95 cursor-pointer"
-        >
-          <div className="p-1 rounded-full relative">
-            <span className="material-symbols-outlined text-xl">shopping_cart</span>
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#C89B3C] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-2xs">
-                {cartCount}
-              </span>
-            )}
-          </div>
-          <span className="text-[11px] font-['Plus_Jakarta_Sans'] font-medium">{t('Troli', 'Cart')}</span>
-        </button>
-      )}
     </div>
   );
 };

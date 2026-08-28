@@ -7,7 +7,6 @@ interface ProfileFavoritesSectionProps {
   currentUser: { id: string; email: string; role?: string } | null;
   allProducts: Product[];
   ctxWishlistIds: Record<string, number>;
-  onAddToCart: (product: Product) => void;
   onToggleWishlist: (productId: string) => Promise<boolean>;
   showToast: (msg: string, type?: 'success' | 'error') => void;
   // F4-5: klik card favorit → buka detail produk (bukan hanya like/unlike)
@@ -22,7 +21,6 @@ export const ProfileFavoritesSection: React.FC<ProfileFavoritesSectionProps> = (
   currentUser,
   allProducts,
   ctxWishlistIds,
-  onAddToCart,
   onToggleWishlist,
   showToast,
   onSelectProduct,

@@ -45,7 +45,6 @@ export const eventBus = {
 // Event types terpusat — dipakai route handler (publish) & events route (subscribe).
 export const EVENTS = {
   PRODUCTS: 'products',
-  ORDERS: 'orders',
   ARTICLES: 'articles',
   FAQS: 'faqs',
   BANNERS: 'banners',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { User, Order, Product } from '../types';
+import { User, Product } from '../types';
 import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
 import { realtimeApi } from '../api/realtimeApi';
@@ -15,9 +15,6 @@ import { BannerFormView } from '../components/admin/BannerFormView';
 import { ProductsTab } from '../components/admin/ProductsTab';
 import { ProductFormView } from '../components/admin/ProductFormView';
 import { ProductDeleteConfirmModal } from '../components/admin/ProductDeleteConfirmModal';
-import { TransactionsTab } from '../components/admin/TransactionsTab';
-import { OrderDetailView } from '../components/admin/OrderDetailView';
-import { OrderDeleteConfirmModal } from '../components/admin/OrderDeleteConfirmModal';
 import { InfoTab } from '../components/admin/InfoTab';
 import { ArticleFormView } from '../components/admin/ArticleFormView';
 import { UsersTab } from '../components/admin/UsersTab';
@@ -56,43 +53,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     saveBanner,
     deleteBanner,
     toggleBanner,
-    updateOrderStatus,
-    deleteOrder,
   } = useApp();
-
-  // Orders admin: source of truth = BE /api/admin/orders (SEMUA order, bukan /mine)
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(true);
-
-  const refreshAdminOrders = useCallback(async () => {
-    try {
-      const { orderAdminApi } = await import('../api/adminApi');
-      const { mapOrder } = await import('../api/orderApi');
-      const list = await orderAdminApi.listOrders();
-      setOrders(list.map((o: any) => mapOrder(o)));
-    } catch {
-      // admin orders unavailable -> keep empty
-    } finally {
-      setOrdersLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { orderAdminApi } = await import('../api/adminApi');
-        const { mapOrder } = await import('../api/orderApi');
-        const list = await orderAdminApi.listOrders();
-        if (!cancelled) setOrders(list.map((o: any) => mapOrder(o)));
-      } catch {
-        // admin orders unavailable -> keep empty
-      } finally {
-        if (!cancelled) setOrdersLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
 
   // Main Navigation State
   const [activeNav, setActiveNav] = useState<AdminActiveNav>('dashboard');
@@ -224,12 +185,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   }, []);
 
   // ─── SSE realtime di panel admin ─────────────────────────────────────────
-  // User checkout → BE publish 'orders' event → admin lihat order baru
-  // langsung tanpa refresh. Admin edit produk/artikel/FAQ dari tab lain
-  // → panel admin ikut sinkron (data admin == user, realtime dua arah).
+  // Admin edit produk/artikel/FAQ dari tab lain → panel admin ikut sinkron
+  // (data admin == user, realtime dua arah).
   useEffect(() => {
     const unsubs = [
-      realtimeApi.on('orders', () => refreshAdminOrders()),
       realtimeApi.on('products', () => refreshProducts().catch(() => {})),
       realtimeApi.on('articles', () => refreshAdminArticles()),
       realtimeApi.on('faqs', () => refreshAdminFaqs()),
@@ -241,91 +200,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [editingArticle, setEditingArticle] = useState<{ isEditing: boolean; article?: ArticleItem | null } | null>(null);
   const [editingFaq, setEditingFaq] = useState<{ isEditing: boolean; faq?: FAQItem | null } | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
-  const [deletingOrder, setDeletingOrder] = useState<Order | null>(null);
-
-  // Order selection & Proof Modal State
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [proofModalUrl, setProofModalUrl] = useState<string | null>(null);
-
-  // Handlers for Orders
-  const handleUpdateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
-    try {
-      const { orderAdminApi } = await import('../api/adminApi');
-      const { STATUS_LABEL_TO_ENUM } = await import('../api/orderApi');
-      // BE opsi B (longgar): terima semua status — cukup map label FE → enum BE.
-      // 'Diproses' selalu kirim 'processed' (confirmed & processed sama-sama tampil 'Diproses').
-      const beStatus = STATUS_LABEL_TO_ENUM[newStatus] || newStatus.toLowerCase();
-      const res = await orderAdminApi.updateOrderStatus(orderId, beStatus);
-      // Order terminal (Selesai/Dibatalkan) → BE return unchanged (no-op): tampilkan info ramah,
-      // JANGAN update state & JANGAN toast error — admin tidak boleh lihat error mentah.
-      if (res?.unchanged) {
-        showToast(res.message || 'Pesanan sudah berstatus akhir, tidak dapat diubah.', 'info');
-        return;
-      }
-      // Update local state (BE dulu, context kedua — context cuma mirror)
-      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal mengupdate status pesanan.', 'error');
-      return;
-    }
-    updateOrderStatus(orderId, newStatus);
-    showToast(`Status pesanan ${orderId} diperbarui ke ${newStatus}`);
-  };
-
-  // Verifikasi/ubah status pembayaran (admin) — biar revenue dashboard kebaca
-  const handleUpdatePaymentStatus = async (orderId: string, newPayment: 'unpaid' | 'paid' | 'confirmed') => {
-    try {
-      const { orderAdminApi } = await import('../api/adminApi');
-      await orderAdminApi.updatePaymentStatus(orderId, newPayment);
-      setOrders((prevOrders) => prevOrders.map((o) => (o.id === orderId ? { ...o, paymentStatus: newPayment } : o)));
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal mengupdate status pembayaran.', 'error');
-      return;
-    }
-    showToast(`Status pembayaran ${orderId} diperbarui ke ${newPayment}`);
-  };
-
-  const handleDeleteOrder = async (id: string) => {
-    // SOFT-DELETE: panggil BE DELETE /admin/orders/:id → order di-set deleted_at
-    // (hilang dari tampilan admin, data TETAP di DB sebagai arsip, bisa di-restore).
-    // Sebelumnya cuma hapus state lokal → muncul lagi saat refresh (keluhan user).
-    try {
-      const { orderAdminApi } = await import('../api/adminApi');
-      await orderAdminApi.deleteOrder(id);
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus pesanan.', 'error');
-      return;
-    }
-    setOrders((prev) => prev.filter((o) => o.id !== id));
-    deleteOrder(id);
-    if (selectedOrderId === id) {
-      setSelectedOrderId(null);
-    }
-    showToast(`Pesanan ${id} dihapus dari tampilan (data tetap di database).`);
-  };
-
-  const handleExportCSV = () => {
-    const headers = ['ID Pesanan', 'Nama Pembeli', 'Telepon', 'Metode Pembayaran', 'Total Bayar', 'Status', 'Tanggal'];
-    const rows = orders.map((o) => [
-      o.id,
-      `"${o.customerName || ''}"`,
-      `"${o.customerPhone || ''}"`,
-      o.paymentMethod || 'qris',
-      o.totalAmount,
-      o.status,
-      `"${o.createdAt || ''}"`
-    ]);
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `transaksi_sorgum_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast('Data transaksi berhasil diekspor ke CSV!');
-  };
 
   // Handlers for Banners
   const handleToggleBanner = async (id: string) => {
@@ -673,8 +547,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setEditingFaq(null);
   };
 
-  const selectedOrderObj = orders.find((o) => o.id === selectedOrderId) || null;
-
   return (
     <div style={{ backgroundColor: '#F7F8F6' }} className="min-h-screen text-[#1B5E20] admin-theme relative flex">
       {/* Drawer Overlay for Mobile */}
@@ -719,10 +591,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           {/* TAB 1: DASHBOARD UTAMA */}
           {activeNav === 'dashboard' && (
             <DashboardTab
-              orders={orders}
               products={products}
               setActiveNav={handleNavChange}
-              handleUpdateOrderStatus={handleUpdateOrderStatus}
             />
           )}
 
@@ -779,28 +649,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 }}
               />
             ))}
-
-          {/* TAB 4: KELOLA TRANSAKSI */}
-          {activeNav === 'transaksi' && (
-            selectedOrderId ? (
-              <OrderDetailView
-                order={selectedOrderObj}
-                onClose={() => setSelectedOrderId(null)}
-                onUpdateOrderStatus={handleUpdateOrderStatus}
-                onOpenProofModal={(url) => setProofModalUrl(url)}
-              />
-            ) : (
-              <TransactionsTab
-                orders={orders}
-                onUpdateOrderStatus={handleUpdateOrderStatus}
-                onUpdatePaymentStatus={handleUpdatePaymentStatus}
-                onDeleteOrder={(order) => setDeletingOrder(order)}
-                onSelectOrder={(id) => setSelectedOrderId(id)}
-                onOpenProofModal={(url) => setProofModalUrl(url)}
-                onExportCSV={handleExportCSV}
-              />
-            )
-          )}
 
           {/* TAB 5: KELOLA INFO */}
           {activeNav === 'info' &&
@@ -869,50 +717,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         </footer>
       </div>
 
-      {/* ORDER DELETE CONFIRMATION MODAL */}
-      <OrderDeleteConfirmModal
-        isOpen={deletingOrder !== null}
-        order={deletingOrder}
-        onClose={() => setDeletingOrder(null)}
-        onConfirmDelete={(id) => {
-          handleDeleteOrder(id);
-        }}
-      />
-
-      {/* Full-screen Payment Proof Image Lightbox Modal */}
-      {proofModalUrl && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fadeIn">
-          <div className="relative max-w-xl w-full bg-white rounded-xl overflow-hidden shadow-2xl p-4 flex flex-col items-center border border-[#E0E0E0]/40">
-            <button
-              type="button"
-              onClick={() => setProofModalUrl(null)}
-              className="absolute top-3 right-3 bg-[#1d1b17]/85 hover:bg-[#1d1b17] text-white p-1.5 rounded-lg transition-all cursor-pointer z-10"
-              title="Tutup Preview"
-            >
-              <span className="material-symbols-outlined text-base">close</span>
-            </button>
-            <h4 className="font-bold text-sm text-[#1B5E20] mb-3 self-start px-2">
-              Bukti Transfer Pembayaran QRIS
-            </h4>
-            <div className="w-full bg-[#faf8f5] rounded-lg overflow-hidden flex items-center justify-center max-h-[70vh] border border-[#E0E0E0]/30">
-              <img
-                src={proofModalUrl}
-                alt="Bukti Transfer QRIS Full"
-                className="max-h-[65vh] w-auto object-contain"
-              />
-            </div>
-            <div className="mt-4 flex justify-end w-full">
-              <button
-                type="button"
-                onClick={() => setProofModalUrl(null)}
-                className="bg-[#2E7D32] text-white px-5 py-2 rounded-lg text-xs font-bold hover:bg-[#1B5E20] transition-colors cursor-pointer"
-              >
-                Selesai
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {/* PRODUCT DELETE CONFIRMATION MODAL */}
       <ProductDeleteConfirmModal
         isOpen={deletingProduct !== null}

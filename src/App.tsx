@@ -3,7 +3,6 @@ import { productApi } from './api/productApi';
 import { Header } from './components/Header';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Footer } from './components/Footer';
-import { CartDrawer } from './components/CartDrawer';
 import { ConnectionErrorModal } from './components/ConnectionErrorModal';
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
@@ -12,24 +11,14 @@ import { FaqPage } from './pages/FaqPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
-import { OrdersPage } from './pages/OrdersPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
-import { CartPage } from './pages/CartPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import { OrderSuccessPage } from './pages/OrderSuccessPage';
-import { QrisPaymentPage } from './pages/QrisPaymentPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { AdminPage } from './pages/AdminPage';
-import { Product, Article, CartItem, User, Order } from './types';
+import { Product, Article, User } from './types';
 import { useApp } from './context/AppContext';
 
 const PROTECTED_TABS = [
-  'keranjang',
-  'checkout',
-  'qris-pembayaran',
-  'pesanan-berhasil',
   'profil',
-  'pesanan',
   'favorit',
   'pengaturan',
   'admin',
@@ -41,26 +30,17 @@ export function App() {
 
   const {
     currentUser: user,
-    cart,
-    addToCart,
-    updateCartQuantity,
-    removeCartItem,
-    clearCart,
-    resetCartLocal,
     shopSettings,
     logout,
-    addOrder,
     t
   } = useApp();
 
-  // Konversi 0→62 biar wa.me pakai format internasional (konsisten dgn QrisPaymentPage/ProductDetailPage).
+  // Konversi 0→62 biar wa.me pakai format internasional (konsisten dgn ProductDetailPage).
   const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waUrl = `https://wa.me/${cleanWaNumber}`;
-  
-  const [isCartOpen, setIsCartOpen] = useState(false);
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
@@ -87,28 +67,6 @@ export function App() {
     }, 3500);
   };
 
-  const handleAddToCart = (product: Product, quantity: number = 1) => {
-    // Guest BOLEH tambah ke keranjang (guest cart server-side via x-session-id);
-    // keranjang di-merge otomatis saat login/register. (Keputusan 2026-08-18,
-    // konsisten dengan handleSelectProduct — sebelumnya guest diblokir ke login.)
-    addToCart(product, quantity);
-    showToast(`${product.name} ditambahkan ke keranjang.`);
-  };
-
-  const handleUpdateCartQuantity = (productId: string, delta: number) => {
-    updateCartQuantity(productId, delta);
-  };
-
-  const handleRemoveCartItem = (productId: string) => {
-    removeCartItem(productId);
-    showToast('Produk dihapus dari keranjang.');
-  };
-
-  const handleClearCart = () => {
-    clearCart();
-    showToast('Keranjang telah dikosongkan.');
-  };
-
   const handleSelectArticle = (art: Article) => {
     setSelectedArticle(art);
     setSelectedProduct(null);
@@ -117,10 +75,6 @@ export function App() {
   };
 
   const handleSelectProduct = (product: Product) => {
-    // Guest BOLEH lihat detail produk & tambah ke keranjang (guest cart server-side
-    // via x-session-id). Saat login/register, keranjang guest di-merge otomatis.
-    // (Keputusan 2026-08-18: sebelumnya guest diblokir ke login — tapi C2-1
-    // "merge cart guest" tidak pernah terpakai karena guest tak bisa belanja.)
     setSelectedProduct(product);
     if (product.id) {
       productApi.getProductById(String(product.id)).then((detail) => {
@@ -159,53 +113,6 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenCartPage = () => {
-    if (!user) {
-      showToast('Silakan masuk (login) terlebih dahulu untuk membuka keranjang belanja.');
-      setRedirectAfterLogin('keranjang');
-      setActiveTab('login');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    setSelectedProduct(null);
-    setActiveTab('keranjang');
-    setIsCartOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleCheckoutFromDrawer = () => {
-    setIsCartOpen(false);
-    if (!user) {
-      setRedirectAfterLogin('checkout');
-      setActiveTab('login');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    setSelectedProduct(null);
-    setActiveTab('checkout');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleOrderComplete = async (order: Order, paymentMethod: 'cod' | 'qris') => {
-    setCompletedOrder(order);
-    addOrder(order);
-    // Cart SUDAH dihapus BE saat order dibuat (checkout consume cart_items).
-    // Jangan clearCart() (kirim DELETE ke server → 404 karena item sudah tidak ada).
-    // Reset state lokal saja.
-    resetCartLocal();
-
-    setSelectedProduct(null);
-
-    if (paymentMethod === 'qris') {
-      showToast('Pesanan dibuat. Silakan selesaikan pembayaran QRIS.');
-      setActiveTab('qris-pembayaran');
-    } else {
-      showToast('Pesanan COD Anda berhasil diproses!');
-      setActiveTab('pesanan-berhasil');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleLogout = async () => {
     await logout();
     showToast('Anda telah keluar.');
@@ -227,8 +134,6 @@ export function App() {
     setActiveTab(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EFECE6] text-[#1B5E20] font-['Poppins'] selection:bg-[#fde08b] selection:text-[#231b00] relative pb-16 md:pb-0">
@@ -253,8 +158,6 @@ export function App() {
         <Header
           activeTab={activeTab}
           setActiveTab={handleTabChange}
-          cartCount={totalCartCount}
-          onOpenCart={handleOpenCartPage}
           user={user}
           onNavigateAuth={(mode) => {
             setSelectedProduct(null);
@@ -272,19 +175,8 @@ export function App() {
         {selectedProduct && activeTab !== 'login' && activeTab !== 'register' ? (
           <ProductDetailPage
             product={selectedProduct}
-            onAddToCart={(p, q) => handleAddToCart(p, q)}
             onSelectProduct={handleSelectProduct}
             setActiveTab={handleTabChange}
-            onBuyNow={() => {
-              setSelectedProduct(null);
-              if (!user) {
-                setRedirectAfterLogin('checkout');
-                setActiveTab('login');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                return;
-              }
-              setActiveTab('checkout');
-            }}
           />
         ) : (
           <>
@@ -318,41 +210,6 @@ export function App() {
 
             {activeTab === 'faq' && <FaqPage />}
 
-            {activeTab === 'keranjang' && (
-              <CartPage
-                cart={cart}
-                onUpdateQuantity={handleUpdateCartQuantity}
-                onRemoveItem={handleRemoveCartItem}
-                onClearCart={handleClearCart}
-                onNavigateProducts={() => handleTabChange('produk')}
-                onNavigateCheckout={() => handleTabChange('checkout')}
-                onSelectProduct={handleSelectProduct}
-              />
-            )}
-
-            {activeTab === 'checkout' && (
-              <CheckoutPage
-                cart={cart}
-                onNavigateCart={() => handleTabChange('keranjang')}
-                onOrderComplete={handleOrderComplete}
-                showToast={showToast}
-              />
-            )}
-
-            {activeTab === 'qris-pembayaran' && (
-              <QrisPaymentPage
-                order={completedOrder}
-                onCompleteOrder={() => handleTabChange('pesanan-berhasil')}
-              />
-            )}
-
-            {activeTab === 'pesanan-berhasil' && (
-              <OrderSuccessPage
-                order={completedOrder}
-                onNavigateHome={() => handleTabChange('beranda')}
-              />
-            )}
-
             {activeTab === 'admin' && (
               <AdminPage
                 user={user}
@@ -362,13 +219,12 @@ export function App() {
               />
             )}
 
-            {['profil', 'pesanan', 'favorit', 'pengaturan'].includes(activeTab) && (
+            {['profil', 'favorit', 'pengaturan'].includes(activeTab) && (
               <ProfilePage
                 user={user}
-                initialTab={activeTab as 'profil' | 'pesanan' | 'favorit' | 'pengaturan'}
+                initialTab={activeTab as 'profil' | 'favorit' | 'pengaturan'}
                 onLogout={handleLogout}
                 onNavigateProducts={() => setActiveTab('produk')}
-                onAddToCart={(p) => handleAddToCart(p, 1)}
                 showToast={showToast}
                 onNavigateAdmin={() => setActiveTab('admin')}
                 onSelectProduct={handleSelectProduct}
@@ -414,8 +270,6 @@ export function App() {
         <MobileBottomNav
           activeTab={activeTab}
           setActiveTab={handleTabChange}
-          cartCount={totalCartCount}
-          onOpenCart={handleOpenCartPage}
           user={user}
         />
       )}
@@ -443,20 +297,9 @@ export function App() {
         </a>
       )}
 
-      {/* Cart Drawer Overlay */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        items={cart}
-        onUpdateQuantity={handleUpdateCartQuantity}
-        onRemoveItem={handleRemoveCartItem}
-        onCheckout={handleCheckoutFromDrawer}
-      />
-
       {/* Connection Error Modal — global pop-up saat backend tidak bisa dihubungi */}
       <ConnectionErrorModal />
     </div>
   );
 }
 export default App;
-

@@ -26,7 +26,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
     { id: 'landing', label: 'Pengaturan Landing Page', icon: 'web' },
     { id: 'produk', label: 'Kelola Produk', icon: 'inventory_2' },
-    { id: 'transaksi', label: 'Kelola Transaksi', icon: 'receipt_long' },
     { id: 'info', label: 'Kelola Info', icon: 'info' },
     { id: 'user', label: 'Kelola User', icon: 'group' },
     { id: 'faq', label: 'Kelola FAQ', icon: 'quiz' },

@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { User, Order, Product } from '../types';
+import { User, Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { PhoneInput } from '../components/PhoneInput';
-import { ProfileOrdersSection } from '../components/profile/ProfileOrdersSection';
 import { ProfileFavoritesSection } from '../components/profile/ProfileFavoritesSection';
 import { ProfileSettingsSection } from '../components/profile/ProfileSettingsSection';
 
 interface ProfilePageProps {
   user: User | null;
-  initialTab?: 'profil' | 'pesanan' | 'favorit' | 'pengaturan';
+  initialTab?: 'profil' | 'favorit' | 'pengaturan';
   onLogout: () => void;
   onNavigateProducts: () => void;
-  onAddToCart: (product: Product) => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
   onNavigateAdmin?: () => void;
   onSelectProduct?: (product: Product) => void;
@@ -22,39 +20,18 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   initialTab = 'profil',
   onLogout,
   onNavigateProducts,
-  onAddToCart,
   showToast,
   onNavigateAdmin,
   onSelectProduct,
 }) => {
-  const { t, orders: allOrders, products: allProducts, currentUser, updateOrderStatus, wishlistIds: ctxWishlistIds, toggleWishlist } = useApp();
-  const [activeTab, setActiveTab] = useState<'profil' | 'pesanan' | 'favorit' | 'pengaturan'>(
+  const { t, products: allProducts, currentUser, wishlistIds: ctxWishlistIds, toggleWishlist } = useApp();
+  const [activeTab, setActiveTab] = useState<'profil' | 'favorit' | 'pengaturan'>(
     initialTab
   );
-
-  // Cancel order sendiri (user) — panggil BE PATCH /orders/:id/cancel
-  const handleCancelOrder = async (orderId: string) => {
-    try {
-      const { request } = await import('../api/http');
-      await request(`/orders/${orderId}/cancel`, { method: 'PATCH', auth: true });
-      showToast('Pesanan berhasil dibatalkan.');
-      updateOrderStatus(orderId, 'Dibatalkan');
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal membatalkan pesanan.', 'error');
-    }
-  };
 
   useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
-
-  // Orders — filtered for the current user
-  const orders: Order[] = allOrders.filter(
-    (o) =>
-      !currentUser ||
-      o.customerEmail === currentUser.email ||
-      o.userId === currentUser.id
-  );
 
   // Profile Form state — dari user login (bukan mock)
   const [profileData, setProfileData] = useState({
@@ -246,20 +223,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             >
               <span className="material-symbols-outlined text-xl">person</span>
               <span>Profil Saya</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab('pesanan');
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-left ${
-                activeTab === 'pesanan'
-                  ? 'bg-[#2E7D32] hover:bg-[#1B5E20] text-white shadow-2xs font-bold'
-                  : 'text-[#1B5E20] hover:bg-[#E8F5E9]'
-              }`}
-            >
-              <span className="material-symbols-outlined text-xl">history</span>
-              <span>Pesanan Saya</span>
             </button>
 
             <button
@@ -624,24 +587,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
           )}
 
-          {/* TAB 2: PESANAN SAYA */}
-                    {activeTab === 'pesanan' && (
-            <ProfileOrdersSection
-              orders={orders}
-              currentUser={currentUser}
-              onNavigateProducts={onNavigateProducts}
-              onCancelOrder={handleCancelOrder}
-              showToast={showToast}
-            />
-          )}
-
           {/* TAB 3: PRODUK FAVORIT */}
                     {activeTab === 'favorit' && (
             <ProfileFavoritesSection
               currentUser={currentUser}
               allProducts={allProducts}
               ctxWishlistIds={ctxWishlistIds}
-              onAddToCart={onAddToCart}
               onToggleWishlist={toggleWishlist}
               showToast={showToast}
               onSelectProduct={onSelectProduct || (() => {})}
