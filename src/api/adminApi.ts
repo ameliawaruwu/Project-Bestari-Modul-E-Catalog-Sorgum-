@@ -87,10 +87,6 @@ export const productAdminApi = {
         slug,
         description: fields.description || '',
         price: fields.price,
-        // PENTING: terusan original_price + discount_percent — kalau tidak dikirim,
-        // backend simpan diskon 0 → harga "tidak sesuai" (produk diskon jadi tanpa diskon).
-        original_price: fields.original_price != null ? fields.original_price : fields.price,
-        discount_percent: fields.discount_percent || 0,
         stock: fields.stock,
         weight_spec: fields.weight_spec || '',
         origin: fields.origin || '',
@@ -107,11 +103,6 @@ export const productAdminApi = {
   // PUT /api/admin/products/:id
   updateProduct: async (id: string, fields: Record<string, any>) => {
     await request(`/admin/products/${id}`, { method: 'PUT', body: fields, auth: true });
-  },
-
-  // PATCH /api/admin/products/:id/toggle-active
-  toggleActive: async (id: string) => {
-    await request(`/admin/products/${id}/toggle-active`, { method: 'PATCH', auth: true });
   },
 
   // DELETE /api/admin/products/:id
@@ -193,76 +184,6 @@ export const bannerAdminApi = {  // GET /api/admin/banners
   // DELETE /api/admin/banners/:id
   deleteBanner: async (id: string) => {
     await request(`/admin/banners/${id}`, { method: 'DELETE', auth: true });
-  },
-};
-
-export const trackingAdminApi = {
-  // GET /api/admin/tracking/:orderId — status pengiriman + riwayat
-  getTracking: async (orderId: string): Promise<any> => {
-    const res = await request<{ data: any }>(`/admin/tracking/${orderId}`, { auth: true });
-    return res?.data || null;
-  },
-  // POST /api/admin/tracking/:orderId/set — set kurir + resi (order otomatis jadi 'shipped')
-  setTracking: async (orderId: string, courier: string, trackingNumber: string) => {
-    await request(`/admin/tracking/${orderId}/set`, {
-      method: 'POST',
-      body: { courier, tracking_number: trackingNumber },
-      auth: true,
-    });
-  },
-};
-
-// Backend user row dari /api/admin/dashboard/users (role 'user' hanya)
-export interface AdminUserRow {
-  id: number;
-  name: string;
-  email: string;
-  phone: string | null;
-  role: string;
-  is_deleted?: number;
-  created_at: string;
-}
-
-export const userAdminApi = {
-  // GET /api/admin/dashboard/users — list semua customer
-  listUsers: async (): Promise<AdminUserRow[]> => {
-    const res = await request<{ data: AdminUserRow[] }>('/admin/dashboard/users', { auth: true });
-    return res?.data || [];
-  },
-
-  // POST /api/admin/dashboard/users — create user baru
-  createUser: async (fields: { name: string; email: string; password: string; phone?: string }) => {
-    await request('/admin/dashboard/users', {
-      method: 'POST',
-      body: fields,
-      auth: true,
-    });
-  },
-
-  // PUT /api/admin/dashboard/users/:id
-  updateUser: async (id: number, fields: { name?: string; email?: string; phone?: string; password?: string; is_deleted?: number; role?: string }) => {
-    await request(`/admin/dashboard/users/${id}`, { method: 'PUT', body: fields, auth: true });
-  },
-
-  // DELETE /api/admin/dashboard/users/:id
-  deleteUser: async (id: number) => {
-    await request(`/admin/dashboard/users/${id}`, { method: 'DELETE', auth: true });
-  },
-};
-
-export const voucherAdminApi = {
-  list: async (): Promise<any[]> => {
-    const res = await request<{ data: any[] }>('/admin/vouchers', { auth: true });
-    return res?.data || [];
-  },
-  create: async (data: any) => {
-    return await request('/admin/vouchers', { method: 'POST', body: data, auth: true });
-  },
-  update: async (id: number, data: any) => {
-    return await request(`/admin/vouchers/${id}`, { method: 'PUT', body: data, auth: true });
-  },
-  remove: async (id: number) => {
-    return await request(`/admin/vouchers/${id}`, { method: 'DELETE', auth: true });
   },
 };
 

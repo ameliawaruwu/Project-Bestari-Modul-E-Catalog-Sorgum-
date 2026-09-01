@@ -10,8 +10,6 @@ interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
-  original_price: number | null;
-  discount_percent: number;
   stock: number;
   weight_spec: string | null;
   origin: string | null;
@@ -50,7 +48,6 @@ function formatRupiah(value: number): string {
 
 export function mapProduct(row: ProductRow): Product {
   const weight = row.weight_spec || '1kg';
-  const originalPrice = row.original_price ?? null;
   return {
     id: String(row.id),
     name: row.name,
@@ -58,8 +55,6 @@ export function mapProduct(row: ProductRow): Product {
     categoryLabel: row.category_name || 'Produk Sorgum',
     price: row.price,
     formattedPrice: formatRupiah(row.price),
-    originalPrice: originalPrice && originalPrice > row.price ? originalPrice : undefined,
-    discountPercent: row.discount_percent || (originalPrice && originalPrice > row.price ? Math.round(((originalPrice - row.price) / originalPrice) * 100) : undefined),
     unitInfo: row.weight_spec || weight,
     weight,
     badge: (row.badge as Product['badge']) || undefined,

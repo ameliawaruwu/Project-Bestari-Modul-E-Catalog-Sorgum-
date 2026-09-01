@@ -17,11 +17,9 @@ import { ProductFormView } from '../components/admin/ProductFormView';
 import { ProductDeleteConfirmModal } from '../components/admin/ProductDeleteConfirmModal';
 import { InfoTab } from '../components/admin/InfoTab';
 import { ArticleFormView } from '../components/admin/ArticleFormView';
-import { UsersTab } from '../components/admin/UsersTab';
 import { FaqTab } from '../components/admin/FaqTab';
 import { FaqFormView } from '../components/admin/FaqFormView';
 import { OtherSettingsTab } from '../components/admin/OtherSettingsTab';
-import { VouchersTab } from '../components/admin/VouchersTab';
 
 interface AdminPageProps {
   user: User | null;
@@ -270,20 +268,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setEditingBanner(null);
   };
 
-  // Handlers for Products
-  const handleToggleProductStatus = async (id: string) => {
-    try {
-      const { productAdminApi } = await import('../api/adminApi');
-      await productAdminApi.toggleActive(id);
-      // Re-fetch produk dari BE supaya is_active & stock sinkron (bukan map mock)
-      await refreshProducts();
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal mengubah status produk.', 'error');
-      return;
-    }
-    showToast('Status keaktifan produk berhasil diperbarui.');
-  };
-
   const handleDeleteProduct = async (id: string, name: string) => {
     try {
       const { productAdminApi } = await import('../api/adminApi');
@@ -310,8 +294,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     image: string;
     stock: number;
     description: string;
-    originalPrice?: number;
-    discountPercent?: number;
     composition?: string;
     shelfLife?: string;
     attributes?: string;
@@ -336,10 +318,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     };
     const categoryId = catIdFromOptions ?? catIdMap[data.category] ?? 1;
 
-    // Hitung harga jual final: originalPrice × (1 - diskon%)
-    const basePrice = data.originalPrice ?? data.price;
-    const pct = Math.max(0, Math.min(90, data.discountPercent || 0));
-    const finalPrice = pct > 0 ? Math.round((basePrice * (100 - pct)) / 100 / 50) * 50 : basePrice;
+    // Harga: FE (admin) adalah single source of truth. Tidak ada diskon —
+    // price langsung dianggap harga jual final.
+    const basePrice = Number(data.price) || 0;
 
     // Persist to backend first (admin). On failure, show toast but keep UI running.
     try {
@@ -348,9 +329,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         await productAdminApi.updateProduct(data.id, {
           name: data.name,
           category_id: categoryId,
-          price: finalPrice,
-          original_price: basePrice,
-          discount_percent: data.discountPercent || 0,
+          price: basePrice,
           stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
@@ -382,9 +361,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         const created = await productAdminApi.createProduct({
           name: data.name,
           category_id: categoryId,
-          price: finalPrice,
-          original_price: basePrice,
-          discount_percent: data.discountPercent || 0,
+          price: basePrice,
           stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
@@ -587,7 +564,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         />
 
         {/* DYNAMIC TAB & FORM CONTENT */}
-        <main className="flex-1 p-8 max-w-7xl w-full mx-auto space-y-8 animate-fadeIn">
+        <main className="flex-1 p-5 md:p-6 max-w-7xl w-full mx-auto space-y-6 animate-fadeIn">
           {/* TAB 1: DASHBOARD UTAMA */}
           {activeNav === 'dashboard' && (
             <DashboardTab
@@ -632,7 +609,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             ) : (
               <ProductsTab
                 products={products}
-                onToggleProductStatus={handleToggleProductStatus}
                 onDeleteProduct={(product) => setDeletingProduct(product)}
                 onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
                 onOpenEditProduct={(product) => {
@@ -668,9 +644,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ))}
 
-          {/* TAB 6: KELOLA USER */}
-          {activeNav === 'user' && <UsersTab showToast={showToast} />}
-
+          {/* TAB 6: KELOLA FAQ */}
           {activeNav === 'faq' &&
             (editingFaq ? (
               <FaqFormView
@@ -691,10 +665,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ))}
 
-          {/* TAB 8: KELOLA VOUCHER */}
-          {activeNav === 'voucher' && <VouchersTab showToast={showToast} />}
-
-          {/* TAB 9: KELOLA LAIN */}
+          {/* TAB 8: KELOLA LAIN */}
           {activeNav === 'lain' && (
             <OtherSettingsTab
               showToast={showToast}
@@ -704,7 +675,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         </main>
 
         {/* FOOTER / BRANDING BOTTOM */}
-        <footer className="mt-auto px-8 py-6 border-t border-[#E0E0E0] bg-[#FFFFFF] flex flex-col sm:flex-row justify-between items-center text-[#555555] text-xs font-medium gap-2">
+        <footer className="mt-auto px-6 py-4 border-t border-[#E0E0E0] bg-[#FFFFFF] flex flex-col sm:flex-row justify-between items-center text-[#555555] text-xs font-medium gap-2">
           <p>© 2023 SORGUM Sorghum. Hak Cipta Dilindungi.</p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-[#1B5E20] transition-colors">

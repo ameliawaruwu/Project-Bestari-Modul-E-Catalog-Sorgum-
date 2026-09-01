@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 export async function getAllUsers() {
   const [rows] = await dbPool.query(
-    `SELECT id, name, email, phone, role, is_deleted, created_at
+    `SELECT id, name, email, phone, role, created_at
      FROM users WHERE role = 'user'
      ORDER BY created_at DESC`,
   );
@@ -38,19 +38,12 @@ export async function updateUserByAdmin(userId: number, fields: Record<string, a
   if (sets.length === 0) return false;
   vals.push(userId);
 
-  // Kalau ada field role, izinkan mengubah akun admin (mis. menurunkan admin →
-  // user). Tanpa role, tetap amankan: hanya bisa mengubah user biasa (bukan admin).
   const whereRoleClause = fields.role !== undefined ? '' : " AND role = 'user'";
   const [r] = await dbPool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ?${whereRoleClause}`, vals);
   return (r as any).affectedRows > 0;
 }
 
 export async function deleteUserByAdmin(userId: number) {
-  // SOFT DELETE: nonaktifkan, bukan hapus baris. Data user (riwayat order, alamat)
-  // tetap utuh; login user ini ditolak (auth_service cek is_deleted).
-  const [r] = await dbPool.query(
-    'UPDATE users SET is_deleted = 1 WHERE id = ? AND role = \'user\'',
-    [userId]
-  );
+  const [r] = await dbPool.query('DELETE FROM users WHERE id = ? AND role = \'user\'', [userId]);
   return (r as any).affectedRows > 0;
 }

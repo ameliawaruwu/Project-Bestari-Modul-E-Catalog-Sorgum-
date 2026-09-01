@@ -4,13 +4,7 @@ import {
   getProductBySlug,
   getProductByIdPublic,
   getFeaturedProducts,
-  createProduct,
-  updateProduct,
-  toggleProductActive,
-  deleteProduct,
 } from '../services/products_service';
-import { authRequired, adminOnly } from '../middleware/auth';
-import { AppError } from '../lib/errors_utils';
 
 const router = Router();
 

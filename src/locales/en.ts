@@ -1,6 +1,7 @@
 // AUTO-GENERATED oleh tools/extract-i18n.mjs — JANGAN edit manual.
 // Jalankan: node tools/extract-i18n.mjs
 export const enLocale: Record<string, string> = {
+  "gambar-kisah-belum-diatur": "Story image not set yet",
   "tanpa-gambar": "No Image",
   "baca-selengkapnya": "Read More",
   "semua": "All",

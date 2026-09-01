@@ -1,6 +1,7 @@
 // AUTO-GENERATED oleh tools/extract-i18n.mjs — JANGAN edit manual.
 // Jalankan: node tools/extract-i18n.mjs
 export const idLocale: Record<string, string> = {
+  "gambar-kisah-belum-diatur": "Gambar kisah belum diatur",
   "tanpa-gambar": "Tanpa Gambar",
   "baca-selengkapnya": "Baca Selengkapnya",
   "semua": "Semua",

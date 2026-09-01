@@ -16,8 +16,6 @@ interface ProductFormViewProps {
     image: string;
     stock: number;
     description: string;
-    originalPrice?: number;
-    discountPercent?: number;
     composition?: string;
     shelfLife?: string;
     attributes?: string;
@@ -52,7 +50,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   >('beras');
   const [categoryIdInput, setCategoryIdInput] = useState<number | undefined>(undefined);
   const [priceInput, setPriceInput] = useState<number | ''>('');
-  const [discountInput, setDiscountInput] = useState<number | ''>('');
   const [compositionInput, setCompositionInput] = useState('');
   const [shelfLifeInput, setShelfLifeInput] = useState('');
   const [attributesInput, setAttributesInput] = useState('');
@@ -88,8 +85,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       // Sinkron categoryId ke kategori BE (kalau ada di options)
       const catMatch = categoryOptions?.find((c) => c.name.toLowerCase().includes(initialProduct.category));
       setCategoryIdInput(catMatch?.id);
-      setPriceInput(initialProduct.originalPrice ?? initialProduct.price);
-      setDiscountInput(initialProduct.discountPercent || '');
+      setPriceInput(initialProduct.price);
       setCompositionInput(initialProduct.composition || '');
       setShelfLifeInput(initialProduct.shelfLife || '');
       setAttributesInput(initialProduct.attributes || '');
@@ -113,7 +109,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setCategoryInput('beras');
       setCategoryIdInput(undefined);
       setPriceInput('');
-      setDiscountInput('');
       setCompositionInput('');
       setShelfLifeInput('');
       setAttributesInput('');
@@ -234,8 +229,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       name: nameInput,
       category: categoryInput,
       price: priceNum,
-      originalPrice: priceNum, // harga asli = harga yang diinput admin (harga dasar)
-      discountPercent: Number(discountInput) || 0,
+      stock: stockNum,
       composition: compositionInput,
       shelfLife: shelfLifeInput,
       attributes: attributesInput,
@@ -244,7 +238,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       origin: originInput,
       badge: (badgeInput as any) || undefined,
       image: finalImage,
-      stock: stockNum,
       description: descInput,
       shippingInfo: shippingInfoInput,
       galleryImages: finalGallery,
@@ -479,7 +472,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Harga & Diskon */}
+          {/* Row 2: Harga */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
@@ -493,41 +486,10 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 required
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
-              <p className="text-[10px] text-[#555555]">Harga asli sebelum diskon. Harga jual dihitung otomatis dari diskon.</p>
+              <p className="text-[10px] text-[#555555]">Harga jual produk yang tampil di katalog.</p>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1B5E20]">
-                Diskon (%)
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={90}
-                value={discountInput}
-                onChange={(e) => setDiscountInput(e.target.value ? Math.max(0, Math.min(90, Number(e.target.value))) : '')}
-                placeholder="0"
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
-              />
-              <p className="text-[10px] text-[#555555]">
-                {priceInput && discountInput
-                  ? `Harga jual: Rp ${(Number(priceInput) * (100 - Number(discountInput)) / 100).toLocaleString('id-ID')}`
-                  : 'Isi 0 atau kosongkan jika tidak ada diskon.'}
-              </p>
-              {/* Live preview badge diskon — badge otomatis sesuai diskon */}
-              {discountInput && Number(discountInput) > 0 && (
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="inline-block text-[9px] font-extrabold uppercase bg-[#D32F2F] text-white px-2 py-0.5 rounded-md leading-none">
-                    -{Number(discountInput)}%
-                  </span>
-                  <span className="text-[9px] text-[#555555]">badge diskon otomatis</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Row 3: Stok & Badge */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Row 3: Stok & Badge */}
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
                 Jumlah Stok (Unit)
@@ -575,82 +537,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
               placeholder="Tuliskan deskripsi ringkas mengenai nutrisi, pengolahan, dan manfaat produk..."
               className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
             />
-          </div>
-
-          {/* Section: Spesifikasi Produk */}
-          <div className="space-y-5 border-t border-[#E0E0E0] pt-5">
-            <div>
-              <h4 className="font-['Playfair_Display'] text-base font-extrabold text-[#1B5E20]">Spesifikasi Produk</h4>
-              <p className="text-[10px] text-[#555555]">Informasi teknis produk yang tampil di halaman detail.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-[#1B5E20]">
-                  Kemasan / Berat (Info Unit)
-                </label>
-                <input
-                  type="text"
-                  value={unitInput}
-                  onChange={(e) => setUnitInput(e.target.value)}
-                  placeholder="Contoh: 1kg / Kemasan Vacuum"
-                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-[#1B5E20]">
-                  Masa Simpan
-                </label>
-                <input
-                  type="text"
-                  value={shelfLifeInput}
-                  onChange={(e) => setShelfLifeInput(e.target.value)}
-                  placeholder="Contoh: 12 bulan sejak produksi"
-                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-[#1B5E20]">
-                  Asal Produk (Origin)
-                </label>
-                <input
-                  type="text"
-                  value={originInput}
-                  onChange={(e) => setOriginInput(e.target.value)}
-                  placeholder="Contoh: Yogyakarta, Flores NTT"
-                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1B5E20]">
-                Komposisi
-              </label>
-              <textarea
-                rows={2}
-                value={compositionInput}
-                onChange={(e) => setCompositionInput(e.target.value)}
-                placeholder="Contoh: 100% biji sorgum merah organik"
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1B5E20]">
-                Atribut Produk
-              </label>
-              <input
-                type="text"
-                value={attributesInput}
-                onChange={(e) => setAttributesInput(e.target.value)}
-                placeholder="Contoh: Gluten-Free, Organik"
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-              />
-              <p className="text-[10px] text-[#555555]">Tulis atribut bebas, pisahkan dengan koma.</p>
-            </div>
           </div>
 
           {/* Row: Informasi Pengiriman */}

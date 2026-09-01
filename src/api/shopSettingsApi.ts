@@ -3,11 +3,7 @@ import { request, getToken } from './http';
 export interface ShopSettings {
   storeName: string;
   logoUrl: string;
-  qrisImageUrl: string;
-  qrisNmid: string;
   whatsappNumber: string;
-  qrisStatus: 'AKTIF' | 'NONAKTIF';
-  shippingCost?: number;
   faviconUrl?: string;
   storeAddress?: string;
   storeEmail?: string;
@@ -18,10 +14,7 @@ export interface ShopSettings {
 export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
   storeName: 'SORGUM',
   logoUrl: '',
-  qrisImageUrl: '',
-  qrisNmid: '',
   whatsappNumber: '',
-  qrisStatus: 'AKTIF',
 };
 
 // Map backend site_settings (key-value map) -> ShopSettings
@@ -29,11 +22,7 @@ function mapSettings(map: Record<string, string>): ShopSettings {
   return {
     storeName: map.store_name || DEFAULT_SHOP_SETTINGS.storeName,
     logoUrl: map.store_logo || '',
-    qrisImageUrl: map.qris_image_url || DEFAULT_SHOP_SETTINGS.qrisImageUrl,
-    qrisNmid: map.qris_nmid || DEFAULT_SHOP_SETTINGS.qrisNmid,
     whatsappNumber: map.whatsapp_number || DEFAULT_SHOP_SETTINGS.whatsappNumber,
-    qrisStatus: (map.qris_status === 'NONAKTIF' ? 'NONAKTIF' : 'AKTIF'),
-    shippingCost: map.shipping_cost ? parseInt(String(map.shipping_cost), 10) || 0 : undefined,
     // Field ini ADA di DB/API tapi sebelumnya TIDAK dipetakan → di halaman user
     // selalu fallback (mis. Email footer selalu "halo@sorgum.id" padahal admin
     // set "halo@bestari.id"). (Keputusan user 2026-08-10)
@@ -76,16 +65,11 @@ export const shopSettingsApi = {
   },
 
   saveSettings: async (settings: Partial<ShopSettings>): Promise<boolean> => {
-    // Persist to backend (admin). Tidak ada cache localStorage.
     const body: Record<string, string> = {
       store_name: settings.storeName || DEFAULT_SHOP_SETTINGS.storeName,
       store_logo: settings.logoUrl || '',
-      qris_image_url: settings.qrisImageUrl || '',
-      qris_nmid: settings.qrisNmid || '',
       whatsapp_number: settings.whatsappNumber || '',
-      qris_status: settings.qrisStatus || 'AKTIF',
     };
-    if (settings.shippingCost !== undefined) body.shipping_cost = String(settings.shippingCost);
     // Field informasi toko — simpan kalau ada di state (agar edit tersimpan ke BE)
     if (settings.storeAddress !== undefined) body.store_address = settings.storeAddress;
     if (settings.storeEmail !== undefined) body.store_email = settings.storeEmail;

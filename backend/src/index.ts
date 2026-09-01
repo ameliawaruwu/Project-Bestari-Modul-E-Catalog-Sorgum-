@@ -4,7 +4,7 @@ import path from 'path';
 import { config } from './lib/config';
 import { verifyToken } from './lib/jwt_utils';
 
-// Public / user routes
+// Public routes
 import authRoutes from './routes/auth_routes';
 import productRoutes from './routes/products_routes';
 import categoryRoutes from './routes/categories_routes';
@@ -12,9 +12,7 @@ import bannerRoutes from './routes/banners_routes';
 import articleRoutes from './routes/articles_routes';
 import settingsRoutes from './routes/settings_routes';
 import landingContentRoutes from './routes/landing_content_routes';
-import userRoutes from './routes/user/profile_routes';
-import addressRoutes from './routes/user/addresses_routes';
-import wishlistRoutes from './routes/user/wishlist_routes';
+import trackingProxyRoutes from './routes/tracking_proxy_routes';
 
 // Admin routes
 import adminDashboardRoutes from './routes/admin/dashboard_routes';
@@ -24,7 +22,6 @@ import adminBannersRoutes from './routes/admin/banners_routes';
 import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
 import adminBadgesRoutes from './routes/admin/badges_routes';
-import voucherRoutes from './routes/voucher_routes';
 import eventsRoutes from './routes/events_routes';
 
 const app = express();
@@ -83,7 +80,6 @@ if (!config.jwt.secret) {
   process.exit(1);
 }
 
-// Public / user
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -91,11 +87,8 @@ app.use('/api/banners', bannerRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/landing-content', landingContentRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/user', addressRoutes);
-app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/tracking', trackingProxyRoutes);
 
-// Admin
 app.use('/api/admin/dashboard', adminDashboardRoutes);
 app.use('/api/admin/settings', adminSettingsRoutes);
 app.use('/api/admin/products', adminProductsRoutes);
@@ -103,7 +96,6 @@ app.use('/api/admin/banners', adminBannersRoutes);
 app.use('/api/admin/articles', adminArticlesRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
 app.use('/api/admin/badges', adminBadgesRoutes);
-app.use('/api', voucherRoutes);
 
 // SSE realtime — harus sebelum 404 catch-all
 app.use('/api/events', eventsRoutes);

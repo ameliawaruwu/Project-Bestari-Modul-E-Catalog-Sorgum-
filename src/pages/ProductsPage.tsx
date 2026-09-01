@@ -8,13 +8,11 @@ import { realtimeApi } from '../api/realtimeApi';
 interface ProductsPageProps {
   onClickProduct: (product: Product) => void;
   searchQuery: string;
-  onRequireLogin?: () => void;
 }
 
 export const ProductsPage: React.FC<ProductsPageProps> = ({
   onClickProduct,
   searchQuery,
-  onRequireLogin,
 }) => {
   const { t } = useApp();
   const [sortBy, setSortBy] = useState<'populer' | 'harga-terendah' | 'harga-tertinggi' | 'terbaru'>('populer');
@@ -60,10 +58,10 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   }, [loadProducts]);
 
   return (
-    <div className="pt-28 sm:pt-32 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
+    <div className="pt-24 sm:pt-28 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
 
       {/* Filter and Search Panel */}
-      <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs mb-10 space-y-6">
+      <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E0E0E0] shadow-2xs mb-8 space-y-6">
         <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
           {/* Search Input */}
           <div className="relative flex-grow">
@@ -126,13 +124,12 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-2">
           {products.map((p) => (
             <ProductCard
               key={p.id}
               product={p}
               onClickProduct={onClickProduct}
-              onRequireLogin={onRequireLogin}
             />
           ))}
         </div>

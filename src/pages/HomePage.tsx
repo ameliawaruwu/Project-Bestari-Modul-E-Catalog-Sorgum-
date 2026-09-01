@@ -17,7 +17,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   setActiveTab,
   searchQuery,
 }) => {
-  const { t, landingContent, currentUser, products } = useApp();
+  const { t, landingContent, products } = useApp();
   // Produk dari context (AppContext hydrate fetch sekali saat mount). Dulu
   // halaman ini fetch sendiri (getProducts) → dobel request dengan context
   // (products di-fetch 2-6x). Sekarang pakai state context; skeleton hanya
@@ -84,14 +84,25 @@ export const HomePage: React.FC<HomePageProps> = ({
       <BenefitsSection />
 
       {/* 2. Brand Story Section (Kisah Kami) */}
-      <section className="py-20 bg-[#FFFFFF] border-b border-[#E0E0E0]">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xs max-h-[420px] border border-[#E0E0E0]">
-            <img
-              src={landingContent.storyImageUrl}
-              alt="Petani Sorgum Sorgum"
-              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-            />
+      <section className="py-14 bg-[#FFFFFF] border-b border-[#E0E0E0]">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xs max-h-[340px] border border-[#E0E0E0]">
+            {landingContent.storyImageUrl ? (
+              <img
+                src={landingContent.storyImageUrl}
+                alt="Petani Sorgum Sorgum"
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full min-h-[220px] flex items-center justify-center bg-[#E8F5E9]">
+                <div className="text-center px-4">
+                  <span className="material-symbols-outlined text-5xl text-[#2E7D32] block mb-2">agriculture</span>
+                  <p className="font-['Plus_Jakarta_Sans'] text-xs text-[#555555] font-medium">
+                    {t('Gambar kisah belum diatur', 'Story image not set yet')}
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-[#1B5E20]/40 to-transparent"></div>
           </div>
           <div className="space-y-6">
@@ -112,7 +123,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* 3. Section Title: Koleksi Produk Pilihan */}
-      <div id="product-catalog-section" className="text-center pt-20 pb-10 px-4 md:px-10">
+      <div id="product-catalog-section" className="text-center pt-12 pb-6 px-4 md:px-10">
         <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] mb-4">
           {t(landingContent.featuredTitleId, landingContent.featuredTitleEn)}
         </h2>
@@ -122,7 +133,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </div>
 
       {/* 4. Featured Products Grid */}
-      <section className="pb-20 md:pb-24 px-4 md:px-10 bg-transparent">
+      <section className="pb-14 md:pb-16 px-4 md:px-10 bg-transparent">
         <div className="max-w-[1280px] mx-auto">
           {searchQuery && (
             <div className="mb-6 p-4 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] flex items-center justify-between shadow-2xs">
@@ -176,8 +187,6 @@ export const HomePage: React.FC<HomePageProps> = ({
                     key={product.id}
                     product={product}
                     onClickProduct={onClickProduct}
-                    onRequireLogin={() => setActiveTab('login')}
-                    guestNonInteractive={!currentUser}
                     hideActions
                   />
                 ))}

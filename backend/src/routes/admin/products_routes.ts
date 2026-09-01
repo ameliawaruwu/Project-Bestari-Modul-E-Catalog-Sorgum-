@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getProducts, createProduct, updateProduct, toggleProductActive, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
+import { getProducts, createProduct, updateProduct, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
 import { AppError } from '../../lib/errors_utils';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
@@ -22,7 +22,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes } = req.body;
+  const { category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes } = req.body;
 
   if (!category_id || !name || !slug || price === undefined || stock === undefined) {
     res.status(400).json({ error: 'category_id, name, slug, price, stock wajib diisi' });
@@ -31,26 +31,17 @@ router.post('/', async (req: Request, res: Response) => {
   if (name.length < 2) { res.status(400).json({ error: 'Nama minimal 2 karakter' }); return; }
   if (price < 0) { res.status(400).json({ error: 'Harga tidak boleh negatif' }); return; }
   if (stock < 0) { res.status(400).json({ error: 'Stok tidak boleh negatif' }); return; }
-  if (discount_percent !== undefined && (discount_percent < 0 || discount_percent > 90)) {
-    res.status(400).json({ error: 'Diskon harus antara 0-90%' });
-    return;
-  }
-  if (original_price !== undefined && (original_price < 0 || original_price < price)) {
-    res.status(400).json({ error: 'original_price tidak boleh negatif atau lebih kecil dari harga jual' });
-    return;
-  }
 
   try {
     const id = await createProduct({
       category_id, name, slug,
       description: description || '',
-      price, original_price,
+      price,
       stock,
       weight_spec: weight_spec || '',
       origin: origin || '',
       shipping_info: shipping_info || null,
       is_featured: !!is_featured,
-      discount_percent: discount_percent || 0,
       composition: composition || null,
       shelf_life: shelf_life || null,
       attributes: attributes || null,
@@ -76,16 +67,6 @@ router.put('/:id', async (req: Request, res: Response) => {
     const status = e instanceof AppError ? e.status : 500;
     res.status(status).json({ error: e.message || 'Terjadi kesalahan' });
   }
-});
-
-router.patch('/:id/toggle-active', async (req: Request, res: Response) => {
-  const id = parseInt(String(req.params.id));
-  if (isNaN(id)) { res.status(400).json({ error: 'ID tidak valid' }); return; }
-
-  const updated = await toggleProductActive(id);
-  if (!updated) { res.status(404).json({ error: 'Produk tidak ditemukan' }); return; }
-  res.json({ message: 'Status produk berhasil diubah' });
-  eventBus.emit(EVENTS.PRODUCTS, { action: 'toggle-active', id });
 });
 
 router.delete('/:id', async (req: Request, res: Response) => {

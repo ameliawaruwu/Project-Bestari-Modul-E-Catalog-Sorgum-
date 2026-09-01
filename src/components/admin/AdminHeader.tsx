@@ -31,7 +31,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
   return (
     <>
-      <header style={{ backgroundColor: '#F7F8F6' }} className="sticky top-0 z-40 backdrop-blur-md border-b border-[#E0E0E0] px-6 py-3 flex justify-between items-center shadow-2xs">
+      <header style={{ backgroundColor: '#F7F8F6' }} className="sticky top-0 z-40 backdrop-blur-md border-b border-[#E0E0E0] px-5 py-2.5 flex justify-between items-center shadow-2xs">
         {/* Mobile Drawer Hamburger Button */}
         <button
           type="button"

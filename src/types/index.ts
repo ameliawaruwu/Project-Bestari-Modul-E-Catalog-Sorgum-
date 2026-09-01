@@ -5,8 +5,6 @@ export interface Product {
   categoryLabel: string;
   price: number;
   formattedPrice: string;
-  originalPrice?: number;
-  discountPercent?: number;
   unitInfo: string;
   badge?: string;
   image: string;

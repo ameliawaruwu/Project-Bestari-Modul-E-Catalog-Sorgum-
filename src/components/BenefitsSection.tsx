@@ -5,9 +5,9 @@ export const BenefitsSection: React.FC = () => {
   const { t, landingContent } = useApp();
 
   return (
-    <section className="py-20 md:py-24 bg-[#F7F8F6] border-t border-b border-[#E0E0E0]">
+    <section className="py-14 md:py-16 bg-[#F7F8F6] border-t border-b border-[#E0E0E0]">
       <div className="max-w-[1280px] mx-auto px-4 md:px-10">
-        <div className="text-center mb-14 lg:mb-16">
+        <div className="text-center mb-10 lg:mb-10">
           <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#1B5E20]">
             {t(landingContent.benefitsTitleId, landingContent.benefitsTitleEn)}
           </h2>
@@ -16,10 +16,10 @@ export const BenefitsSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
-          <div className="bg-[#FFFFFF] p-8 sm:p-10 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-6 sm:mb-8 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
-              <span className="material-symbols-outlined text-3xl sm:text-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
+              <span className="material-symbols-outlined text-2xl sm:text-3xl">
                 {landingContent.benefit1Icon || 'eco'}
               </span>
             </div>
@@ -31,9 +31,9 @@ export const BenefitsSection: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-[#FFFFFF] p-8 sm:p-10 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-6 sm:mb-8 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
-              <span className="material-symbols-outlined text-3xl sm:text-4xl">
+          <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
+              <span className="material-symbols-outlined text-2xl sm:text-3xl">
                 {landingContent.benefit2Icon || 'verified'}
               </span>
             </div>
@@ -45,9 +45,9 @@ export const BenefitsSection: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-[#FFFFFF] p-8 sm:p-10 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-6 sm:mb-8 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
-              <span className="material-symbols-outlined text-3xl sm:text-4xl">
+          <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
+              <span className="material-symbols-outlined text-2xl sm:text-3xl">
                 {landingContent.benefit3Icon || 'groups'}
               </span>
             </div>

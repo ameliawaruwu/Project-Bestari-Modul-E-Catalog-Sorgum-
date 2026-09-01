@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
 import { productApi } from '../api/productApi';
-import { discountBadgeLabel } from '../utils/discountBadge';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -15,11 +14,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onSelectProduct,
   setActiveTab,
 }) => {
-  const { t, shopSettings, currentUser, isFavorite, toggleWishlist } = useApp();
-  const [activeInfoTab, setActiveInfoTab] = useState<'spesifikasi' | 'deskripsi' | 'pengiriman'>('spesifikasi');
+  const { t, shopSettings } = useApp();
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const favorite = isFavorite(product.id);
 
   // Gallery images — dari DB (product_images, diedit admin di Kelola Produk).
   // Urutan: sort_order ASC; kalau kosong fallback ke gambar utama produk.
@@ -49,14 +46,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   useEffect(() => {
     setSelectedImage(product.image);
   }, [product]);
-
-  const handleToggleFavorite = () => {
-    if (!currentUser) {
-      setActiveTab('login');
-      return;
-    }
-    toggleWishlist(product.id);
-  };
 
   const whatsappMessage = encodeURIComponent(
     `Halo Sorgum, saya ingin bertanya/memesan produk: ${product.name} (Rp ${product.price.toLocaleString('id-ID')})`
@@ -141,11 +130,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] font-['Plus_Jakarta_Sans'] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
                 {product.badge || 'PREMIUM FINE GRADE'}
               </span>
-              {discountBadgeLabel(product) && (
-                <span className="bg-[#D32F2F] text-white border border-[#FFCDD2]/60 font-['Plus_Jakarta_Sans'] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
-                  {discountBadgeLabel(product)}
-                </span>
-              )}
             </div>
 
             {/* Product Title */}
@@ -155,20 +139,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Price & Stock */}
             <div className="flex items-center gap-4 mb-6 flex-wrap">
-              {product.originalPrice ? (
-                <div className="flex items-center gap-2">
-                  <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#1B5E20]">
-                    Rp {product.price.toLocaleString('id-ID')}
-                  </span>
-                  <span className="font-['Playfair_Display'] text-lg text-gray-400 line-through">
-                    Rp {product.originalPrice.toLocaleString('id-ID')}
-                  </span>
-                </div>
-              ) : (
-                <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#1B5E20]">
-                  Rp {product.price.toLocaleString('id-ID')}
-                </span>
-              )}
+              <span className="font-['Playfair_Display'] font-bold text-2xl sm:text-3xl text-[#1B5E20]">
+                Rp {product.price.toLocaleString('id-ID')}
+              </span>
               {product.stock === 0 ? (
                 <span className="bg-[#FFEBEE] text-[#D32F2F] border border-[#FFCDD2] font-['Plus_Jakarta_Sans'] text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-[#D32F2F] inline-block"></span>
@@ -190,22 +163,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Action Buttons */}
           <div className="space-y-3 pt-4 border-t border-[#E0E0E0]">
-            <button
-              onClick={handleToggleFavorite}
-              className={`w-full flex items-center justify-center gap-2 border h-12 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all active:scale-[0.98] cursor-pointer ${
-                favorite
-                  ? 'border-[#D32F2F] bg-[#FFEBEE] text-[#D32F2F]'
-                  : 'border-[#E0E0E0] text-[#555555] hover:border-[#D32F2F] hover:text-[#D32F2F]'
-              }`}
-            >
-              <span className={`material-symbols-outlined text-xl ${favorite ? 'filled text-[#D32F2F]' : ''}`}>{favorite ? 'favorite' : 'favorite_border'}</span>
-              <span>
-                {favorite
-                  ? t('Hapus dari Favorit', 'Remove from Favorites')
-                  : t('Tambah ke Favorit', 'Add to Favorites')}
-              </span>
-            </button>
-
             <a
               href={whatsappUrl}
               target="_blank"
@@ -222,146 +179,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Info Tabs Section (Spesifikasi, Deskripsi, Pengiriman) */}
-      <section className="bg-[#FFFFFF] rounded-2xl p-6 sm:p-10 mb-16 shadow-2xs border border-[#E0E0E0]">
-        <div className="flex space-x-6 sm:space-x-10 border-b border-[#E0E0E0] mb-8 overflow-x-auto pb-1">
-          <button
-            onClick={() => setActiveInfoTab('spesifikasi')}
-            className={`pb-4 font-['Playfair_Display'] text-lg sm:text-xl font-bold border-b-2 transition-all cursor-pointer ${
-              activeInfoTab === 'spesifikasi'
-                ? 'border-[#1B5E20] text-[#1B5E20]'
-                : 'border-transparent text-[#555555] hover:text-[#1B5E20]'
-            }`}
-          >
-            Spesifikasi
-          </button>
-          <button
-            onClick={() => setActiveInfoTab('deskripsi')}
-            className={`pb-4 font-['Playfair_Display'] text-lg sm:text-xl font-bold border-b-2 transition-all cursor-pointer ${
-              activeInfoTab === 'deskripsi'
-                ? 'border-[#1B5E20] text-[#1B5E20]'
-                : 'border-transparent text-[#555555] hover:text-[#1B5E20]'
-            }`}
-          >
-            Deskripsi
-          </button>
-          <button
-            onClick={() => setActiveInfoTab('pengiriman')}
-            className={`pb-4 font-['Playfair_Display'] text-lg sm:text-xl font-bold border-b-2 transition-all cursor-pointer ${
-              activeInfoTab === 'pengiriman'
-                ? 'border-[#1B5E20] text-[#1B5E20]'
-                : 'border-transparent text-[#555555] hover:text-[#1B5E20]'
-            }`}
-          >
-            Pengiriman
-          </button>
-        </div>
-
-        {/* Tab 1: Spesifikasi */}
-        {activeInfoTab === 'spesifikasi' && (
-          <div className="animate-fadeIn font-['Plus_Jakarta_Sans']">
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
-                <dt className="text-[#555555] text-sm sm:text-base">Kemasan / Berat</dt>
-                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
-                  {product.unitInfo || product.weight || '1kg'}
-                </dd>
-              </div>
-              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
-                <dt className="text-[#555555] text-sm sm:text-base">Komposisi</dt>
-                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
-                  {product.composition || '100% Sorgum'}
-                </dd>
-              </div>
-              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
-                <dt className="text-[#555555] text-sm sm:text-base">Atribut Produk</dt>
-                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
-                  {product.attributes || '-'}
-                </dd>
-              </div>
-              <div className="flex justify-between border-b border-[#E0E0E0] py-3">
-                <dt className="text-[#555555] text-sm sm:text-base">Masa Simpan</dt>
-                <dd className="font-semibold text-[#1B5E20] text-sm sm:text-base">
-                  {product.shelfLife || '12 Bulan'}
-                </dd>
-              </div>
-            </dl>
-          </div>
-        )}
-
-        {/* Tab 2: Deskripsi */}
-        {activeInfoTab === 'deskripsi' && (
-          <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#555555] space-y-4 leading-relaxed max-w-4xl font-normal">
-            <p>{product.description || `Deskripsi produk ${product.name} belum diisi.`}</p>
-          </div>
-        )}
-
-        {/* Tab 3: Pengiriman */}
-        {activeInfoTab === 'pengiriman' && (
-          <div className="animate-fadeIn font-['Plus_Jakarta_Sans'] text-xs sm:text-sm md:text-base text-[#555555] space-y-6 font-normal">
-            {product.shippingInfo ? (
-              <div className="bg-[#F7F8F6] p-4 rounded-xl border border-[#E0E0E0] shadow-2xs flex items-start gap-4">
-                <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
-                  local_shipping
-                </span>
-                <div>
-                  <h4 className="font-bold text-[#1B5E20] mb-0.5 font-['Playfair_Display'] text-base">Informasi Pengiriman</h4>
-                  <p className="text-[#555555] mt-1 leading-relaxed">{product.shippingInfo}</p>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
-                    location_on
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Asal Pengiriman</h4>
-                    <p className="text-[#555555]">Yogyakarta, Indonesia</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
-                    local_shipping
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Kurir Terpercaya</h4>
-                    <p className="text-[#555555]">JNE, J&amp;T Express, SiCepat, Anteraja</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
-                    schedule
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Estimasi Pengiriman</h4>
-                    <p className="text-[#555555]">
-                      Pesanan sebelum jam 15:00 WIB diproses di hari yang sama.
-                      <br />
-                      Estimasi: Jabodetabek (1-2 hari kerja), Luar Jabodetabek (3-5 hari kerja).
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#1B5E20] text-2xl mt-0.5">
-                    inventory_2
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-[#1B5E20] mb-0.5">Standar Packing</h4>
-                    <p className="text-[#555555]">
-                      Kemasan ekstra aman dengan bubble wrap tebal dan dus ramah lingkungan.
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </section>
 
       {/* Produk Terkait (Related Products) */}
       {relatedProducts.length > 0 && (

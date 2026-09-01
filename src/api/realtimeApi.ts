@@ -8,13 +8,11 @@
 
 export type RealtimeEventType =
   | 'products'
-  | 'orders'
   | 'articles'
   | 'faqs'
   | 'banners'
   | 'landing'
   | 'settings'
-  | 'vouchers'
   | 'users';
 
 // EventSource global — satu koneksi per tab, semua komponen pakai ini.

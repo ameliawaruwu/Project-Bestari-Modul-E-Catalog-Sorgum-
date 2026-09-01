@@ -7,9 +7,8 @@ import { faqApi } from '../api/faqApi';
 import { shopSettingsApi, ShopSettings as ApiShopSettings } from '../api/shopSettingsApi';
 import { formatDate } from '../utils/formatDate';
 import { authApi } from '../api/authApi';
-import { wishlistApi } from '../api/wishlistApi';
 import { landingContentApi } from '../api/landingContentApi';
-import { request, getToken } from '../api/http';
+import { request } from '../api/http';
 import { realtimeApi } from '../api/realtimeApi';
 import i18n from '../i18n';
 import { LandingContent, DEFAULT_LANDING_CONTENT } from './defaults';
@@ -18,14 +17,10 @@ import { mapBannerRow } from './mappers';
 export interface ShopSettings {
   storeName: string;
   logoUrl: string;
-  qrisImageUrl: string;
-  qrisNmid: string;
   whatsappNumber: string;
-  qrisStatus: 'AKTIF' | 'NONAKTIF';
   faviconUrl?: string;
   storeAddress?: string;
   storeEmail?: string;
-  shippingCost?: number;
 }
 
 type Language = 'id' | 'en';
@@ -42,11 +37,6 @@ interface AppContextProps {
   products: Product[];
   saveProduct: (productData: any) => void;
   deleteProduct: (id: string) => void;
-
-  // Wishlist / Favorit
-  wishlistIds: Record<string, number>; // productId -> wishlist_id
-  toggleWishlist: (productId: string) => Promise<boolean>;
-  isFavorite: (productId: string) => boolean;
 
   // FAQs
   faqs: FaqItem[];
@@ -74,10 +64,9 @@ interface AppContextProps {
   landingContent: LandingContent;
   saveLandingContent: (content: LandingContent) => Promise<boolean>;
 
-  // Auth
+  // Auth (admin only)
   currentUser: User | null;
   login: (payload: LoginPayload) => Promise<AuthResponse>;
-  register: (payload: RegisterPayload) => Promise<AuthResponse>;
   logout: () => Promise<void>;
 
   refreshProducts: () => Promise<Product[]>;
@@ -113,13 +102,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return (saved === 'light' || saved === 'dark') ? saved : 'light';
   });
 
-  // Data States
   const [products, setProducts] = useState<Product[]>([]);
-
-  // Wishlist / Favorit — productId -> wishlist_id (row id di tabel wishlists).
-  // Di-load dari BE saat mount kalau login; dipakai ProductCard & Detail.
-  const [wishlistIds, setWishlistIds] = useState<Record<string, number>>({});
-
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
 
   const [articles, setArticles] = useState<Article[]>([]);
@@ -127,7 +110,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [banners, setBanners] = useState<BannerSlide[]>([]);
 
   const [shopSettings, setShopSettings] = useState<ShopSettings>({
-    storeName: 'SORGUM', logoUrl: '', qrisImageUrl: '', qrisNmid: '', whatsappNumber: '', qrisStatus: 'AKTIF',
+    storeName: 'SORGUM', logoUrl: '', whatsappNumber: '',
   });
 
   const [landingContent, setLandingContent] = useState<LandingContent>(DEFAULT_LANDING_CONTENT);
@@ -152,11 +135,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return list;
   };
 
-  // ─── Promo/voucher (state checkout) — dihapus bersama fitur checkout (2026-08-27)
-
-  // ============================================================
-  // HYDRATE FROM BACKEND — ganti data mock/localStorage dengan data BE
-  // ============================================================
+  // HYDRATE FROM BACKEND
   useEffect(() => {
     let cancelled = false;
 
@@ -221,47 +200,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     }).catch(() => {});
 
-    // Wishlist (auth required) — load favorit user
-    if (getToken()) {
-      wishlistApi.getWishlist().then((items) => {
-        if (cancelled) return;
-        const idMap: Record<string, number> = {};
-        items.forEach((w) => {
-          if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0);
-        });
-        setWishlistIds(idMap);
-      }).catch(() => {});
-    }
-
-    // ─── Multi-tab sync (anti "kecolongan" sesi) ─────────────────────────────
-    // Browser: 1 localStorage per origin → 2 tab (admin & user) berbagi token.
-    // Kalau tab A logout/login user lain, tab B tidak tahu → state React tab B
-    // tetap user lama → tampil data lama / pakai token basi ("kecolongan").
-    // Solusi: dengarkan `storage` event (dipicu saat localStorage berubah di
-    // TAB LAIN) → validasi ulang sesi + refresh data → tab B ikut sync.
     const onStorageChange = (e: StorageEvent) => {
-      if (e.key === null || e.key === 'bestari_session_id' || e.key === 'bestari_current_user' || e.key === 'bestari_guest_session') {
-        // Token/user/session berubah di tab lain — validasi ulang sesi di tab ini.
+      if (e.key === null || e.key === 'bestari_session_id' || e.key === 'bestari_current_user') {
         const genAtEvent = authGenerationRef.current;
         authApi.getCurrentUser().then((fresh) => {
-          // Guard anti race: kalau user login/logout di tab INI (generation naik)
-          // saat validasi berjalan, jangan timpa state dengan hasil basi.
           if (!cancelled && authGenerationRef.current === genAtEvent) {
             setCurrentUser(fresh);
-            if (!fresh) {
-              // Sesuai sesi baru: reset state pribadi (wishlist)
-              setWishlistIds({});
-            } else {
-              // User login (bisa beda user) — refresh wishlist miliknya
-              wishlistApi.getWishlist().then((items) => {
-                if (cancelled || authGenerationRef.current !== genAtEvent) return;
-                const idMap: Record<string, number> = {};
-                items.forEach((w) => {
-                  if (w.id) idMap[String(w.id)] = Number((w as any).wishlist_id || 0);
-                });
-                setWishlistIds(idMap);
-              }).catch(() => {});
-            }
           }
         });
       }
@@ -305,12 +249,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setShopSettings(s as unknown as ShopSettings);
       }).catch(() => {});
     };
-    const refreshVouchers = () => {
-      // Voucher public list — cart/checkout fetch sendiri, tapi biarkan
-      // sinkron kalau ada komponen yang pakai state voucher.
-      // (Tidak ada state voucher di context — voucher di-fetch per halaman.)
-    };
-
     const unsubs = [
       realtimeApi.on('products', refreshProducts),
       realtimeApi.on('articles', refreshArticles),
@@ -318,7 +256,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       realtimeApi.on('banners', refreshBanners),
       realtimeApi.on('landing', refreshLanding),
       realtimeApi.on('settings', refreshSettings),
-      realtimeApi.on('vouchers', refreshVouchers),
     ];
 
     return () => {
@@ -428,92 +365,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const register = async (payload: RegisterPayload): Promise<AuthResponse> => {
-    if (!payload.email || !payload.password || !payload.name) {
-      return { success: false, message: 'Mohon lengkapi seluruh data pendaftaran.' };
-    }
-    if (payload.password.length < 6) {
-      return { success: false, message: 'Kata sandi minimal harus 6 karakter.' };
-    }
-
-    try {
-      const res = await authApi.register(payload);
-      if (res.success && res.user) {
-        bumpAuthGeneration();
-        setCurrentUser(res.user);
-      }
-      return res;
-    } catch (e: any) {
-      return { success: false, message: e?.message || 'Pendaftaran gagal. Silakan coba lagi.' };
-    }
-  };
-
   const logout = async () => {
-    // Hapus token + user dari localStorage DULU (authApi.logout = setToken(null) + remove bestari_current_user).
-    // Sebelumnya cuma set state React — localStorage `bestari_session_id` & `bestari_current_user`
-    // masih ada → setelah reload readUser() baca user lama → session nyangkut, gabisa logout/login.
     await authApi.logout();
-    // Naikkan generation — hasil async selebihnya cukup dianggap basi;
-    // JANGAN set currentUser dari response lama.
     bumpAuthGeneration();
     setCurrentUser(null);
-    setWishlistIds({});
-  };
-
-  // Wishlist / Favorit helpers
-  const isFavorite = (productId: string) => String(productId) in wishlistIds;
-
-  const toggleWishlist = async (productId: string): Promise<boolean> => {
-    const pid = String(productId);
-    const existingId = wishlistIds[pid];
-    if (existingId !== undefined && existingId !== 0) {
-      // Hapus dari favorit (pakai wishlist_id yang tersimpan)
-      const ok = await wishlistApi.removeFromWishlist(existingId);
-      if (ok) {
-        const next = { ...wishlistIds };
-        delete next[pid];
-        setWishlistIds(next);
-        return true;
-      }
-      return false;
-    }
-    // State tidak yakin (wishlist_id 0/absent tapi produk mungkin sudah di wishlist) —
-    // cek server dulu: kalau ada, HAPUS (bukan add) supaya unlike tidak berubah jadi
-    // "sudah ada" yang tetap nyangkut di DB.
-    const list = await wishlistApi.getWishlist().catch(() => null);
-    const existing = list?.find((w) => String(w.id) === pid);
-    if (existing) {
-      const ok = await wishlistApi.removeFromWishlist(existing.wishlist_id || 0);
-      if (ok) {
-        const next = { ...wishlistIds };
-        delete next[pid];
-        setWishlistIds(next);
-        return true;
-      }
-      return false;
-    }
-    // Tambah ke favorit
-    const ok = await wishlistApi.addToWishlist(pid);
-    if (ok) {
-      // Dapatkan wishlist_id dari server (untuk bisa hapus nanti)
-      const freshList = await wishlistApi.getWishlist().catch(() => null);
-      const row = freshList?.find((w) => String(w.id) === pid);
-      setWishlistIds((prev) => ({
-        ...prev,
-        [pid]: Number(row?.wishlist_id || 0),
-      }));
-      return true;
-    }
-    return false;
   };
 
   // Product CRUD
   const saveProduct = (productData: any) => {
-    // Harga jual final = harga asli × (1 - diskon%)
+    // Harga: FE (admin) adalah single source of truth. Tidak ada diskon —
+    // price langsung dianggap harga jual final.
     const baseP = Number(productData.price) || 0;
-    const pctP = Math.max(0, Math.min(90, Number(productData.discountPercent) || 0));
-    const finalPrice = pctP > 0 ? Math.round((baseP * (100 - pctP)) / 100 / 50) * 50 : baseP;
-    const payload = { ...productData, price: finalPrice, originalPrice: baseP };
+    const payload = { ...productData, price: baseP };
     // Pakai payload (price final) untuk semua referensi di bawah
     productData = payload;
     const catLabelMap: Record<string, string> = {
@@ -537,8 +400,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               categoryLabel: catLabelMap[productData.category] || 'Produk Sorgum',
               price: Number(productData.price),
               formattedPrice: `IDR ${Number(productData.price).toLocaleString('id-ID')}`,
-              originalPrice: productData.originalPrice,
-              discountPercent: productData.discountPercent,
               composition: productData.composition,
               shelfLife: productData.shelfLife,
               attributes: productData.attributes,
@@ -569,8 +430,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           badge: productData.badge || undefined,
           image: productData.image,
           description: productData.description || 'Produk olahan sorgum berkualitas tinggi.',
-          originalPrice: productData.originalPrice,
-          discountPercent: productData.discountPercent,
           composition: productData.composition,
           shelfLife: productData.shelfLife,
           attributes: productData.attributes,
@@ -597,8 +456,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         badge: productData.badge || undefined,
         image: productData.image,
         description: productData.description || 'Produk olahan sorgum berkualitas tinggi.',
-        originalPrice: productData.originalPrice,
-        discountPercent: productData.discountPercent,
         composition: productData.composition,
         shelfLife: productData.shelfLife,
         attributes: productData.attributes,
@@ -772,9 +629,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         products,
         saveProduct,
         deleteProduct,
-        wishlistIds,
-        toggleWishlist,
-        isFavorite,
         faqs,
         saveFaq,
         deleteFaq,
@@ -793,7 +647,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         saveLandingContent,
         currentUser,
         login,
-        register,
         logout,
         refreshProducts,
       }}

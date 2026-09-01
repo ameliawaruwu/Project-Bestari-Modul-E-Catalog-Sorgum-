@@ -33,7 +33,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
   const currentTitle = t(landingContent.heroTitleId, landingContent.heroTitleEn);
 
   return (
-    <section className="relative min-h-[75vh] md:min-h-[85vh] flex items-center overflow-hidden pt-20">
+    <section className="relative min-h-[60vh] md:min-h-[68vh] flex items-center overflow-hidden pt-24">
       {/* Background Image Carousel with Overlay */}
       <div className="absolute inset-0 overflow-hidden">
         {hasSlides ? (
@@ -61,7 +61,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow }) => {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-20 max-w-[1280px] mx-auto w-full px-4 md:px-10 pt-10 pb-20 md:pt-14 md:pb-28 flex flex-col justify-center items-start text-white">
+      <div className="relative z-20 max-w-[1280px] mx-auto w-full px-4 md:px-10 pt-10 pb-14 md:pt-14 md:pb-16 flex flex-col justify-center items-start text-white">
         <h1 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-2xl mb-4 leading-tight drop-shadow-md animate-slideUp">
           {currentTitle}
         </h1>

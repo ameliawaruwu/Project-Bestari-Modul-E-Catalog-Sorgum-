@@ -50,7 +50,6 @@ export const EVENTS = {
   BANNERS: 'banners',
   LANDING: 'landing',
   SETTINGS: 'settings',
-  VOUCHERS: 'vouchers',
   USERS: 'users',
 } as const;
 

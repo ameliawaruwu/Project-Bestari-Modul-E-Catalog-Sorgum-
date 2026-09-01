@@ -7,8 +7,6 @@ export interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
-  original_price: number | null;
-  discount_percent: number;
   stock: number;
   weight_spec: string | null;
   origin: string | null;
@@ -55,15 +53,13 @@ interface CreateProductInput {
   gluten_free?: boolean;
   organic?: boolean;
   badge?: string | null;
-  original_price?: number | null;
-  discount_percent?: number;
   composition?: string | null;
   shelf_life?: string | null;
   attributes?: string | null;
 }
 
 const LIST_SELECT = `
-  SELECT p.id, p.name, p.slug, p.description, p.price, p.original_price, p.discount_percent,
+  SELECT p.id, p.name, p.slug, p.description, p.price,
          p.stock, p.weight_spec, p.origin, p.shipping_info, p.composition, p.shelf_life, p.attributes,
          p.is_active, p.is_featured, p.category_id, p.created_at,
          p.gluten_free, p.organic, p.badge,
@@ -208,44 +204,29 @@ async function normalizeBadge(badge: string | null | undefined): Promise<string 
 
 export async function createProduct(input: CreateProductInput) {
   const { category_id, name, slug, description, stock, weight_spec, origin, is_featured } = input;
-  // Harga: FE (admin) adalah single source of truth. FE mengirim TIGA nilai konsisten:
-  //   original_price (harga dasar/asli), price (harga jual final = original × (1 - diskon/100)),
-  //   discount_percent (0-90).
-  // JANGAN hitung ulang di sini (applyDiscount) — kalau FE mengirim price yang SUDAH
-  // didiskon (mis. 38.400 dari 48.000 - 20%), applyDiscount akan menghitung diskon dari
-  // 38.400 → harga melenceng. Simpan persis apa yang FE kirim.
-  const originalPrice = input.original_price != null ? Number(input.original_price) : Number(input.price) || 0;
-  const discountPercent = Math.max(0, Math.min(90, Number(input.discount_percent) || 0));
-  // Kalau FE TIDAK mengirim original_price/discount_percent (payload lama), kompatibilitas:
-  // price dianggap harga jual final & original = price (tanpa diskon) — jangan hitung ulang.
-  const price = Number(input.price) || originalPrice;
+  // Harga: FE (admin) adalah single source of truth. Tidak ada diskon lagi —
+  // price = harga jual langsung. original_price/discount_percent dikosongkan
+  // (kolom DB dipertahankan, tidak dipakai lagi).
+  const price = Number(input.price) || 0;
   const badge = await normalizeBadge(input.badge ?? null);
   const [result] = await dbPool.query(
     `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [category_id, name, slug, description, price, originalPrice, discountPercent, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
+    [category_id, name, slug, description, price, price, 0, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
      input.gluten_free ? 1 : 0, input.organic ? 1 : 0, badge, input.composition ?? null, input.shelf_life ?? null,
      input.attributes ?? null],
   );
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'original_price', 'discount_percent', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   // Harga: simpan persis apa yang FE kirim — FE (admin) adalah single source of truth.
-  // FE selalu mengirim harga LENGKAP: original_price + price (final) + discount_percent.
-  // JANGAN hitung ulang di sini — kalau FE kirim price yang sudah didiskon, hitung ulang
-  // akan double-apply (harga melenceng lagi).
   const fields: string[] = [];
   const params: any[] = [];
 
-  // Normalisasi: kalau price dikirim tanpa original_price, original = price (tanpa diskon).
   const cleanInput: Record<string, any> = { ...input };
-  if (cleanInput.price !== undefined && cleanInput.original_price === undefined) {
-    cleanInput.original_price = Number(cleanInput.price) || 0;
-    cleanInput.discount_percent = 0;
-  }
   // Normalisasi badge: WAJIB ada di tabel badges (dikelola via Kelola Badge).
   // Badge tidak dikenal → NULL (cegah badge yatim).
   if (cleanInput.badge !== undefined) {
@@ -270,31 +251,12 @@ export async function updateProduct(id: number, input: Partial<CreateProductInpu
   return (result as any).affectedRows > 0;
 }
 
-export async function toggleProductActive(id: number) {
-  const [result] = await dbPool.query('UPDATE products SET is_active = NOT is_active WHERE id = ?', [id]);
-  return (result as any).affectedRows > 0;
-}
-
 export async function deleteProduct(id: number) {
-  // Produk yang sudah pernah dipesan TIDAK bisa di-hapus baris (FK order_items →
-  // products RESTRICT) → 500 error. Solusi: soft-delete = nonaktifkan + bersihkan
-  // relasi yang aman (cart, wishlist, gambar). Riwayat order TETAP utuh.
   const conn = await dbPool.getConnection();
   try {
     await conn.beginTransaction();
-    // Cek apakah produk pernah dipesan (ada di order_items)
-    const [ordered] = await conn.query('SELECT id FROM order_items WHERE product_id = ? LIMIT 1', [id]);
-    const hasOrder = (ordered as any[]).length > 0;
-    if (hasOrder) {
-      // Soft-delete: nonaktifkan (hilang dari katalog user), simpan data untuk riwayat
-      await conn.query('UPDATE products SET is_active = 0 WHERE id = ?', [id]);
-    } else {
-      // Produk belum pernah dipesan → hapus baris aman (bersihkan relasi dulu)
-      await conn.query('DELETE FROM cart_items WHERE product_id = ?', [id]);
-      await conn.query('DELETE FROM wishlists WHERE product_id = ?', [id]);
-      await conn.query('DELETE FROM product_images WHERE product_id = ?', [id]);
-      await conn.query('DELETE FROM products WHERE id = ?', [id]);
-    }
+    await conn.query('DELETE FROM product_images WHERE product_id = ?', [id]);
+    await conn.query('DELETE FROM products WHERE id = ?', [id]);
     await conn.commit();
     return true;
   } catch (e) {

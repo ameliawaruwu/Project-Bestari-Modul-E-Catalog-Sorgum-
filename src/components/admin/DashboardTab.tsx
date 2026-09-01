@@ -19,7 +19,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   });
 
   return (
-    <div className="space-y-8 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn">
       {/* Breadcrumb & Heading */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -51,7 +51,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       {/* KPI Grid - Clean White Cards & Sorghum Palette */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Katalog Produk */}
-        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[130px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#C89B3C]/40">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[120px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#C89B3C]/40">
           <div className="flex justify-between items-start">
             <span className="text-[#555555] text-[10px] font-extrabold uppercase tracking-wider">Katalog Produk</span>
             <button
@@ -72,7 +72,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* Stok Menipis */}
-        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[130px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#D32F2F]/40">
+        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 flex flex-col justify-between min-h-[120px] shadow-2xs transition-all duration-200 hover:translate-y-[-2px] hover:shadow-xs hover:border-[#D32F2F]/40">
           <div className="flex justify-between items-start">
             <span className="text-[#555555] text-[10px] font-extrabold uppercase tracking-wider">Stok Menipis</span>
             <div className="w-9 h-9 rounded-xl bg-[#FFEBEE] border border-[#FFCDD2] flex items-center justify-center text-[#D32F2F] shadow-2xs">
@@ -91,7 +91,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       </div>
 
       {/* Low Stock Alert Card */}
-      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-6 space-y-4 shadow-2xs">
+      <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-5 space-y-4 shadow-2xs">
         <div className="flex justify-between items-center border-b border-[#E0E0E0] pb-3">
           <h3 className="font-extrabold text-sm text-[#1B5E20] uppercase tracking-wider">
             Peringatan Stok Low

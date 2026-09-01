@@ -155,7 +155,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     };
 
     return (
-      <div className="pt-28 sm:pt-32 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
+      <div className="pt-24 sm:pt-28 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
         {/* Tombol Kembali */}
         <button
           onClick={handleBack}
@@ -279,9 +279,9 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
   // Articles List View
   return (
-    <div className="pt-28 sm:pt-32 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
+    <div className="pt-24 sm:pt-28 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
       {/* Filter and Search Panel */}
-      <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs mb-10 space-y-6">
+      <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E0E0E0] shadow-2xs mb-8 space-y-6">
         {/* Search Input */}
         <div className="relative w-full">
           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#555555] text-lg select-none">
@@ -353,7 +353,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
       {/* Pagination */}
       {filteredArticles.length > 0 && totalPages > 1 && (
-        <div className="mt-16 flex flex-col items-center gap-4">
+        <div className="mt-12 flex flex-col items-center gap-4">
           <div className="flex justify-center items-center gap-2">
             <button
               onClick={() => goToPage(safePage - 1)}

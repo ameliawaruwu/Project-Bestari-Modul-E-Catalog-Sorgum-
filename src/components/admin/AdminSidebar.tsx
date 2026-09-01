@@ -27,23 +27,21 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'landing', label: 'Pengaturan Landing Page', icon: 'web' },
     { id: 'produk', label: 'Kelola Produk', icon: 'inventory_2' },
     { id: 'info', label: 'Kelola Info', icon: 'info' },
-    { id: 'user', label: 'Kelola User', icon: 'group' },
     { id: 'faq', label: 'Kelola FAQ', icon: 'quiz' },
-    { id: 'voucher', label: 'Kelola Voucher', icon: 'confirmation_number' },
     { id: 'lain', label: 'Kelola Lain', icon: 'more_horiz' },
   ];
 
   return (
     <aside
       style={{ backgroundColor: '#1B5E20' }}
-      className={`h-screen fixed left-0 top-0 border-r border-white/10 flex flex-col py-4 z-[100] transition-all duration-300 ${
+      className={`h-screen fixed left-0 top-0 border-r border-white/10 flex flex-col py-3 z-[100] transition-all duration-300 ${
         isCollapsed ? 'lg:w-20' : 'lg:w-64'
       } ${
         isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'
       }`}
     >
       {/* Brand Header */}
-      <div className="px-5 mb-6 flex items-center justify-between min-h-[40px]">
+      <div className="px-5 mb-4 flex items-center justify-between min-h-[40px]">
         {isCollapsed ? (
           <div className="mx-auto hidden lg:flex flex-col items-center justify-center gap-2">
             {/* Collapse Toggle Button on Desktop (when collapsed) */}
@@ -94,7 +92,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-2.5">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-2.5">
         {navItems.map((item) => {
           const isActive = activeNav === item.id;
           return (
@@ -105,7 +103,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   setActiveNav(item.id);
                   onClose(); // Close mobile drawer
                 }}
-                className={`group w-full flex items-center py-2.5 text-xs sm:text-sm transition-all duration-200 cursor-pointer border ${
+                className={`group w-full flex items-center py-2 text-xs sm:text-sm transition-all duration-200 cursor-pointer border ${
                   isActive
                     ? 'bg-[#2E7D32] text-white border-l-4 border-l-[#C89B3C] border-t-white/15 border-b-black/10 border-r-white/10 rounded-r-xl rounded-l-sm shadow-md pl-3.5'
                     : 'text-white/70 border-transparent rounded-xl hover:text-white hover:bg-white/10 hover:border-white/10 pl-3.5'

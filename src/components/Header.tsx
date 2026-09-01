@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { User } from '../types';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  user: User | null;
-  onNavigateAuth: (mode: 'login' | 'register') => void;
+  user?: unknown | null;
+  onNavigateAuth?: (mode: 'login' | 'register') => void;
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   onLogout?: () => void;
@@ -16,30 +15,10 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
-  user,
-  onNavigateAuth,
-  onLogout,
   alwaysSolid = false,
 }) => {
   const { language, theme, toggleLanguage, toggleTheme, t, shopSettings } = useApp();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement>(null);
-
-  // Tutup dropdown profil saat klik di luar
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setShowUserMenu(false);
-      }
-    };
-    if (showUserMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showUserMenu]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="flex items-center shrink-0">
         <button
-          onClick={() => setActiveTab(user?.role === 'admin' ? 'admin' : 'beranda')}
+          onClick={() => setActiveTab('beranda')}
           className="text-left flex items-center gap-2.5 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer"
         >
           {shopSettings.logoUrl ? (
@@ -84,8 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
       </div>
 
-      {user?.role !== 'admin' && (
-        <nav className="hidden md:flex items-center gap-4 lg:gap-8 absolute left-1/2 -translate-x-1/2">
+      <nav className="hidden md:flex items-center gap-4 lg:gap-8 absolute left-1/2 -translate-x-1/2">
         <button
           onClick={() => setActiveTab('beranda')}
           className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all duration-200 py-1 focus:outline-none border-b-2 ${
@@ -107,28 +85,16 @@ export const Header: React.FC<HeaderProps> = ({
           {t('Produk', 'Products')}
         </button>
         <button
-          onClick={() => setActiveTab('informasi')}
+          onClick={() => setActiveTab('tracking')}
           className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all duration-200 py-1 focus:outline-none border-b-2 ${
-            activeTab === 'informasi'
+            activeTab === 'tracking'
               ? 'text-[#C89B3C] font-bold border-[#C89B3C]'
               : 'text-white/80 hover:text-white border-transparent'
           }`}
         >
-          {t('Informasi', 'Information')}
+          {t('Lacak Pesanan', 'Track Order')}
         </button>
-        <button
-          onClick={() => setActiveTab('faq')}
-          className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all duration-200 py-1 focus:outline-none border-b-2 ${
-            activeTab === 'faq'
-              ? 'text-[#C89B3C] font-bold border-[#C89B3C]'
-              : 'text-white/80 hover:text-white border-transparent'
-          }`}
-        >
-          {t('FAQ', 'FAQ')}
-        </button>
-
       </nav>
-      )}
 
       <div className="flex items-center gap-1.5 sm:gap-2.5">
         {/* Theme Mode Switcher */}
@@ -154,96 +120,7 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </button>
 
-        {/* User Account / Auth */}
-        <div className="relative" ref={userMenuRef}>
-          {user ? (
-            <div className="relative">
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="p-1.5 hover:bg-[#2E7D32] rounded-lg transition-all active:scale-95 flex items-center justify-center focus:outline-none cursor-pointer"
-                aria-label={t('Profil Pengguna', 'User Profile')}
-              >
-                <span className="material-symbols-outlined text-white text-lg sm:text-xl">account_circle</span>
-              </button>
 
-              {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-52 bg-[#FFFFFF] text-[#1B5E20] rounded-xl shadow-2xl border border-[#E0E0E0] py-2 z-50 animate-fadeIn">
-                  <div className="px-4 py-2 border-b border-[#E0E0E0]">
-                    <p className="font-bold text-sm truncate">
-                      <span>{user.name}</span>
-                    </p>
-                    <p className="text-xs text-[#555555] truncate">{user.email}</p>
-                  </div>
-
-                  {user.role === 'admin' && (
-                    <button
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        setActiveTab('admin');
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-[#E8F5E9] text-[#1B5E20] flex items-center gap-2 font-bold cursor-pointer transition-colors border-b border-[#E0E0E0]"
-                    >
-                      <span className="material-symbols-outlined text-lg text-[#1B5E20]">admin_panel_settings</span>
-                      {t('Halaman Admin', 'Admin Panel')}
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      setActiveTab('profil');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[#E8F5E9] text-[#1B5E20] flex items-center gap-2 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-lg">person</span>
-                    {t('Profil Saya', 'My Profile')}
-                  </button>
-                  {user.role !== 'admin' && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          setActiveTab('favorit');
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#E8F5E9] text-[#1B5E20] flex items-center gap-2 cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-lg">favorite</span>
-                        {t('Produk Favorit', 'Favorite Products')}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          setActiveTab('pengaturan');
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#E8F5E9] text-[#1B5E20] flex items-center gap-2 border-b border-[#E0E0E0] pb-2 cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-lg">settings</span>
-                        {t('Pengaturan Akun', 'Account Settings')}
-                      </button>
-                    </>
-                  )}
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      if (onLogout) onLogout();
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-[#D32F2F] hover:bg-[#FFEBEE] flex items-center gap-2 pt-2 cursor-pointer font-bold"
-                  >
-                    <span className="material-symbols-outlined text-lg">logout</span>
-                    {t('Keluar', 'Logout')}
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              onClick={() => onNavigateAuth('login')}
-              className="px-4 py-1.5 border border-white/30 text-white hover:bg-[#C89B3C] hover:text-white hover:border-transparent rounded-lg transition-all active:scale-95 focus:outline-none font-['Plus_Jakarta_Sans'] text-xs font-bold uppercase tracking-wider cursor-pointer shadow-2xs"
-            >
-              {t('Masuk', 'Login')}
-            </button>
-          )}
-        </div>
       </div>
     </header>
   );

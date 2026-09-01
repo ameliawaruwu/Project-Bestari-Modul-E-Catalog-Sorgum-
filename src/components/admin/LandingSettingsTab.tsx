@@ -4,6 +4,19 @@ import { Product } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { LandingContent } from '../../context/defaults';
 
+// Header kartu bagian (badge nomor + judul + deskripsi) — dipakai 4x di form konten.
+const SectionCardHeader: React.FC<{ num: number; title: string; desc: string }> = ({ num, title, desc }) => (
+  <div className="flex items-start gap-3 border-b border-[#E0E0E0] pb-3">
+    <span className="w-7 h-7 rounded-lg bg-[#1B5E20] text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0">
+      {num}
+    </span>
+    <div>
+      <h3 className="text-sm font-extrabold text-[#1B5E20]">{title}</h3>
+      <p className="text-[11px] text-[#555555] mt-0.5">{desc}</p>
+    </div>
+  </div>
+);
+
 interface LandingSettingsTabProps {
   banners: BannerSlide[];
   products: Product[];
@@ -354,70 +367,98 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
         </div>
       ) : (
         <form onSubmit={handleSaveContent} className="space-y-6">
-          {/* Card: Hero Section */}
+          {/* Intro panduan */}
+          <div className="bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl p-4 flex items-start gap-3">
+            <span className="material-symbols-outlined text-[#1B5E20] text-xl mt-0.5">info</span>
+            <div className="text-xs text-[#1B5E20] leading-relaxed">
+              <p className="font-extrabold mb-1">Cara mengisi halaman ini</p>
+              <p>
+                Setiap bagian di bawah ini adalah teks yang tampil di halaman utama website
+                (<span className="font-bold">beranda</span>). Cukup isi dalam Bahasa Indonesia —
+                terjemahan Bahasa Inggris dibuat otomatis saat tombol Simpan ditekan.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 1: Hero Section */}
           <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <h3 className="text-sm font-extrabold text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
-              1. Hero Banner Content
-            </h3>
-            <p className="text-[11px] text-[#555555] -mt-2">Terjemahan Inggris dihasilkan otomatis saat disimpan.</p>
+            <SectionCardHeader
+              num={1}
+              title="Bagian Hero (Banner Paling Atas)"
+              desc="Bagian pertama yang dilihat pengunjung — teks besar di atas halaman utama."
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Hero</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Utama</label>
                 <input
                   type="text"
                   value={contentForm.heroTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, heroTitleId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Contoh: Sorgum Pilihan Terbaik untuk Hidup Sehat"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Deskripsi Hero</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Penjelasan</label>
                 <textarea
                   rows={3}
                   value={contentForm.heroDescId}
                   onChange={(e) => setContentForm({ ...contentForm, heroDescId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Kalimat singkat yang menjelaskan produk Anda"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Tombol Hero</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Tombol</label>
                 <input
                   type="text"
                   value={contentForm.heroBtnId}
                   onChange={(e) => setContentForm({ ...contentForm, heroBtnId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Contoh: Belanja Sekarang"
                 />
+                <p className="text-[10px] text-[#555555] mt-1">Tulisan di tombol hijau. Singkat saja, 2&ndash;3 kata.</p>
               </div>
             </div>
           </div>
 
-          {/* Card: Brand Story Section */}
+          {/* Card 2: Brand Story Section */}
           <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <h3 className="text-sm font-extrabold text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
-              2. Kisah Kami (Brand Story)
-            </h3>
-            <p className="text-[11px] text-[#555555] -mt-2">Terjemahan Inggris dihasilkan otomatis saat disimpan.</p>
+            <SectionCardHeader
+              num={2}
+              title="Bagian Kisah Kami (Brand Story)"
+              desc="Cerita singkat tentang usaha Anda — tampil di tengah beranda dengan foto."
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Tagline Story</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Label / Kata Pembuka</label>
                 <input
                   type="text"
                   value={contentForm.storyTaglineId}
                   onChange={(e) => setContentForm({ ...contentForm, storyTaglineId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Contoh: Kisah Kami"
                 />
+                <p className="text-[10px] text-[#555555] mt-1">Label kecil di atas judul, biasanya 2&ndash;3 kata.</p>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Story</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Kisah</label>
                 <input
                   type="text"
                   value={contentForm.storyTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, storyTitleId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Contoh: Dari Lahan Petani ke Meja Anda"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">URL Gambar Story</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Gambar Kisah Kami (Foto/Ilustrasi)</label>
+                <p className="text-[11px] text-[#555555] mb-2">
+                  Foto yang tampil di samping teks kisah. Bisa unggah file atau tempel URL gambar.
+                  {!contentForm.storyImageUrl && (
+                    <span className="text-[#C89B3C] font-bold"> Saat ini belum diisi — halaman beranda akan menampilkan placeholder.</span>
+                  )}
+                </p>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -439,7 +480,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                         try {
                           const { productAdminApi } = await import('../../api/adminApi');
                           const url = await productAdminApi.uploadImage(file);
-                          if (!url) throw new Error('upload gagal');
+                          if (!url) throw new Error('Gagal mengunggah gambar. Coba lagi.');
                           setContentForm({ ...contentForm, storyImageUrl: url });
                           showToast('Gambar story berhasil diunggah. Klik Simpan untuk menyimpan.');
                         } catch (e: any) {
@@ -449,12 +490,16 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                     />
                   </label>
                 </div>
-                {contentForm.storyImageUrl && (
+                {contentForm.storyImageUrl ? (
                   <img
                     src={contentForm.storyImageUrl}
                     alt="Pratinjau Gambar Story"
                     className="mt-2 w-48 h-28 object-cover rounded-xl border border-[#E0E0E0]"
                   />
+                ) : (
+                  <div className="mt-2 w-48 h-28 rounded-xl border border-dashed border-[#E0E0E0] bg-[#F7F8F6] flex items-center justify-center text-[11px] text-[#555555]">
+                    Belum ada gambar
+                  </div>
                 )}
               </div>
               <div className="md:col-span-2">
@@ -478,111 +523,105 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             </div>
           </div>
 
-          {/* Card: Benefits Section */}
+          {/* Card 3: Benefits Section */}
           <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <h3 className="text-sm font-extrabold text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
-              3. Seksi Keunggulan (Why Choose Sorghum)
-            </h3>
-            <p className="text-[11px] text-[#555555] -mt-2">Terjemahan Inggris dihasilkan otomatis saat disimpan.</p>
+            <SectionCardHeader
+              num={3}
+              title="Bagian Keunggulan (Kenapa Pilih Kami)"
+              desc="Tiga alasan yang membuat produk Anda layak dipilih — tampil sebagai kartu-kartu kecil."
+            />
             <div className="grid grid-cols-1 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Seksi</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Bagian Ini</label>
                 <input
                   type="text"
                   value={contentForm.benefitsTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, benefitsTitleId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Contoh: Mengapa Memilih SORGUM?"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Deskripsi Seksi</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Penjelasan</label>
                 <textarea
                   rows={2}
                   value={contentForm.benefitsDescId}
                   onChange={(e) => setContentForm({ ...contentForm, benefitsDescId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Satu kalimat singkat di bawah judul"
                 />
               </div>
-              {/* Benefit 1 */}
-              <div className="border-t border-[#E0E0E0] pt-3">
-                <p className="text-xs font-extrabold text-[#1B5E20] mb-2">Keunggulan 1</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Judul</label>
-                    <input type="text" value={contentForm.benefit1TitleId} onChange={(e) => setContentForm({ ...contentForm, benefit1TitleId: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Ikon (Material Symbol)</label>
-                    <input type="text" value={contentForm.benefit1Icon} onChange={(e) => setContentForm({ ...contentForm, benefit1Icon: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" placeholder="contoh: eco, verified, groups" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Deskripsi</label>
-                    <textarea rows={2} value={contentForm.benefit1DescId} onChange={(e) => setContentForm({ ...contentForm, benefit1DescId: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" />
-                  </div>
-                </div>
-              </div>
-              {/* Benefit 2 */}
-              <div className="border-t border-[#E0E0E0] pt-3">
-                <p className="text-xs font-extrabold text-[#1B5E20] mb-2">Keunggulan 2</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Judul</label>
-                    <input type="text" value={contentForm.benefit2TitleId} onChange={(e) => setContentForm({ ...contentForm, benefit2TitleId: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Ikon (Material Symbol)</label>
-                    <input type="text" value={contentForm.benefit2Icon} onChange={(e) => setContentForm({ ...contentForm, benefit2Icon: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" placeholder="contoh: eco, verified, groups" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Deskripsi</label>
-                    <textarea rows={2} value={contentForm.benefit2DescId} onChange={(e) => setContentForm({ ...contentForm, benefit2DescId: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" />
-                  </div>
-                </div>
-              </div>
-              {/* Benefit 3 */}
-              <div className="border-t border-[#E0E0E0] pt-3">
-                <p className="text-xs font-extrabold text-[#1B5E20] mb-2">Keunggulan 3</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Judul</label>
-                    <input type="text" value={contentForm.benefit3TitleId} onChange={(e) => setContentForm({ ...contentForm, benefit3TitleId: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Ikon (Material Symbol)</label>
-                    <input type="text" value={contentForm.benefit3Icon} onChange={(e) => setContentForm({ ...contentForm, benefit3Icon: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" placeholder="contoh: eco, verified, groups" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-[11px] font-semibold text-[#555555] mb-1">Deskripsi</label>
-                    <textarea rows={2} value={contentForm.benefit3DescId} onChange={(e) => setContentForm({ ...contentForm, benefit3DescId: e.target.value })} className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium" />
+              {/* Benefit 1-3 — data-driven (satu definisi, tiga instance) */}
+              {(
+                [
+                  { label: 'Keunggulan 1', key: 'benefit1' as const },
+                  { label: 'Keunggulan 2', key: 'benefit2' as const },
+                  { label: 'Keunggulan 3', key: 'benefit3' as const },
+                ] as const
+              ).map(({ label, key }) => (
+                <div key={key} className="border-t border-[#E0E0E0] pt-3">
+                  <p className="text-xs font-extrabold text-[#1B5E20] mb-2">{label}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#555555] mb-1">Judul</label>
+                      <input
+                        type="text"
+                        value={contentForm[`${key}TitleId`]}
+                        onChange={(e) => setContentForm({ ...contentForm, [`${key}TitleId`]: e.target.value })}
+                        className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-[#555555] mb-1">Ikon (Material Symbol)</label>
+                      <input
+                        type="text"
+                        value={contentForm[`${key}Icon`]}
+                        onChange={(e) => setContentForm({ ...contentForm, [`${key}Icon`]: e.target.value })}
+                        className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                        placeholder="contoh: eco, verified, groups"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-[11px] font-semibold text-[#555555] mb-1">Deskripsi</label>
+                      <textarea
+                        rows={2}
+                        value={contentForm[`${key}DescId`]}
+                        onChange={(e) => setContentForm({ ...contentForm, [`${key}DescId`]: e.target.value })}
+                        className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Card: Featured Products Section */}
+          {/* Card 4: Featured Products Section */}
           <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <h3 className="text-sm font-extrabold text-[#1B5E20] border-b border-[#E0E0E0] pb-2">
-              4. Koleksi Produk Pilihan (Teks Judul)
-            </h3>
-            <p className="text-[11px] text-[#555555] -mt-2">Terjemahan Inggris dihasilkan otomatis saat disimpan. Pemilihan produk di tab Produk Pilihan.</p>
+            <SectionCardHeader
+              num={4}
+              title="Bagian Produk Pilihan"
+              desc="Judul dan keterangan di atas deretan produk pilihan. Pilihan produknya diatur lewat tab &quot;Produk Pilihan&quot; di atas."
+            />
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Seksi</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Bagian Ini</label>
                 <input
                   type="text"
                   value={contentForm.featuredTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, featuredTitleId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Contoh: Koleksi Produk Pilihan"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Deskripsi Seksi</label>
+                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Penjelasan</label>
                 <textarea
                   rows={2}
                   value={contentForm.featuredDescId}
                   onChange={(e) => setContentForm({ ...contentForm, featuredDescId: e.target.value })}
                   className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  placeholder="Satu kalimat singkat di bawah judul"
                 />
               </div>
             </div>

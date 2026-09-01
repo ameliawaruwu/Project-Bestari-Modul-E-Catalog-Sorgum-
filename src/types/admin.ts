@@ -5,32 +5,8 @@ export type AdminActiveNav =
   | 'landing'
   | 'produk'
   | 'info'
-  | 'user'
   | 'faq'
-  | 'voucher'
   | 'lain';
-
-export interface UserAddress {
-  id: string;
-  label: string;
-  recipientName: string;
-  phone: string;
-  fullAddress: string;
-  isPrimary: boolean;
-}
-
-export interface AdminUser {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  joinedDate: string;
-  status: 'AKTIF' | 'NONAKTIF';
-  isDeleted: boolean;
-  deletedAt?: string;
-  role: 'user' | 'admin';
-  addresses: UserAddress[];
-}
 
 export interface BannerSlide {
   id: string;

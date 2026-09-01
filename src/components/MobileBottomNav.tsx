@@ -1,28 +1,21 @@
 import React from 'react';
-import { User } from '../types';
 import { useApp } from '../context/AppContext';
 
 interface MobileBottomNavProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  user?: User | null;
+  user?: unknown | null;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   activeTab,
   setActiveTab,
-  user,
 }) => {
   const { t } = useApp();
   const navItems = [
-    ...(user?.role === 'admin'
-      ? [{ id: 'admin', label: t('Admin', 'Admin'), icon: 'admin_panel_settings' }]
-      : [
-          { id: 'beranda', label: t('Beranda', 'Home'), icon: 'home' },
-          { id: 'produk', label: t('Produk', 'Products'), icon: 'storefront' },
-          { id: 'informasi', label: t('Informasi', 'Info'), icon: 'article' },
-          { id: 'faq', label: t('FAQ', 'FAQ'), icon: 'help_outline' },
-        ]),
+    { id: 'beranda', label: t('Beranda', 'Home'), icon: 'home' },
+    { id: 'produk', label: t('Produk', 'Products'), icon: 'storefront' },
+    { id: 'tracking', label: t('Lacak', 'Track'), icon: 'local_shipping' },
   ];
 
   return (

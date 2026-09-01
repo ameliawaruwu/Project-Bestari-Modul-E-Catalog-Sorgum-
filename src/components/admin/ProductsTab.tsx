@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Product } from '../../types';
-import { discountBadgeLabel } from '../../utils/discountBadge';
 
 interface ProductsTabProps {
   products: Product[];
-  onToggleProductStatus: (id: string) => void;
   onDeleteProduct: (product: Product) => void;
   onOpenCreateProduct: () => void;
   onOpenEditProduct: (product: Product) => void;
@@ -12,7 +10,6 @@ interface ProductsTabProps {
 
 export const ProductsTab: React.FC<ProductsTabProps> = ({
   products,
-  onToggleProductStatus,
   onDeleteProduct,
   onOpenCreateProduct,
   onOpenEditProduct,
@@ -36,7 +33,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
     .sort((a, b) => Number(b.id) - Number(a.id));
 
   return (
-    <div className="space-y-8 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn">
       {/* Page Title & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -143,11 +140,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                               {prod.badge}
                             </span>
                           )}
-                          {discountBadgeLabel(prod) && (
-                            <span className="inline-block text-[9px] font-extrabold uppercase bg-[#D32F2F] text-white px-2 py-0.5 rounded-md leading-none">
-                              {discountBadgeLabel(prod)}
-                            </span>
-                          )}
                         </div>
                       </div>
                     </td>
@@ -155,41 +147,13 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                       {prod.categoryLabel || prod.category}
                     </td>
                     <td className="px-4 py-3 font-bold text-[#1B5E20] font-mono-custom">
-                      {prod.originalPrice ? (
-                        <div className="space-y-0.5">
-                          <p className="text-[#1B5E20] font-bold">
-                            Rp {prod.price.toLocaleString('id-ID')}
-                          </p>
-                          <p className="text-[10px] text-gray-400 line-through">
-                            Rp {prod.originalPrice.toLocaleString('id-ID')}
-                          </p>
-                        </div>
-                      ) : (
-                        `Rp ${prod.price.toLocaleString('id-ID')}`
-                      )}
+                      Rp {prod.price.toLocaleString('id-ID')}
                     </td>
                     <td className="px-4 py-3 font-bold text-[#1B5E20]">
                       {stock} Unit
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-1.5">
-                        {/* Toggle aktif/nonaktif — switch on/off (H3-7: bukan ikon mata lagi).
-                            Produk nonaktif tidak muncul di katalog user. Dipakai juga untuk
-                            mengaktifkan kembali produk hasil soft-delete. */}
-                        <button
-                          type="button"
-                          onClick={() => onToggleProductStatus(prod.id)}
-                          title={prod.isActive ? 'Nonaktifkan produk (sembunyikan dari katalog)' : 'Aktifkan produk (tampilkan di katalog)'}
-                          className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 cursor-pointer self-center ${prod.isActive ? 'bg-[#2E7D32]' : 'bg-gray-300'
-                            }`}
-                          style={{ height: '22px', width: '40px' }}
-                        >
-                          <div
-                            className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${prod.isActive ? 'translate-x-4.5' : 'translate-x-0'
-                              }`}
-                            style={{ width: '16px', height: '16px', transform: prod.isActive ? 'translateX(20px)' : 'translateX(0)' }}
-                          />
-                        </button>
                         <button
                           type="button"
                           onClick={() => onOpenEditProduct(prod)}
