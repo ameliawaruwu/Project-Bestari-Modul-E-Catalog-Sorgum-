@@ -21,34 +21,25 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #162809;
-  --color-primary-container: #2b3e1d;
+  --color-primary: #3A8F4B;
+  --color-primary-container: #1F5132;
+  --color-primary-dark: #1F5132;
+  --color-primary-fresh: #65B86B;
   --color-on-primary: #ffffff;
-  --color-on-primary-fixed: #0e2004;
-  --color-on-primary-fixed-variant: #394c2a;
-  --color-secondary: #715c13;
+  --color-secondary: #65B86B;
+  --color-secondary-light: #E8F5E9;
+  --color-mint: #F0F8EF;
+  --color-warm-cream: #FFFDF5;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #fade88;
-  --color-on-secondary-container: #756118;
-  --color-secondary-fixed: #fde08b;
-  --color-secondary-fixed-dim: #e0c472;
-  --color-on-secondary-fixed: #231b00;
-  --color-on-secondary-fixed-variant: #574500;
-  --color-surface: #fff8f2;
-  --color-surface-dim: #dfd9d3;
-  --color-surface-bright: #fff8f2;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f9f3ec;
-  --color-surface-container: #f3ede6;
-  --color-surface-container-high: #ede7e1;
-  --color-surface-container-highest: #e7e2db;
-  --color-surface-variant: #e7e2db;
-  --color-on-surface: #1d1b17;
-  --color-on-surface-variant: #44483f;
-  --color-background: #fff8f2;
-  --color-outline: #75786e;
-  --color-outline-variant: #c4c8bc;
-  --color-tertiary: #26231c;
+  --color-accent-gold: #E3B84B;
+  --color-surface: #FFFDF5;
+  --color-surface-container: #ffffff;
+  --color-surface-container-low: #F0F8EF;
+  --color-surface-container-high: #E8F5E9;
+  --color-text-dark: #20352A;
+  --color-text-secondary: #6B756E;
+  --color-border-subtle: #E8F5E9;
+  --color-background: #FFFDF5;
 
   --font-headline-md: "Plus Jakarta Sans", sans-serif;
   --font-headline-sm: "Plus Jakarta Sans", sans-serif;
@@ -71,9 +62,9 @@
   }
 
   body {
-    background-color: #EFECE6;
+    background-color: #FFFDF5;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    color: #1d1b17;
+    color: #20352A;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
@@ -190,6 +181,23 @@
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 6s ease-in-out infinite;
+}
+
 .animate-zoomSlow {
   animation: zoomSlow 10s ease-out forwards;
 }
@@ -213,31 +221,31 @@
 /* Dark mode variable and custom class overrides */
 .dark {
   /* Accent/Primary */
-  --color-primary: #fde08b;
-  --color-primary-container: #1b2e0f;
-  --color-on-primary: #121f07;
+  --color-primary: #fade88;
+  --color-primary-container: #1b3320;
+  --color-on-primary: #0a110b;
 
   /* Background & Surface overrides */
-  --color-background-body: #0f0e0b;
-  --color-background: #0f0e0b;
-  --color-surface: #161410;
-  --color-surface-dim: #0f0e0b;
-  --color-surface-bright: #1e1c18;
-  --color-surface-container-lowest: #0a0908;
-  --color-surface-container-low: #131210;
-  --color-surface-container: #1b1916;
-  --color-surface-container-high: #252320;
-  --color-surface-container-highest: #302e2a;
-  --color-surface-variant: #2a2d27;
+  --color-background-body: #0A110B;
+  --color-background: #0A110B;
+  --color-surface: #101A12;
+  --color-surface-dim: #0A110B;
+  --color-surface-bright: #18281C;
+  --color-surface-container-lowest: #060B07;
+  --color-surface-container-low: #0D160F;
+  --color-surface-container: #101A12;
+  --color-surface-container-high: #162419;
+  --color-surface-container-highest: #1D3022;
+  --color-surface-variant: #1B2C1F;
 
   /* Outline */
   --color-outline: #8e9285;
-  --color-outline-variant: #3a3d36;
+  --color-outline-variant: #2A4230;
 
   /* On colors */
-  --color-on-surface: #f5f3f0;
-  --color-on-surface-variant: #b8bcb4;
-  --color-tertiary: #d8d2cc;
+  --color-on-surface: #f4f7f2;
+  --color-on-surface-variant: #c4cdc1;
+  --color-tertiary: #fade88;
 
   color-scheme: dark;
 }
@@ -248,55 +256,56 @@
 
 /* Body & page backgrounds */
 .dark body {
-  background-color: #0f0e0b !important;
-  color: #f5f3f0 !important;
+  background-color: #0A110B !important;
+  color: #f4f7f2 !important;
 }
 
-/* Surface backgrounds — all cream/beige/white variants */
-.dark .bg-\[\#EFECE6\]  { background-color: #0f0e0b !important; }
-.dark .bg-\[\#faf8f5\]  { background-color: #161410 !important; }
-.dark .bg-\[\#faf7f4\]  { background-color: #161410 !important; }
-.dark .bg-white          { background-color: #1a1815 !important; }
-.dark .bg-\[\#fff8f2\]  { background-color: #1a1815 !important; }
-.dark .bg-\[\#f9f3ec\]  { background-color: #1d1b17 !important; }
-.dark .bg-\[\#f3ede6\]  { background-color: #201e1a !important; }
-.dark .bg-\[\#ede7e1\]  { background-color: #252320 !important; }
-.dark .bg-\[\#e7e2db\]  { background-color: #2a2826 !important; }
-.dark .bg-\[\#f9f8f6\]  { background-color: #161410 !important; }
-.dark .bg-\[\#fcfaf6\]  { background-color: #161410 !important; }
-.dark .bg-\[\#f9f3ec\]\/50 { background-color: rgba(29,27,23,0.5) !important; }
+/* Surface backgrounds — fresh botanical obsidian */
+.dark .bg-\[\#EFECE6\]  { background-color: #0A110B !important; }
+.dark .bg-\[\#F7F5EF\]  { background-color: #0A110B !important; }
+.dark .bg-\[\#faf8f5\]  { background-color: #101A12 !important; }
+.dark .bg-\[\#faf7f4\]  { background-color: #101A12 !important; }
+.dark .bg-white          { background-color: #101A12 !important; }
+.dark .bg-\[\#fff8f2\]  { background-color: #101A12 !important; }
+.dark .bg-\[\#f9f3ec\]  { background-color: #142217 !important; }
+.dark .bg-\[\#f3ede6\]  { background-color: #18281C !important; }
+.dark .bg-\[\#ede7e1\]  { background-color: #1B2D20 !important; }
+.dark .bg-\[\#e7e2db\]  { background-color: #1F3324 !important; }
+.dark .bg-\[\#f9f8f6\]  { background-color: #101A12 !important; }
+.dark .bg-\[\#fcfaf6\]  { background-color: #101A12 !important; }
+.dark .bg-\[\#f9f3ec\]\/50 { background-color: rgba(20,34,23,0.5) !important; }
 
 /* Hover backgrounds */
-.dark .hover\:bg-\[\#f9f3ec\]:hover  { background-color: #252320 !important; }
-.dark .hover\:bg-\[\#f3ede6\]:hover  { background-color: #252320 !important; }
-.dark .hover\:bg-\[\#faf8f5\]:hover  { background-color: #1e1c18 !important; }
-.dark .hover\:bg-white:hover          { background-color: #1d1b17 !important; }
-.dark .hover\:bg-\[\#e7e2db\]:hover  { background-color: #2a2826 !important; }
-.dark .hover\:bg-\[\#fde08b\]:hover  { background-color: rgba(253,224,139,0.15) !important; }
-.dark .hover\:bg-\[\#fade88\]:hover  { background-color: rgba(250,222,136,0.15) !important; }
+.dark .hover\:bg-\[\#f9f3ec\]:hover  { background-color: #162419 !important; }
+.dark .hover\:bg-\[\#f3ede6\]:hover  { background-color: #18281C !important; }
+.dark .hover\:bg-\[\#faf8f5\]:hover  { background-color: #162419 !important; }
+.dark .hover\:bg-white:hover          { background-color: #162419 !important; }
+.dark .hover\:bg-\[\#e7e2db\]:hover  { background-color: #1D3022 !important; }
+.dark .hover\:bg-\[\#fde08b\]:hover  { background-color: rgba(250,222,136,0.18) !important; }
+.dark .hover\:bg-\[\#fade88\]:hover  { background-color: rgba(250,222,136,0.18) !important; }
 
 /* Text colors */
-.dark .text-\[\#1d1b17\]     { color: #f5f3f0 !important; }
-.dark .text-\[\#162809\]     { color: #fde08b !important; }
-.dark .text-\[\#2b3e1d\]     { color: #a8d08d !important; }
-.dark .text-\[\#44483f\]     { color: #b8bcb4 !important; }
-.dark .text-\[\#44483f\]\/90 { color: rgba(184,188,180,0.9) !important; }
-.dark .text-\[\#44483f\]\/80 { color: rgba(184,188,180,0.8) !important; }
-.dark .text-\[\#44483f\]\/70 { color: rgba(184,188,180,0.7) !important; }
-.dark .text-\[\#75786e\]     { color: #8a8e86 !important; }
-.dark .text-\[\#75786e\]\/70 { color: rgba(138,142,134,0.7) !important; }
+.dark .text-\[\#1d1b17\]     { color: #f4f7f2 !important; }
+.dark .text-\[\#162809\]     { color: #fade88 !important; }
+.dark .text-\[\#2b3e1d\]     { color: #A5D6A7 !important; }
+.dark .text-\[\#44483f\]     { color: #c4cdc1 !important; }
+.dark .text-\[\#44483f\]\/90 { color: rgba(196,205,193,0.9) !important; }
+.dark .text-\[\#44483f\]\/80 { color: rgba(196,205,193,0.8) !important; }
+.dark .text-\[\#44483f\]\/70 { color: rgba(196,205,193,0.7) !important; }
+.dark .text-\[\#75786e\]     { color: #94a390 !important; }
+.dark .text-\[\#75786e\]\/70 { color: rgba(148,163,144,0.7) !important; }
 
-/* Border colors */
-.dark .border-\[\#c4c8bc\]     { border-color: rgba(255,255,255,0.1) !important; }
-.dark .border-\[\#c4c8bc\]\/60 { border-color: rgba(255,255,255,0.1) !important; }
-.dark .border-\[\#c4c8bc\]\/50 { border-color: rgba(255,255,255,0.09) !important; }
-.dark .border-\[\#c4c8bc\]\/40 { border-color: rgba(255,255,255,0.08) !important; }
-.dark .border-\[\#c4c8bc\]\/30 { border-color: rgba(255,255,255,0.07) !important; }
-.dark .border-\[\#c4c8bc\]\/20 { border-color: rgba(255,255,255,0.06) !important; }
-.dark .border-\[\#c4c8bc\]\/10 { border-color: rgba(255,255,255,0.05) !important; }
-.dark .border-white\/20         { border-color: rgba(255,255,255,0.08) !important; }
-.dark .border-\[\#162809\]     { border-color: #fde08b !important; }
-.dark .border-\[\#2b3e1d\]     { border-color: rgba(253,224,139,0.3) !important; }
+/* Border colors — subtle organic emerald */
+.dark .border-\[\#c4c8bc\]     { border-color: rgba(165,214,167,0.15) !important; }
+.dark .border-\[\#c4c8bc\]\/60 { border-color: rgba(165,214,167,0.13) !important; }
+.dark .border-\[\#c4c8bc\]\/50 { border-color: rgba(165,214,167,0.11) !important; }
+.dark .border-\[\#c4c8bc\]\/40 { border-color: rgba(165,214,167,0.10) !important; }
+.dark .border-\[\#c4c8bc\]\/30 { border-color: rgba(165,214,167,0.08) !important; }
+.dark .border-\[\#c4c8bc\]\/20 { border-color: rgba(165,214,167,0.06) !important; }
+.dark .border-\[\#c4c8bc\]\/10 { border-color: rgba(165,214,167,0.05) !important; }
+.dark .border-white\/20         { border-color: rgba(165,214,167,0.15) !important; }
+.dark .border-\[\#162809\]     { border-color: #fade88 !important; }
+.dark .border-\[\#2b3e1d\]     { border-color: rgba(250,222,136,0.35) !important; }
 
 /* ── Header & Footer: Hijau → Hijau Tua/Malam di Dark Mode ─────── */
 .dark .bg-\[\#2b3e1d\]  { background-color: #0e1c07 !important; }
@@ -436,80 +445,96 @@
 .dark ::-webkit-scrollbar-thumb  { background: #363430; }
 .dark ::-webkit-scrollbar-thumb:hover { background: #524e4b; }
 
-/* UI Compact Scaling & Spacing Overrides */
+/* UI Compact Scaling & Spacing Overrides for 100% Desktop View */
 html {
   font-size: 13px !important;
 }
 
 @media (min-width: 640px) {
   html {
-    font-size: 13.5px !important;
+    font-size: 13px !important;
   }
 }
 
 @media (min-width: 1024px) {
   html {
-    font-size: 14px !important;
+    font-size: 13.5px !important;
   }
+}
+
+/* Reduced Border Radius Across the Web Application */
+.rounded-3xl,
+.rounded-\[32px\],
+.rounded-\[28px\],
+.rounded-\[24px\],
+.rounded-\[22px\] {
+  border-radius: 0.875rem !important; /* 14px instead of 24-32px */
+}
+.rounded-2xl {
+  border-radius: 0.75rem !important; /* 12px instead of 16px */
+}
+.rounded-xl {
+  border-radius: 0.5rem !important; /* 8px instead of 12px */
+}
+.rounded-lg {
+  border-radius: 0.375rem !important; /* 6px */
+}
+
+/* Compact Container Width Overrides */
+.max-w-7xl,
+.max-w-\[1360px\],
+.max-w-screen-xl {
+  max-width: 1180px !important;
 }
 
 /* Compact Header Height Adjustment */
 #main-header {
-  height: 4.5rem !important; /* Susutkan tinggi header dari 5rem (80px) menjadi 4.5rem (approx 63px di 14px font-size) */
+  height: 4.25rem !important;
 }
 
 /* Compact Spacing Overrides for Sections */
 .py-20 {
-  padding-top: 3.5rem !important;
-  padding-bottom: 3.5rem !important;
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
 }
 .py-24 {
-  padding-top: 4.5rem !important;
-  padding-bottom: 4.5rem !important;
+  padding-top: 3.75rem !important;
+  padding-bottom: 3.75rem !important;
 }
 .py-16 {
-  padding-top: 2.5rem !important;
-  padding-bottom: 2.5rem !important;
-}
-.pt-20 {
-  padding-top: 3.5rem !important;
+  padding-top: 2.25rem !important;
+  padding-bottom: 2.25rem !important;
 }
 .pb-20 {
-  padding-bottom: 3.5rem !important;
-}
-.pt-28 {
-  padding-top: 5.5rem !important; /* Kurangi offset atas agar pas dengan header yang lebih ramping */
-}
-.pt-32 {
-  padding-top: 6.5rem !important;
+  padding-bottom: 3rem !important;
 }
 .space-y-8 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 1.5rem !important; /* Rapatkan layout Dashboard / Products */
+  margin-top: 1.25rem !important;
 }
 
 /* Tighter Padding for Cards and Sections */
 .p-8 {
-  padding: 1.5rem !important; /* Rapatkan card benefits dan support */
+  padding: 1.25rem !important;
 }
 .p-6 {
-  padding: 1.125rem !important; /* Rapatkan card produk, filter, dashboard, dll */
+  padding: 1rem !important;
 }
 .p-5 {
-  padding: 0.875rem !important;
+  padding: 0.8125rem !important;
 }
 .px-6 {
-  padding-left: 1.125rem !important;
-  padding-right: 1.125rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
 }
 .py-6 {
-  padding-top: 1.125rem !important;
-  padding-bottom: 1.125rem !important;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
 }
 
 /* Table Density Scaling for Admin Panel */
 table th, table td {
-  padding: 0.5rem 0.875rem !important; /* Rapatkan padding baris dan kolom tabel */
-  font-size: 0.875rem !important;
+  padding: 0.45rem 0.75rem !important;
+  font-size: 0.8125rem !important;
 }
 
 /* Form Sizing and Input Fields Compactness */
@@ -520,10 +545,10 @@ input[type="email"],
 input[type="password"],
 select,
 textarea {
-  padding-top: 0.5rem !important; /* Rapatkan input dari py-3/py-2.5 menjadi py-2 */
-  padding-bottom: 0.5rem !important;
-  border-radius: 8px !important;
-  font-size: 0.875rem !important;
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+  border-radius: 6px !important;
+  font-size: 0.8125rem !important;
 }
 
 /* Admin Premium Dashboard Styling (Sage Green & Matte Charcoal Redesign) */
@@ -702,4 +727,59 @@ textarea {
 
 .animate-bubble-slide {
   animation: bubbleSlide 3s ease-in-out infinite;
+}
+
+/* Organic botanical floating animations & soft orbs */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(6deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(12px) rotate(-6deg);
+  }
+}
+
+@keyframes floatDrift {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  50% {
+    transform: translate(8px, -12px) rotate(8deg);
+  }
+}
+
+@keyframes orbPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.6;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 7s ease-in-out infinite;
+}
+
+.animate-float-drift {
+  animation: floatDrift 8s ease-in-out infinite;
+}
+
+.animate-orb-pulse {
+  animation: orbPulse 5s ease-in-out infinite;
 }

@@ -6,13 +6,13 @@ import { LandingContent } from '../../context/defaults';
 
 // Header kartu bagian (badge nomor + judul + deskripsi) — dipakai 4x di form konten.
 const SectionCardHeader: React.FC<{ num: number; title: string; desc: string }> = ({ num, title, desc }) => (
-  <div className="flex items-start gap-3 border-b border-[#E0E0E0] pb-3">
-    <span className="w-7 h-7 rounded-lg bg-[#1B5E20] text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0">
+  <div className="flex items-start gap-3 border-b border-[#E2EFE0] dark:border-white/10 pb-3">
+    <span className="w-7 h-7 rounded-lg bg-[#1F5132] text-white text-sm font-extrabold flex items-center justify-center flex-shrink-0 shadow-2xs">
       {num}
     </span>
     <div>
-      <h3 className="text-sm font-extrabold text-[#1B5E20]">{title}</h3>
-      <p className="text-[11px] text-[#555555] mt-0.5">{desc}</p>
+      <h3 className="text-sm font-extrabold text-[#14331C] dark:text-[#F4F8F3]">{title}</h3>
+      <p className="text-[11px] text-[#556353] dark:text-white/60 mt-0.5">{desc}</p>
     </div>
   </div>
 );
@@ -124,7 +124,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
       {/* Header & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
@@ -132,22 +132,22 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#1B5E20] font-semibold">Pengaturan Landing Page</li>
+              <li className="text-[#1F5132] dark:text-[#86EFAC] font-semibold">Pengaturan Landing Page</li>
             </ol>
           </nav>
-          <h2 className="text-lg md:text-xl font-bold text-[#1B5E20] tracking-tight">
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
             Pengaturan Landing Page
           </h2>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActiveTab('banners')}
-            className={`px-4 py-2 rounded-lg font-semibold text-xs transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
               activeTab === 'banners'
-                ? 'bg-[#2E7D32] text-white shadow-2xs font-extrabold'
-                : 'bg-[#FFFFFF] text-[#1B5E20] border border-[#E0E0E0] hover:bg-[#E8F5E9]'
+                ? 'bg-[#1F5132] text-white shadow-xs'
+                : 'bg-white dark:bg-[#0E1A11] text-[#1F5132] dark:text-[#86EFAC] border border-[#E2EFE0] dark:border-white/10 hover:bg-[#EAF6E8]'
             }`}
           >
             Banner Carousel ({banners.length})
@@ -155,10 +155,10 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('text')}
-            className={`px-4 py-2 rounded-lg font-semibold text-xs transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
               activeTab === 'text'
-                ? 'bg-[#2E7D32] text-white shadow-2xs font-extrabold'
-                : 'bg-[#FFFFFF] text-[#1B5E20] border border-[#E0E0E0] hover:bg-[#E8F5E9]'
+                ? 'bg-[#1F5132] text-white shadow-xs'
+                : 'bg-white dark:bg-[#0E1A11] text-[#1F5132] dark:text-[#86EFAC] border border-[#E2EFE0] dark:border-white/10 hover:bg-[#EAF6E8]'
             }`}
           >
             Teks &amp; Konten Landing Page
@@ -166,10 +166,10 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('produk')}
-            className={`px-4 py-2 rounded-lg font-semibold text-xs transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer ${
               activeTab === 'produk'
-                ? 'bg-[#2E7D32] text-white shadow-2xs font-extrabold'
-                : 'bg-[#FFFFFF] text-[#1B5E20] border border-[#E0E0E0] hover:bg-[#E8F5E9]'
+                ? 'bg-[#1F5132] text-white shadow-xs'
+                : 'bg-white dark:bg-[#0E1A11] text-[#1F5132] dark:text-[#86EFAC] border border-[#E2EFE0] dark:border-white/10 hover:bg-[#EAF6E8]'
             }`}
           >
             Produk Pilihan ({selectedProductIds.length})
@@ -183,19 +183,19 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             <button
               type="button"
               onClick={onOpenCreateBanner}
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-4 py-2.5 rounded-xl flex items-center space-x-1.5 transition-all shadow-2xs cursor-pointer font-bold text-xs tracking-wider"
+              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-4.5 py-2.5 rounded-xl flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer font-bold text-xs active:scale-95"
             >
               <span className="material-symbols-outlined text-base">add</span>
               <span>TAMBAH BANNER BARU</span>
             </button>
           </div>
-          <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
-            <div className="p-4 border-b border-[#E0E0E0] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#F7F8F6]">
-              <h3 className="text-sm font-extrabold text-[#1B5E20]">
+          <div className="bg-white dark:bg-[#0E1A11] rounded-2xl shadow-2xs border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] overflow-hidden">
+            <div className="p-4 border-b border-[#E2EFE0] dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#F9FBF7] dark:bg-[#122316]">
+              <h3 className="text-sm font-extrabold text-[#1F5132] dark:text-[#F4F8F3]">
                 Daftar Banner Beranda
               </h3>
-              <div className="flex items-center bg-[#FFFFFF] rounded-xl px-3 py-1.5 border border-[#E0E0E0]">
-                <span className="material-symbols-outlined text-[#555555] mr-2 text-base">search</span>
+              <div className="flex items-center bg-white dark:bg-[#0E1A11] rounded-xl px-3 py-1.5 border border-[#E2EFE0] dark:border-white/10">
+                <span className="material-symbols-outlined text-[#556353] dark:text-white/60 mr-2 text-base">search</span>
                 <input
                   type="text"
                   value={searchBanner}
@@ -367,21 +367,8 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
         </div>
       ) : (
         <form onSubmit={handleSaveContent} className="space-y-6">
-          {/* Intro panduan */}
-          <div className="bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl p-4 flex items-start gap-3">
-            <span className="material-symbols-outlined text-[#1B5E20] text-xl mt-0.5">info</span>
-            <div className="text-xs text-[#1B5E20] leading-relaxed">
-              <p className="font-extrabold mb-1">Cara mengisi halaman ini</p>
-              <p>
-                Setiap bagian di bawah ini adalah teks yang tampil di halaman utama website
-                (<span className="font-bold">beranda</span>). Cukup isi dalam Bahasa Indonesia —
-                terjemahan Bahasa Inggris dibuat otomatis saat tombol Simpan ditekan.
-              </p>
-            </div>
-          </div>
-
           {/* Card 1: Hero Section */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
+          <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs space-y-4">
             <SectionCardHeader
               num={1}
               title="Bagian Hero (Banner Paling Atas)"
@@ -389,238 +376,64 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Utama</label>
+                <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1">Judul Utama</label>
                 <input
                   type="text"
                   value={contentForm.heroTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, heroTitleId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                  placeholder="Contoh: Sorgum Pilihan Terbaik untuk Hidup Sehat"
+                  className="w-full text-xs p-2.5 bg-[#F9FBF7] dark:bg-[#162419] border border-[#E2EFE0] dark:border-white/10 rounded-xl outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] font-medium"
+                  placeholder="Contoh: Kemurnian Alam dalam Tiap Butir Sorgum Pilihan"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Penjelasan</label>
+                <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1">Teks Penjelasan</label>
                 <textarea
                   rows={3}
                   value={contentForm.heroDescId}
                   onChange={(e) => setContentForm({ ...contentForm, heroDescId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  className="w-full text-xs p-2.5 bg-[#F9FBF7] dark:bg-[#162419] border border-[#E2EFE0] dark:border-white/10 rounded-xl outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] font-medium"
                   placeholder="Kalimat singkat yang menjelaskan produk Anda"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Tombol</label>
+                <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1">Teks Tombol</label>
                 <input
                   type="text"
                   value={contentForm.heroBtnId}
                   onChange={(e) => setContentForm({ ...contentForm, heroBtnId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  className="w-full text-xs p-2.5 bg-[#F9FBF7] dark:bg-[#162419] border border-[#E2EFE0] dark:border-white/10 rounded-xl outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] font-medium"
                   placeholder="Contoh: Belanja Sekarang"
                 />
-                <p className="text-[10px] text-[#555555] mt-1">Tulisan di tombol hijau. Singkat saja, 2&ndash;3 kata.</p>
+                <p className="text-[10px] text-[#556353] dark:text-white/60 mt-1">Tulisan di tombol hijau. Singkat saja, 2&ndash;3 kata.</p>
               </div>
             </div>
           </div>
 
-          {/* Card 2: Brand Story Section */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
+          {/* Card 2: Featured Products Section */}
+          <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs space-y-4">
             <SectionCardHeader
               num={2}
-              title="Bagian Kisah Kami (Brand Story)"
-              desc="Cerita singkat tentang usaha Anda — tampil di tengah beranda dengan foto."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Label / Kata Pembuka</label>
-                <input
-                  type="text"
-                  value={contentForm.storyTaglineId}
-                  onChange={(e) => setContentForm({ ...contentForm, storyTaglineId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                  placeholder="Contoh: Kisah Kami"
-                />
-                <p className="text-[10px] text-[#555555] mt-1">Label kecil di atas judul, biasanya 2&ndash;3 kata.</p>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Kisah</label>
-                <input
-                  type="text"
-                  value={contentForm.storyTitleId}
-                  onChange={(e) => setContentForm({ ...contentForm, storyTitleId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                  placeholder="Contoh: Dari Lahan Petani ke Meja Anda"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Gambar Kisah Kami (Foto/Ilustrasi)</label>
-                <p className="text-[11px] text-[#555555] mb-2">
-                  Foto yang tampil di samping teks kisah. Bisa unggah file atau tempel URL gambar.
-                  {!contentForm.storyImageUrl && (
-                    <span className="text-[#C89B3C] font-bold"> Saat ini belum diisi — halaman beranda akan menampilkan placeholder.</span>
-                  )}
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={contentForm.storyImageUrl}
-                    onChange={(e) => setContentForm({ ...contentForm, storyImageUrl: e.target.value })}
-                    className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                    placeholder="https://... atau gunakan tombol Upload"
-                  />
-                  <label className="cursor-pointer text-xs font-semibold text-[#1B5E20] bg-[#E8F5E9] border border-[#A5D6A7] px-3 py-2 rounded-xl hover:bg-[#C8E6C9] transition-all whitespace-nowrap flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">upload</span>
-                    Upload
-                    <input
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp,image/avif"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        try {
-                          const { productAdminApi } = await import('../../api/adminApi');
-                          const url = await productAdminApi.uploadImage(file);
-                          if (!url) throw new Error('Gagal mengunggah gambar. Coba lagi.');
-                          setContentForm({ ...contentForm, storyImageUrl: url });
-                          showToast('Gambar story berhasil diunggah. Klik Simpan untuk menyimpan.');
-                        } catch (e: any) {
-                          showToast(e?.message || 'Gagal mengunggah gambar.', 'error');
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
-                {contentForm.storyImageUrl ? (
-                  <img
-                    src={contentForm.storyImageUrl}
-                    alt="Pratinjau Gambar Story"
-                    className="mt-2 w-48 h-28 object-cover rounded-xl border border-[#E0E0E0]"
-                  />
-                ) : (
-                  <div className="mt-2 w-48 h-28 rounded-xl border border-dashed border-[#E0E0E0] bg-[#F7F8F6] flex items-center justify-center text-[11px] text-[#555555]">
-                    Belum ada gambar
-                  </div>
-                )}
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Paragraf 1</label>
-                <textarea
-                  rows={3}
-                  value={contentForm.storyDesc1Id}
-                  onChange={(e) => setContentForm({ ...contentForm, storyDesc1Id: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Paragraf 2</label>
-                <textarea
-                  rows={3}
-                  value={contentForm.storyDesc2Id}
-                  onChange={(e) => setContentForm({ ...contentForm, storyDesc2Id: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Benefits Section */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <SectionCardHeader
-              num={3}
-              title="Bagian Keunggulan (Kenapa Pilih Kami)"
-              desc="Tiga alasan yang membuat produk Anda layak dipilih — tampil sebagai kartu-kartu kecil."
-            />
-            <div className="grid grid-cols-1 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Bagian Ini</label>
-                <input
-                  type="text"
-                  value={contentForm.benefitsTitleId}
-                  onChange={(e) => setContentForm({ ...contentForm, benefitsTitleId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                  placeholder="Contoh: Mengapa Memilih SORGUM?"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Penjelasan</label>
-                <textarea
-                  rows={2}
-                  value={contentForm.benefitsDescId}
-                  onChange={(e) => setContentForm({ ...contentForm, benefitsDescId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                  placeholder="Satu kalimat singkat di bawah judul"
-                />
-              </div>
-              {/* Benefit 1-3 — data-driven (satu definisi, tiga instance) */}
-              {(
-                [
-                  { label: 'Keunggulan 1', key: 'benefit1' as const },
-                  { label: 'Keunggulan 2', key: 'benefit2' as const },
-                  { label: 'Keunggulan 3', key: 'benefit3' as const },
-                ] as const
-              ).map(({ label, key }) => (
-                <div key={key} className="border-t border-[#E0E0E0] pt-3">
-                  <p className="text-xs font-extrabold text-[#1B5E20] mb-2">{label}</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-[#555555] mb-1">Judul</label>
-                      <input
-                        type="text"
-                        value={contentForm[`${key}TitleId`]}
-                        onChange={(e) => setContentForm({ ...contentForm, [`${key}TitleId`]: e.target.value })}
-                        className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-[#555555] mb-1">Ikon (Material Symbol)</label>
-                      <input
-                        type="text"
-                        value={contentForm[`${key}Icon`]}
-                        onChange={(e) => setContentForm({ ...contentForm, [`${key}Icon`]: e.target.value })}
-                        className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                        placeholder="contoh: eco, verified, groups"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-[11px] font-semibold text-[#555555] mb-1">Deskripsi</label>
-                      <textarea
-                        rows={2}
-                        value={contentForm[`${key}DescId`]}
-                        onChange={(e) => setContentForm({ ...contentForm, [`${key}DescId`]: e.target.value })}
-                        className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Card 4: Featured Products Section */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <SectionCardHeader
-              num={4}
               title="Bagian Produk Pilihan"
               desc="Judul dan keterangan di atas deretan produk pilihan. Pilihan produknya diatur lewat tab &quot;Produk Pilihan&quot; di atas."
             />
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Judul Bagian Ini</label>
+                <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1">Judul Bagian Ini</label>
                 <input
                   type="text"
                   value={contentForm.featuredTitleId}
                   onChange={(e) => setContentForm({ ...contentForm, featuredTitleId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  className="w-full text-xs p-2.5 bg-[#F9FBF7] dark:bg-[#162419] border border-[#E2EFE0] dark:border-white/10 rounded-xl outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] font-medium"
                   placeholder="Contoh: Koleksi Produk Pilihan"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#555555] mb-1">Teks Penjelasan</label>
+                <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1">Teks Penjelasan</label>
                 <textarea
                   rows={2}
                   value={contentForm.featuredDescId}
                   onChange={(e) => setContentForm({ ...contentForm, featuredDescId: e.target.value })}
-                  className="w-full text-xs p-2.5 bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl outline-none focus:border-[#2E7D32] text-[#1B5E20] font-medium"
+                  className="w-full text-xs p-2.5 bg-[#F9FBF7] dark:bg-[#162419] border border-[#E2EFE0] dark:border-white/10 rounded-xl outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] font-medium"
                   placeholder="Satu kalimat singkat di bawah judul"
                 />
               </div>
@@ -631,7 +444,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             <button
               type="submit"
               disabled={savingContent}
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
             >
               {savingContent ? 'Menyimpan...' : 'Simpan Konten Landing Page'}
             </button>

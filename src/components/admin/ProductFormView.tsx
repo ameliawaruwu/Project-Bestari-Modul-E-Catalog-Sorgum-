@@ -249,13 +249,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       {/* Header & Breadcrumbs */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">
               <li>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="hover:text-[#1B5E20] transition-colors cursor-pointer"
+                  className="hover:text-[#1F5132] dark:hover:text-[#86EFAC] transition-colors cursor-pointer"
                 >
                   Kelola Produk
                 </button>
@@ -265,12 +265,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   chevron_right
                 </span>
               </li>
-              <li className="text-[#1B5E20] font-bold">
+              <li className="text-[#1F5132] dark:text-[#86EFAC] font-bold">
                 {initialProduct ? 'Edit Katalog Produk' : 'Tambah Produk Baru'}
               </li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
             {initialProduct ? 'Edit Produk' : 'Halaman Tambah Produk Baru'}
           </h2>
         </div>
@@ -278,7 +278,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] px-3.5 py-1.5 rounded-lg flex items-center space-x-1.5 hover:bg-[#E8F5E9] transition-all cursor-pointer font-bold text-xs shadow-2xs"
+          className="bg-white dark:bg-[#0E1A11] border border-[#E2EFE0] dark:border-white/10 text-[#1F5132] dark:text-[#86EFAC] px-3.5 py-1.5 rounded-xl flex items-center space-x-1.5 hover:bg-[#EAF6E8] transition-all cursor-pointer font-bold text-xs shadow-2xs"
         >
           <span className="material-symbols-outlined text-base">arrow_back</span>
           <span>Kembali</span>
@@ -560,13 +560,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2.5 rounded-xl border border-[#E0E0E0] text-[#555555] font-bold text-xs hover:bg-[#F7F8F6] transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 text-[#556353] dark:text-white/60 font-bold text-xs hover:bg-[#EAF6E8] transition-all cursor-pointer"
             >
               Batalkan
             </button>
             <button
               type="submit"
-              className="bg-[#2E7D32] text-white px-8 py-2.5 rounded-xl font-bold text-xs hover:bg-[#1B5E20] shadow-2xs active:scale-95 transition-all cursor-pointer"
+              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
             >
               {initialProduct ? 'Simpan Perubahan Produk' : 'Simpan Produk Baru'}
             </button>

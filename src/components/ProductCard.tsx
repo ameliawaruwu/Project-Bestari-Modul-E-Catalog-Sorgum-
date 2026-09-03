@@ -13,7 +13,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onClickProduct,
   guestNonInteractive,
-  hideActions,
 }) => {
   const { t } = useApp();
   const nonInteractive = !!guestNonInteractive;
@@ -21,18 +20,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={nonInteractive ? undefined : () => onClickProduct(product)}
-      className={`group bg-[#FFFFFF] hover:shadow-md rounded-2xl overflow-hidden shadow-2xs transition-all duration-300 flex flex-col relative border border-[#E0E0E0] ${
-        nonInteractive ? 'cursor-default' : 'cursor-pointer hover:border-[#2E7D32]/50'
+      className={`group bg-white dark:bg-[#0E1A11] rounded-xl overflow-hidden shadow-xs hover:shadow-lg dark:hover:shadow-[0_10px_24px_-6px_rgba(58,143,75,0.2)] transition-all duration-300 flex flex-col relative border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] ${
+        nonInteractive ? 'cursor-default' : 'cursor-pointer hover:border-[#3A8F4B]/40 dark:hover:border-[#65B86B]/40 transform hover:-translate-y-1'
       }`}
     >
-      {/* Badge */}
+      {/* Badge Highlight */}
       {product.badge && (
-        <span className="absolute top-3.5 right-3.5 z-10 bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] px-2.5 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-wider uppercase shadow-2xs">
+        <span className="absolute top-2.5 right-2.5 z-10 bg-[#E8F5E9] dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#3A8F4B]/20 dark:border-[rgba(165,214,167,0.25)] px-2 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[9px] font-extrabold tracking-wider uppercase shadow-2xs">
           {product.badge}
         </span>
       )}
+
       {/* Image Container */}
-      <div className="h-52 sm:h-60 overflow-hidden bg-[#F7F8F6] relative border-b border-[#E0E0E0]">
+      <div className="h-44 sm:h-48 overflow-hidden bg-gradient-to-b from-[#F0F8EF] to-[#FFFDF5] dark:bg-[#122316] relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
         {product.image ? (
           <img
             src={product.image}
@@ -41,16 +41,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#E8F5E9]">
-            <span className="material-symbols-outlined text-5xl text-[#A5D6A7]">image</span>
+          <div className="w-full h-full flex items-center justify-center bg-[#E8F5E9] dark:bg-[#152718]">
+            <span className="material-symbols-outlined text-4xl text-[#3A8F4B]">image</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div className="absolute inset-0 bg-[#3A8F4B]/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
-        {/* H3-9: badge "Habis" — stok 0 (produk tetap bisa dilihat detailnya) */}
+        {/* Sold out badge */}
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="px-3 py-1.5 rounded-lg bg-[#D32F2F] text-white text-xs font-extrabold uppercase tracking-wider shadow-lg">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-2xs flex items-center justify-center">
+            <span className="px-2.5 py-1 rounded-md bg-[#D32F2F] text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md">
               {t('Habis', 'Sold Out')}
             </span>
           </div>
@@ -58,25 +58,34 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Details Container */}
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-3.5 sm:p-4 flex flex-col flex-grow">
         <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="text-[#555555] font-['Plus_Jakarta_Sans'] text-[11px] font-bold uppercase tracking-wider">
+          <span className="text-[#6B756E] dark:text-[#CBD5C8] font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">
             {product.categoryLabel}
           </span>
         </div>
 
-        <h3 className="font-['Playfair_Display'] text-base sm:text-lg font-bold text-[#1B5E20] mb-1 group-hover:text-[#2E7D32] transition-colors leading-snug">
+        <h3 className="font-['Plus_Jakarta_Sans'] text-sm font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-0.5 group-hover:text-[#3A8F4B] dark:group-hover:text-[#65B86B] transition-colors leading-snug line-clamp-2">
           {product.name}
         </h3>
 
-        <p className="text-[#555555] font-['Plus_Jakarta_Sans'] text-xs mb-4 font-medium">
-          {product.unitInfo}
-        </p>
+        {product.unitInfo && (
+          <p className="text-[#6B756E] dark:text-[#CBD5C8]/80 font-['Plus_Jakarta_Sans'] text-[11px] mb-3 font-normal">
+            {product.unitInfo}
+          </p>
+        )}
 
-        <div className="mt-auto flex justify-between items-center pt-3 border-t border-[#E0E0E0]">
-          <div className="flex items-center gap-1.5">
-            <span className="font-['Plus_Jakarta_Sans'] text-sm sm:text-base text-[#1B5E20] font-bold font-mono">
-              {product.formattedPrice}
+        <div className="mt-auto pt-2.5 border-t border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] flex justify-between items-center">
+          <span className="font-['JetBrains_Mono'] text-sm sm:text-base text-[#1F5132] dark:text-[#65B86B] font-extrabold">
+            {product.formattedPrice}
+          </span>
+
+          <div
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] group-hover:bg-[#3A8F4B] text-[#1F5132] dark:text-[#86EFAC] group-hover:text-white transition-all duration-200 flex items-center justify-center shadow-2xs group-hover:scale-105"
+            aria-label={t('Lihat Detail', 'View Details')}
+          >
+            <span className="material-symbols-outlined text-base sm:text-lg transition-transform group-hover:translate-x-0.5">
+              arrow_forward
             </span>
           </div>
         </div>
@@ -84,3 +93,5 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     </div>
   );
 };
+
+export default ProductCard;

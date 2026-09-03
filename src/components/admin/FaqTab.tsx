@@ -76,16 +76,16 @@ export const FaqTab: React.FC<FaqTabProps> = ({
       {/* Top Breadcrumb & Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#1B5E20] font-bold">Kelola FAQ</li>
+              <li className="text-[#1F5132] dark:text-[#86EFAC] font-bold">Kelola FAQ</li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
             Kelola Pertanyaan Umum (FAQ)
           </h2>
         </div>
@@ -93,15 +93,15 @@ export const FaqTab: React.FC<FaqTabProps> = ({
         <button
           type="button"
           onClick={onOpenCreateFaq}
-          className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs self-start sm:self-auto"
+          className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs self-start sm:self-auto active:scale-95"
         >
-          <span className="material-symbols-outlined text-sm">add</span>
+          <span className="material-symbols-outlined text-base">add</span>
           <span>Tambah FAQ</span>
         </button>
       </div>
 
       {/* Toolbar & Filters */}
-      <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E0E0E0] shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-[#0E1A11] p-4 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
           <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
@@ -115,22 +115,22 @@ export const FaqTab: React.FC<FaqTabProps> = ({
               setCurrentPage(1);
             }}
             placeholder="Cari pertanyaan, jawaban, atau tag FAQ..."
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] focus:bg-[#FFFFFF] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] font-medium"
+            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#122316] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] font-medium"
           />
         </div>
 
         {/* Filters & View Switcher */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Category Filter */}
-          <div className="flex items-center gap-1.5 bg-[#F7F8F6] border border-[#E0E0E0] px-3 py-1.5 rounded-xl">
-            <span className="text-xs font-medium text-[#555555]">Kategori:</span>
+          <div className="flex items-center gap-1.5 bg-[#F9FBF7] dark:bg-[#122316] border border-[#E2EFE0] dark:border-white/10 px-3 py-1.5 rounded-xl">
+            <span className="text-xs font-medium text-[#556353] dark:text-white/60">Kategori:</span>
             <select
               value={selectedCategory}
               onChange={(e) => {
                 setSelectedCategory(e.target.value);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-xs font-bold text-[#1B5E20] focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent text-xs font-bold text-[#1F5132] dark:text-[#86EFAC] focus:outline-none cursor-pointer pr-1"
             >
               <option value="SEMUA">Semua Kategori</option>
               {categories.map((c) => (
@@ -142,15 +142,15 @@ export const FaqTab: React.FC<FaqTabProps> = ({
           </div>
 
           {/* Status Filter */}
-          <div className="flex items-center gap-1.5 bg-[#F7F8F6] border border-[#E0E0E0] px-3 py-1.5 rounded-xl">
-            <span className="text-xs font-medium text-[#555555]">Status:</span>
+          <div className="flex items-center gap-1.5 bg-[#F9FBF7] dark:bg-[#122316] border border-[#E2EFE0] dark:border-white/10 px-3 py-1.5 rounded-xl">
+            <span className="text-xs font-medium text-[#556353] dark:text-white/60">Status:</span>
             <select
               value={selectedStatus}
               onChange={(e) => {
                 setSelectedStatus(e.target.value as any);
                 setCurrentPage(1);
               }}
-              className="bg-transparent text-xs font-bold text-[#1B5E20] focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent text-xs font-bold text-[#1F5132] dark:text-[#86EFAC] focus:outline-none cursor-pointer pr-1"
             >
               <option value="SEMUA">Semua Status</option>
               <option value="AKTIF">Aktif ({activeFaqsCount})</option>
@@ -162,12 +162,12 @@ export const FaqTab: React.FC<FaqTabProps> = ({
 
       {/* Main FAQ Display Section */}
       {paginatedFaqs.length === 0 ? (
-        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-12 text-center text-gray-500 space-y-3 shadow-2xs">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] p-12 text-center text-gray-500 space-y-3 shadow-2xs">
           <span className="material-symbols-outlined text-4xl text-gray-300">quiz</span>
-          <p className="font-bold text-sm text-[#1B5E20]">
+          <p className="font-bold text-sm text-[#1F5132] dark:text-[#86EFAC]">
             Tidak ditemukan item FAQ yang sesuai
           </p>
-          <p className="text-xs text-[#555555] max-w-md mx-auto">
+          <p className="text-xs text-[#556353] dark:text-white/60 max-w-md mx-auto">
             Coba ubah kata kunci pencarian atau bersihkan filter kategori untuk menampilkan seluruh data FAQ.
           </p>
           <button
@@ -177,34 +177,32 @@ export const FaqTab: React.FC<FaqTabProps> = ({
               setSelectedCategory('SEMUA');
               setSelectedStatus('SEMUA');
             }}
-            className="px-4 py-2 bg-[#F7F8F6] hover:bg-[#E8F5E9] text-[#1B5E20] text-xs font-bold rounded-xl transition-colors cursor-pointer border border-[#E0E0E0]"
+            className="px-4 py-2 bg-[#F9FBF7] hover:bg-[#EAF6E8] text-[#1F5132] dark:text-[#86EFAC] text-xs font-bold rounded-xl transition-colors cursor-pointer border border-[#E2EFE0]"
           >
             Bersihkan Filter
           </button>
         </div>
       ) : (
         /* TABLE MATRIX VIEW */
-        <div className="bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] shadow-2xs overflow-hidden">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-2xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pl-5 font-black uppercase tracking-wider text-[#1B5E20]">Kategori</th>
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Pertanyaan</th>
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Jawaban Ringkas</th>
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 font-black uppercase tracking-wider text-[#1B5E20]">Status</th>
-                  <th style={{ backgroundColor: '#E8F5E9', color: '#1B5E20', fontWeight: 800 }} className="p-3.5 pr-5 text-right font-black uppercase tracking-wider text-[#1B5E20]">Aksi</th>
+                <tr className="bg-[#F2F7F0] dark:bg-[#152718] border-b border-[#E2EFE0] dark:border-white/10 text-[#1F5132] dark:text-[#86EFAC]">
+                  <th className="p-3.5 pl-5 font-extrabold uppercase tracking-wider">Kategori</th>
+                  <th className="p-3.5 font-extrabold uppercase tracking-wider">Pertanyaan</th>
+                  <th className="p-3.5 font-extrabold uppercase tracking-wider">Jawaban Ringkas</th>
+                  <th className="p-3.5 font-extrabold uppercase tracking-wider">Status</th>
+                  <th className="p-3.5 pr-5 text-right font-extrabold uppercase tracking-wider">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E0E0E0]">
+              <tbody className="divide-y divide-[#E2EFE0] dark:divide-white/10">
                 {paginatedFaqs.map((f) => {
                   const isDraft = f.status === 'DRAFT';
                   return (
                     <tr key={f.id} className="hover:bg-[#E8F5E9]/60 transition-colors">
-                      <td className="p-3.5 pl-5">
-                        <span className="px-2.5 py-1 bg-[#E8F5E9] text-[#1B5E20] font-bold rounded-md border border-[#A5D6A7] text-[10px]">
-                          {f.category}
-                        </span>
+                      <td className="p-3.5 pl-5 font-semibold text-[#1F5132] dark:text-[#86EFAC] text-xs">
+                        {f.category}
                       </td>
                       <td className="p-3.5 font-bold text-[#1B5E20] max-w-xs">{f.question}</td>
                       <td className="p-3.5 text-[#555555] max-w-sm truncate">{f.answer}</td>

@@ -167,39 +167,37 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
 
   return (
     <div className="space-y-6 animate-fadeIn max-w-4xl mx-auto">
-      {/* Header & Breadcrumb */}
+      {/* Top Header & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">
               <li>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="hover:text-[#1B5E20] hover:underline transition-colors cursor-pointer"
+                  className="hover:text-[#1F5132] dark:hover:text-[#86EFAC] transition-colors cursor-pointer"
                 >
                   Kelola Info
                 </button>
               </li>
               <li>
-                <span className="material-symbols-outlined text-xs leading-none">
-                  chevron_right
-                </span>
+                <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#1B5E20] font-bold">
-                {initialArticle ? 'Edit Artikel' : 'Tambah Artikel Baru'}
+              <li className="text-[#1F5132] dark:text-[#86EFAC] font-bold">
+                {initialArticle ? 'Edit Artikel' : 'Tulis Artikel Baru'}
               </li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
-            {initialArticle ? 'Edit Artikel' : 'Halaman Tambah Artikel Baru'}
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
+            {initialArticle ? 'Edit Konten Artikel' : 'Tulis Artikel &amp; Informasi Baru'}
           </h2>
         </div>
 
         <button
           type="button"
           onClick={onCancel}
-          className="bg-[#FFFFFF] border border-[#E0E0E0] text-[#1B5E20] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#E8F5E9] transition-all cursor-pointer font-bold text-xs shadow-2xs"
+          className="bg-white dark:bg-[#0E1A11] border border-[#E2EFE0] dark:border-white/10 text-[#1F5132] dark:text-[#86EFAC] px-5 py-2.5 rounded-xl flex items-center space-x-2 hover:bg-[#EAF6E8] transition-all cursor-pointer font-bold text-xs shadow-2xs"
         >
           <span className="material-symbols-outlined text-lg">arrow_back</span>
           <span>KEMBALI KE DAFTAR</span>
@@ -527,17 +525,17 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end pt-4 space-x-4 border-t border-[#E0E0E0]">
+          <div className="flex justify-end pt-4 space-x-4 border-t border-[#E2EFE0] dark:border-white/10">
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2.5 rounded-xl border border-[#E0E0E0] bg-[#FFFFFF] text-[#555555] font-bold text-xs hover:bg-[#F7F8F6] transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-white dark:bg-[#0E1A11] text-[#556353] dark:text-white/60 font-bold text-xs hover:bg-[#EAF6E8] transition-all cursor-pointer"
             >
               Batalkan
             </button>
             <button
               type="submit"
-              className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-2xs active:scale-95 transition-all cursor-pointer"
+              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
             >
               {initialArticle ? 'Simpan Perubahan Artikel' : 'Terbitkan Artikel Baru'}
             </button>

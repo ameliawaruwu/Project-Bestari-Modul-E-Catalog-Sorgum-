@@ -123,22 +123,22 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
 
   return (
     <div className="space-y-6 animate-fadeIn pb-12 max-w-4xl mx-auto">
-      {/* Top Breadcrumb & Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E0E0E0]/60 pb-4">
+      {/* Top Header & Breadcrumb */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="cursor-pointer hover:underline text-[#555555]" onClick={onCancel}>
+              <li className="cursor-pointer hover:underline text-[#556353] dark:text-white/60" onClick={onCancel}>
                 Kelola FAQ
               </li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#1B5E20] font-bold">
+              <li className="text-[#1F5132] dark:text-[#86EFAC] font-bold">
                 {isEditing ? `Edit FAQ: ${initialFaq?.id}` : 'Tambah FAQ Baru'}
               </li>
             </ol>
@@ -147,12 +147,12 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="p-2 rounded-xl bg-white border border-[#E0E0E0] text-[#1B5E20] hover:bg-[#F7F8F6] transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-white dark:bg-[#0E1A11] border border-[#E2EFE0] dark:border-white/10 text-[#1F5132] dark:text-[#86EFAC] hover:bg-[#EAF6E8] transition-colors cursor-pointer"
               title="Kembali"
             >
               <span className="material-symbols-outlined text-lg">arrow_back</span>
             </button>
-            <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
+            <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
               {isEditing ? 'Formulir Edit FAQ' : 'Halaman Tambah Pertanyaan Baru'}
             </h2>
           </div>
@@ -163,14 +163,14 @@ export const FaqFormView: React.FC<FaqFormViewProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 bg-white hover:bg-gray-100 border border-[#E0E0E0] text-[#555555] text-xs font-bold rounded-xl transition-colors cursor-pointer"
+            className="px-4 py-2.5 bg-white dark:bg-[#0E1A11] hover:bg-gray-100 border border-[#E2EFE0] dark:border-white/10 text-[#556353] dark:text-white/60 text-xs font-bold rounded-xl transition-colors cursor-pointer"
           >
             Batal
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+            className="px-5 py-2.5 bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
             <span className="material-symbols-outlined text-sm">save</span>
             {isEditing ? 'Simpan Perubahan' : 'Terbitkan FAQ Baru'}

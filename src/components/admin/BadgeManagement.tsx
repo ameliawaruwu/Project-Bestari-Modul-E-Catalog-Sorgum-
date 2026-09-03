@@ -95,29 +95,32 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
   };
 
   return (
-    <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-      <div className="flex items-center gap-2.5 border-b border-[#E0E0E0] pb-3">
-        <span className="material-symbols-outlined text-xl text-[#1B5E20]">sell</span>
-        <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">Kelola Badge</h3>
+    <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs space-y-4">
+      <div className="flex items-center gap-2.5 border-b border-[#E2EFE0] dark:border-white/10 pb-3">
+        <span className="material-symbols-outlined text-xl text-[#1F5132] dark:text-[#86EFAC]">sell</span>
+        <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-extrabold text-[#1F5132] dark:text-[#F4F8F3]">
+          Kelola Badge
+        </h3>
       </div>
 
       {/* Form tambah badge */}
-      <div className="flex gap-2">
+      <div className="flex gap-2.5 items-center">
         <input
           type="text"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
           placeholder="Nama badge baru (misal: PROMO 50%)"
-          className="flex-1 px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20] font-medium"
+          className="flex-1 px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3] placeholder-[#556353]/60 font-medium transition-all shadow-2xs"
         />
         <button
           type="button"
           onClick={handleCreate}
-          disabled={saving}
-          className="px-4 py-2.5 text-xs font-bold text-white bg-[#2E7D32] rounded-xl hover:bg-[#1B5E20] transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
+          disabled={saving || !newName.trim()}
+          className="px-4.5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs flex items-center gap-1 shrink-0 active:scale-95"
         >
-          + Tambah
+          <span className="material-symbols-outlined text-base">add</span>
+          <span>Tambah</span>
         </button>
       </div>
 
@@ -131,7 +134,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
           {badges.map((badge) => (
             <div
               key={badge.id}
-              className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl border border-[#E0E0E0] bg-[#F7F8F6]"
+              className="flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#122316]"
             >
               {editingId === badge.id ? (
                 <div className="flex-1 flex gap-2">
@@ -141,19 +144,19 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
                     onChange={(e) => setEditName(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleUpdate(badge.id)}
                     autoFocus
-                    className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] focus:outline-none focus:ring-1 focus:ring-[#2E7D32]"
+                    className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-[#E2EFE0] dark:border-white/10 bg-white dark:bg-[#0E1A11] text-[#1F5132] dark:text-[#F4F8F3] focus:outline-none focus:ring-1 focus:ring-[#3A8F4B]"
                   />
                   <button
                     type="button"
                     onClick={() => handleUpdate(badge.id)}
-                    className="px-2.5 py-1.5 text-xs font-bold text-white bg-[#2E7D32] hover:bg-[#1B5E20] rounded-lg cursor-pointer"
+                    className="px-3 py-1.5 text-xs font-bold text-white bg-[#1F5132] hover:bg-[#14331C] rounded-lg cursor-pointer"
                   >
                     Simpan
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditingId(null)}
-                    className="px-2.5 py-1.5 text-xs font-bold text-[#555555] border border-[#E0E0E0] bg-[#FFFFFF] hover:bg-[#F7F8F6] rounded-lg cursor-pointer"
+                    className="px-3 py-1.5 text-xs font-bold text-[#556353] border border-[#E2EFE0] bg-white hover:bg-[#EAF6E8] rounded-lg cursor-pointer"
                   >
                     Batal
                   </button>
@@ -161,10 +164,10 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
               ) : (
                 <>
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide bg-[#FFF8E1] text-[#C89B3C] border border-[#FFE082] rounded-lg truncate">
+                    <span className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide bg-[#FADE88] text-[#8D6B14] rounded-lg truncate shadow-3xs">
                       {badge.name}
                     </span>
-                    <span className={`text-[10px] font-bold ${badge.is_active ? 'text-[#2E7D32]' : 'text-[#555555]'}`}>
+                    <span className={`text-[10px] font-bold ${badge.is_active ? 'text-[#1F5132] dark:text-[#86EFAC]' : 'text-[#556353] dark:text-white/60'}`}>
                       {badge.is_active ? 'AKTIF' : 'NONAKTIF'}
                     </span>
                   </div>
@@ -175,7 +178,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
                         setEditingId(badge.id);
                         setEditName(badge.name);
                       }}
-                      className="p-1.5 text-xs text-[#1B5E20] hover:bg-[#E8F5E9] rounded-lg cursor-pointer"
+                      className="p-1.5 text-xs text-[#1F5132] dark:text-[#86EFAC] hover:bg-[#EAF6E8] dark:hover:bg-[#152718] rounded-lg cursor-pointer"
                       title="Edit badge"
                     >
                       <span className="material-symbols-outlined text-base">edit</span>
@@ -183,7 +186,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
                     <button
                       type="button"
                       onClick={() => handleToggle(badge)}
-                      className={`p-1.5 text-xs rounded-lg cursor-pointer ${badge.is_active ? 'text-[#2E7D32] hover:bg-[#E8F5E9]' : 'text-gray-400 hover:bg-gray-100'}`}
+                      className={`p-1.5 text-xs rounded-lg cursor-pointer ${badge.is_active ? 'text-[#3A8F4B] hover:bg-[#EAF6E8]' : 'text-gray-400 hover:bg-gray-100'}`}
                       title={badge.is_active ? 'Nonaktifkan badge' : 'Aktifkan badge'}
                     >
                       <span className="material-symbols-outlined text-base">
@@ -206,7 +209,7 @@ const BadgeManagement: React.FC<BadgeManagementProps> = ({ showToast, onBadgesCh
         </div>
       )}
 
-      <p className="text-[10px] text-[#555555]">
+      <p className="text-[10px] text-[#556353] dark:text-white/60">
         Badge yang aktif tampil di dropdown "Badge Highlight Produk" pada form Kelola Produk.
       </p>
     </div>

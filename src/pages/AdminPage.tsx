@@ -525,7 +525,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   return (
-    <div style={{ backgroundColor: '#F7F8F6' }} className="min-h-screen text-[#1B5E20] admin-theme relative flex">
+    <div className="min-h-screen bg-[#F8FAF6] dark:bg-[#08100A] text-[#1F5132] dark:text-[#F4F8F3] admin-theme relative flex">
       {/* Drawer Overlay for Mobile */}
       {isSidebarOpen && (
         <div
@@ -564,12 +564,17 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         />
 
         {/* DYNAMIC TAB & FORM CONTENT */}
-        <main className="flex-1 p-5 md:p-6 max-w-7xl w-full mx-auto space-y-6 animate-fadeIn">
+        <main className="flex-1 p-3.5 sm:p-5 md:p-6 max-w-7xl w-full mx-auto space-y-5 sm:space-y-6 animate-fadeIn">
           {/* TAB 1: DASHBOARD UTAMA */}
           {activeNav === 'dashboard' && (
             <DashboardTab
               products={products}
               setActiveNav={handleNavChange}
+              articlesCount={adminArticles.length}
+              faqsCount={faqs.length}
+              bannersCount={adminBanners.length}
+              onNavigateHome={onNavigateHome}
+              onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
             />
           )}
 
@@ -675,16 +680,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         </main>
 
         {/* FOOTER / BRANDING BOTTOM */}
-        <footer className="mt-auto px-6 py-4 border-t border-[#E0E0E0] bg-[#FFFFFF] flex flex-col sm:flex-row justify-between items-center text-[#555555] text-xs font-medium gap-2">
-          <p>© 2023 SORGUM Sorghum. Hak Cipta Dilindungi.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-[#1B5E20] transition-colors">
-              Syarat &amp; Ketentuan
-            </a>
-            <a href="#" className="hover:text-[#1B5E20] transition-colors">
-              Kebijakan Privasi
-            </a>
-          </div>
+        <footer className="mt-auto px-6 py-4 border-t border-[#E2EFE0] dark:border-white/10 bg-[#F8FAF6] dark:bg-[#08100A] flex justify-center items-center text-[#556353] dark:text-white/60 text-xs font-medium text-center">
+          <p>© 2026 BESTARI SORGUM E-Catalog</p>
         </footer>
       </div>
 

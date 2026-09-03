@@ -31,12 +31,12 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
   return (
     <>
-      <header style={{ backgroundColor: '#F7F8F6' }} className="sticky top-0 z-40 backdrop-blur-md border-b border-[#E0E0E0] px-5 py-2.5 flex justify-between items-center shadow-2xs">
+      <header className="sticky top-0 z-40 bg-[#F8FAF6] dark:bg-[#08100A] backdrop-blur-md border-b border-[#E2EFE0] dark:border-white/10 px-5 py-3 flex justify-between items-center shadow-xs">
         {/* Mobile Drawer Hamburger Button */}
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="lg:hidden p-1.5 text-[#1B5E20] hover:bg-[#E8F5E9] rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-1.5 text-[#1F5132] hover:bg-[#E8F5E9] rounded-lg transition-colors cursor-pointer"
           title="Buka Menu"
         >
           <span className="material-symbols-outlined text-xl">menu</span>
@@ -51,17 +51,17 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           >
             {/* Profile Label */}
             <div className="text-right hidden sm:block">
-              <p className="text-xs font-bold text-[#1B5E20]">
+              <p className="text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3]">
                 {user?.name || 'Administrator Sorgum'}
               </p>
-              <p className="text-[9px] font-extrabold text-[#C89B3C] uppercase tracking-widest mt-0.5">
+              <p className="text-[9px] font-extrabold text-[#E3B84B] uppercase tracking-widest mt-0.5">
                 Administrator
               </p>
             </div>
 
             {/* Profile Avatar */}
             <div className="flex items-center">
-              <span className="material-symbols-outlined text-[#1B5E20] text-3xl group-active:opacity-70 transition-opacity">
+              <span className="material-symbols-outlined text-[#1F5132] dark:text-[#65B86B] text-3xl group-active:opacity-70 transition-opacity">
                 account_circle
               </span>
             </div>

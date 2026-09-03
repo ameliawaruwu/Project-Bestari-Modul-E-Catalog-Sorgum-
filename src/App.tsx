@@ -24,9 +24,6 @@ export function App() {
 
   const { currentUser: user, shopSettings, logout } = useApp();
 
-  const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
-  const waUrl = `https://wa.me/${cleanWaNumber}`;
-
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -137,10 +134,10 @@ export function App() {
 
   // Public shop
   return (
-    <div className="min-h-screen flex flex-col bg-[#EFECE6] text-[#1B5E20] font-['Poppins'] selection:bg-[#fde08b] selection:text-[#231b00] relative pb-16 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-[#FFFDF5] dark:bg-[#08100A] text-[#20352A] dark:text-[#F4F8F3] font-['Plus_Jakarta_Sans'] selection:bg-[#3A8F4B]/20 selection:text-[#3A8F4B] relative pb-16 md:pb-0 transition-colors duration-300">
       {toastMessage && (
-        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[100] text-white px-6 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-medium animate-fadeIn flex items-center gap-2 max-w-[90vw] ${toastType === 'error' ? 'bg-[#D32F2F] border-[#FFCDD2]/60' : toastType === 'info' ? 'bg-[#C89B3C] border-[#fade88]/60' : 'bg-[#2E7D32] border-[#fade88]/40'}`}>
-          <span className={`material-symbols-outlined ${toastType === 'error' ? 'text-[#FFCDD2]' : 'text-[#fde08b]'}`}>{toastType === 'error' ? 'error' : toastType === 'info' ? 'info' : 'check_circle'}</span>
+        <div className={`fixed top-5 left-1/2 -translate-x-1/2 z-[100] text-white px-6 py-3 rounded-full shadow-2xl border text-xs sm:text-sm font-semibold animate-fadeIn flex items-center gap-2 max-w-[90vw] ${toastType === 'error' ? 'bg-[#D32F2F] border-white/20' : toastType === 'info' ? 'bg-[#E3B84B] border-white/20' : 'bg-[#3A8F4B] border-white/20'}`}>
+          <span className="material-symbols-outlined text-sm">{toastType === 'error' ? 'error' : toastType === 'info' ? 'info' : 'check_circle'}</span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -175,18 +172,6 @@ export function App() {
       <Footer setActiveTab={handleTabChange} />
 
       <MobileBottomNav activeTab={activeTab} setActiveTab={handleTabChange} user={null} />
-
-      <a href={waUrl} target="_blank" rel="noopener noreferrer" className="fixed bottom-20 right-6 lg:bottom-6 z-40 transition-all hover:scale-110 flex items-center justify-center cursor-pointer group animate-wa-pulse rounded-full" title="Hubungi kami via WhatsApp">
-        <svg viewBox="0 0 90 90" className="w-14 h-14 drop-shadow-md">
-          <path fill="#FFF" d="M45 0C20.1 0 0 20.1 0 45c0 8.6 2.4 16.6 6.6 23.5L1.5 88.5l20.8-5.5C29 87.4 36.8 89.8 45 89.8 69.9 89.8 90 69.7 90 45 90 20.1 69.9 0 45 0z" />
-          <path fill="#25D366" d="M45 8C24.6 8 8 24.6 8 45c0 7.1 2 13.7 5.5 19.4L9.5 78.5l14.7-3.9c5.4 3.1 11.7 4.9 18.5 4.9 20.4 0 37-16.6 37-37S65.4 8 45 8z" />
-          <path fill="#FFF" d="M59.3 50.8c-.8-.4-4.7-2.3-5.5-2.6-.8-.3-1.4-.4-2 .5-.6.9-2.3 2.9-2.8 3.5-.5.6-1 1.2-1.8.8-3.4-1.7-6-3-8.6-5.5-2-1.7-3.4-3.8-3.8-4.5-.4-.7-.1-1.1.2-1.4.3-.3.6-.7.9-1 .3-.3.4-.6.6-1 .2-.4.1-.7-.1-.9-.2-.2-1.4-3.4-2-4.7-.5-1.3-1.1-1.1-1.6-1.1h-1.3c-.5 0-1.2.2-1.9.9-2.3 2.5-3 6.1-1.6 9.6 2.9 7.4 8.7 13.5 15.6 17.2 2.6 1.4 5 2.1 7.5 2.1 3.5 0 6.6-1.5 8.7-4.1.8-1 1.5-2.2 1.5-3.5.1-.2 0-.4-.1-.5l-.8-.4z" />
-        </svg>
-        <div className="absolute right-full mr-3 bottom-2 bg-white text-[#1B5E20] border border-emerald-400 text-[10px] font-extrabold px-3 py-1.5 rounded-2xl shadow-md whitespace-nowrap flex items-center gap-1.5 animate-bubble-slide shadow-emerald-500/10 pointer-events-none">
-          <span className="w-2 h-2 bg-[#25d366] rounded-full animate-ping" />
-          <span>Tanya Kami via WA 💬</span>
-        </div>
-      </a>
 
       <ConnectionErrorModal />
     </div>

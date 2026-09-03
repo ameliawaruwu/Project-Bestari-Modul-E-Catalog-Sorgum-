@@ -108,24 +108,24 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12 max-w-4xl mx-auto">
+    <div className="space-y-6 animate-fadeIn pb-12 max-w-5xl mx-auto">
       {/* Top Header & Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#555555] mb-1">
+          <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">
               <li>Dashboard</li>
               <li>
                 <span className="material-symbols-outlined text-xs leading-none">chevron_right</span>
               </li>
-              <li className="text-[#1B5E20] font-bold">Kelola Lain</li>
+              <li className="text-[#1F5132] dark:text-[#86EFAC] font-bold">Kelola Lain</li>
             </ol>
           </nav>
-          <h2 className="font-['Playfair_Display'] text-2xl md:text-3xl font-bold text-[#1B5E20]">
-            Pengaturan Toko
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
+            Pengaturan Toko &amp; Badge
           </h2>
-          <p className="text-xs text-[#555555] mt-1">
-            Atur tampilan logo brand toko dan informasi kontak WhatsApp.
+          <p className="text-xs text-[#556353] dark:text-white/60 mt-1">
+            Atur tampilan identitas toko, nomor WhatsApp, serta kelola badge highlight produk.
           </p>
         </div>
 
@@ -133,64 +133,67 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
           <button
             type="button"
             onClick={handleSave}
-            className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer shadow-2xs"
+            className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
           >
             <span className="material-symbols-outlined text-base">save</span>
-            <span>Simpan Pengaturan Toko</span>
+            <span>Simpan Pengaturan</span>
           </button>
         </div>
       </div>
 
-      {/* Main Grid: Form Sections vs Live Previews */}
-      <div className="space-y-6">
-        {/* Left 2 Columns: Settings Form Controls */}
-        <div className="space-y-6">
-          {/* Card 1: Pengaturan Logo Toko / Brand */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-5">
-            <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-xl text-[#1B5E20]">local_mall</span>
-                <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
-                  Logo Toko / Brand
-                </h3>
-              </div>
-              <span className="px-2.5 py-0.5 text-[10px] font-bold bg-[#E8F5E9] text-[#1B5E20] rounded-md">
-                Tampilan Header
-              </span>
+      {/* 2-Column Grid: Left (Logo & Info Toko) | Right (Kelola Badge) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        
+        {/* CARD 1 (LEFT): LOGO & INFORMASI TOKO */}
+        <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs space-y-5">
+          <div className="flex items-center justify-between border-b border-[#E2EFE0] dark:border-white/10 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-xl text-[#1F5132] dark:text-[#86EFAC]">storefront</span>
+              <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-extrabold text-[#14331C] dark:text-[#F4F8F3]">
+                Informasi &amp; Logo Toko
+              </h3>
             </div>
+            <span className="px-2.5 py-0.5 text-[10px] font-bold bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] rounded-md border border-[#3A8F4B]/20">
+              Identitas Toko
+            </span>
+          </div>
 
-            {/* Foto Logo */}
-            <label className="group block border-2 border-dashed border-[#E0E0E0] hover:border-[#2E7D32] rounded-2xl p-6 text-center cursor-pointer transition-colors bg-[#F7F8F6]">
+          {/* Upload / Tampilan Logo */}
+          <div>
+            <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1.5">
+              Logo Toko / Brand
+            </label>
+            <label className="group block border-2 border-dashed border-[#E2EFE0] dark:border-white/15 hover:border-[#3A8F4B] dark:hover:border-[#65B86B] rounded-xl p-4 text-center cursor-pointer transition-colors bg-[#F9FBF7] dark:bg-[#162419]">
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleLogoFileUpload}
                 className="hidden"
               />
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {settings.logoUrl ? (
-                  <div className="relative w-28 h-28 mx-auto rounded-xl overflow-hidden border border-[#E0E0E0] shadow-2xs">
+                  <div className="relative w-24 h-24 mx-auto rounded-lg overflow-hidden border border-[#E2EFE0] shadow-2xs">
                     <img src={settings.logoUrl} alt="Preview Logo" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-white text-xs font-bold">Pilih Logo Baru</span>
+                      <span className="text-white text-xs font-bold">Ganti Logo</span>
                     </div>
                   </div>
                 ) : (
-                  <span className="material-symbols-outlined text-5xl text-[#C89B3C] group-hover:text-[#1B5E20] transition-colors">
+                  <span className="material-symbols-outlined text-4xl text-[#3A8F4B] dark:text-[#65B86B] group-hover:scale-110 transition-transform">
                     cloud_upload
                   </span>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-[#1B5E20]">
-                    Klik untuk memilih foto logo dari perangkat Anda
+                  <p className="text-xs font-bold text-[#1F5132] dark:text-[#86EFAC]">
+                    {settings.logoUrl ? 'Klik untuk mengganti logo' : 'Klik untuk memilih logo dari perangkat'}
                   </p>
-                  <p className="text-xs text-[#555555]">Format JPG/PNG/WebP, maksimal 2MB</p>
+                  <p className="text-[10px] text-[#556353] dark:text-white/60">Format JPG/PNG/WebP, maks. 2MB</p>
                 </div>
               </div>
             </label>
 
             {settings.logoUrl && (
-              <div className="text-center">
+              <div className="text-center mt-1.5">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -205,52 +208,43 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
             )}
           </div>
 
-          {/* Card 2: Informasi Kontak Toko */}
-          <div className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs space-y-4">
-            <div className="flex items-center gap-2.5 border-b border-[#E0E0E0] pb-3">
-              <span className="material-symbols-outlined text-xl text-[#1B5E20]">storefront</span>
-              <h3 className="font-['Playfair_Display'] text-lg font-bold text-[#1B5E20]">
-                Informasi Toko &amp; Kontak WhatsApp
-              </h3>
+          <div className="border-t border-[#E2EFE0] dark:border-white/10 pt-4 space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1.5">
+                Nama Brand Toko
+              </label>
+              <input
+                type="text"
+                value={settings.storeName}
+                onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
+                placeholder="BESTARI Sorghum"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
+              />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
-                  Nama Brand Toko
-                </label>
-                <input
-                  type="text"
-                  value={settings.storeName}
-                  onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
-                  placeholder="SORGUM Sorghum"
-                  className="w-full px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#1B5E20] mb-1.5">
-                  Nomor WhatsApp Toko
-                </label>
-                <input
-                  type="text"
-                  value={settings.whatsappNumber}
-                  onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
-                  placeholder="+62 812-3456-7890"
-                  className="w-full px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border border-[#E0E0E0] bg-[#F7F8F6] focus:outline-none focus:ring-1 focus:ring-[#2E7D32] text-[#1B5E20]"
-                />
-                <p className="text-[10px] text-[#555555] mt-1">
-                  Digunakan untuk tombol Pesan via WhatsApp di detail produk.
-                </p>
-              </div>
+            <div>
+              <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1.5">
+                Nomor WhatsApp Toko
+              </label>
+              <input
+                type="text"
+                value={settings.whatsappNumber}
+                onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
+                placeholder="6281234567890"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
+              />
+              <p className="text-[10px] text-[#556353] dark:text-white/60 mt-1">
+                Digunakan untuk tombol Pesan via WhatsApp di detail produk.
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Section: Kelola Badge (Kelola Kategori dihapus — H4: kategori bukan fitur mandiri) */}
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* CARD 2 (RIGHT): KELOLA BADGE */}
+        <div>
           <BadgeManagement showToast={showToast} onBadgesChange={onBadgesChange} />
         </div>
+
       </div>
     </div>
   );

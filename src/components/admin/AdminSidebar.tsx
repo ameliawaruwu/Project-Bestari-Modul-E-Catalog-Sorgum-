@@ -33,8 +33,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   return (
     <aside
-      style={{ backgroundColor: '#1B5E20' }}
-      className={`h-screen fixed left-0 top-0 border-r border-white/10 flex flex-col py-3 z-[100] transition-all duration-300 ${
+      className={`h-screen fixed left-0 top-0 bg-[#1F5132] border-r border-white/10 flex flex-col py-3 z-[100] transition-all duration-300 shadow-xl ${
         isCollapsed ? 'lg:w-20' : 'lg:w-64'
       } ${
         isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'
@@ -53,18 +52,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             >
               <span className="material-symbols-outlined text-lg">menu</span>
             </button>
-            <span className="font-['Playfair_Display'] text-xl text-white font-extrabold bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-white/15 shadow-2xs">
+            <span className="font-['Plus_Jakarta_Sans'] text-xl text-[#E3B84B] font-black bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-white/15 shadow-2xs">
               B
             </span>
           </div>
         ) : null}
 
         <div className={isCollapsed ? 'lg:hidden block' : 'block'}>
-          <h1 className="font-['Playfair_Display'] text-xl text-white font-bold tracking-wider">
-            SORGUM
+          <h1 className="font-['Plus_Jakarta_Sans'] text-xl text-white font-black tracking-wider">
+            BESTARI
           </h1>
-          <p className="text-white/60 text-[9px] font-bold uppercase tracking-widest mt-0.5">
-            Admin Console
+          <p className="text-[#E3B84B] text-[10px] font-bold uppercase tracking-widest mt-0.5">
+            SORGUM ADMIN CONSOLE
           </p>
         </div>
 
@@ -92,7 +91,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-2.5">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-2.5">
         {navItems.map((item) => {
           const isActive = activeNav === item.id;
           return (
@@ -103,10 +102,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   setActiveNav(item.id);
                   onClose(); // Close mobile drawer
                 }}
-                className={`group w-full flex items-center py-2 text-xs sm:text-sm transition-all duration-200 cursor-pointer border ${
+                className={`group w-full flex items-center py-2.5 text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? 'bg-[#2E7D32] text-white border-l-4 border-l-[#C89B3C] border-t-white/15 border-b-black/10 border-r-white/10 rounded-r-xl rounded-l-sm shadow-md pl-3.5'
-                    : 'text-white/70 border-transparent rounded-xl hover:text-white hover:bg-white/10 hover:border-white/10 pl-3.5'
+                    ? 'bg-[#163D24] text-white border-l-4 border-l-[#E3B84B] rounded-r-xl rounded-l-xs shadow-md pl-3.5'
+                    : 'text-white/75 rounded-xl hover:text-white hover:bg-white/10 pl-3.5'
                 } ${
                   isCollapsed
                     ? 'lg:justify-center lg:px-0 justify-start'
@@ -116,14 +115,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               >
                 <span
                   className={`material-symbols-outlined text-lg flex-shrink-0 transition-colors ${
-                    isActive ? 'text-[#C89B3C] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]' : 'text-white/70 group-hover:text-[#C89B3C]'
+                    isActive ? 'text-[#E3B84B]' : 'text-white/70 group-hover:text-[#E3B84B]'
                   }`}
                 >
                   {item.icon}
                 </span>
                 <span
                   className={`ml-2.5 font-bold tracking-wide truncate transition-opacity duration-200 ${
-                    isActive ? 'text-white font-extrabold' : 'text-white/75 group-hover:text-white'
+                    isActive ? 'text-white font-extrabold' : 'text-white/80 group-hover:text-white'
                   } ${isCollapsed ? 'lg:hidden inline' : 'inline'}`}
                 >
                   {item.label}

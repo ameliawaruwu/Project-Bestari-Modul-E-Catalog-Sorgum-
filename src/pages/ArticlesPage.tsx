@@ -45,11 +45,11 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
 
   const categories = [
-    t('Semua', 'All'),
-    t('Budidaya', 'Cultivation'),
-    t('Nutrisi', 'Nutrition'),
-    t('Inspirasi', 'Inspiration'),
-    t('Promosi', 'Promotion'),
+    { key: 'Semua', label: t('Semua Kategori', 'All Categories') },
+    { key: 'Budidaya', label: t('Budidaya', 'Cultivation') },
+    { key: 'Nutrisi', label: t('Nutrisi', 'Nutrition') },
+    { key: 'Inspirasi', label: t('Inspirasi', 'Inspiration') },
+    { key: 'Promosi', label: t('Promosi', 'Promotion') },
   ];
 
   const filteredArticles = publicArticles.filter((art) => {
@@ -155,7 +155,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     };
 
     return (
-      <div className="pt-24 sm:pt-28 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
+      <div className="pt-6 sm:pt-8 pb-16 px-4 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
         {/* Tombol Kembali */}
         <button
           onClick={handleBack}
@@ -279,50 +279,59 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
   // Articles List View
   return (
-    <div className="pt-24 sm:pt-28 pb-20 px-4 md:px-10 max-w-[1280px] mx-auto animate-fadeIn min-h-screen">
+    <div className="pt-6 sm:pt-8 pb-16 px-4 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
       {/* Filter and Search Panel */}
-      <div className="bg-[#FFFFFF] p-5 rounded-2xl border border-[#E0E0E0] shadow-2xs mb-8 space-y-6">
-        {/* Search Input */}
-        <div className="relative w-full">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#555555] text-lg select-none">
-            search
-          </span>
-          <input
-            type="text"
-            placeholder={t('Cari artikel (misal: budidaya, celiac, serat, resep)...', 'Search articles (e.g. cultivation, celiac, fiber, recipes)...')}
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            className="w-full pl-12 pr-10 py-3 bg-[#F7F8F6] focus:bg-[#FFFFFF] rounded-xl border border-[#E0E0E0] font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1B5E20] placeholder-[#555555]/60 focus:outline-none focus:border-[#2E7D32] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#555555] hover:text-[#1B5E20] text-lg focus:outline-none cursor-pointer flex items-center justify-center"
-            >
-              <span className="material-symbols-outlined text-base">close</span>
-            </button>
-          )}
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2.5 sm:gap-3 pt-5 border-t border-[#E0E0E0]">
-          {categories.map((cat) => {
-            const isActive = selectedCategory === cat;
-            return (
+      <div className="bg-white dark:bg-[#121C14] p-4 sm:p-5 rounded-2xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-8 transition-colors duration-300">
+        <div className="flex flex-col md:flex-row gap-3.5 sm:gap-4 items-stretch md:items-center">
+          
+          {/* Search Input */}
+          <div className="relative flex-grow">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#555555] dark:text-[#94A390] text-lg select-none">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder={t('Cari artikel (misal: budidaya, celiac, serat, resep)...', 'Search articles (e.g. cultivation, celiac, fiber, recipes)...')}
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+              className="w-full pl-12 pr-10 py-3 bg-[#F7F8F6] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] rounded-xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.2)] font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1B5E20] dark:text-[#F4F7F2] placeholder-[#555555]/60 dark:placeholder-[#94A390]/60 focus:outline-none focus:border-[#2E7D32] dark:focus:border-[#A5D6A7] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
+            />
+            {searchQuery && (
               <button
-                key={cat}
-                onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
-                className={`px-5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-semibold transition-all duration-200 focus:outline-none cursor-pointer ${
-                  isActive
-                    ? 'bg-[#2E7D32] hover:bg-[#1B5E20] text-white shadow-2xs'
-                    : 'bg-[#F7F8F6] hover:bg-[#E8F5E9] text-[#1B5E20] border border-[#E0E0E0]'
-                }`}
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#555555] dark:text-[#94A390] hover:text-[#1B5E20] dark:hover:text-[#A5D6A7] text-lg focus:outline-none cursor-pointer flex items-center justify-center"
               >
-                {cat}
+                <span className="material-symbols-outlined text-base">close</span>
               </button>
-            );
-          })}
+            )}
+          </div>
+
+          {/* Category Dropdown (Beside Search Bar) */}
+          <div className="flex items-center gap-2.5 bg-[#F7F8F6] dark:bg-[#162419] px-4 py-3 rounded-xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.2)] shrink-0">
+            <span className="material-symbols-outlined text-base text-[#1B5E20] dark:text-[#A5D6A7]">
+              tune
+            </span>
+            <span className="font-['Plus_Jakarta_Sans'] text-xs font-semibold text-[#555555] dark:text-[#94A390]">
+              {t('Kategori:', 'Category:')}
+            </span>
+            <select
+              value={selectedCategory}
+              onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
+              className="bg-transparent border-none font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1B5E20] dark:text-[#A5D6A7] focus:ring-0 cursor-pointer outline-none"
+            >
+              {categories.map((c) => (
+                <option
+                  key={c.key}
+                  value={c.key}
+                  className="bg-white dark:bg-[#121C14] text-black dark:text-white"
+                >
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
         </div>
       </div>
 

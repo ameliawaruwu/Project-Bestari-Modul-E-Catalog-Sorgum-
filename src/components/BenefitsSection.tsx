@@ -4,63 +4,94 @@ import { useApp } from '../context/AppContext';
 export const BenefitsSection: React.FC = () => {
   const { t, landingContent } = useApp();
 
+  const title = t(
+    landingContent.benefitsTitleId || 'Kenapa Memilih Bestari?',
+    landingContent.benefitsTitleEn || 'Why Choose Bestari?'
+  );
+
+  const desc = t(
+    landingContent.benefitsDescId ||
+      'Kami berkomitmen menghadirkan produk pangan berkelanjutan yang sehat bagi tubuh dan ramah bagi bumi.',
+    landingContent.benefitsDescEn ||
+      'We are committed to delivering sustainable food products that nourish your body and protect our planet.'
+  );
+
+  const benefits = [
+    {
+      icon: landingContent.benefit1Icon || 'eco',
+      title: t(landingContent.benefit1TitleId || 'Bebas Gluten', landingContent.benefit1TitleEn || 'Gluten Free'),
+      desc: t(
+        landingContent.benefit1DescId || 'Alternatif gandum yang aman bagi penderita celiac dan mereka yang menjalani diet bebas gluten.',
+        landingContent.benefit1DescEn || 'Safe wheat alternative for celiac disease and those pursuing a gluten-free lifestyle.'
+      ),
+    },
+    {
+      icon: landingContent.benefit2Icon || 'verified',
+      title: t(landingContent.benefit2TitleId || '100% Organik Lokal', landingContent.benefit2TitleEn || '100% Local Organic'),
+      desc: t(
+        landingContent.benefit2DescId || 'Ditanam secara alami tanpa pestisida kimia oleh petani mitra kami di tanah Nusantara.',
+        landingContent.benefit2DescEn || 'Grown naturally without chemical pesticides by our partner farmers across Indonesia.'
+      ),
+    },
+    {
+      icon: landingContent.benefit3Icon || 'groups',
+      title: t(
+        landingContent.benefit3TitleId || 'Berdampak Sosial',
+        landingContent.benefit3TitleEn || 'Positive Social Impact'
+      ),
+      desc: t(
+        landingContent.benefit3DescId || 'Setiap pembelian Anda mendukung kesejahteraan komunitas petani sorgum di pelosok daerah.',
+        landingContent.benefit3DescEn || 'Every purchase directly empowers the livelihoods of local sorghum farming communities.'
+      ),
+    },
+  ];
+
   return (
-    <section className="py-14 md:py-16 bg-[#F7F8F6] border-t border-b border-[#E0E0E0]">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10">
-        <div className="text-center mb-10 lg:mb-10">
-          <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-[#1B5E20]">
-            {t(landingContent.benefitsTitleId, landingContent.benefitsTitleEn)}
+    <section id="benefits-section" className="py-14 sm:py-20 bg-[#FFFDF5] dark:bg-[#08100A] relative overflow-hidden transition-colors duration-300">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header */}
+        <div className="text-center mb-10 sm:mb-12 max-w-2xl mx-auto space-y-3">
+          <h2 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1F5132] dark:text-[#F4F8F3] tracking-tight">
+            {title}
           </h2>
-          <p className="font-['Plus_Jakarta_Sans'] text-sm sm:text-base text-[#555555] max-w-2xl mx-auto leading-relaxed font-medium">
-            {t(landingContent.benefitsDescId, landingContent.benefitsDescEn)}
+
+          <p className="font-['Plus_Jakarta_Sans'] text-sm sm:text-base text-[#6B756E] dark:text-[#CBD5C8] leading-relaxed font-normal">
+            {desc}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
-              <span className="material-symbols-outlined text-2xl sm:text-3xl">
-                {landingContent.benefit1Icon || 'eco'}
-              </span>
-            </div>
-            <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-bold mb-3 text-[#1B5E20]">
-              {t(landingContent.benefit1TitleId, landingContent.benefit1TitleEn)}
-            </h3>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555] leading-relaxed font-normal">
-              {t(landingContent.benefit1DescId, landingContent.benefit1DescEn)}
-            </p>
-          </div>
+        {/* Benefits List (Format List Elegan & Rapi) */}
+        <div className="space-y-3.5 sm:space-y-4 max-w-3xl mx-auto">
+          {benefits.map((item, idx) => (
+            <div
+              key={idx}
+              className="group bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl sm:rounded-[22px] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] hover:border-[#3A8F4B]/40 dark:hover:border-[#65B86B]/40 shadow-xs hover:shadow-md transition-all duration-300 flex items-start sm:items-center gap-4 sm:gap-5 cursor-default"
+            >
+              {/* Circular Green Icon Badge */}
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E8F5E9] dark:bg-[#152718] text-[#3A8F4B] dark:text-[#65B86B] border border-[#3A8F4B]/20 dark:border-[rgba(165,214,167,0.25)] flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:bg-[#3A8F4B] group-hover:text-white dark:group-hover:bg-[#3A8F4B] dark:group-hover:text-white transition-all duration-300 shadow-2xs">
+                <span className="material-symbols-outlined text-2xl sm:text-3xl">
+                  {item.icon}
+                </span>
+              </div>
 
-          <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
-              <span className="material-symbols-outlined text-2xl sm:text-3xl">
-                {landingContent.benefit2Icon || 'verified'}
-              </span>
-            </div>
-            <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-bold mb-3 text-[#1B5E20]">
-              {t(landingContent.benefit2TitleId, landingContent.benefit2TitleEn)}
-            </h3>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555] leading-relaxed font-normal">
-              {t(landingContent.benefit2DescId, landingContent.benefit2DescEn)}
-            </p>
-          </div>
+              {/* Title & Description */}
+              <div className="space-y-1 flex-1 min-w-0">
+                <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-extrabold text-[#1F5132] dark:text-[#F4F8F3] group-hover:text-[#3A8F4B] dark:group-hover:text-[#65B86B] transition-colors leading-snug">
+                  {item.title}
+                </h3>
 
-          <div className="bg-[#FFFFFF] p-6 sm:p-8 rounded-2xl border border-[#E0E0E0] hover:border-[#2E7D32]/50 hover:shadow-md transition-all duration-300 text-center group cursor-pointer shadow-2xs">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E8F5E9] border border-[#A5D6A7] rounded-2xl flex items-center justify-center mx-auto mb-5 sm:mb-6 transition-all duration-300 group-hover:scale-105 group-hover:bg-[#2E7D32] group-hover:text-white text-[#1B5E20] shadow-2xs">
-              <span className="material-symbols-outlined text-2xl sm:text-3xl">
-                {landingContent.benefit3Icon || 'groups'}
-              </span>
+                <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#6B756E] dark:text-[#CBD5C8] leading-relaxed font-normal">
+                  {item.desc}
+                </p>
+              </div>
             </div>
-            <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-bold mb-3 text-[#1B5E20]">
-              {t(landingContent.benefit3TitleId, landingContent.benefit3TitleEn)}
-            </h3>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555555] leading-relaxed font-normal">
-              {t(landingContent.benefit3DescId, landingContent.benefit3DescEn)}
-            </p>
-          </div>
+          ))}
         </div>
+
       </div>
     </section>
   );
 };
 
+export default BenefitsSection;
