@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
 import { Article } from '../types';
 import { useApp } from '../context/AppContext';
@@ -84,6 +84,20 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Artikel Lainnya — diacak per artikel aktif (acak stabil: hanya dihitung ulang
+  // saat artikel aktif berubah, supaya tidak berubah-ubah tiap render).
+  const otherArticles = useMemo(() => {
+    const others = publicArticles.filter((a) => a.id !== activeArticle?.id);
+    if (others.length <= 3) return others;
+    // Fisher-Yates shuffle
+    const arr = [...others];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, 3);
+  }, [publicArticles, activeArticle?.id]);
 
   // If viewing article detail
   if (activeArticle) {
@@ -251,10 +265,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                 {t('Artikel Lainnya', 'Other Articles')}
               </h4>
               <div className="space-y-4">
-                {publicArticles
-                  .filter((a) => a.id !== activeArticle.id)
-                  .slice(0, 3)
-                  .map((other) => (
+                {otherArticles.map((other) => (
                     <div
                       key={other.id}
                       onClick={() => handleCardClick(other)}
