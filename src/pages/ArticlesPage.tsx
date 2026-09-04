@@ -175,13 +175,6 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
               <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] leading-tight">
                 {activeArticle.title}
               </h1>
-              <div className="flex items-center gap-4 text-xs sm:text-sm text-[#555555] font-['Plus_Jakarta_Sans'] font-medium pt-2 border-b border-[#E0E0E0] pb-4">
-                <span>{activeArticle.date || '3 November 2024'}</span>
-                <span>•</span>
-                <span>{activeArticle.readTime || '5 Menit Baca'}</span>
-                <span>•</span>
-                <span>Oleh: {activeArticle.author || 'Tim Ahli Gizi Sorgum'}</span>
-              </div>
             </header>
 
             {/* Featured Hero Image */}
@@ -210,32 +203,45 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-8 sticky top-28">
-            {/* Sorgum Facts */}
+            {/* Info Penerbit & Tanggal Terbit (dipindah dari bawah judul) */}
             <section className="bg-[#FFFFFF] p-8 rounded-2xl shadow-2xs border border-[#E0E0E0]">
-              <h3 className="text-2xl font-bold text-[#1B5E20] mb-6 font-['Playfair_Display']">
-                {t('Sorgum Facts', 'Sorghum Facts')}
+              <h3 className="text-xl font-bold text-[#1B5E20] mb-6 font-['Playfair_Display']">
+                {t('Info Terbit', 'Publication Info')}
               </h3>
-              <ul className="space-y-5">
-                {(
-                  activeArticle.facts || [
-                    { title: 'Gluten-Free', desc: 'Aman 100% untuk diet bebas gandum.' },
-                    { title: 'High Fiber', desc: 'Mendukung pencernaan yang optimal.' },
-                    { title: 'Low Glycemic Index', desc: 'Membantu mengontrol gula darah.' },
-                    { title: 'Rich in Antioxidants', desc: 'Melindungi sel tubuh dari radikal bebas.' },
-                  ]
-                ).map((fact, idx) => (
-                  <li key={idx} className="flex items-start gap-4">
-                    <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">
-                      check_circle
+              <ul className="space-y-5 text-sm">
+                <li className="flex items-start gap-4">
+                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">calendar_today</span>
+                  <div>
+                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans']">
+                      {t('Tanggal Terbit', 'Published')}
                     </span>
-                    <div>
-                      <span className="font-bold text-[#1B5E20] block text-base font-['Plus_Jakarta_Sans']">
-                        {fact.title}
-                      </span>
-                      <span className="text-[#555555] text-xs sm:text-sm font-['Plus_Jakarta_Sans']">{fact.desc}</span>
-                    </div>
-                  </li>
-                ))}
+                    <span className="text-[#555555] font-['Plus_Jakarta_Sans']">
+                      {activeArticle.date || '3 November 2024'}
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">schedule</span>
+                  <div>
+                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans']">
+                      {t('Durasi Baca', 'Reading Time')}
+                    </span>
+                    <span className="text-[#555555] font-['Plus_Jakarta_Sans']">
+                      {activeArticle.readTime || '5 Menit Baca'}
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4">
+                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">person</span>
+                  <div>
+                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans']">
+                      {t('Penerbit', 'Author')}
+                    </span>
+                    <span className="text-[#555555] font-['Plus_Jakarta_Sans']">
+                      {activeArticle.author || 'Tim Ahli Gizi Sorgum'}
+                    </span>
+                  </div>
+                </li>
               </ul>
             </section>
 

@@ -186,9 +186,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     </span>
                     <span>{t('Kirim ke Seluruh Nusantara', 'Nationwide Delivery')}</span>
                   </div>
-                  <p className="text-xs text-[#556353] dark:text-white/60">
-                    {t('Tersedia kurir J&T, JNE, SiCepat, dan ekspedisi kargo.', 'Supported via standard couriers and freight cargo.')}
-                  </p>
                 </div>
               </div>
 

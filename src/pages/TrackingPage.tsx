@@ -10,8 +10,11 @@ export const TrackingPage: React.FC = () => {
   const [history, setHistory] = useState<Array<{ resi: string; at: number }>>([]);
   const [courier, setCourier] = useState('');
 
-  // Kode ekspedisi (format adjisoft/cekresi.com) — dipakai sbg hint agar tracking akurat.
-  // KOSONG = auto-detect (cekresi.com menebak sendiri).
+  // Kode ekspedisi umum (format adjisoft/cekresi.com) — muncul di hampir semua format
+  // nomor resi cekresi.com. Default = KOSONG (auto-detect): cekresi.com menebak kurir
+  // dari nomor resi; dropdown ini hanya hint bila auto-detect gagal.
+  // CATATAN: cekresi.com memfilter daftar kurir berdasarkan format nomor resi, jadi
+  // daftar di bawah bukan daftar lengkap — hanya kurir yang paling sering tersedia.
   const COURIER_OPTIONS: Array<{ code: string; label: string }> = [
     { code: 'JNE', label: 'JNE' },
     { code: 'JT', label: 'J&T Express' },
@@ -20,13 +23,11 @@ export const TrackingPage: React.FC = () => {
     { code: 'POS', label: 'POS Indonesia' },
     { code: 'NINJA', label: 'Ninja Xpress' },
     { code: 'LIONPARCEL', label: 'Lion Parcel' },
-    { code: 'ANTERAJA', label: 'Anteraja' },
-    { code: 'WAHANA', label: 'Wahana' },
-    { code: 'CITYLINK', label: 'CityLink' },
-    { code: 'IDEXPRESS', label: 'ID Express' },
-    { code: 'REX', label: 'REX Express' },
-    { code: 'JX', label: 'JX' },
     { code: 'SAP', label: 'SAP Express' },
+    { code: 'ANTERAJA', label: 'Anteraja' },
+    { code: 'JX', label: 'JX' },
+    { code: 'JET', label: 'JET Express' },
+    { code: 'WAHANA', label: 'Wahana' },
   ];
 
   const loadHistory = () => {
