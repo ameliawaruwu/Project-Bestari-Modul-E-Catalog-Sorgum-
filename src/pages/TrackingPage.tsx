@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
 export const TrackingPage: React.FC = () => {
@@ -7,7 +7,6 @@ export const TrackingPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [history, setHistory] = useState<Array<{ resi: string; at: number }>>([]);
   const [courier, setCourier] = useState('');
   const [courierOpen, setCourierOpen] = useState(false);
   const [courierSearch, setCourierSearch] = useState('');
@@ -80,21 +79,6 @@ export const TrackingPage: React.FC = () => {
     { code: 'ZDEX', label: 'ZDEX (Zalora)' },
   ];
 
-  const loadHistory = () => {
-    try {
-      const raw = localStorage.getItem('bestari_tracking_history');
-      if (raw) {
-        setHistory(JSON.parse(raw));
-      }
-    } catch {
-      setHistory([]);
-    }
-  };
-
-  useEffect(() => {
-    loadHistory();
-  }, []);
-
   const trackResi = async (code: string, selectedCourier?: string) => {
     const trimmed = code.trim();
     if (!trimmed) {
@@ -113,15 +97,6 @@ export const TrackingPage: React.FC = () => {
       const data = json?.data?.data || json?.data || json;
       if (json?.data?.valid === false) throw new Error(t('Resi tidak valid atau belum terdaftar di sistem kurir', 'Tracking number invalid or not registered yet'));
       setResult(data);
-
-      try {
-        const key = 'bestari_tracking_history';
-        const hist = JSON.parse(localStorage.getItem(key) || '[]');
-        const entry = { resi: trimmed, at: Date.now() };
-        const next = [entry, ...hist.filter((h: any) => h.resi !== entry.resi)].slice(0, 5);
-        localStorage.setItem(key, JSON.stringify(next));
-        setHistory(next);
-      } catch {}
     } catch (err: any) {
       setError(err?.message || t('Gagal melacak resi. Coba lagi beberapa saat.', 'Failed to track package. Please try again.'));
     } finally {
@@ -297,47 +272,26 @@ export const TrackingPage: React.FC = () => {
             </p>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading || !resi.trim()}
-            className="w-full bg-[#245B3A] hover:bg-[#14331C] disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white py-3.5 rounded-2xl font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>{t('Sedang Melacak...', 'Tracking Package...')}</span>
-              </>
-            ) : (
-              <>
-                <span className="material-symbols-outlined text-xl">travel_explore</span>
-                <span>{t('Lacak Paket Sekarang', 'Track Package Now')}</span>
-              </>
-            )}
-          </button>
-        </form>
-
-        {/* Riwayat Resi Terakhir */}
-        {history.length > 0 && (
-          <div className="mt-5 pt-4 border-t border-[#E2EFE0] dark:border-white/10 flex items-center gap-2 flex-wrap text-xs text-[#556353] dark:text-white/60">
-            <span className="font-semibold flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">history</span>
-              <span>{t('Resi Terakhir:', 'Recent:')}</span>
-            </span>
-            {history.map((item, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => {
-                  setResi(item.resi);
-                  trackResi(item.resi, courier || undefined);
-                }}
-                className="font-mono font-medium px-2.5 py-1 rounded-lg bg-[#F2F7F0] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] hover:bg-[#245B3A] hover:text-white dark:hover:bg-[#245B3A] transition-colors cursor-pointer border border-[#C5D8C1]/60 dark:border-white/10"
-              >
-                {item.resi}
-              </button>
-            ))}
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              disabled={loading || !resi.trim()}
+              className="inline-flex items-center justify-center gap-2 bg-[#245B3A] hover:bg-[#14331C] disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white px-8 py-3 rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>{t('Sedang Melacak...', 'Tracking Package...')}</span>
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-lg">travel_explore</span>
+                  <span>{t('Lacak Paket Sekarang', 'Track Package Now')}</span>
+                </>
+              )}
+            </button>
           </div>
-        )}
+        </form>
 
         {/* Error Alert */}
         {error && (
