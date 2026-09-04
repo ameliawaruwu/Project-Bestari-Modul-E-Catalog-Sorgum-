@@ -1,16 +1,11 @@
 import { Router, Request, Response } from 'express';
-import { getProducts, createProduct, updateProduct, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
+import { createProduct, updateProduct, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
 import { AppError } from '../../lib/errors_utils';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
 
 const router = Router();
 router.use(authRequired, adminOnly);
-
-router.get('/', async (_req: Request, res: Response) => {
-  const result = await getProducts({ page: 1, limit: 1000, includeInactive: true });
-  res.json({ data: result.data, meta: result.meta });
-});
 
 // Detail produk by id (admin) — termasuk nonaktif + galeri images[].
 router.get('/:id', async (req: Request, res: Response) => {

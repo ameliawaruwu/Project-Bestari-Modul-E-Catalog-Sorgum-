@@ -35,9 +35,6 @@ function mapSettings(map: Record<string, string>): ShopSettings {
 }
 
 export const shopSettingsApi = {
-  // Sync variant — return default; state di-hydrate via getSettingsAsync di AppContext mount.
-  getSettings: (): ShopSettings => DEFAULT_SHOP_SETTINGS,
-
   // Async variant — hydrate from backend (public endpoint)
   getSettingsAsync: async (): Promise<ShopSettings> => {
     try {

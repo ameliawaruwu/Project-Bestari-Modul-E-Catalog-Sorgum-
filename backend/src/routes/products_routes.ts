@@ -3,7 +3,6 @@ import {
   getProducts,
   getProductBySlug,
   getProductByIdPublic,
-  getFeaturedProducts,
 } from '../services/products_service';
 
 const router = Router();
@@ -25,11 +24,6 @@ router.get('/', async (req: Request, res: Response) => {
   });
 
   res.json(result);
-});
-
-router.get('/featured', async (_req: Request, res: Response) => {
-  const data = await getFeaturedProducts(8);
-  res.json({ data });
 });
 
 router.get('/:slug', async (req: Request, res: Response) => {

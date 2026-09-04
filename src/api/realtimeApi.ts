@@ -12,8 +12,7 @@ export type RealtimeEventType =
   | 'faqs'
   | 'banners'
   | 'landing'
-  | 'settings'
-  | 'users';
+  | 'settings';
 
 // EventSource global — satu koneksi per tab, semua komponen pakai ini.
 let source: EventSource | null = null;

@@ -142,10 +142,4 @@ export const productApi = {
       return null;
     }
   },
-
-  // Get featured products (for home page)
-  getFeaturedProducts: async (): Promise<Product[]> => {
-    const data = await request<{ data?: ProductRow[] }>('/products/featured');
-    return (data?.data || []).map(mapProduct);
-  },
 };

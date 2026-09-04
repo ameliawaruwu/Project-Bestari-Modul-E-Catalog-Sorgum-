@@ -109,9 +109,7 @@ export function App() {
                 logout();
               }
             }}
-            onNavigateRegister={() => navigateShop()}
             onNavigateHome={navigateShop}
-            onNavigateForgot={() => {}}
           />
           <ConnectionErrorModal />
         </div>

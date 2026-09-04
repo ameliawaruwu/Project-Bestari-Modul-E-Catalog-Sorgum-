@@ -15,7 +15,6 @@ import landingContentRoutes from './routes/landing_content_routes';
 import trackingProxyRoutes from './routes/tracking_proxy_routes';
 
 // Admin routes
-import adminDashboardRoutes from './routes/admin/dashboard_routes';
 import adminSettingsRoutes from './routes/admin/settings_routes';
 import adminProductsRoutes from './routes/admin/products_routes';
 import adminBannersRoutes from './routes/admin/banners_routes';
@@ -89,7 +88,6 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/landing-content', landingContentRoutes);
 app.use('/api/tracking', trackingProxyRoutes);
 
-app.use('/api/admin/dashboard', adminDashboardRoutes);
 app.use('/api/admin/settings', adminSettingsRoutes);
 app.use('/api/admin/products', adminProductsRoutes);
 app.use('/api/admin/banners', adminBannersRoutes);

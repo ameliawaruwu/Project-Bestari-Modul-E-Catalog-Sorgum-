@@ -1,4 +1,4 @@
-import { AuthResponse, LoginPayload, RegisterPayload, User } from '../types';
+import { AuthResponse, LoginPayload, User } from '../types';
 import { request, setToken, getToken } from './http';
 
 const STORAGE_KEY = 'bestari_current_user';
@@ -65,29 +65,6 @@ function mapUser(u: BackendUser): User {
 }
 
 export const authApi = {
-  // Register user
-  register: async (payload: RegisterPayload): Promise<AuthResponse> => {
-    try {
-      const res = await request<{ message: string; data: { user: BackendUser; token: string } }>(
-        '/auth/register',
-        { method: 'POST', body: { name: payload.name, email: payload.email, password: payload.password, phone: payload.phone } }
-      );
-
-      const user = mapUser(res.data.user);
-      setToken(res.data.token);
-      saveUser(user);
-
-      return {
-        success: true,
-        message: res.message || 'Pendaftaran berhasil! Selamat bergabung dengan SORGUM.',
-        user,
-        token: res.data.token,
-      };
-    } catch (e: any) {
-      return { success: false, message: e?.message || 'Pendaftaran gagal. Silakan coba lagi.' };
-    }
-  },
-
   // Login user
   login: async (payload: LoginPayload): Promise<AuthResponse> => {
     try {
@@ -153,47 +130,5 @@ export const authApi = {
       // ignore
     }
     return true;
-  },
-
-  // Update profile (PUT /api/user/profile) — name/email/phone
-  updateProfile: async (fields: { name?: string; email?: string; phone?: string; birth_date?: string | null; gender?: string | null }): Promise<{ success: boolean; message: string; user?: User }> => {
-    try {
-      const res = await request<{ message: string; data: BackendUser }>('/user/profile', {
-        method: 'PUT',
-        body: fields,
-        auth: true,
-      });
-      const user = mapUser(res.data);
-      saveUser(user);
-      return { success: true, message: res.message || 'Profil diperbarui', user };
-    } catch (e: any) {
-      return { success: false, message: e?.message || 'Gagal memperbarui profil.' };
-    }
-  },
-
-  // Lupa password — minta OTP dikirim ke WhatsApp (POST /api/auth/forgot-password)
-  forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
-    try {
-      const res = await request<{ message: string }>('/auth/forgot-password', {
-        method: 'POST',
-        body: { email },
-      });
-      return { success: true, message: res.message || 'Kode OTP dikirim ke WhatsApp Anda.' };
-    } catch (e: any) {
-      return { success: false, message: e?.message || 'Gagal mengirim kode OTP.' };
-    }
-  },
-
-  // Reset password dengan OTP (POST /api/auth/reset-password)
-  resetPassword: async (email: string, otp: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
-    try {
-      const res = await request<{ message: string }>('/auth/reset-password', {
-        method: 'POST',
-        body: { email, otp, new_password: newPassword },
-      });
-      return { success: true, message: res.message || 'Password berhasil diubah.' };
-    } catch (e: any) {
-      return { success: false, message: e?.message || 'Gagal mengubah password. Periksa kode OTP.' };
-    }
   },
 };

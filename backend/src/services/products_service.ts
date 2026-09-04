@@ -181,12 +181,6 @@ export async function getProductByIdPublic(id: number): Promise<ProductDetail | 
   return { ...product, images: images as any[] };
 }
 
-export async function getFeaturedProducts(limit = 8) {
-  const sql = `${LIST_SELECT} WHERE p.is_active = 1 AND p.is_featured = 1 ORDER BY p.created_at DESC LIMIT ?`;
-  const [rows] = await dbPool.query(sql, [limit]);
-  return rows as ProductRow[];
-}
-
 // === ADMIN ===
 
 /**
@@ -205,14 +199,14 @@ async function normalizeBadge(badge: string | null | undefined): Promise<string 
 export async function createProduct(input: CreateProductInput) {
   const { category_id, name, slug, description, stock, weight_spec, origin, is_featured } = input;
   // Harga: FE (admin) adalah single source of truth. Tidak ada diskon lagi —
-  // price = harga jual langsung. original_price/discount_percent dikosongkan
-  // (kolom DB dipertahankan, tidak dipakai lagi).
+  // price = harga jual langsung. Kolom original_price/discount_percent sudah
+  // tidak ada di skema DB (modul diskon dihapus) — jangan sertakan di INSERT.
   const price = Number(input.price) || 0;
   const badge = await normalizeBadge(input.badge ?? null);
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, original_price, discount_percent, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [category_id, name, slug, description, price, price, 0, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
+    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [category_id, name, slug, description, price, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
      input.gluten_free ? 1 : 0, input.organic ? 1 : 0, badge, input.composition ?? null, input.shelf_life ?? null,
      input.attributes ?? null],
   );

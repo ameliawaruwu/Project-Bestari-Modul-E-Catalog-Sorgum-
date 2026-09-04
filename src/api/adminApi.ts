@@ -65,12 +65,6 @@ export const articleAdminApi = {
 };
 
 export const productAdminApi = {
-  // GET /api/admin/products — all products incl. inactive
-  listProducts: async (): Promise<any[]> => {
-    const res = await request<{ data: any[] }>('/admin/products', { auth: true });
-    return res?.data || [];
-  },
-
   // POST /api/admin/products
   createProduct: async (fields: Record<string, any>) => {
     const slug = (fields.name || 'produk')

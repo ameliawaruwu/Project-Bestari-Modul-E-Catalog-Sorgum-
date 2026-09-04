@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { Product, Article, FaqItem, User, LoginPayload, RegisterPayload, AuthResponse } from '../types';
+import { Product, Article, FaqItem, User, LoginPayload, AuthResponse } from '../types';
 import { BannerSlide } from '../types/admin';
 import { productApi } from '../api/productApi';
 import { articleApi } from '../api/articleApi';

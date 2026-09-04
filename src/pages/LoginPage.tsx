@@ -4,16 +4,12 @@ import { useApp } from '../context/AppContext';
 
 interface LoginPageProps {
   onLoginSuccess: (user: User) => void;
-  onNavigateRegister: () => void;
   onNavigateHome: () => void;
-  onNavigateForgot: () => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
   onLoginSuccess,
-  onNavigateRegister,
   onNavigateHome,
-  onNavigateForgot,
 }) => {
   const { t, login, currentUser } = useApp();
   const [email, setEmail] = useState('');
@@ -177,7 +173,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               </div>
             </div>
 
-            {/* Extra Options Row: Ingat Saya & Lupa Password */}
+            {/* Extra Options Row: Ingat Saya */}
             <div className="flex items-center justify-between pt-1 text-xs font-medium">
               <label className="flex items-center gap-2 cursor-pointer select-none text-[#556353]">
                 <input
@@ -188,16 +184,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 />
                 <span>{t('Ingat Saya', 'Remember Me')}</span>
               </label>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onNavigateForgot();
-                }}
-                className="text-[#1F5132] font-bold hover:underline transition-all"
-              >
-                Lupa Password?
-              </a>
             </div>
 
             {/* Primary Submit Button */}

@@ -35,16 +35,6 @@ export const config = {
     adminWhatsapp: process.env.ECATALOG_BESTARI_ADMIN_WA || '6281234567890',
   },
 
-  // GoWA webhook untuk notifikasi WhatsApp (lupa password OTP, dll)
-  waWebhook: {
-    url: process.env.GOWA_WEBHOOK_URL || 'https://kroomhook.kroombox.com/notify',
-  },
-
-  // Password reset (OTP via WhatsApp)
-  passwordReset: {
-    otpTtlMinutes: parseInt(process.env.ECATALOG_BESTARI_OTP_TTL_MINUTES || '5', 10),
-  },
-
   // Origin yang di-allow CORS (dipisah koma). Default: FE dev (vite).
   corsOrigins: (process.env.ECATALOG_BESTARI_CORS_ORIGINS || 'http://localhost:3000')
     .split(',')

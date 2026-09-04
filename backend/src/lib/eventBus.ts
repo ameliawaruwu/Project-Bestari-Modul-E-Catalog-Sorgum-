@@ -50,7 +50,6 @@ export const EVENTS = {
   BANNERS: 'banners',
   LANDING: 'landing',
   SETTINGS: 'settings',
-  USERS: 'users',
 } as const;
 
 export type EventType = (typeof EVENTS)[keyof typeof EVENTS];

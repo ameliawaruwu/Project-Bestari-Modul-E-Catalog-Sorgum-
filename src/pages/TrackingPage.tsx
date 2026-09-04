@@ -8,6 +8,26 @@ export const TrackingPage: React.FC = () => {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<Array<{ resi: string; at: number }>>([]);
+  const [courier, setCourier] = useState('');
+
+  // Kode ekspedisi (format adjisoft/cekresi.com) — dipakai sbg hint agar tracking akurat.
+  // KOSONG = auto-detect (cekresi.com menebak sendiri).
+  const COURIER_OPTIONS: Array<{ code: string; label: string }> = [
+    { code: 'JNE', label: 'JNE' },
+    { code: 'JT', label: 'J&T Express' },
+    { code: 'SPX', label: 'SiCepat / Shopee Express' },
+    { code: 'TIKI', label: 'TIKI' },
+    { code: 'POS', label: 'POS Indonesia' },
+    { code: 'NINJA', label: 'Ninja Xpress' },
+    { code: 'LIONPARCEL', label: 'Lion Parcel' },
+    { code: 'ANTERAJA', label: 'Anteraja' },
+    { code: 'WAHANA', label: 'Wahana' },
+    { code: 'CITYLINK', label: 'CityLink' },
+    { code: 'IDEXPRESS', label: 'ID Express' },
+    { code: 'REX', label: 'REX Express' },
+    { code: 'JX', label: 'JX' },
+    { code: 'SAP', label: 'SAP Express' },
+  ];
 
   const loadHistory = () => {
     try {
@@ -24,7 +44,7 @@ export const TrackingPage: React.FC = () => {
     loadHistory();
   }, []);
 
-  const trackResi = async (code: string) => {
+  const trackResi = async (code: string, selectedCourier?: string) => {
     const trimmed = code.trim();
     if (!trimmed) {
       setError(t('Masukkan nomor resi pengiriman', 'Enter tracking number'));
@@ -34,7 +54,8 @@ export const TrackingPage: React.FC = () => {
     setError(null);
     setResult(null);
     try {
-      const res = await fetch(`/api/tracking/${encodeURIComponent(trimmed)}`);
+      const qs = selectedCourier ? `?courier=${encodeURIComponent(selectedCourier)}` : '';
+      const res = await fetch(`/api/tracking/${encodeURIComponent(trimmed)}${qs}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || t('Gagal melacak resi', 'Failed to track package'));
       if (json?.status === 500 || json?.error) throw new Error(json?.message || json?.error);
@@ -59,7 +80,7 @@ export const TrackingPage: React.FC = () => {
 
   const handleCheck = (e: React.FormEvent) => {
     e.preventDefault();
-    trackResi(resi);
+    trackResi(resi, courier || undefined);
   };
 
   const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
@@ -118,6 +139,39 @@ export const TrackingPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Pilihan Ekspedisi — bantu cek-resi menebak kurir dengan benar */}
+          <div>
+            <label className="block text-xs sm:text-sm font-bold text-[#14331C] dark:text-[#F4F8F3] mb-2 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-base text-[#245B3A] dark:text-[#86EFAC]">
+                local_shipping
+              </span>
+              <span>{t('Ekspedisi (Opsional)', 'Courier (Optional)')}</span>
+            </label>
+            <div className="relative">
+              <select
+                value={courier}
+                onChange={(e) => setCourier(e.target.value)}
+                className="w-full appearance-none pl-4 pr-12 py-3.5 rounded-2xl border border-[#C5D8C1] dark:border-white/20 bg-[#F9FBF7] dark:bg-[#122316] text-sm text-[#14331C] dark:text-white font-semibold focus:outline-none focus:border-[#245B3A] dark:focus:border-[#86EFAC] transition-all cursor-pointer"
+              >
+                <option value="">{t('Deteksi Otomatis', 'Auto-detect')}</option>
+                {COURIER_OPTIONS.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#556353] dark:text-white/40 pointer-events-none">
+                expand_more
+              </span>
+            </div>
+            <p className="text-[10px] text-[#556353] dark:text-white/50 mt-1.5">
+              {t(
+                'Jika resi tidak terbaca, pilih ekspedisi yang sesuai agar pelacakan lebih akurat.',
+                "If tracking fails, select the right courier for more accurate results."
+              )}
+            </p>
+          </div>
+
           <button
             type="submit"
             disabled={loading || !resi.trim()}
@@ -150,7 +204,7 @@ export const TrackingPage: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setResi(item.resi);
-                  trackResi(item.resi);
+                  trackResi(item.resi, courier || undefined);
                 }}
                 className="font-mono font-medium px-2.5 py-1 rounded-lg bg-[#F2F7F0] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] hover:bg-[#245B3A] hover:text-white dark:hover:bg-[#245B3A] transition-colors cursor-pointer border border-[#C5D8C1]/60 dark:border-white/10"
               >
