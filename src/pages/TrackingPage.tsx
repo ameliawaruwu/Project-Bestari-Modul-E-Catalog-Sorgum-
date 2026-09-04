@@ -10,24 +10,27 @@ export const TrackingPage: React.FC = () => {
   const [history, setHistory] = useState<Array<{ resi: string; at: number }>>([]);
   const [courier, setCourier] = useState('');
 
-  // Kode ekspedisi umum (format adjisoft/cekresi.com) — muncul di hampir semua format
-  // nomor resi cekresi.com. Default = KOSONG (auto-detect): cekresi.com menebak kurir
-  // dari nomor resi; dropdown ini hanya hint bila auto-detect gagal.
-  // CATATAN: cekresi.com memfilter daftar kurir berdasarkan format nomor resi, jadi
-  // daftar di bawah bukan daftar lengkap — hanya kurir yang paling sering tersedia.
+  // 14 ekspedisi utama — persis menu cekresi.com (daftar-jasa-pengiriman).
+  // Kode = kode yang dikenali cekresi.com (bukan tebakan): J&T Express = JET,
+  // J&T Cargo = JTCARGO, SiCepat = SICEPAT, dst. Default = KOSONG (auto-detect):
+  // cekresi.com menebak kurir dari nomor resi; dropdown ini hint bila gagal.
+  // CATATAN: cekresi.com memfilter daftar kurir per format nomor resi — daftar
+  // di bawah ekspedisi utama yang hampir selalu tersedia.
   const COURIER_OPTIONS: Array<{ code: string; label: string }> = [
-    { code: 'JNE', label: 'JNE' },
-    { code: 'JT', label: 'J&T Express' },
-    { code: 'SPX', label: 'SiCepat / Shopee Express' },
-    { code: 'TIKI', label: 'TIKI' },
-    { code: 'POS', label: 'POS Indonesia' },
-    { code: 'NINJA', label: 'Ninja Xpress' },
+    { code: 'JET', label: 'J&T Express' },
+    { code: 'JNE', label: 'JNE Express' },
+    { code: 'SPX', label: 'SPX / Shopee Express' },
+    { code: 'JTCARGO', label: 'J&T Cargo' },
+    { code: 'SICEPAT', label: 'SiCepat' },
     { code: 'LIONPARCEL', label: 'Lion Parcel' },
-    { code: 'SAP', label: 'SAP Express' },
+    { code: 'POS', label: 'Pos Indonesia' },
+    { code: 'TIKI', label: 'TIKI' },
     { code: 'ANTERAJA', label: 'Anteraja' },
-    { code: 'JX', label: 'JX' },
-    { code: 'JET', label: 'JET Express' },
     { code: 'WAHANA', label: 'Wahana' },
+    { code: 'INDAH', label: 'Indah Logistik Cargo' },
+    { code: 'NINJA', label: 'Ninja Xpress' },
+    { code: 'IDEXPRESS', label: 'ID Express' },
+    { code: 'PAXEL', label: 'Paxel' },
   ];
 
   const loadHistory = () => {

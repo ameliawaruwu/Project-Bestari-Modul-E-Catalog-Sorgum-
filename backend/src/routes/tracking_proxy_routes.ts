@@ -3,26 +3,47 @@ import { Router, Request, Response } from 'express';
 const router = Router();
 
 // Kode ekspedisi yang dikenal layanan cek-resi (adjisoft/cekresi.com, alur baru).
+// Disinkronkan dengan daftar https://cekresi.com/daftar-jasa-pengiriman/ (Juni 2026).
 // Whitelist ini mencegah nilai arbitrer dikirim ke layanan eksternal.
 const COURIER_CODES = new Set([
-  'JNE', 'JNE2ALT', 'JT', 'SPX', 'TIKI', 'POS', 'NINJA', 'NIN', 'LIONPARCEL', 'LION',
-  'ANTERAJA', 'AXA', 'WAHANA', 'WAH', 'CITYLINK', 'RCL', 'JX', 'SAP', 'JET', 'IDEXPRESS',
-  'IDE', 'REX', 'KGX', 'ZDEX', 'KERRY', 'SF', 'OEXPRESS', 'QRIM', 'ARK', 'BEACUKAI', 'PCP',
-  'JDL', 'ROSALIA', 'INDOPAKET', 'PAHALA', 'KALOG', 'PAXEL', 'NSS', 'LWE', 'FIRST', 'INDAH',
-  'JTC', 'J&T', 'ANTARAN',
+  // 14 ekspedisi utama (menu cekresi.com)
+  'JNE', 'SPX', 'NINJA', 'LIONPARCEL', 'POS', 'TIKI', 'ANTERAJA', 'WAHANA',
+  'INDAH', 'IDEXPRESS', 'PAXEL', 'SICEPAT', 'JET', 'JTCARGO',
+  // Ekspedisi lain yang didukung cekresi.com (daftar jasa pengiriman)
+  'JNE2ALT', 'WAHANA2ALT', 'SENTRALCARGO', 'ACOMMERCE', 'GTL', 'JANIO',
+  'JETEXPRESS', 'PCP', 'NCS', 'NSS', 'RCL', 'QRIM', 'ARK', 'LWE', 'BEACUKAI',
+  'KERRY', 'SF', 'EMS', 'JDL', 'JX', 'QUANTIUM', 'ESL', 'ETOBEE', 'KGP', 'KGX',
+  'BARAKA', 'POSLAJU', 'CHOIR', 'YATAMA', 'ZDEX', 'ATEX', 'OEXPRESS', 'RPX',
+  'REX', 'DUASATU', 'IKEA', 'SKYNET', 'ASP', 'ROSALIA', 'HERONA', 'FIRST',
+  'ANTARAN', 'KALOG', 'INDOPAKET', 'CITYLINK', 'PAHALA', 'JTC',
+  // Alias / kode lama yang masih mungkin dikirim
+  'JT', 'NIN', 'LION', 'AXA', 'WAH', 'IDE', 'J&T', 'SAP', 'JEXPRESS', 'LEX',
 ]);
 
 // Terjemahan alias umum → kode baku (dipakai kalau FE kirim nama, bukan kode).
 // NOTE: normalizeCourier cek COURIER_CODES (uppercase) DULU, jadi alias di sini
 // hanya perlu spelling yang TIDAK ada di COURIER_CODES (nama lengkap ekspedisi).
 const COURIER_ALIASES: Record<string, string> = {
-  'jnt': 'JT',
-  'sicepat': 'SPX',
+  'jnt': 'JET',
+  'j&t': 'JET',
+  'j&t express': 'JET',
+  'sicepat': 'SICEPAT',
+  'shopee express': 'SPX',
   'pos indonesia': 'POS',
   'ninja xpress': 'NINJA',
   'lion parcel': 'LIONPARCEL',
   'id express': 'IDEXPRESS',
-  'jnt cargo': 'JTC',
+  'jnt cargo': 'JTCARGO',
+  'j&t cargo': 'JTCARGO',
+  'indah cargo': 'INDAH',
+  'indah logistik': 'INDAH',
+  'wahana': 'WAHANA',
+  'standard express': 'LWE',
+  'citylink': 'CITYLINK',
+  'city link': 'CITYLINK',
+  '21 express': 'DUASATU',
+  'j express': 'JX',
+  'kirim express': 'REX',
 };
 
 function normalizeCourier(raw: string): string {
