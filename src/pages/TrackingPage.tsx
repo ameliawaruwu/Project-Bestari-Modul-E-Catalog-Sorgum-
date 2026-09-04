@@ -14,7 +14,7 @@ export const TrackingPage: React.FC = () => {
   // Semua ekspedisi yang didukung cekresi.com (61) — sinkron dengan
   // https://cekresi.com/daftar-jasa-pengiriman/. 14 pertama = menu utama
   // cekresi.com, sisanya ekspedisi lain yang tetap bisa dilacak.
-  // Default = KOSONG (auto-detect): cekresi.com menebak kurir dari nomor resi.
+  // User WAJIB pilih ekspedisi (auto-detect dihapus, keputusan user 2026-09-04).
   const COURIER_OPTIONS: Array<{ code: string; label: string }> = [
     { code: 'JET', label: 'J&T Express' },
     { code: 'JNE', label: 'JNE Express' },
@@ -83,6 +83,10 @@ export const TrackingPage: React.FC = () => {
     const trimmed = code.trim();
     if (!trimmed) {
       setError(t('Masukkan nomor resi pengiriman', 'Enter tracking number'));
+      return;
+    }
+    if (!selectedCourier) {
+      setError(t('Silakan pilih ekspedisi terlebih dahulu', 'Please select a courier first'));
       return;
     }
     setLoading(true);
@@ -171,7 +175,7 @@ export const TrackingPage: React.FC = () => {
               <span className="material-symbols-outlined text-base text-[#245B3A] dark:text-[#86EFAC]">
                 local_shipping
               </span>
-              <span>{t('Ekspedisi (Opsional)', 'Courier (Optional)')}</span>
+              <span>{t('Ekspedisi', 'Courier')}</span>
             </label>
 
             {/* Tombol pilih ekspedisi */}
@@ -190,8 +194,8 @@ export const TrackingPage: React.FC = () => {
                   </>
                 ) : (
                   <span className="flex items-center gap-2 text-[#556353] dark:text-white/60">
-                    <span className="material-symbols-outlined text-base">auto_awesome</span>
-                    <span>{t('Deteksi Otomatis', 'Auto-detect')}</span>
+                    <span className="material-symbols-outlined text-base">local_shipping</span>
+                    <span>{t('Pilih Ekspedisi', 'Select courier')}</span>
                   </span>
                 )}
               </span>
@@ -219,20 +223,6 @@ export const TrackingPage: React.FC = () => {
 
                 {/* Daftar ekspedisi */}
                 <div className="max-h-64 overflow-y-auto p-2.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {/* Opsi auto-detect selalu di atas */}
-                  <button
-                    type="button"
-                    onClick={() => { setCourier(''); setCourierOpen(false); }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-left transition-all cursor-pointer border ${
-                      !courier
-                        ? 'bg-[#245B3A] text-white border-[#245B3A] dark:bg-[#245B3A] dark:text-white'
-                        : 'bg-white dark:bg-[#0E1A11] text-[#14331C] dark:text-white border-[#E2EFE0] dark:border-white/10 hover:border-[#245B3A]/50'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-base shrink-0">auto_awesome</span>
-                    <span className="truncate">{t('Deteksi Otomatis', 'Auto-detect')}</span>
-                  </button>
-
                   {COURIER_OPTIONS.filter(c =>
                     !courierSearch ||
                     c.label.toLowerCase().includes(courierSearch.toLowerCase()) ||
@@ -259,15 +249,15 @@ export const TrackingPage: React.FC = () => {
                 {/* Jumlah ekspedisi */}
                 <div className="px-4 py-2 border-t border-[#E2EFE0] dark:border-white/10 text-[10px] text-[#556353] dark:text-white/50 flex items-center justify-between">
                   <span>{t('Semua ekspedisi didukung cekresi.com', 'All couriers supported by cekresi.com')}</span>
-                  <span>{COURIER_OPTIONS.length + 1} {t('opsi', 'options')}</span>
+                  <span>{COURIER_OPTIONS.length} {t('opsi', 'options')}</span>
                 </div>
               </div>
             )}
 
             <p className="text-[10px] text-[#556353] dark:text-white/50 mt-1.5">
               {t(
-                'Jika resi tidak terbaca, pilih ekspedisi yang sesuai agar pelacakan lebih akurat.',
-                "If tracking fails, select the right courier for more accurate results."
+                'Pilih ekspedisi sesuai pengiriman Anda agar pelacakan akurat.',
+                'Select the courier of your shipment for accurate tracking.'
               )}
             </p>
           </div>

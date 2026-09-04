@@ -61,12 +61,9 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 1. Hero Banner Section */}
       <HeroBanner
         onShopNow={() => {
-          const target = document.getElementById('product-catalog-section');
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-          } else {
-            setActiveTab('produk');
-          }
+          // Arahkan langsung ke fitur produk (tab Produk), bukan scroll ke section
+          // produk di beranda — keputusan user 2026-09-04.
+          setActiveTab('produk');
         }}
         onReadMore={() => {
           setActiveTab('informasi');
