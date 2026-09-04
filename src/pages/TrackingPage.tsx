@@ -9,13 +9,13 @@ export const TrackingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<Array<{ resi: string; at: number }>>([]);
   const [courier, setCourier] = useState('');
+  const [courierOpen, setCourierOpen] = useState(false);
+  const [courierSearch, setCourierSearch] = useState('');
 
-  // 14 ekspedisi utama — persis menu cekresi.com (daftar-jasa-pengiriman).
-  // Kode = kode yang dikenali cekresi.com (bukan tebakan): J&T Express = JET,
-  // J&T Cargo = JTCARGO, SiCepat = SICEPAT, dst. Default = KOSONG (auto-detect):
-  // cekresi.com menebak kurir dari nomor resi; dropdown ini hint bila gagal.
-  // CATATAN: cekresi.com memfilter daftar kurir per format nomor resi — daftar
-  // di bawah ekspedisi utama yang hampir selalu tersedia.
+  // Semua ekspedisi yang didukung cekresi.com (61) — sinkron dengan
+  // https://cekresi.com/daftar-jasa-pengiriman/. 14 pertama = menu utama
+  // cekresi.com, sisanya ekspedisi lain yang tetap bisa dilacak.
+  // Default = KOSONG (auto-detect): cekresi.com menebak kurir dari nomor resi.
   const COURIER_OPTIONS: Array<{ code: string; label: string }> = [
     { code: 'JET', label: 'J&T Express' },
     { code: 'JNE', label: 'JNE Express' },
@@ -31,6 +31,53 @@ export const TrackingPage: React.FC = () => {
     { code: 'NINJA', label: 'Ninja Xpress' },
     { code: 'IDEXPRESS', label: 'ID Express' },
     { code: 'PAXEL', label: 'Paxel' },
+    { code: 'ACOMMERCE', label: 'Acommerce' },
+    { code: 'ANTARAN', label: 'Antaran Express' },
+    { code: 'ARK', label: 'ARK Xpress' },
+    { code: 'ASP', label: 'ASP Express' },
+    { code: 'ATEX', label: 'AlfaTrex' },
+    { code: 'BARAKA', label: 'Baraka Express' },
+    { code: 'BEACUKAI', label: 'Luar Negeri / Bea Cukai' },
+    { code: 'CHOIR', label: 'Choir / Fia Express' },
+    { code: 'CITYLINK', label: 'CityLink Express' },
+    { code: 'DUASATU', label: '21 Express' },
+    { code: 'EMS', label: 'EMS' },
+    { code: 'ESL', label: 'ESL Express' },
+    { code: 'ETOBEE', label: 'Etobee' },
+    { code: 'FIRST', label: 'First Logistics' },
+    { code: 'GTL', label: 'GTL (GoTo Logistics)' },
+    { code: 'HERONA', label: 'Herona Express' },
+    { code: 'IKEA', label: 'IKEA' },
+    { code: 'INDOPAKET', label: 'Indopaket' },
+    { code: 'JANIO', label: 'Janio Asia' },
+    { code: 'JDL', label: 'JDL Express' },
+    { code: 'JETEXPRESS', label: 'JET Express' },
+    { code: 'JX', label: 'JX / J-Express' },
+    { code: 'KALOG', label: 'KALOG (KAI Logistik)' },
+    { code: 'KERRY', label: 'Kerry Express' },
+    { code: 'KGP', label: 'KGP (Kerta Gaya Pusaka)' },
+    { code: 'KGX', label: 'KGXpress' },
+    { code: 'LEX', label: 'Lazada Express' },
+    { code: 'LWE', label: 'Standard Express / LWE' },
+    { code: 'NCS', label: 'NCS' },
+    { code: 'NEX', label: 'NEX' },
+    { code: 'NSS', label: 'NSS Express' },
+    { code: 'OEXPRESS', label: 'OExpress' },
+    { code: 'PAHALA', label: 'Pahala Express' },
+    { code: 'PCP', label: 'PCP Express' },
+    { code: 'POSLAJU', label: 'PosLaju' },
+    { code: 'QRIM', label: 'QRIM Express' },
+    { code: 'QUANTIUM', label: 'Quantium Solutions' },
+    { code: 'RCL', label: 'RCL Red Carpet Logistics' },
+    { code: 'REX', label: 'REX Indonesia' },
+    { code: 'ROSALIA', label: 'Rosalia Express' },
+    { code: 'RPX', label: 'RPX Holding' },
+    { code: 'SAP', label: 'SAP Express' },
+    { code: 'SENTRALCARGO', label: 'Sentral Cargo' },
+    { code: 'SF', label: 'SF Express' },
+    { code: 'SKYNET', label: 'SkyNet' },
+    { code: 'YATAMA', label: 'Yatama Air' },
+    { code: 'ZDEX', label: 'ZDEX (Zalora)' },
   ];
 
   const loadHistory = () => {
@@ -151,23 +198,97 @@ export const TrackingPage: React.FC = () => {
               </span>
               <span>{t('Ekspedisi (Opsional)', 'Courier (Optional)')}</span>
             </label>
-            <div className="relative">
-              <select
-                value={courier}
-                onChange={(e) => setCourier(e.target.value)}
-                className="w-full appearance-none pl-4 pr-12 py-3.5 rounded-2xl border border-[#C5D8C1] dark:border-white/20 bg-[#F9FBF7] dark:bg-[#122316] text-sm text-[#14331C] dark:text-white font-semibold focus:outline-none focus:border-[#245B3A] dark:focus:border-[#86EFAC] transition-all cursor-pointer"
-              >
-                <option value="">{t('Deteksi Otomatis', 'Auto-detect')}</option>
-                {COURIER_OPTIONS.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#556353] dark:text-white/40 pointer-events-none">
+
+            {/* Tombol pilih ekspedisi */}
+            <button
+              type="button"
+              onClick={() => { setCourierOpen(!courierOpen); setCourierSearch(''); }}
+              className="w-full flex items-center justify-between gap-2 pl-4 pr-3 py-3.5 rounded-2xl border border-[#C5D8C1] dark:border-white/20 bg-[#F9FBF7] dark:bg-[#122316] text-sm text-[#14331C] dark:text-white font-semibold focus:outline-none focus:border-[#245B3A] dark:focus:border-[#86EFAC] transition-all cursor-pointer hover:border-[#245B3A]/60"
+            >
+              <span className="flex items-center gap-2 truncate">
+                {courier ? (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] shrink-0" />
+                    <span className="truncate">
+                      {COURIER_OPTIONS.find(c => c.code === courier)?.label || courier}
+                    </span>
+                  </>
+                ) : (
+                  <span className="flex items-center gap-2 text-[#556353] dark:text-white/60">
+                    <span className="material-symbols-outlined text-base">auto_awesome</span>
+                    <span>{t('Deteksi Otomatis', 'Auto-detect')}</span>
+                  </span>
+                )}
+              </span>
+              <span className={`material-symbols-outlined text-[#556353] dark:text-white/40 transition-transform ${courierOpen ? 'rotate-180' : ''}`}>
                 expand_more
               </span>
-            </div>
+            </button>
+
+            {/* Panel pilih ekspedisi (collapsible) */}
+            {courierOpen && (
+              <div className="mt-2 rounded-2xl border border-[#C5D8C1] dark:border-white/20 bg-[#F9FBF7] dark:bg-[#122316] overflow-hidden animate-fadeIn">
+                {/* Kolom pencarian */}
+                <div className="p-2.5 border-b border-[#E2EFE0] dark:border-white/10 relative">
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-base text-[#556353] dark:text-white/40 pointer-events-none">
+                    search
+                  </span>
+                  <input
+                    autoFocus
+                    value={courierSearch}
+                    onChange={(e) => setCourierSearch(e.target.value)}
+                    placeholder={t('Cari ekspedisi...', 'Search courier...')}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#C5D8C1]/70 dark:border-white/15 bg-white dark:bg-[#0E1A11] text-xs sm:text-sm text-[#14331C] dark:text-white placeholder:text-[#556353]/50 focus:outline-none focus:border-[#245B3A] dark:focus:border-[#86EFAC] transition-all"
+                  />
+                </div>
+
+                {/* Daftar ekspedisi */}
+                <div className="max-h-64 overflow-y-auto p-2.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {/* Opsi auto-detect selalu di atas */}
+                  <button
+                    type="button"
+                    onClick={() => { setCourier(''); setCourierOpen(false); }}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-left transition-all cursor-pointer border ${
+                      !courier
+                        ? 'bg-[#245B3A] text-white border-[#245B3A] dark:bg-[#245B3A] dark:text-white'
+                        : 'bg-white dark:bg-[#0E1A11] text-[#14331C] dark:text-white border-[#E2EFE0] dark:border-white/10 hover:border-[#245B3A]/50'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-base shrink-0">auto_awesome</span>
+                    <span className="truncate">{t('Deteksi Otomatis', 'Auto-detect')}</span>
+                  </button>
+
+                  {COURIER_OPTIONS.filter(c =>
+                    !courierSearch ||
+                    c.label.toLowerCase().includes(courierSearch.toLowerCase()) ||
+                    c.code.toLowerCase().includes(courierSearch.toLowerCase())
+                  ).map((c) => (
+                    <button
+                      key={c.code}
+                      type="button"
+                      onClick={() => { setCourier(c.code); setCourierOpen(false); }}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-left transition-all cursor-pointer border ${
+                        courier === c.code
+                          ? 'bg-[#245B3A] text-white border-[#245B3A] dark:bg-[#245B3A] dark:text-white'
+                          : 'bg-white dark:bg-[#0E1A11] text-[#14331C] dark:text-white border-[#E2EFE0] dark:border-white/10 hover:border-[#245B3A]/50'
+                      }`}
+                    >
+                      <span className="truncate">{c.label}</span>
+                      {courier === c.code && (
+                        <span className="material-symbols-outlined text-sm shrink-0">check</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Jumlah ekspedisi */}
+                <div className="px-4 py-2 border-t border-[#E2EFE0] dark:border-white/10 text-[10px] text-[#556353] dark:text-white/50 flex items-center justify-between">
+                  <span>{t('Semua ekspedisi didukung cekresi.com', 'All couriers supported by cekresi.com')}</span>
+                  <span>{COURIER_OPTIONS.length + 1} {t('opsi', 'options')}</span>
+                </div>
+              </div>
+            )}
+
             <p className="text-[10px] text-[#556353] dark:text-white/50 mt-1.5">
               {t(
                 'Jika resi tidak terbaca, pilih ekspedisi yang sesuai agar pelacakan lebih akurat.',
