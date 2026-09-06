@@ -337,18 +337,23 @@ export const TrackingPage: React.FC = () => {
 
               {Array.isArray(result.perjalanan) && result.perjalanan.length > 0 ? (
                 <div className="relative">
-                  {/* Garis vertikal kontinu — center sejajar dengan bullet (left 4px + 1px = center 5px) */}
+                  {/* Garis vertikal kontinu — center di 5px sejajar sumbu bullet (bullet: left 0 + 10px/2) */}
                   <span
                     aria-hidden
-                    className="absolute left-[4px] top-[9px] bottom-[9px] w-0.5 bg-[#C5D8C1] dark:bg-white/20 rounded-full"
+                    className="absolute left-[4px] top-0 bottom-0 w-[2px] bg-[#C5D8C1] dark:bg-white/20 rounded-full"
                   />
-                  <div className="space-y-7">
+                  <div className="space-y-9">
                     {result.perjalanan.map((ev: any, i: number) => (
-                      <div key={i} className="relative pl-9">
-                        {/* Bullet point */}
-                        <span className="absolute left-0 top-[4px] w-2.5 h-2.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]" />
+                      <div key={i} className="relative pl-12">
                         <p className="text-[11px] font-mono text-[#556353] dark:text-white/50">{ev.tanggal || ev.event_date || '-'}</p>
-                        <p className="text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white mt-1">{ev.keterangan || ev.description || ''}</p>
+                        <p className="relative mt-1 text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white">
+                          {/* Bullet sejajar baris pertama TEKS (bukan tanggal) */}
+                          <span
+                            aria-hidden
+                            className="absolute -left-12 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]"
+                          />
+                          {ev.keterangan || ev.description || ''}
+                        </p>
                       </div>
                     ))}
                   </div>
