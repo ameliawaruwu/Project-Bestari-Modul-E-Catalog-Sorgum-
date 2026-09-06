@@ -58,17 +58,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // Badge options (dari Kelola Badge — sinkron ke dropdown produk).
-  // (H4: Kelola Kategori dihapus — kategori bukan fitur mandiri lagi.)
-  const [badgeOptions, setBadgeOptions] = useState<string[]>([]);
+  // Kategori options (dari endpoint publik — dipakai dropdown kategori di form produk).
   const [categoryOptions, setCategoryOptions] = useState<{ id: number; name: string; slug: string }[]>([]);
 
-  const loadBadgeOptions = async () => {
+  const loadCategoryOptions = async () => {
     try {
-      const { badgeAdminApi } = await import('../api/adminApi');
-      const badges = await badgeAdminApi.list();
-      setBadgeOptions(badges.filter((b) => b.is_active).map((b) => b.name));
-      // Kategori: pertahankan dari endpoint publik (produk masih pakai kategori)
       const res = await fetch('/api/categories');
       const cats = await res.json();
       setCategoryOptions((cats?.data || []).map((c: any) => ({ id: c.id, name: c.name, slug: c.slug })));
@@ -78,7 +72,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   useEffect(() => {
-    loadBadgeOptions();
+    loadCategoryOptions();
   }, []);
 
   // Banner ADMIN: fetch dari /api/admin/banners (semua, termasuk nonaktif).
@@ -136,6 +130,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         quote: a.quote || '',
         facts: a.facts ? (typeof a.facts === 'string' ? JSON.parse(a.facts) : a.facts) : undefined,
         isPublished: !!a.is_published,
+        productIds: Array.isArray(a.product_ids) ? a.product_ids.map((id: any) => Number(id)) : [],
       }));
       setAdminArticles(mapped);
     } catch {
@@ -290,7 +285,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     price: number;
     unitInfo: string;
     weight: string;
-    badge?: string | '';
+    waContact?: string;
     image: string;
     stock: number;
     description: string;
@@ -340,7 +335,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           attributes: data.attributes || null,
           gluten_free: data.glutenFree ?? false,
           organic: data.organic ?? false,
-          badge: data.badge || null,
+          wa_contact: data.waContact || null,
         });
         // Gambar baru (URL hasil upload) → daftarkan ke product_images.
         // Hanya kalau image BERUBAH dari produk existing (hindari duplikat tiap save).
@@ -372,7 +367,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           attributes: data.attributes || null,
           gluten_free: data.glutenFree ?? false,
           organic: data.organic ?? false,
-          badge: data.badge || null,
+          wa_contact: data.waContact || null,
         });
         // Gambar baru → daftarkan sebagai primary image produk baru
         if (data.image && !data.image.startsWith('data:')) {
@@ -433,6 +428,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     subImage?: string;
     quote?: string;
     excerpt?: string;
+    productIds?: number[];
   }) => {
     try {
       const { articleAdminApi } = await import('../api/adminApi');
@@ -447,8 +443,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           sub_image: data.subImage,
           quote: data.quote,
           excerpt: data.excerpt,
+          product_ids: data.productIds || [],
         });
-        saveArticle(data);
+        saveArticle({ ...data, productIds: data.productIds || [] });
         showToast('Perubahan artikel berhasil disimpan!');
         refreshAdminArticles();
       } else {
@@ -462,8 +459,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           sub_image: data.subImage,
           quote: data.quote,
           excerpt: data.excerpt,
+          product_ids: data.productIds || [],
         });
-        saveArticle(data);
+        saveArticle({ ...data, productIds: data.productIds || [] });
         showToast('Artikel baru berhasil diterbitkan!');
         refreshAdminArticles();
       }
@@ -608,7 +606,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 onSave={handleSaveProduct}
                 onCancel={() => setEditingProduct(null)}
                 showToast={showToast}
-                badgeOptions={badgeOptions}
                 categoryOptions={categoryOptions}
               />
             ) : (
@@ -636,6 +633,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             (editingArticle ? (
               <ArticleFormView
                 initialArticle={editingArticle.article}
+                products={products.filter((p) => p.isActive !== false).map((p) => ({ id: String(p.id), name: p.name, image: p.image || undefined }))}
                 onSave={handleSaveArticle}
                 onCancel={() => setEditingArticle(null)}
                 showToast={showToast}
@@ -674,7 +672,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           {activeNav === 'lain' && (
             <OtherSettingsTab
               showToast={showToast}
-              onBadgesChange={(badges) => setBadgeOptions(badges.filter((b) => b.is_active).map((b) => b.name))}
             />
           )}
         </main>

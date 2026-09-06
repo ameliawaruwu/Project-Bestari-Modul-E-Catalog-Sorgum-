@@ -24,13 +24,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         nonInteractive ? 'cursor-default' : 'cursor-pointer hover:border-[#3A8F4B]/40 dark:hover:border-[#65B86B]/40 transform hover:-translate-y-1'
       }`}
     >
-      {/* Badge Highlight */}
-      {product.badge && (
-        <span className="absolute top-2.5 right-2.5 z-10 bg-[#E8F5E9] dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#3A8F4B]/20 dark:border-[rgba(165,214,167,0.25)] px-2 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[9px] font-extrabold tracking-wider uppercase shadow-2xs">
-          {product.badge}
-        </span>
-      )}
-
       {/* Image Container */}
       <div className="h-44 sm:h-48 overflow-hidden bg-gradient-to-b from-[#F0F8EF] to-[#FFFDF5] dark:bg-[#122316] relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
         {product.image ? (

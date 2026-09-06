@@ -51,12 +51,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     };
   }, [product.id, product.category]);
 
-  const waNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
+  // Nomor tujuan order WA: prioritas nomor pemilik produk (wa_contact), fallback nomor toko global.
+  const rawWaNumber = (product.waContact || shopSettings.whatsappNumber || '').replace(/[^0-9]/g, '').replace(/^0/, '62');
+  const waNumber = rawWaNumber || '';
   const totalPrice = product.price * quantity;
 
   const orderMessageText =
     `Halo Admin Bestari Sorgum, saya ingin memesan produk:\n*${product.name}*\nJumlah: ${quantity} ${product.unitInfo || 'item'}\nTotal: Rp ${totalPrice.toLocaleString('id-ID')}\n\nMohon info ketersediaan dan ongkos kirim. Terima kasih!`;
-  const orderWhatsappUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(orderMessageText)}`;
+  const orderWhatsappUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(orderMessageText)}` : '#';
 
   return (
     <main className="pt-6 sm:pt-8 pb-16 px-4 sm:px-6 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
@@ -320,12 +322,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 }}
                 className="group bg-white dark:bg-[#0E1A11] rounded-[18px] sm:rounded-[22px] overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col relative border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] cursor-pointer hover:border-[#245B3A]/50 dark:hover:border-[#86EFAC]/30 transform hover:-translate-y-1"
               >
-                {rel.badge && (
-                  <span className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] border border-[#245B3A]/20 dark:border-[#86EFAC]/20 px-2 py-0.5 rounded-full font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-extrabold tracking-wider uppercase shadow-2xs">
-                    {rel.badge}
-                  </span>
-                )}
-
                 <div className="aspect-square overflow-hidden bg-[#FAF7EE] dark:bg-[#122316] relative border-b border-[#E2EFE0] dark:border-white/10">
                   <img
                     src={rel.image}

@@ -7,11 +7,14 @@ import { articleApi } from '../api/articleApi';
 interface ArticlesPageProps {
   selectedArticle?: Article | null;
   onClearSelectedArticle?: () => void;
+  /** Dipanggil saat user klik produk terkait di artikel → buka detail produk. */
+  onSelectProduct?: (product: any) => void;
 }
 
 export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   selectedArticle,
   onClearSelectedArticle,
+  onSelectProduct,
 }) => {
   const { t, articles } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
@@ -26,6 +29,26 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
       setActiveArticle(selectedArticle);
     }
   }, [selectedArticle]);
+
+  // Enrich detail artikel (termasuk related_products dari relasi artikel↔produk):
+  // aktifArtikel dari list context tidak membawa produk terkait — fetch detail by slug.
+  useEffect(() => {
+    if (!activeArticle?.slug) return;
+    let cancelled = false;
+    const enrich = async () => {
+      try {
+        const full = await articleApi.getArticleBySlug(activeArticle.slug!);
+        if (full && !cancelled) {
+          setActiveArticle((prev) => (prev && prev.id === full.id ? full : prev));
+        }
+      } catch {
+        // biarkan data yang sudah ada (list) — artikel tetap tampil
+      }
+    };
+    enrich();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeArticle?.id]);
 
   // Articles diambil dari context (AppContext hydrate fetch sekali saat mount).
   // Dulu halaman ini fetch sendiri (getArticles) → dobel request dengan context.
@@ -213,6 +236,60 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             <div className="space-y-6 pt-4 font-['Plus_Jakarta_Sans']">
               {blocks.map((block, idx) => renderBlock(block, idx))}
             </div>
+
+            {/* Produk di Artikel Ini (relasi artikel↔produk) */}
+            {activeArticle.relatedProducts && activeArticle.relatedProducts.length > 0 && onSelectProduct && (
+              <section className="pt-2 border-t border-[#E0E0E0]">
+                <div className="mb-4">
+                  <h3 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl font-bold text-[#1B5E20] flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[#2E7D32]">shopping_bag</span>
+                    {t('Produk di Artikel Ini', 'Products in This Article')}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#555555] mt-0.5">
+                    {t('Langsung pesan produk sorgum yang dibahas di artikel ini.', 'Order the sorghum products featured in this article directly.')}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-5">
+                  {activeArticle.relatedProducts.map((prod) => (
+                    <div
+                      key={prod.id}
+                      onClick={() => onSelectProduct(prod)}
+                      className="group bg-white rounded-2xl overflow-hidden border border-[#E0E0E0] hover:border-[#2E7D32]/40 hover:shadow-md transition-all cursor-pointer flex flex-col"
+                    >
+                      <div className="aspect-[4/3] overflow-hidden bg-[#F7F8F6]">
+                        {prod.image ? (
+                          <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-[#E8F5E9]">
+                            <span className="material-symbols-outlined text-4xl text-[#3A8F4B]">image</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-3 sm:p-4 flex flex-col flex-grow">
+                        <span className="text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider mb-1 font-['Plus_Jakarta_Sans']">
+                          {prod.categoryLabel}
+                        </span>
+                        <h4 className="text-xs sm:text-sm font-bold text-[#1B5E20] line-clamp-2 mb-1 font-['Plus_Jakarta_Sans'] leading-snug group-hover:text-[#2E7D32] transition-colors">
+                          {prod.name}
+                        </h4>
+                        {prod.unitInfo && (
+                          <p className="text-[10px] sm:text-[11px] text-[#555555] font-['Plus_Jakarta_Sans'] mb-2">{prod.unitInfo}</p>
+                        )}
+                        <div className="mt-auto flex items-center justify-between pt-2 border-t border-[#E0E0E0]/70">
+                          <span className="font-mono text-xs sm:text-sm font-extrabold text-[#1B5E20]">
+                            {typeof prod.formattedPrice === 'string'
+                              ? prod.formattedPrice.replace('IDR ', 'Rp ')
+                              : `Rp ${Number(prod.price || 0).toLocaleString('id-ID')}`}
+                          </span>
+                          <span className="material-symbols-outlined text-base text-[#2E7D32] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </article>
 
           {/* Sidebar */}

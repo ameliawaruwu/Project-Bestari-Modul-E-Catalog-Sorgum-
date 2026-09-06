@@ -12,6 +12,8 @@ export type ArticleBlockDraft = {
 
 interface ArticleFormViewProps {
   initialArticle?: ArticleItem | null;
+  /** Daftar produk aktif untuk tag "Produk Terkait" (artikel↔produk). */
+  products?: { id: string; name: string; image?: string }[];
   onSave: (articleData: {
     id?: string;
     title: string;
@@ -25,6 +27,7 @@ interface ArticleFormViewProps {
     subImage?: string;
     quote?: string;
     excerpt?: string;
+    productIds?: number[];
   }) => void;
   onCancel: () => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
@@ -34,6 +37,7 @@ const uid = () => `blk-${Date.now().toString(36)}-${Math.random().toString(36).s
 
 export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
   initialArticle,
+  products = [],
   onSave,
   onCancel,
   showToast,
@@ -45,6 +49,8 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
   const [heroImage, setHeroImage] = useState('');
   const [blocks, setBlocks] = useState<ArticleBlockDraft[]>([]);
   const [uploading, setUploading] = useState(false);
+  // Produk terkait (artikel↔produk): simpan sebagai array number (id BE produk).
+  const [productIds, setProductIds] = useState<number[]>([]);
 
   // Upload gambar via endpoint admin (sama seperti Banner/Product form).
   // Returns URL yang siap disimpan ke field image/image_url.
@@ -63,6 +69,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       // Created at — dari field createdAt/date (format tanggal sudah ID)
       setCreatedAtText(initialArticle.createdAt || initialArticle.date || '');
       setHeroImage(initialArticle.image || '');
+      setProductIds(Array.isArray(initialArticle.productIds) ? initialArticle.productIds.map((id) => Number(id)) : []);
       // Muat content_blocks jika ada; jika tidak, konversi content teks + sub_image + quote → blok
       if (initialArticle.contentBlocks && initialArticle.contentBlocks.length > 0) {
         setBlocks(initialArticle.contentBlocks.map((b) => ({ ...b, id: uid() })));
@@ -88,6 +95,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       setAuthorInput('Tim Nutrisi Sorgum');
       setCreatedAtText('');
       setHeroImage('');
+      setProductIds([]);
       setBlocks([]);
     }
   }, [initialArticle]);
@@ -162,6 +170,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       subImage: undefined,
       quote: undefined,
       excerpt: buildContent().slice(0, 150),
+      productIds,
     });
   };
 
@@ -320,6 +329,66 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
             ) : (
               <div className="rounded-xl border-2 border-dashed border-[#E0E0E0] bg-[#F7F8F6] py-6 text-center text-xs text-[#555555] mt-2">
                 Belum ada gambar judul. Tempel URL di atas untuk pratinjau.
+              </div>
+            )}
+          </div>
+
+          {/* ===== Produk Terkait (artikel↔produk) ===== */}
+          <div className="space-y-2.5 border border-[#E2EFE0] dark:border-white/10 rounded-2xl p-4 sm:p-5 bg-[#FAFCF8] dark:bg-[#0E1A11]">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-sm font-bold text-[#1B5E20] dark:text-[#F4F8F3]">
+                  Produk Terkait di Artikel Ini
+                </label>
+                <p className="text-[11px] text-[#556353] dark:text-white/60 mt-0.5">
+                  Pilih produk sorgum yang dibahas/direkomendasikan artikel. Produk ini tampil di bagian bawah artikel biar pembaca bisa langsung membelinya.
+                </p>
+              </div>
+              {productIds.length > 0 && (
+                <span className="px-2 py-0.5 rounded-md bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] text-[10px] font-extrabold whitespace-nowrap">
+                  {productIds.length} produk
+                </span>
+              )}
+            </div>
+
+            {products.length === 0 ? (
+              <p className="text-xs text-[#C89B3C] bg-[#FFF8E7] dark:bg-[#241E0E] border border-[#F5E6C4] dark:border-white/10 rounded-xl px-3.5 py-3">
+                Belum ada produk aktif. Tambahkan produk dulu di Kelola Produk, lalu kembali ke sini untuk menandai produk terkait.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {products.map((p) => {
+                  const pid = Number(p.id);
+                  const selected = productIds.includes(pid);
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() =>
+                        setProductIds((prev) =>
+                          selected ? prev.filter((x) => x !== pid) : [...prev, pid],
+                        )
+                      }
+                      className={`inline-flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                        selected
+                          ? 'bg-[#2E7D32] border-[#2E7D32] text-white shadow-xs'
+                          : 'bg-white dark:bg-[#162419] border-[#E0E0E0] dark:border-white/15 text-[#556353] dark:text-white/70 hover:border-[#3A8F4B] hover:text-[#1F5132] dark:hover:text-[#86EFAC]'
+                      }`}
+                    >
+                      <span className={`w-5 h-5 rounded-lg overflow-hidden flex-shrink-0 ${selected ? 'bg-white/20' : 'bg-[#EAF6E8] dark:bg-[#152718]'}`}>
+                        {p.image ? (
+                          <img src={p.image} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className={`material-symbols-outlined text-[11px] leading-5 block text-center ${selected ? 'text-white' : 'text-[#3A8F4B]'}`}>shopping_bag</span>
+                        )}
+                      </span>
+                      <span className="max-w-[180px] truncate">{p.name}</span>
+                      {selected && (
+                        <span className="material-symbols-outlined text-sm">check_circle</span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

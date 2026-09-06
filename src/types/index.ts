@@ -4,12 +4,11 @@ export interface Product {
   category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
   categoryLabel: string;
   price: number;
-  formattedPrice: string;
-  unitInfo: string;
-  badge?: string;
+  formattedPrice?: string;
+  unitInfo?: string;
+  weight?: string;
   image: string;
   description: string;
-  weight: string;
   glutenFree: boolean;
   organic: boolean;
   composition?: string;
@@ -19,6 +18,8 @@ export interface Product {
   origin?: string;
   stock?: number;
   isActive?: boolean;
+  /** Nomor WhatsApp pemilik/penjual produk (fallback: nomor global toko). */
+  waContact?: string;
   // Galeri gambar produk (dari product_images, diatur admin di Kelola Produk)
   images?: { id: number; image_url: string; is_primary: number; sort_order: number }[];
 }
@@ -44,6 +45,10 @@ export interface Article {
   subImage?: string;
   quote?: string;
   facts?: Array<{ title: string; desc: string }>;
+  /** Produk yang ditandai admin sebagai terkait artikel (tag manual). */
+  productIds?: number[];
+  /** Produk terkait (lengkap, dari relasi article_products). */
+  relatedProducts?: Product[];
 }
 
 export interface FaqItem {

@@ -17,7 +17,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes } = req.body;
+  const { category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes, wa_contact } = req.body;
 
   if (!category_id || !name || !slug || price === undefined || stock === undefined) {
     res.status(400).json({ error: 'category_id, name, slug, price, stock wajib diisi' });
@@ -40,6 +40,7 @@ router.post('/', async (req: Request, res: Response) => {
       composition: composition || null,
       shelf_life: shelf_life || null,
       attributes: attributes || null,
+      wa_contact: wa_contact || null,
     });
     res.status(201).json({ message: 'Produk berhasil dibuat', data: { id } });
     eventBus.emit(EVENTS.PRODUCTS, { action: 'create', id });

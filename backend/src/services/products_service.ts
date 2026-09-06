@@ -20,7 +20,7 @@ export interface ProductRow {
   primary_image: string | null;
   gluten_free: number;
   organic: number;
-  badge: string | null;
+  wa_contact: string | null;
   created_at: string;
 }
 
@@ -52,7 +52,7 @@ interface CreateProductInput {
   is_featured: boolean;
   gluten_free?: boolean;
   organic?: boolean;
-  badge?: string | null;
+  wa_contact?: string | null;
   composition?: string | null;
   shelf_life?: string | null;
   attributes?: string | null;
@@ -62,7 +62,7 @@ const LIST_SELECT = `
   SELECT p.id, p.name, p.slug, p.description, p.price,
          p.stock, p.weight_spec, p.origin, p.shipping_info, p.composition, p.shelf_life, p.attributes,
          p.is_active, p.is_featured, p.category_id, p.created_at,
-         p.gluten_free, p.organic, p.badge,
+         p.gluten_free, p.organic, p.wa_contact,
          c.name AS category_name,
          (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) AS primary_image
   FROM products p
@@ -183,37 +183,23 @@ export async function getProductByIdPublic(id: number): Promise<ProductDetail | 
 
 // === ADMIN ===
 
-/**
- * Validasi badge: badge produk WAJIB ada di tabel badges (dikelola via Kelola Badge).
- * Kalau badge tidak dikenal → return null (badge yatim dicegah sejak input).
- * Ini mencegah badge "yatim" (string bebas yang tidak bisa dikelola) muncul lagi.
- */
-async function normalizeBadge(badge: string | null | undefined): Promise<string | null> {
-  if (!badge || typeof badge !== 'string' || badge.trim() === '') return null;
-  const trimmed = badge.trim();
-  const [rows] = await dbPool.query('SELECT id FROM badges WHERE name = ? LIMIT 1', [trimmed]);
-  if ((rows as any[]).length === 0) return null;
-  return trimmed;
-}
-
 export async function createProduct(input: CreateProductInput) {
   const { category_id, name, slug, description, stock, weight_spec, origin, is_featured } = input;
   // Harga: FE (admin) adalah single source of truth. Tidak ada diskon lagi —
   // price = harga jual langsung. Kolom original_price/discount_percent sudah
   // tidak ada di skema DB (modul diskon dihapus) — jangan sertakan di INSERT.
   const price = Number(input.price) || 0;
-  const badge = await normalizeBadge(input.badge ?? null);
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, badge, composition, shelf_life, attributes)
+    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, wa_contact, composition, shelf_life, attributes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [category_id, name, slug, description, price, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
-     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, badge, input.composition ?? null, input.shelf_life ?? null,
+     input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.wa_contact ?? null, input.composition ?? null, input.shelf_life ?? null,
      input.attributes ?? null],
   );
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'badge', 'composition', 'shelf_life', 'attributes'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'wa_contact', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   // Harga: simpan persis apa yang FE kirim — FE (admin) adalah single source of truth.
@@ -221,11 +207,6 @@ export async function updateProduct(id: number, input: Partial<CreateProductInpu
   const params: any[] = [];
 
   const cleanInput: Record<string, any> = { ...input };
-  // Normalisasi badge: WAJIB ada di tabel badges (dikelola via Kelola Badge).
-  // Badge tidak dikenal → NULL (cegah badge yatim).
-  if (cleanInput.badge !== undefined) {
-    cleanInput.badge = await normalizeBadge(cleanInput.badge ?? null);
-  }
 
   for (const [key, val] of Object.entries(cleanInput)) {
     if (val !== undefined && ALLOWED_COLUMNS.includes(key)) {

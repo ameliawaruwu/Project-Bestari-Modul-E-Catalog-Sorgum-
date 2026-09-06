@@ -7,8 +7,6 @@ const alterColumns = [
   // products
   { table: 'products', col: 'gluten_free', ddl: 'BOOLEAN NOT NULL DEFAULT TRUE' },
   { table: 'products', col: 'organic', ddl: 'BOOLEAN NOT NULL DEFAULT TRUE' },
-  { table: 'products', col: 'badge', ddl: 'VARCHAR(50) NULL' },
-  { table: 'products', col: 'badge_color', ddl: 'VARCHAR(30) NULL' },
   { table: 'products', col: 'original_price', ddl: 'INT UNSIGNED NULL' },
   { table: 'products', col: 'rating_avg', ddl: 'DECIMAL(3,2) NOT NULL DEFAULT 5.00' },
   { table: 'products', col: 'review_count', ddl: 'INT UNSIGNED NOT NULL DEFAULT 0' },

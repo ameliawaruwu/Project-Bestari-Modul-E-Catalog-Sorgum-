@@ -40,6 +40,8 @@ export interface ArticleItem {
   quote?: string;
   facts?: Array<{ title: string; desc: string }>;
   isPublished?: boolean;
+  /** Id produk yang di-tag ke artikel (relasi artikel↔produk). */
+  productIds?: number[];
 }
 
 export interface FAQItem {

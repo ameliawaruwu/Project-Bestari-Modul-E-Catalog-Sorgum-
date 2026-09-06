@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, ShopSettings } from '../../context/AppContext';
-import BadgeManagement from './BadgeManagement';
 
 interface OtherSettingsTabProps {
   showToast: (msg: string, type?: 'success' | 'error') => void;
-  onBadgesChange?: (badges: { id: number; name: string; is_active: number | boolean }[]) => void;
 }
 
 const PRESET_LOGOS = [
@@ -34,7 +32,7 @@ const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
   storeEmail: '',
 };
 
-export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, onBadgesChange }) => {
+export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast }) => {
   const { shopSettings, saveShopSettings } = useApp();
   const [settings, setSettings] = useState<ShopSettings>(shopSettings || DEFAULT_SETTINGS_FALLBACK);
 
@@ -122,10 +120,10 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
             </ol>
           </nav>
           <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
-            Pengaturan Toko &amp; Badge
+            Pengaturan Toko
           </h2>
           <p className="text-xs text-[#556353] dark:text-white/60 mt-1">
-            Atur tampilan identitas toko, nomor WhatsApp, serta kelola badge highlight produk.
+            Atur tampilan identitas toko dan nomor WhatsApp.
           </p>
         </div>
 
@@ -141,7 +139,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
         </div>
       </div>
 
-      {/* 2-Column Grid: Left (Logo & Info Toko) | Right (Kelola Badge) */}
+      {/* CARD: LOGO & INFORMASI TOKO */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         
         {/* CARD 1 (LEFT): LOGO & INFORMASI TOKO */}
@@ -234,17 +232,11 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
                 className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
               />
               <p className="text-[10px] text-[#556353] dark:text-white/60 mt-1">
-                Digunakan untuk tombol Pesan via WhatsApp di detail produk.
+                Nomor default untuk tombol Pesan via WhatsApp di detail produk. Dipakai hanya jika produk tidak punya nomor pemilik sendiri.
               </p>
             </div>
           </div>
         </div>
-
-        {/* CARD 2 (RIGHT): KELOLA BADGE */}
-        <div>
-          <BadgeManagement showToast={showToast} onBadgesChange={onBadgesChange} />
-        </div>
-
       </div>
     </div>
   );

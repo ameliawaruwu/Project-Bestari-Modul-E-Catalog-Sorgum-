@@ -160,7 +160,7 @@ export function App() {
           <Suspense fallback={<Fallback />}>
             {activeTab === 'beranda' && <HomePage onClickProduct={handleSelectProduct} onSelectArticle={handleSelectArticle} setActiveTab={handleTabChange} searchQuery={searchQuery} />}
             {activeTab === 'produk' && <ProductsPage onClickProduct={handleSelectProduct} searchQuery={searchQuery} />}
-            {activeTab === 'informasi' && <ArticlesPage selectedArticle={selectedArticle} onClearSelectedArticle={() => setSelectedArticle(null)} />}
+            {activeTab === 'informasi' && <ArticlesPage selectedArticle={selectedArticle} onClearSelectedArticle={() => setSelectedArticle(null)} onSelectProduct={handleSelectProduct} />}
             {activeTab === 'faq' && <FaqPage />}
             {activeTab === 'tracking' && <TrackingPage />}
           </Suspense>

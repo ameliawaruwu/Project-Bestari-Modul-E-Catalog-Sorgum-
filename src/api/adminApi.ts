@@ -24,6 +24,7 @@ export const articleAdminApi = {
     sub_image?: string;
     quote?: string;
     facts?: Array<{ title: string; desc: string }>;
+    product_ids?: number[];
   }) => {
     // Backend expects slug too — generate from title
     const slug = fields.title
@@ -47,6 +48,7 @@ export const articleAdminApi = {
         facts: fields.facts,
         author: fields.author,
         is_published: true,
+        product_ids: fields.product_ids || [],
       },
       auth: true,
     });
@@ -87,7 +89,7 @@ export const productAdminApi = {
         is_featured: !!fields.is_featured,
         gluten_free: !!fields.gluten_free,
         organic: !!fields.organic,
-        badge: fields.badge || null,
+        wa_contact: fields.wa_contact || null,
       },
       auth: true,
     });
@@ -178,28 +180,5 @@ export const bannerAdminApi = {  // GET /api/admin/banners
   // DELETE /api/admin/banners/:id
   deleteBanner: async (id: string) => {
     await request(`/admin/banners/${id}`, { method: 'DELETE', auth: true });
-  },
-};
-
-// ─── Badge management (Kelola Badge) ───────────────────────────────────────
-export interface BadgeItem {
-  id: number;
-  name: string;
-  is_active: number | boolean;
-}
-
-export const badgeAdminApi = {
-  list: async (): Promise<BadgeItem[]> => {
-    const res = await request<{ data: BadgeItem[] }>('/admin/badges', { auth: true });
-    return res?.data || [];
-  },
-  create: async (name: string) => {
-    await request('/admin/badges', { method: 'POST', body: { name }, auth: true });
-  },
-  update: async (id: number, name: string, isActive: boolean) => {
-    await request(`/admin/badges/${id}`, { method: 'PUT', body: { name, is_active: isActive }, auth: true });
-  },
-  remove: async (id: number) => {
-    await request(`/admin/badges/${id}`, { method: 'DELETE', auth: true });
   },
 };

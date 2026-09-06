@@ -21,6 +21,8 @@ interface ArticleRow {
   sub_image?: string | null;
   quote?: string | null;
   facts?: string | Array<{ title: string; desc: string }> | null;
+  product_ids?: number[];
+  related_products?: Array<Record<string, any>> | null;
 }
 
 function mapArticle(a: ArticleRow): Article {
@@ -46,6 +48,31 @@ function mapArticle(a: ArticleRow): Article {
     subImage: a.sub_image || undefined,
     quote: a.quote || undefined,
     facts: a.facts ? (typeof a.facts === 'string' ? JSON.parse(a.facts) : a.facts) : undefined,
+    productIds: Array.isArray(a.product_ids) ? a.product_ids : undefined,
+    relatedProducts: Array.isArray(a.related_products) ? a.related_products.map((rp) => mapRelatedProduct(rp)) : undefined,
+  };
+}
+
+// Map row produk terkait (dari relasi article_products) ke shape Product ringkas
+// yang FE butuhkan di kartu produk (id, nama, harga, gambar, kategori).
+function mapRelatedProduct(rp: Record<string, any>): any {
+  const unit = rp.weight_spec || '1kg';
+  return {
+    id: String(rp.id),
+    name: rp.name,
+    price: rp.price,
+    formattedPrice: `IDR ${Number(rp.price || 0).toLocaleString('id-ID')}`,
+    unitInfo: unit,
+    weight: unit,
+    image: rp.primary_image || '',
+    description: '',
+    category: 'beras',
+    categoryLabel: rp.category_name || 'Produk Sorgum',
+    glutenFree: false,
+    organic: false,
+    stock: rp.stock,
+    isActive: !!rp.is_active,
+    waContact: rp.wa_contact || undefined,
   };
 }
 

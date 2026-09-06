@@ -143,4 +143,6 @@ export const enLocale: Record<string, string> = {
   "setiap-kemasan-sorgum-dikemas-dengan-standar-higienis-dan-ka": "Each product is packed securely in sturdy boxes to ensure pristine quality upon arrival.",
   "tim-admin-bestari-siap-membantu-pengecekan-langsung-ke-pihak": "Our team is ready to cross-check directly with couriers to ensure your package arrives promptly.",
   "tujuan-pengiriman": "Destination",
+  "produk-di-artikel-ini": "Products in This Article",
+  "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Order the sorghum products featured in this article directly.",
 };

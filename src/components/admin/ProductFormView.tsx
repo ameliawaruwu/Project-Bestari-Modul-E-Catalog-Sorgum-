@@ -12,7 +12,7 @@ interface ProductFormViewProps {
     price: number;
     unitInfo: string;
     weight: string;
-    badge: string | undefined;
+    waContact?: string;
     image: string;
     stock: number;
     description: string;
@@ -28,8 +28,6 @@ interface ProductFormViewProps {
   }) => void;
   onCancel: () => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
-  /** Opsi badge dinamis dari Kelola Badge (jika ada) */
-  badgeOptions?: string[];
   /** Opsi kategori dinamis dari Kelola Kategori (jika ada) */
   categoryOptions?: { id?: number; name: string; slug: string }[];
 }
@@ -40,7 +38,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   onSave,
   onCancel,
   showToast,
-  badgeOptions,
   categoryOptions,
 }) => {
   const [idInput, setIdInput] = useState('');
@@ -56,7 +53,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [unitInput, setUnitInput] = useState('');
   const [weightInput, setWeightInput] = useState('');
   const [originInput, setOriginInput] = useState('');
-  const [badgeInput, setBadgeInput] = useState<string>('');
+  const [waContactInput, setWaContactInput] = useState('');
   const [imageInput, setImageInput] = useState('');
   const [stockInput, setStockInput] = useState<number | ''>('');
   const [descInput, setDescInput] = useState('');
@@ -92,17 +89,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setUnitInput(initialProduct.unitInfo || '');
       setWeightInput(initialProduct.weight || '');
       setOriginInput(initialProduct.origin || '');
-      setBadgeInput(initialProduct.badge || '');
+      setWaContactInput(initialProduct.waContact || '');
       setImageInput(initialProduct.image || '');
       setStockInput(initialStock);
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
       // Galeri dari DB (product.images) — max 4, urut sort_order
       setGalleryImages((initialProduct.images || []).map((img) => img.image_url).slice(0, 4));
-      // Badge yang sudah tidak terdaftar di Kelola Badge → reset ke kosong (cegah badge yatim tampil)
-      if (initialProduct.badge && badgeOptions && badgeOptions.length > 0 && !badgeOptions.includes(initialProduct.badge)) {
-        setBadgeInput('');
-      }
     } else {
       setIdInput('');
       setNameInput('');
@@ -115,7 +108,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setUnitInput('');
       setWeightInput('');
       setOriginInput('');
-      setBadgeInput('');
+      setWaContactInput('');
       setImageInput('');
       setStockInput('');
       setDescInput('');
@@ -236,7 +229,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       unitInfo: unitInput || `${weightInput || '1kg'} / Premium`,
       weight: weightInput || '1kg',
       origin: originInput,
-      badge: (badgeInput as any) || undefined,
+      waContact: waContactInput || undefined,
       image: finalImage,
       description: descInput,
       shippingInfo: shippingInfoInput,
@@ -389,7 +382,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                         >
                           <span className="material-symbols-outlined text-sm">close</span>
                         </button>
-                        {/* H3-5: badge Utama (index 0) / tombol Jadikan Utama (slot lain) */}
+                        {/* H3-5: gambar Utama (index 0) / tombol Jadikan Utama (slot lain) */}
                         {idx === 0 ? (
                           <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#2E7D32] text-white text-[9px] font-extrabold uppercase tracking-wide shadow">
                             Utama
@@ -489,7 +482,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
               <p className="text-[10px] text-[#555555]">Harga jual produk yang tampil di katalog.</p>
             </div>
 
-            {/* Row 3: Stok & Badge */}
+            {/* Row 3: Stok & Nomor WA */}
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
                 Jumlah Stok (Unit)
@@ -505,23 +498,18 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
-                Badge Highlight Produk
+                Nomor WhatsApp Pemilik Produk
               </label>
-              <select
-                value={badgeInput}
-                onChange={(e) => setBadgeInput(e.target.value)}
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none cursor-pointer"
-              >
-                <option value="">Tidak Ada Badge</option>
-                {(badgeOptions && badgeOptions.length > 0 ? badgeOptions : []).map((b) => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
-              {(!badgeOptions || badgeOptions.length === 0) && (
-                <p className="text-[10px] text-[#C89B3C]">
-                  Belum ada badge. Tambahkan dulu di Kelola Lain → Kelola Badge.
-                </p>
-              )}
+              <input
+                type="tel"
+                value={waContactInput}
+                onChange={(e) => setWaContactInput(e.target.value.replace(/[^0-9]/g, ''))}
+                placeholder="6281234567890 (kosongkan = pakai nomor toko)"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
+              />
+              <p className="text-[10px] text-[#555555]">
+                Nomor tujuan saat pembeli klik "Pesan via WhatsApp" untuk produk ini. Jika kosong, pesanan mengarah ke nomor WhatsApp toko (Pengaturan Toko).
+              </p>
             </div>
           </div>
 

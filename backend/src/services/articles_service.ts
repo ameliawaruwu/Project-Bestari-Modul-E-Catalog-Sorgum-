@@ -1,5 +1,55 @@
 import dbPool from '../lib/db';
 
+// Ambil id produk yang ter-tag ke artikel (relasi article_products).
+async function getProductIdsForArticle(articleId: number): Promise<number[]> {
+  const [rows] = await dbPool.query(
+    'SELECT product_id FROM article_products WHERE article_id = ? ORDER BY id ASC',
+    [articleId],
+  );
+  return (rows as any[]).map((r) => r.product_id);
+}
+
+// Ambil detail produk terkait (aktif) dari relasi article_products.
+async function getRelatedProductsForArticle(articleId: number): Promise<any[]> {
+  const [rows] = await dbPool.query(
+    `SELECT p.id, p.name, p.slug, p.price, p.stock, p.is_active, p.weight_spec,
+            p.wa_contact,
+            (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) AS primary_image,
+            c.name AS category_name
+     FROM article_products ap
+     JOIN products p ON p.id = ap.product_id
+     JOIN categories c ON c.id = p.category_id
+     WHERE ap.article_id = ? AND p.is_active = 1
+     ORDER BY ap.id ASC`,
+    [articleId],
+  );
+  return rows as any[];
+}
+
+// Ganti semua relasi artikel↔produk sekaligus (idempotent, transactional).
+export async function replaceArticleProducts(articleId: number, productIds: number[]) {
+  const clean = (Array.isArray(productIds) ? productIds : [])
+    .map((id) => parseInt(String(id)))
+    .filter((id) => !isNaN(id) && id > 0);
+  const conn = await dbPool.getConnection();
+  try {
+    await conn.beginTransaction();
+    await conn.query('DELETE FROM article_products WHERE article_id = ?', [articleId]);
+    for (const pid of clean) {
+      await conn.query(
+        'INSERT IGNORE INTO article_products (article_id, product_id) VALUES (?, ?)',
+        [articleId, pid],
+      );
+    }
+    await conn.commit();
+  } catch (e) {
+    await conn.rollback();
+    throw e;
+  } finally {
+    conn.release();
+  }
+}
+
 export interface ArticleRow {
   id: number;
   title: string;
@@ -53,18 +103,27 @@ export async function getArticleBySlug(slug: string) {
   if (row.content_blocks && typeof row.content_blocks === 'string') {
     try { row.content_blocks = JSON.parse(row.content_blocks); } catch { row.content_blocks = null; }
   }
-  return row;
+  // Lampirkan produk terkait (relasi article_products) untuk tampil di detail artikel.
+  const article: any = { ...row };
+  article.product_ids = await getProductIdsForArticle(row.id);
+  article.related_products = await getRelatedProductsForArticle(row.id);
+  return article;
 }
 
 export async function getAllArticles() {
   const [rows] = await dbPool.query('SELECT * FROM articles ORDER BY created_at DESC');
   const list = rows as ArticleRow[];
+  const enriched: any[] = [];
   for (const row of list) {
     if (row.content_blocks && typeof row.content_blocks === 'string') {
       try { row.content_blocks = JSON.parse(row.content_blocks); } catch { row.content_blocks = null; }
     }
+    // Lampirkan product_ids (tag produk) — dipakai form edit artikel di admin.
+    const item: any = { ...row };
+    item.product_ids = await getProductIdsForArticle(row.id);
+    enriched.push(item);
   }
-  return list;
+  return enriched;
 }
 
 export async function createArticle(fields: Record<string, any>) {

@@ -143,4 +143,6 @@ export const idLocale: Record<string, string> = {
   "setiap-kemasan-sorgum-dikemas-dengan-standar-higienis-dan-ka": "Setiap kemasan sorgum dikemas dengan standar higienis dan kardus kokoh agar tiba dalam kualitas prima.",
   "tim-admin-bestari-siap-membantu-pengecekan-langsung-ke-pihak": "Tim admin Bestari siap membantu pengecekan langsung ke pihak ekspedisi untuk memastikan paket Anda sampai tepat waktu.",
   "tujuan-pengiriman": "Tujuan Pengiriman",
+  "produk-di-artikel-ini": "Produk di Artikel Ini",
+  "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Langsung pesan produk sorgum yang dibahas di artikel ini.",
 };

@@ -25,7 +25,7 @@ interface ProductRow {
   created_at: string;
   gluten_free?: number | boolean;
   organic?: number | boolean;
-  badge?: string | null;
+  wa_contact?: string | null;
 }
 
 // Map backend category name -> FE category key (contract: src/types/index.ts)
@@ -57,7 +57,6 @@ export function mapProduct(row: ProductRow): Product {
     formattedPrice: formatRupiah(row.price),
     unitInfo: row.weight_spec || weight,
     weight,
-    badge: (row.badge as Product['badge']) || undefined,
     image: row.primary_image || '',
     description: row.description || '',
     glutenFree: !!row.gluten_free,
@@ -69,6 +68,7 @@ export function mapProduct(row: ProductRow): Product {
     origin: row.origin || undefined,
     stock: row.stock,
     isActive: !!row.is_active,
+    waContact: row.wa_contact || undefined,
     // Galeri gambar (hanya ada di detail; list tidak membawa images[])
     images: (row as any).images?.length ? (row as any).images : undefined,
   };

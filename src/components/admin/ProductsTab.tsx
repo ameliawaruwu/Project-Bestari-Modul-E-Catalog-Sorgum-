@@ -134,13 +134,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                     <td className="px-4 py-3">
                       <div className="space-y-1">
                         <p className="font-bold text-[#14331C] dark:text-[#F4F8F3] leading-tight">{prod.name}</p>
-                        <div className="flex flex-wrap gap-1 mt-0.5">
-                          {prod.badge && (
-                            <span className="inline-block text-[9px] font-extrabold uppercase bg-[#FADE88] text-[#8D6B14] px-2 py-0.5 rounded-md leading-none shadow-3xs">
-                              {prod.badge}
-                            </span>
-                          )}
-                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-[#556353] dark:text-white/60 font-semibold text-xs">
