@@ -347,10 +347,14 @@ export const TrackingPage: React.FC = () => {
                       <div key={i} className="relative pl-12">
                         <p className="text-[11px] font-mono text-[#556353] dark:text-white/50">{ev.tanggal || ev.event_date || '-'}</p>
                         <p className="relative mt-1 text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white">
-                          {/* Bullet sejajar baris pertama TEKS (bukan tanggal) */}
+                          {/* Bullet sejajar baris pertama TEKS (bukan tanggal). Item PERTAMA (paling baru) di-highlight */}
                           <span
                             aria-hidden
-                            className="absolute -left-12 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]"
+                            className={`absolute -translate-y-1/2 rounded-full ${
+                              i === 0
+                                ? '-left-[3.1875rem] w-4 h-4 bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11] shadow-[0_0_0_5px_rgba(36,91,58,0.3)] dark:shadow-[0_0_0_5px_rgba(134,239,172,0.3)]'
+                                : '-left-12 w-2.5 h-2.5 bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]'
+                            }`}
                           />
                           {ev.keterangan || ev.description || ''}
                         </p>
