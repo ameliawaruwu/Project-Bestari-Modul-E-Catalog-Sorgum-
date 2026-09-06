@@ -336,14 +336,22 @@ export const TrackingPage: React.FC = () => {
               </h4>
 
               {Array.isArray(result.perjalanan) && result.perjalanan.length > 0 ? (
-                <div className="space-y-3 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#C5D8C1] dark:before:bg-white/20 pl-7">
-                  {result.perjalanan.map((ev: any, i: number) => (
-                    <div key={i} className="relative group">
-                      <div className="absolute -left-[23px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]" />
-                      <p className="text-[11px] font-mono text-[#556353] dark:text-white/50">{ev.tanggal || ev.event_date || '-'}</p>
-                      <p className="text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white mt-0.5">{ev.keterangan || ev.description || ''}</p>
-                    </div>
-                  ))}
+                <div className="relative">
+                  {/* Garis vertikal kontinu — center sejajar dengan bullet (left 4px + 1px = center 5px) */}
+                  <span
+                    aria-hidden
+                    className="absolute left-[4px] top-[9px] bottom-[9px] w-0.5 bg-[#C5D8C1] dark:bg-white/20 rounded-full"
+                  />
+                  <div className="space-y-7">
+                    {result.perjalanan.map((ev: any, i: number) => (
+                      <div key={i} className="relative pl-9">
+                        {/* Bullet point */}
+                        <span className="absolute left-0 top-[4px] w-2.5 h-2.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]" />
+                        <p className="text-[11px] font-mono text-[#556353] dark:text-white/50">{ev.tanggal || ev.event_date || '-'}</p>
+                        <p className="text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white mt-1">{ev.keterangan || ev.description || ''}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <p className="text-xs text-[#556353] dark:text-white/60 italic p-3 bg-[#F9FBF7] dark:bg-[#122316] rounded-xl text-center">
