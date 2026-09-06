@@ -33,7 +33,6 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'beranda', label: t('Beranda', 'Home') },
     { id: 'produk', label: t('Produk', 'Products') },
     { id: 'informasi', label: t('Artikel', 'Articles') },
-    { id: 'faq', label: t('FAQ', 'FAQ') },
     { id: 'tracking', label: t('Lacak Pesanan', 'Track Order') },
   ];
 

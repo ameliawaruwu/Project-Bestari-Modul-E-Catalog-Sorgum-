@@ -39,15 +39,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
         <div className="absolute inset-0 bg-[#3A8F4B]/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-        {/* Sold out badge */}
-        {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-2xs flex items-center justify-center">
-            <span className="px-2.5 py-1 rounded-md bg-[#D32F2F] text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md">
-              {t('Habis', 'Sold Out')}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Details Container */}

@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { Product, Article, FaqItem, User, LoginPayload, AuthResponse } from '../types';
+import { Product, Article, User, LoginPayload, AuthResponse } from '../types';
 import { BannerSlide } from '../types/admin';
 import { productApi } from '../api/productApi';
 import { articleApi } from '../api/articleApi';
-import { faqApi } from '../api/faqApi';
 import { shopSettingsApi, ShopSettings as ApiShopSettings } from '../api/shopSettingsApi';
 import { formatDate } from '../utils/formatDate';
 import { authApi } from '../api/authApi';
@@ -37,13 +36,6 @@ interface AppContextProps {
   products: Product[];
   saveProduct: (productData: any) => void;
   deleteProduct: (id: string) => void;
-
-  // FAQs
-  faqs: FaqItem[];
-  saveFaq: (faqData: any) => Promise<FaqItem>;
-  deleteFaq: (id: string) => Promise<void>;
-  toggleFaqStatus: (id: string) => Promise<void>;
-  reorderFaq: (id: string, direction: 'UP' | 'DOWN') => Promise<void>;
 
   // Articles / Information
   articles: Article[];
@@ -103,8 +95,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [faqs, setFaqs] = useState<FaqItem[]>([]);
-
   const [articles, setArticles] = useState<Article[]>([]);
 
   const [banners, setBanners] = useState<BannerSlide[]>([]);
@@ -169,13 +159,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     }).catch(() => {});
 
-    // FAQs
-    faqApi.getFaqs().then((list) => {
-      if (!cancelled) {
-        setFaqs(list);
-      }
-    }).catch(() => {});
-
     // Shop settings
     shopSettingsApi.getSettingsAsync().then((s) => {
       if (!cancelled) {
@@ -229,9 +212,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const refreshArticles = () => {
       articleApi.getArticles().then((list) => setArticles(list)).catch(() => {});
     };
-    const refreshFaqs = () => {
-      faqApi.getFaqs().then((list) => setFaqs(list)).catch(() => {});
-    };
     const refreshBanners = () => {
       request('/banners').then((res: any) => {
         if (res?.data) {
@@ -252,7 +232,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubs = [
       realtimeApi.on('products', refreshProducts),
       realtimeApi.on('articles', refreshArticles),
-      realtimeApi.on('faqs', refreshFaqs),
       realtimeApi.on('banners', refreshBanners),
       realtimeApi.on('landing', refreshLanding),
       realtimeApi.on('settings', refreshSettings),
@@ -299,10 +278,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Save state helpers to sync automatically
   const updateProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-  };
-
-  const updateFaqs = (newFaqs: FaqItem[]) => {
-    setFaqs(newFaqs);
   };
 
   const updateArticles = (newArticles: Article[]) => {
@@ -411,7 +386,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               glutenFree: !!productData.glutenFree,
               organic: !!productData.organic,
               shippingInfo: productData.shippingInfo,
-              stock: Number(productData.stock) || undefined,
             };
           }
           return p;
@@ -436,7 +410,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           glutenFree: !!productData.glutenFree,
           organic: !!productData.organic,
           shippingInfo: productData.shippingInfo,
-          stock: Number(productData.stock) || undefined,
         };
         updateProducts([newProd, ...products]);
       }
@@ -470,42 +443,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const deleteProduct = (id: string) => {
     const filtered = products.filter((p) => p.id !== id);
     updateProducts(filtered);
-  };
-
-  // FAQ CRUD — SYNC KE BACKEND (sebelumnya localStorage only, hilang pas refresh)
-  const saveFaq = async (faqData: any) => {
-    const saved = await faqApi.saveFaq({
-      id: faqData.id,
-      question: faqData.question,
-      answer: faqData.answer,
-      category: faqData.category || 'Tentang Produk',
-      status: faqData.status || 'AKTIF',
-      order: faqData.order,
-      tags: faqData.tags || [],
-    });
-    // Refresh dari BE biar dapet id asli dari DB
-    const fresh = await faqApi.getAdminFaqs().catch(() => []);
-    if (fresh.length > 0) updateFaqs(fresh);
-    return saved;
-  };
-
-  const deleteFaq = async (id: string) => {
-    await faqApi.deleteFaq(id);
-    const filtered = faqs.filter((f) => f.id !== id);
-    updateFaqs(filtered);
-  };
-
-  const toggleFaqStatus = async (id: string) => {
-    const flipped = await faqApi.toggleStatus(id);
-    if (flipped) {
-      const updated = faqs.map((f) => (f.id === id ? { ...f, status: flipped.status } : f));
-      updateFaqs(updated);
-    }
-  };
-
-  const reorderFaq = async (id: string, direction: 'UP' | 'DOWN') => {
-    const reordered = await faqApi.reorderFaq(id, direction);
-    if (reordered.length > 0) updateFaqs(reordered);
   };
 
   // Article CRUD
@@ -629,11 +566,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         products,
         saveProduct,
         deleteProduct,
-        faqs,
-        saveFaq,
-        deleteFaq,
-        toggleFaqStatus,
-        reorderFaq,
         articles,
         saveArticle,
         deleteArticle,

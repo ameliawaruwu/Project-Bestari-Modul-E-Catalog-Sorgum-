@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getPublishedArticles, getArticleBySlug, getFaqs } from '../services/articles_service';
+import { getPublishedArticles, getArticleBySlug } from '../services/articles_service';
 
 const router = Router();
 
@@ -10,11 +10,6 @@ router.get('/', async (req: Request, res: Response) => {
     parseInt(String(req.query.offset || '0')),
   );
   res.json(result);
-});
-
-router.get('/faq/all', async (_req: Request, res: Response) => {
-  const data = await getFaqs(); // public: cuma AKTIF
-  res.json({ data });
 });
 
 router.get('/:slug', async (req: Request, res: Response) => {

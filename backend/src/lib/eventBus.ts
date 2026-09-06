@@ -46,7 +46,6 @@ export const eventBus = {
 export const EVENTS = {
   PRODUCTS: 'products',
   ARTICLES: 'articles',
-  FAQS: 'faqs',
   BANNERS: 'banners',
   LANDING: 'landing',
   SETTINGS: 'settings',

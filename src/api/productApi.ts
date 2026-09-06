@@ -10,7 +10,6 @@ interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
-  stock: number;
   weight_spec: string | null;
   origin: string | null;
   shipping_info: string | null;
@@ -66,7 +65,6 @@ export function mapProduct(row: ProductRow): Product {
     attributes: row.attributes || undefined,
     shippingInfo: row.shipping_info || 'Dikirim dari Yogyakarta.',
     origin: row.origin || undefined,
-    stock: row.stock,
     isActive: !!row.is_active,
     waContact: row.wa_contact || undefined,
     // Galeri gambar (hanya ada di detail; list tidak membawa images[])

@@ -3,7 +3,6 @@ import { Product } from '../../types';
 
 interface ProductFormViewProps {
   initialProduct?: Product | null;
-  initialStock?: number;
   onSave: (productData: {
     id?: string;
     categoryId?: number;
@@ -14,7 +13,6 @@ interface ProductFormViewProps {
     weight: string;
     waContact?: string;
     image: string;
-    stock: number;
     description: string;
     composition?: string;
     shelfLife?: string;
@@ -34,7 +32,6 @@ interface ProductFormViewProps {
 
 export const ProductFormView: React.FC<ProductFormViewProps> = ({
   initialProduct,
-  initialStock = 100,
   onSave,
   onCancel,
   showToast,
@@ -55,7 +52,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [originInput, setOriginInput] = useState('');
   const [waContactInput, setWaContactInput] = useState('');
   const [imageInput, setImageInput] = useState('');
-  const [stockInput, setStockInput] = useState<number | ''>('');
   const [descInput, setDescInput] = useState('');
   const [shippingInfoInput, setShippingInfoInput] = useState('');
   // Galeri produk (maks 4 gambar, diedit admin): URL gambar galeri + file upload per slot
@@ -91,7 +87,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setOriginInput(initialProduct.origin || '');
       setWaContactInput(initialProduct.waContact || '');
       setImageInput(initialProduct.image || '');
-      setStockInput(initialStock);
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
       // Galeri dari DB (product.images) — max 4, urut sort_order
@@ -110,13 +105,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setOriginInput('');
       setWaContactInput('');
       setImageInput('');
-      setStockInput('');
       setDescInput('');
       setShippingInfoInput('');
       setGalleryImages([]);
       setGalleryFiles([null, null, null, null]);
     }
-  }, [initialProduct, initialStock, categoryOptions]);
+  }, [initialProduct, categoryOptions]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -173,7 +167,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     }
 
     const priceNum = Number(priceInput) || 0;
-    const stockNum = Number(stockInput) || 0;
 
     // Upload galeri: file baru (dataURL) → kompres → upload → URL final.
     // Slot kosong/URL lama dibiarkan (URL lama tidak perlu di-upload ulang).
@@ -222,7 +215,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       name: nameInput,
       category: categoryInput,
       price: priceNum,
-      stock: stockNum,
       composition: compositionInput,
       shelfLife: shelfLifeInput,
       attributes: attributesInput,
@@ -465,7 +457,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Harga */}
+          {/* Row 2: Harga & Nomor WA */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
@@ -480,20 +472,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
               <p className="text-[10px] text-[#555555]">Harga jual produk yang tampil di katalog.</p>
-            </div>
-
-            {/* Row 3: Stok & Nomor WA */}
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1B5E20]">
-                Jumlah Stok (Unit)
-              </label>
-              <input
-                type="number"
-                value={stockInput}
-                onChange={(e) => setStockInput(e.target.value ? Number(e.target.value) : '')}
-                placeholder="100"
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
-              />
             </div>
 
             <div className="space-y-2">

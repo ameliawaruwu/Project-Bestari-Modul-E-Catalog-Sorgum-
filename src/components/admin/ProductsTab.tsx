@@ -113,13 +113,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                 <th className="px-4 py-3.5 text-xs font-extrabold uppercase tracking-wider">NAMA PRODUK</th>
                 <th className="px-4 py-3.5 w-[140px] text-xs font-extrabold uppercase tracking-wider">KATEGORI</th>
                 <th className="px-4 py-3.5 w-[130px] text-xs font-extrabold uppercase tracking-wider">HARGA</th>
-                <th className="px-4 py-3.5 w-[85px] text-xs font-extrabold uppercase tracking-wider">STOK</th>
                 <th className="px-4 py-3.5 text-right w-[110px] text-xs font-extrabold uppercase tracking-wider">AKSI</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E2EFE0] dark:divide-white/10 text-xs sm:text-sm">
               {filteredProducts.map((prod) => {
-                const stock = prod.stock ?? 0;
                 return (
                   <tr key={prod.id} className="hover:bg-[#EAF6E8]/60 dark:hover:bg-[#162B1C]/60 transition-colors">
                     <td className="px-4 py-3">
@@ -141,9 +139,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                     </td>
                     <td className="px-4 py-3 font-bold text-[#1F5132] dark:text-[#86EFAC] font-mono">
                       Rp {prod.price.toLocaleString('id-ID')}
-                    </td>
-                    <td className="px-4 py-3 font-bold text-[#1F5132] dark:text-[#86EFAC]">
-                      {stock} Unit
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-1.5">

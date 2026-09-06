@@ -17,22 +17,20 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes, wa_contact } = req.body;
+  const { category_id, name, slug, description, price, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes, wa_contact } = req.body;
 
-  if (!category_id || !name || !slug || price === undefined || stock === undefined) {
-    res.status(400).json({ error: 'category_id, name, slug, price, stock wajib diisi' });
+  if (!category_id || !name || !slug || price === undefined) {
+    res.status(400).json({ error: 'category_id, name, slug, price wajib diisi' });
     return;
   }
   if (name.length < 2) { res.status(400).json({ error: 'Nama minimal 2 karakter' }); return; }
   if (price < 0) { res.status(400).json({ error: 'Harga tidak boleh negatif' }); return; }
-  if (stock < 0) { res.status(400).json({ error: 'Stok tidak boleh negatif' }); return; }
 
   try {
     const id = await createProduct({
       category_id, name, slug,
       description: description || '',
       price,
-      stock,
       weight_spec: weight_spec || '',
       origin: origin || '',
       shipping_info: shipping_info || null,

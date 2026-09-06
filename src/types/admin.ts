@@ -5,7 +5,6 @@ export type AdminActiveNav =
   | 'landing'
   | 'produk'
   | 'info'
-  | 'faq'
   | 'lain';
 
 export interface BannerSlide {
@@ -42,17 +41,5 @@ export interface ArticleItem {
   isPublished?: boolean;
   /** Id produk yang di-tag ke artikel (relasi artikel↔produk). */
   productIds?: number[];
-}
-
-export interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  status?: 'AKTIF' | 'DRAFT';
-  order?: number;
-  tags?: string[];
-  updatedAt?: string;
-  viewsCount?: number;
 }
 

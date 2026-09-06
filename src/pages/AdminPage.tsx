@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, Product } from '../types';
-import { AdminActiveNav, BannerSlide, ArticleItem, FAQItem } from '../types/admin';
+import { AdminActiveNav, BannerSlide, ArticleItem } from '../types/admin';
 import { useApp } from '../context/AppContext';
 import { realtimeApi } from '../api/realtimeApi';
 import { productAdminApi } from '../api/adminApi';
@@ -17,8 +17,6 @@ import { ProductFormView } from '../components/admin/ProductFormView';
 import { ProductDeleteConfirmModal } from '../components/admin/ProductDeleteConfirmModal';
 import { InfoTab } from '../components/admin/InfoTab';
 import { ArticleFormView } from '../components/admin/ArticleFormView';
-import { FaqTab } from '../components/admin/FaqTab';
-import { FaqFormView } from '../components/admin/FaqFormView';
 import { OtherSettingsTab } from '../components/admin/OtherSettingsTab';
 
 interface AdminPageProps {
@@ -39,11 +37,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     saveProduct,
     deleteProduct,
     refreshProducts,
-    faqs,
-    saveFaq,
-    deleteFaq,
-    toggleFaqStatus,
-    reorderFaq,
     articles,
     saveArticle,
     deleteArticle,
@@ -158,40 +151,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // FAQ ADMIN: fetch dari /api/admin/articles/faq (SEMUA, termasuk DRAFT).
-  // State global `faqs` (dari AppContext) hanya berisi AKTIF dari API public,
-  // jadi FAQ yang di-DRAFT-kan akan hilang dari panel admin setelah refresh — bug.
-  const [adminFaqs, setAdminFaqs] = useState<FAQItem[]>([]);
-  const refreshAdminFaqs = useCallback(async () => {
-    try {
-      const { faqApi } = await import('../api/faqApi');
-      const list = await faqApi.getAdminFaqs();
-      setAdminFaqs(list);
-    } catch {
-      setAdminFaqs(faqs);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    refreshAdminFaqs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // ─── SSE realtime di panel admin ─────────────────────────────────────────
-  // Admin edit produk/artikel/FAQ dari tab lain → panel admin ikut sinkron
+  // Admin edit produk/artikel dari tab lain → panel admin ikut sinkron
   // (data admin == user, realtime dua arah).
   useEffect(() => {
     const unsubs = [
       realtimeApi.on('products', () => refreshProducts().catch(() => {})),
       realtimeApi.on('articles', () => refreshAdminArticles()),
-      realtimeApi.on('faqs', () => refreshAdminFaqs()),
     ];
     return () => unsubs.forEach((u) => u());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [editingArticle, setEditingArticle] = useState<{ isEditing: boolean; article?: ArticleItem | null } | null>(null);
-  const [editingFaq, setEditingFaq] = useState<{ isEditing: boolean; faq?: FAQItem | null } | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
 
   // Handlers for Banners
@@ -287,7 +259,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     weight: string;
     waContact?: string;
     image: string;
-    stock: number;
     description: string;
     composition?: string;
     shelfLife?: string;
@@ -325,7 +296,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           name: data.name,
           category_id: categoryId,
           price: basePrice,
-          stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
           origin: data.origin || null,
@@ -357,7 +327,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           name: data.name,
           category_id: categoryId,
           price: basePrice,
-          stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
           origin: data.origin || null,
@@ -471,55 +440,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setEditingArticle(null);
   };
 
-  // Handlers for FAQs
-  const handleDeleteFaq = async (id: string) => {
-    try {
-      await deleteFaq(id);
-      refreshAdminFaqs();
-      showToast('FAQ berhasil dihapus.');
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal menghapus FAQ.', 'error');
-    }
-  };
-
-  const handleSaveFaq = async (data: any) => {
-    try {
-      await saveFaq(data);
-      refreshAdminFaqs();
-      showToast(data.id ? 'Perubahan FAQ berhasil disimpan!' : 'FAQ baru berhasil ditambahkan!');
-      setEditingFaq(null);
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal menyimpan FAQ.', 'error');
-    }
-  };
-
-  const handleToggleFaqStatus = async (id: string) => {
-    try {
-      await toggleFaqStatus(id);
-      refreshAdminFaqs();
-      showToast('Status keaktifan FAQ berhasil diperbarui.');
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal mengubah status FAQ.', 'error');
-    }
-  };
-
-  const handleReorderFaq = async (id: string, direction: 'UP' | 'DOWN') => {
-    try {
-      await reorderFaq(id, direction);
-      refreshAdminFaqs();
-      showToast('Urutan tampilan FAQ berhasil diperbarui!');
-    } catch (e: any) {
-      showToast(e?.message || 'Gagal mengubah urutan FAQ.', 'error');
-    }
-  };
-
   // Switch tab resets editing states
   const handleNavChange = (nav: AdminActiveNav) => {
     setActiveNav(nav);
     setEditingBanner(null);
     setEditingProduct(null);
     setEditingArticle(null);
-    setEditingFaq(null);
   };
 
   return (
@@ -569,7 +495,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               products={products}
               setActiveNav={handleNavChange}
               articlesCount={adminArticles.length}
-              faqsCount={faqs.length}
               bannersCount={adminBanners.length}
               onNavigateHome={onNavigateHome}
               onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
@@ -602,7 +527,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             (editingProduct ? (
               <ProductFormView
                 initialProduct={editingProduct.product}
-                initialStock={editingProduct.product?.stock ?? 0}
                 onSave={handleSaveProduct}
                 onCancel={() => setEditingProduct(null)}
                 showToast={showToast}
@@ -644,27 +568,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
                 onDeleteArticle={(article) => handleDeleteArticle(article.id)}
                 onOpenCreateArticle={() => setEditingArticle({ isEditing: true, article: null })}
                 onOpenEditArticle={(article) => setEditingArticle({ isEditing: true, article })}
-              />
-            ))}
-
-          {/* TAB 6: KELOLA FAQ */}
-          {activeNav === 'faq' &&
-            (editingFaq ? (
-              <FaqFormView
-                initialFaq={editingFaq.faq}
-                onSave={handleSaveFaq}
-                onCancel={() => setEditingFaq(null)}
-                showToast={showToast}
-              />
-            ) : (
-              <FaqTab
-                faqs={faqs}
-                onDeleteFaq={handleDeleteFaq}
-                onOpenCreateFaq={() => setEditingFaq({ isEditing: true, faq: null })}
-                onOpenEditFaq={(faq) => setEditingFaq({ isEditing: true, faq })}
-                onToggleStatus={handleToggleFaqStatus}
-                onReorderFaq={handleReorderFaq}
-                showToast={showToast}
               />
             ))}
 

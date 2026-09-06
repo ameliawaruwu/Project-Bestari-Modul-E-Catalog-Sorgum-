@@ -70,7 +70,6 @@ function mapRelatedProduct(rp: Record<string, any>): any {
     categoryLabel: rp.category_name || 'Produk Sorgum',
     glutenFree: false,
     organic: false,
-    stock: rp.stock,
     isActive: !!rp.is_active,
     waContact: rp.wa_contact || undefined,
   };
