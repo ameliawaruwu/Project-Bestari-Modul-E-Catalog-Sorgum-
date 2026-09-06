@@ -336,17 +336,12 @@ export const TrackingPage: React.FC = () => {
               </h4>
 
               {Array.isArray(result.perjalanan) && result.perjalanan.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-3 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#C5D8C1] dark:before:bg-white/20 pl-7">
                   {result.perjalanan.map((ev: any, i: number) => (
-                    <div key={i} className="flex gap-3 bg-[#F9FBF7] dark:bg-[#122316] p-3 rounded-xl border border-[#E2EFE0] dark:border-white/10 items-start">
-                      {/* Nomor langkah (tanpa garis/bullet node) */}
-                      <span className="shrink-0 w-7 h-7 rounded-full bg-[#245B3A] dark:bg-[#245B3A] text-white text-[11px] font-bold flex items-center justify-center font-['Plus_Jakarta_Sans'] mt-0.5">
-                        {i + 1}
-                      </span>
-                      <div>
-                        <p className="text-[11px] font-mono text-[#556353] dark:text-white/50">{ev.tanggal || ev.event_date || '-'}</p>
-                        <p className="text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white mt-0.5">{ev.keterangan || ev.description || ''}</p>
-                      </div>
+                    <div key={i} className="relative group">
+                      <div className="absolute -left-[23px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] ring-4 ring-white dark:ring-[#0E1A11]" />
+                      <p className="text-[11px] font-mono text-[#556353] dark:text-white/50">{ev.tanggal || ev.event_date || '-'}</p>
+                      <p className="text-xs sm:text-sm font-semibold text-[#14331C] dark:text-white mt-0.5">{ev.keterangan || ev.description || ''}</p>
                     </div>
                   ))}
                 </div>
