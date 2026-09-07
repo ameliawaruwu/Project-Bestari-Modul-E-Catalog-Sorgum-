@@ -88,7 +88,10 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setUnitInput(initialProduct.unitInfo || '');
       setWeightInput(initialProduct.weight || '');
       setOriginInput(initialProduct.origin || '');
-      setWaContactInput(initialProduct.waContact || '');
+      // Tampilkan nomor WA tanpa prefix (admin hanya lihat/isi digit setelah +62).
+      const storedWa = initialProduct.waContact || '';
+      const waDigits = storedWa.replace(/[^0-9]/g, '');
+      setWaContactInput(waDigits.startsWith('62') ? waDigits.slice(2) : waDigits);
       setImageInput(initialProduct.image || '');
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
@@ -214,6 +217,11 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       }
     }
 
+    // Nomor WA: admin hanya mengetik digit setelah +62 (format 8xx). Simpan dengan prefix 62.
+    // Contoh: ketik "812...890" → simpan "62812...890". Kosong tetap kosong (pakai nomor toko).
+    const rawWa = (waContactInput || '').replace(/[^0-9]/g, '');
+    const waWithPrefix = rawWa ? `62${rawWa}` : '';
+
     onSave({
       id: idInput || initialProduct?.id,
       categoryId: categoryIdInput,
@@ -224,10 +232,11 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       composition: compositionInput,
       shelfLife: shelfLifeInput,
       attributes: attributesInput,
-      unitInfo: unitInput || `${weightInput || '1kg'} / Premium`,
+      // Ukuran/Kemasan (weight_spec) — diisi admin langsung dari form, bukan hardcoded.
+      unitInfo: unitInput.trim() || null,
       weight: weightInput || '1kg',
       origin: originInput,
-      waContact: waContactInput || undefined,
+      waContact: waWithPrefix || undefined,
       image: finalImage,
       description: descInput,
       shippingInfo: shippingInfoInput,
@@ -463,8 +472,8 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Harga (Rentang Harga: Minimum & Maksimum) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Row 2: Harga (Rentang) + Ukuran/Kemasan */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
                 Harga Minimum / Satuan (Rp) <span className="text-red-600">*</span>
@@ -493,23 +502,57 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
               />
               <p className="text-[10px] text-[#555555]">Kosongkan jika produk memiliki satu harga tetap (bukan rentang harga).</p>
             </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1B5E20]">
+                Ukuran / Kemasan
+              </label>
+              <input
+                type="text"
+                value={unitInput}
+                onChange={(e) => setUnitInput(e.target.value)}
+                placeholder="Contoh: 500gr / Pouch, 1kg / Vacuum"
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
+              />
+              <p className="text-[10px] text-[#555555]">Ukuran/kemasan yang tampil di kartu & detail produk (contoh: 500gr / Pouch).</p>
+            </div>
           </div>
 
-          {/* Row 3: Nomor WA */}
-          <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#1B5E20]">
-              Nomor WhatsApp Pemilik Produk
-            </label>
-            <input
-              type="tel"
-              value={waContactInput}
-              onChange={(e) => setWaContactInput(e.target.value.replace(/[^0-9]/g, ''))}
-              placeholder="6281234567890 (kosongkan = pakai nomor toko)"
-              className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
-            />
-            <p className="text-[10px] text-[#555555]">
-              Nomor tujuan saat pembeli klik "Pesan via WhatsApp" untuk produk ini. Jika kosong, pesanan mengarah ke nomor WhatsApp toko (Pengaturan Toko).
-            </p>
+          {/* Row 3: Nomor WA (+62) & Informasi Pengiriman (sebelah-menyebelah) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1B5E20]">
+                Nomor WhatsApp Pemilik Produk
+              </label>
+              <div className="flex items-stretch">
+                <span className="inline-flex items-center px-3.5 border border-r-0 border-[#E0E0E0] bg-[#F0F4EF] text-[#1B5E20] text-sm font-mono font-bold rounded-l-xl">
+                  +62
+                </span>
+                <input
+                  type="tel"
+                  value={waContactInput}
+                  onChange={(e) => setWaContactInput(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="81234567890 (kosongkan = pakai nomor toko)"
+                  className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-r-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
+                />
+              </div>
+              <p className="text-[10px] text-[#555555]">
+                Cukup ketik angka setelah +62 (contoh: 81234567890). Kosongkan jika ingin memakai nomor WhatsApp toko (Pengaturan Toko).
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-[#1B5E20]">
+                Informasi Pengiriman
+              </label>
+              <textarea
+                rows={3}
+                value={shippingInfoInput}
+                onChange={(e) => setShippingInfoInput(e.target.value)}
+                placeholder="Contoh: Dikirim dari Yogyakarta. Diproses sebelum jam 15:00 WIB."
+                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
+              />
+            </div>
           </div>
 
           {/* Row 4: Deskripsi */}
@@ -524,22 +567,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
               placeholder="Tuliskan deskripsi ringkas mengenai nutrisi, pengolahan, dan manfaat produk..."
               className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
             />
-          </div>
-
-          {/* Row: Informasi Pengiriman */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1B5E20]">
-                Informasi Pengiriman
-              </label>
-              <textarea
-                rows={2}
-                value={shippingInfoInput}
-                onChange={(e) => setShippingInfoInput(e.target.value)}
-                placeholder="Contoh: Dikirim dari Yogyakarta. Diproses sebelum jam 15:00 WIB."
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-medium"
-              />
-            </div>
           </div>
 
           {/* Actions */}
