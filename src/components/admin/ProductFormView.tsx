@@ -53,10 +53,11 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [weightInput, setWeightInput] = useState('');
   const [originInput, setOriginInput] = useState('');
   const [waContactInput, setWaContactInput] = useState('');
-  const [imageInput, setImageInput] = useState('');
   const [descInput, setDescInput] = useState('');
   const [shippingInfoInput, setShippingInfoInput] = useState('');
-  // Galeri produk (maks 4 gambar, diedit admin): URL gambar galeri + file upload per slot
+  // Galeri produk (maks 4 gambar, diedit admin): URL gambar galeri + file upload per slot.
+  // Gambar pertama (index 0) = gambar UTAMA produk (primary). Admin tidak perlu
+  // upload "Foto & Visual" terpisah lagi — cukup 4 slot galeri, pilih 1 jadi utama.
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryFiles, setGalleryFiles] = useState<(File | null)[]>([null, null, null, null]);
 
@@ -92,7 +93,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       const storedWa = initialProduct.waContact || '';
       const waDigits = storedWa.replace(/[^0-9]/g, '');
       setWaContactInput(waDigits.startsWith('62') ? waDigits.slice(2) : waDigits);
-      setImageInput(initialProduct.image || '');
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
       // Galeri dari DB (product.images) — max 4, urut sort_order
@@ -111,25 +111,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setWeightInput('');
       setOriginInput('');
       setWaContactInput('');
-      setImageInput('');
       setDescInput('');
       setShippingInfoInput('');
       setGalleryImages([]);
       setGalleryFiles([null, null, null, null]);
     }
   }, [initialProduct, categoryOptions]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageInput(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   // Upload gambar ke slot galeri tertentu (0-3) — preview dataURL, upload final saat save.
   const handleGalleryFileChange = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,8 +151,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     });
   };
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nameInput.trim()) {
@@ -178,6 +163,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
     // Upload galeri: file baru (dataURL) → kompres → upload → URL final.
     // Slot kosong/URL lama dibiarkan (URL lama tidak perlu di-upload ulang).
+    // Gambar utama produk = gambar galeri pertama (index 0) yang ter-upload/ada.
     const finalGallery: string[] = [];
     for (let i = 0; i < galleryImages.length; i++) {
       const val = galleryImages[i];
@@ -201,26 +187,13 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       }
     }
 
-    // Kalau ada file baru → kompres dulu (lolos limit nginx/multer), upload, dapat URL
-    let finalImage = imageInput; // dataURL preview / URL lama
-    if (imageFile) {
-      try {
-        const { productAdminApi } = await import('../../api/adminApi');
-        const { compressImage } = await import('../../utils/imageCompress');
-        const toUpload = await compressImage(imageFile, 800);
-        const uploadedUrl = await productAdminApi.uploadImage(toUpload);
-        if (uploadedUrl) finalImage = uploadedUrl;
-        else showToast('Gagal upload gambar.');
-      } catch (err: any) {
-        showToast(err?.message || 'Gagal upload gambar.');
-        return;
-      }
-    }
-
     // Nomor WA: admin hanya mengetik digit setelah +62 (format 8xx). Simpan dengan prefix 62.
     // Contoh: ketik "812...890" → simpan "62812...890". Kosong tetap kosong (pakai nomor toko).
     const rawWa = (waContactInput || '').replace(/[^0-9]/g, '');
     const waWithPrefix = rawWa ? `62${rawWa}` : '';
+
+    // Gambar utama = gambar pertama galeri (kosong kalau tidak ada gambar sama sekali).
+    const primaryImage = finalGallery[0] || '';
 
     onSave({
       id: idInput || initialProduct?.id,
@@ -237,7 +210,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       weight: weightInput || '1kg',
       origin: originInput,
       waContact: waWithPrefix || undefined,
-      image: finalImage,
+      image: primaryImage,
       description: descInput,
       shippingInfo: shippingInfoInput,
       galleryImages: finalGallery,
@@ -288,53 +261,15 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       {/* Form Card */}
       <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
-          {/* Upload Gambar Field (Local Device Upload Only) */}
-          <div className="space-y-3">
-            <label className="block text-sm font-bold text-[#1B5E20]">
-              Foto &amp; Visual Produk
-            </label>
-            <input
-              type="file"
-              id="image-file-input"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <label
-              htmlFor="image-file-input"
-              className="block border-2 border-dashed border-[#E0E0E0] rounded-2xl p-6 text-center bg-[#F7F8F6] hover:border-[#2E7D32] transition-all group relative cursor-pointer"
-            >
-              <div className="space-y-3">
-                {imageInput ? (
-                  <div className="relative w-28 h-28 mx-auto rounded-xl overflow-hidden border border-[#E0E0E0] shadow-2xs">
-                    <img src={imageInput} alt="Preview Produk" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-white text-xs font-bold">Pilih Gambar Baru</span>
-                    </div>
-                  </div>
-                ) : (
-                  <span className="material-symbols-outlined text-5xl text-[#2E7D32] group-hover:text-[#1B5E20] transition-colors">
-                    cloud_upload
-                  </span>
-                )}
-                <div>
-                  <p className="text-sm font-semibold text-[#1B5E20]">
-                    Klik untuk memilih foto produk dari perangkat Anda
-                  </p>
-                  <p className="text-xs text-[#555555]">Format JPG/PNG, rekomendasi 800x800 px</p>
-                </div>
-              </div>
-            </label>
-          </div>
-
-          {/* Galeri Produk (4 Gambar) — foto tambahan di halaman detail produk */}
+          {/* Galeri Produk (4 Gambar) — foto produk; gambar pertama = gambar utama */}
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-bold text-[#1B5E20]">
-                Galeri Produk (maks. 4 Gambar)
+                Foto Produk (maks. 4 Gambar)
               </label>
               <p className="text-xs text-[#555555] mt-0.5">
-                Gambar tambahan yang tampil di halaman detail produk. Slot kosong diabaikan.
+                Gambar pertama menjadi gambar utama produk. Upload 1-4 foto; untuk mengganti
+                gambar utama, klik "Jadikan Utama" pada foto pilihan.
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -374,7 +309,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                             add_photo_alternate
                           </span>
                           <span className="text-[10px] text-[#555555] font-semibold">
-                            Gambar {idx + 1}
+                            {idx === 0 ? 'Foto Utama' : `Foto ${idx + 1}`}
                           </span>
                         </div>
                       )}
