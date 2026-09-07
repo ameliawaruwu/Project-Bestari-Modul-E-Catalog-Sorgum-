@@ -12,33 +12,13 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
     <footer className="w-full py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8 bg-[#1F5132] dark:bg-[#070D08] text-white border-t border-[#3A8F4B]/30 dark:border-[rgba(165,214,167,0.15)] transition-colors duration-300 relative z-10">
       <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row justify-between items-start gap-8 lg:gap-12">
         <div className="max-w-xs">
-          <div className="flex items-center gap-2.5 mb-2.5">
-            {shopSettings.logoUrl ? (
-              <img
-                src={shopSettings.logoUrl}
-                alt={shopSettings.storeName || 'BESTARI'}
-                className="h-9 max-w-[150px] object-contain rounded p-0.5"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center bg-white/15 text-[#E3B84B] shadow-2xs">
-                  <span className="material-symbols-outlined text-xl sm:text-2xl">
-                    eco
-                  </span>
-                </div>
-                <div>
-                  <span className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-black tracking-tight uppercase block leading-none text-white">
-                    {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
-                  </span>
-                  <span className="font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 text-[#E3B84B]">
-                    SORGUM E-CATALOG
-                  </span>
-                </div>
-              </div>
-            )}
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="material-symbols-outlined text-[#E3B84B] text-xl font-bold">
+              spa
+            </span>
+            <span className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+              {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
+            </span>
           </div>
           <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/80 leading-relaxed font-normal">
             {t(

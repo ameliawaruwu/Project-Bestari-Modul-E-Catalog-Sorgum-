@@ -57,50 +57,39 @@ export const Header: React.FC<HeaderProps> = ({
               }}
               className="text-left flex items-center gap-2.5 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer group"
             >
-              {shopSettings.logoUrl ? (
-                <img
-                  src={shopSettings.logoUrl}
-                  alt={shopSettings.storeName || 'BESTARI'}
-                  className="h-8 max-w-[140px] object-contain rounded p-0.5"
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-all ${
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-all ${
+                    isScrolled
+                      ? 'bg-white/15 text-[#E3B84B]'
+                      : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#3A8F4B] dark:text-[#65B86B]'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-xl sm:text-2xl">
+                    spa
+                  </span>
+                </div>
+                <div>
+                  <span
+                    className={`font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-black tracking-tight uppercase block leading-none transition-colors ${
                       isScrolled
-                        ? 'bg-white/15 text-[#E3B84B]'
-                        : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#3A8F4B] dark:text-[#65B86B]'
+                        ? 'text-white'
+                        : 'text-[#1F5132] dark:text-[#F4F8F3]'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-xl sm:text-2xl">
-                      eco
-                    </span>
-                  </div>
-                  <div>
-                    <span
-                      className={`font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-black tracking-tight uppercase block leading-none transition-colors ${
-                        isScrolled
-                          ? 'text-white'
-                          : 'text-[#1F5132] dark:text-[#F4F8F3]'
-                      }`}
-                    >
-                      {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
-                    </span>
-                    <span
-                      className={`font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 transition-colors ${
-                        isScrolled
-                          ? 'text-[#E3B84B]'
-                          : 'text-[#3A8F4B] dark:text-[#65B86B]'
-                      }`}
-                    >
-                      SORGUM E-CATALOG
-                    </span>
-                  </div>
+                    {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
+                  </span>
+                  <span
+                    className={`font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 transition-colors ${
+                      isScrolled
+                        ? 'text-[#E3B84B]'
+                        : 'text-[#3A8F4B] dark:text-[#65B86B]'
+                    }`}
+                  >
+                    SORGUM E-CATALOG
+                  </span>
                 </div>
-              )}
+              </div>
             </button>
           </div>
 
