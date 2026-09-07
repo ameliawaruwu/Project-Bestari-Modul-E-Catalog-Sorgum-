@@ -20,10 +20,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [descExpanded, setDescExpanded] = useState<boolean>(false);
 
   // Gallery images — dari DB (product_images, diedit admin di Kelola Produk).
+  // Gambar utama (is_primary) TIDAK diikutkan sebagai thumbnail supaya tidak dobel
+  // dengan gambar besar di atas; sisanya (galeri tambahan) maks 4.
   const galleryImages = (product.images && product.images.length
-    ? product.images.map((img) => img.image_url)
-    : [product.image]
-  ).slice(0, 5);
+    ? product.images
+        .filter((img) => !img.is_primary)
+        .map((img) => img.image_url)
+    : []
+  ).slice(0, 4);
+  // Kalau tidak ada galeri non-primary sama sekali → fallback tampilkan gambar utama
+  // sebagai thumbnail tunggal (produk lama yang hanya punya 1 foto).
+  const effectiveGallery = galleryImages.length ? galleryImages : (product.image ? [product.image] : []);
 
   // Reset pada pergantian produk
   useEffect(() => {
@@ -119,7 +126,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Thumbnail Gallery Row — 1 baris x 4 kolom, selebar gambar utama; kalau gambar <4 slot kosong dibiarkan */}
             <div className="grid grid-cols-4 gap-2">
-              {galleryImages.map((img, idx) => {
+              {effectiveGallery.map((img, idx) => {
                 const isSelected = selectedImage === img;
                 return (
                   <button
