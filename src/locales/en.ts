@@ -135,6 +135,8 @@ export const enLocale: Record<string, string> = {
   "tujuan-pengiriman": "Destination",
   "produk-di-artikel-ini": "Products in This Article",
   "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Order the sorghum products featured in this article directly.",
-  "tanya-ketersediaan-via-whatsapp": "Inquire Availability via WhatsApp",
-  "langsung-terhubung-ke-chat-admin-whatsapp-untuk-menanyakan-k": "Directly connects to admin WhatsApp chat to inquire about product availability.",
+  "jumlah": "Quantity",
+  "kurangi-jumlah": "Decrease quantity",
+  "tambah-jumlah": "Increase quantity",
+  "klik-untuk-chat-admin-pesan-otomatis-terisi-produk-dan": "Click to chat the admin; the message auto-fills with your chosen product and quantity.",
 };

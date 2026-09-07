@@ -135,6 +135,8 @@ export const idLocale: Record<string, string> = {
   "tujuan-pengiriman": "Tujuan Pengiriman",
   "produk-di-artikel-ini": "Produk di Artikel Ini",
   "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Langsung pesan produk sorgum yang dibahas di artikel ini.",
-  "tanya-ketersediaan-via-whatsapp": "Tanya Ketersediaan via WhatsApp",
-  "langsung-terhubung-ke-chat-admin-whatsapp-untuk-menanyakan-k": "Langsung terhubung ke chat admin WhatsApp untuk menanyakan ketersediaan produk.",
+  "jumlah": "Jumlah",
+  "kurangi-jumlah": "Kurangi jumlah",
+  "tambah-jumlah": "Tambah jumlah",
+  "klik-untuk-chat-admin-pesan-otomatis-terisi-produk-dan": "Klik untuk chat admin, pesan otomatis terisi produk & jumlah yang Anda pilih.",
 };

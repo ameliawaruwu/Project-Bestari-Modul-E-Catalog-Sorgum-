@@ -18,6 +18,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [descExpanded, setDescExpanded] = useState<boolean>(false);
+  const [qty, setQty] = useState<number>(1);
 
   // Gallery images — dari DB (product_images, diedit admin di Kelola Produk).
   const galleryImages = (product.images && product.images.length
@@ -29,6 +30,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   useEffect(() => {
     setSelectedImage(product.image);
     setDescExpanded(false);
+    setQty(1);
   }, [product]);
 
   // Load related products from backend (same category, exclude current)
@@ -49,12 +51,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     };
   }, [product.id, product.category]);
 
+  // Harga tampil (tunggal atau rentang)
+  const priceDisplay = product.priceMax && product.priceMax > product.price
+    ? `Rp ${product.price.toLocaleString('id-ID')} - Rp ${product.priceMax.toLocaleString('id-ID')}`
+    : `Rp ${product.price.toLocaleString('id-ID')}`;
+
   // Nomor tujuan order WA: prioritas nomor pemilik produk (wa_contact), fallback nomor toko global.
   const rawWaNumber = (product.waContact || shopSettings.whatsappNumber || '').replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waNumber = rawWaNumber || '';
 
+  // Pesan order alami ala pembeli yang berminat: nama toko, produk, qty, harga.
   const orderMessageText =
-    `Halo Admin Bestari Sorgum, saya ingin memesan produk:\n*${product.name}*`;
+    `Halo Admin ${shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'Bestari'}, saya mau pesan produk ini:\n\n` +
+    `${qty}x ${product.name}\n${priceDisplay}\n\n` +
+    `Apakah ready? Kalau iya saya lanjut order ya, Kak.`;
   const orderWhatsappUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(orderMessageText)}` : '#';
 
   return (
@@ -221,8 +231,35 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             </div>
 
-            {/* 5. Action Button: Tanya Ketersediaan via WhatsApp (Sejajar dengan bagian bawah galeri) */}
-            <div className="pt-3 border-t border-[#E2EFE0]/60 dark:border-white/5 flex flex-col items-start sm:items-end">
+            {/* 5. Action Button: Pesan via WhatsApp (dengan pilihan jumlah) */}
+            <div className="pt-3 border-t border-[#E2EFE0]/60 dark:border-white/5 flex flex-col items-start sm:items-end gap-2.5">
+              {/* Qty Selector */}
+              <div className="flex items-center gap-2 w-full sm:w-auto sm:min-w-[270px] sm:max-w-md">
+                <span className="text-xs font-semibold text-[#556353] dark:text-white/60 mr-1">
+                  {t('Jumlah', 'Quantity')}:
+                </span>
+                <div className="inline-flex items-center rounded-xl border border-[#E2EFE0] dark:border-white/15 bg-white dark:bg-[#122316] overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="w-8 h-9 flex items-center justify-center text-[#245B3A] dark:text-[#86EFAC] hover:bg-[#EAF6E8] dark:hover:bg-[#1A3320] transition-colors cursor-pointer font-bold"
+                    aria-label={t('Kurangi jumlah', 'Decrease quantity')}
+                  >
+                    <span className="material-symbols-outlined text-lg">remove</span>
+                  </button>
+                  <span className="w-10 h-9 flex items-center justify-center text-sm font-bold text-[#14331C] dark:text-white border-x border-[#E2EFE0] dark:border-white/10 font-['JetBrains_Mono']">
+                    {qty}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => Math.min(99, q + 1))}
+                    className="w-8 h-9 flex items-center justify-center text-[#245B3A] dark:text-[#86EFAC] hover:bg-[#EAF6E8] dark:hover:bg-[#1A3320] transition-colors cursor-pointer font-bold"
+                    aria-label={t('Tambah jumlah', 'Increase quantity')}
+                  >
+                    <span className="material-symbols-outlined text-lg">add</span>
+                  </button>
+                </div>
+              </div>
               <a
                 href={orderWhatsappUrl}
                 target="_blank"
@@ -233,11 +270,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   chat
                 </span>
                 <span>
-                  {t('Tanya Ketersediaan via WhatsApp', 'Inquire Availability via WhatsApp')}
+                  {t('Pesan via WhatsApp', 'Order via WhatsApp')}
                 </span>
               </a>
-              <p className="text-[11px] text-[#556353] dark:text-white/50 mt-1.5 text-left sm:text-right">
-                {t('Langsung terhubung ke chat admin WhatsApp untuk menanyakan ketersediaan produk.', 'Directly connects to admin WhatsApp chat to inquire about product availability.')}
+              <p className="text-[11px] text-[#556353] dark:text-white/50 mt-0 text-left sm:text-right">
+                {t('Klik untuk chat admin, pesan otomatis terisi produk & jumlah yang Anda pilih.', 'Click to chat the admin; the message auto-fills with your chosen product and quantity.')}
               </p>
             </div>
 
