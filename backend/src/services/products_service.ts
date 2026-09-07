@@ -7,6 +7,7 @@ export interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
+  price_max: number | null;
   stock: number;
   weight_spec: string | null;
   origin: string | null;
@@ -45,6 +46,7 @@ interface CreateProductInput {
   slug: string;
   description: string;
   price: number;
+  price_max?: number | null;
   stock: number;
   weight_spec: string;
   origin: string;
@@ -59,7 +61,7 @@ interface CreateProductInput {
 }
 
 const LIST_SELECT = `
-  SELECT p.id, p.name, p.slug, p.description, p.price,
+  SELECT p.id, p.name, p.slug, p.description, p.price, p.price_max,
          p.stock, p.weight_spec, p.origin, p.shipping_info, p.composition, p.shelf_life, p.attributes,
          p.is_active, p.is_featured, p.category_id, p.created_at,
          p.gluten_free, p.organic, p.wa_contact,
@@ -189,17 +191,18 @@ export async function createProduct(input: CreateProductInput) {
   // price = harga jual langsung. Kolom original_price/discount_percent sudah
   // tidak ada di skema DB (modul diskon dihapus) — jangan sertakan di INSERT.
   const price = Number(input.price) || 0;
+  const price_max = input.price_max ? Number(input.price_max) : null;
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, wa_contact, composition, shelf_life, attributes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [category_id, name, slug, description, price, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
+    `INSERT INTO products (category_id, name, slug, description, price, price_max, stock, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, wa_contact, composition, shelf_life, attributes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [category_id, name, slug, description, price, price_max, stock, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
      input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.wa_contact ?? null, input.composition ?? null, input.shelf_life ?? null,
      input.attributes ?? null],
   );
   return (result as any).insertId;
 }
 
-const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'wa_contact', 'composition', 'shelf_life', 'attributes'];
+const ALLOWED_COLUMNS = ['category_id', 'name', 'slug', 'description', 'price', 'price_max', 'stock', 'weight_spec', 'origin', 'shipping_info', 'is_featured', 'is_active', 'gluten_free', 'organic', 'wa_contact', 'composition', 'shelf_life', 'attributes'];
 
 export async function updateProduct(id: number, input: Partial<CreateProductInput>) {
   // Harga: simpan persis apa yang FE kirim — FE (admin) adalah single source of truth.

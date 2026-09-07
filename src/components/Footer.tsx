@@ -62,11 +62,6 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                   {t('Informasi & Artikel', 'Info & Articles')}
                 </button>
               </li>
-              <li>
-                <button onClick={() => setActiveTab('faq')} className="hover:text-[#E3B84B] hover:underline transition-all text-white/90 text-left cursor-pointer">
-                  {t('FAQ', 'FAQ')}
-                </button>
-              </li>
             </ul>
           </div>
 

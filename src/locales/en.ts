@@ -141,8 +141,9 @@ export const enLocale: Record<string, string> = {
   "riwayat-perjalanan-paket": "Package Timeline",
   "sedang-melacak": "Tracking Package...",
   "setiap-kemasan-sorgum-dikemas-dengan-standar-higienis-dan-ka": "Each product is packed securely in sturdy boxes to ensure pristine quality upon arrival.",
-  "tim-admin-bestari-siap-membantu-pengecekan-langsung-ke-pihak": "Our team is ready to cross-check directly with couriers to ensure your package arrives promptly.",
   "tujuan-pengiriman": "Destination",
   "produk-di-artikel-ini": "Products in This Article",
   "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Order the sorghum products featured in this article directly.",
+  "tanya-ketersediaan-via-whatsapp": "Inquire Availability via WhatsApp",
+  "langsung-terhubung-ke-chat-admin-whatsapp-untuk-menanyakan-k": "Directly connects to admin WhatsApp chat to inquire about product availability.",
 };

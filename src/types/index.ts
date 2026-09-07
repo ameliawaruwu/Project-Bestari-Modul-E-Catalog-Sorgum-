@@ -4,6 +4,7 @@ export interface Product {
   category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
   categoryLabel: string;
   price: number;
+  priceMax?: number;
   formattedPrice?: string;
   unitInfo?: string;
   weight?: string;

@@ -10,6 +10,7 @@ interface ProductRow {
   slug: string;
   description: string | null;
   price: number;
+  price_max?: number | null;
   stock: number;
   weight_spec: string | null;
   origin: string | null;
@@ -42,19 +43,27 @@ function toCategoryKey(categoryName: string): Product['category'] {
   return CATEGORY_KEY_MAP[categoryName.toLowerCase()] || 'beras';
 }
 
-function formatRupiah(value: number): string {
-  return `IDR ${value.toLocaleString('id-ID')}`;
+function formatRupiah(minPrice: number, maxPrice?: number | null): string {
+  if (maxPrice && maxPrice > minPrice) {
+    return `Rp ${minPrice.toLocaleString('id-ID')} - Rp ${maxPrice.toLocaleString('id-ID')}`;
+  }
+  return `Rp ${minPrice.toLocaleString('id-ID')}`;
 }
 
 export function mapProduct(row: ProductRow): Product {
   const weight = row.weight_spec || '1kg';
+  const priceNum = Number(row.price) || 0;
+  const priceMaxNum = row.price_max ? Number(row.price_max) : undefined;
+  const validPriceMax = priceMaxNum && priceMaxNum > priceNum ? priceMaxNum : undefined;
+
   return {
     id: String(row.id),
     name: row.name,
     category: toCategoryKey(row.category_name),
     categoryLabel: row.category_name || 'Produk Sorgum',
-    price: row.price,
-    formattedPrice: formatRupiah(row.price),
+    price: priceNum,
+    priceMax: validPriceMax,
+    formattedPrice: formatRupiah(priceNum, validPriceMax),
     unitInfo: row.weight_spec || weight,
     weight,
     image: row.primary_image || '',

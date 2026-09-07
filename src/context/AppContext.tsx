@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { Product, Article, FaqItem, User, LoginPayload, AuthResponse } from '../types';
+import { Product, Article, User, LoginPayload, AuthResponse } from '../types';
 import { BannerSlide } from '../types/admin';
 import { productApi } from '../api/productApi';
 import { articleApi } from '../api/articleApi';
-import { faqApi } from '../api/faqApi';
 import { shopSettingsApi, ShopSettings as ApiShopSettings } from '../api/shopSettingsApi';
 import { formatDate } from '../utils/formatDate';
 import { authApi } from '../api/authApi';
@@ -37,13 +36,6 @@ interface AppContextProps {
   products: Product[];
   saveProduct: (productData: any) => void;
   deleteProduct: (id: string) => void;
-
-  // FAQs
-  faqs: FaqItem[];
-  saveFaq: (faqData: any) => Promise<FaqItem>;
-  deleteFaq: (id: string) => Promise<void>;
-  toggleFaqStatus: (id: string) => Promise<void>;
-  reorderFaq: (id: string, direction: 'UP' | 'DOWN') => Promise<void>;
 
   // Articles / Information
   articles: Article[];
@@ -103,7 +95,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [faqs, setFaqs] = useState<FaqItem[]>([]);
 
   const [articles, setArticles] = useState<Article[]>([]);
 
@@ -169,13 +160,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     }).catch(() => {});
 
-    // FAQs
-    faqApi.getFaqs().then((list) => {
-      if (!cancelled) {
-        setFaqs(list);
-      }
-    }).catch(() => {});
-
     // Shop settings
     shopSettingsApi.getSettingsAsync().then((s) => {
       if (!cancelled) {
@@ -229,9 +213,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const refreshArticles = () => {
       articleApi.getArticles().then((list) => setArticles(list)).catch(() => {});
     };
-    const refreshFaqs = () => {
-      faqApi.getFaqs().then((list) => setFaqs(list)).catch(() => {});
-    };
     const refreshBanners = () => {
       request('/banners').then((res: any) => {
         if (res?.data) {
@@ -252,7 +233,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubs = [
       realtimeApi.on('products', refreshProducts),
       realtimeApi.on('articles', refreshArticles),
-      realtimeApi.on('faqs', refreshFaqs),
       realtimeApi.on('banners', refreshBanners),
       realtimeApi.on('landing', refreshLanding),
       realtimeApi.on('settings', refreshSettings),
@@ -296,13 +276,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [shopSettings.faviconUrl]);
 
-  // Save state helpers to sync automatically
   const updateProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-  };
-
-  const updateFaqs = (newFaqs: FaqItem[]) => {
-    setFaqs(newFaqs);
   };
 
   const updateArticles = (newArticles: Article[]) => {
@@ -373,12 +348,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Product CRUD
   const saveProduct = (productData: any) => {
-    // Harga: FE (admin) adalah single source of truth. Tidak ada diskon —
-    // price langsung dianggap harga jual final.
+    // Harga: FE (admin) adalah single source of truth.
     const baseP = Number(productData.price) || 0;
-    const payload = { ...productData, price: baseP };
-    // Pakai payload (price final) untuk semua referensi di bawah
+    const priceMaxNum = productData.priceMax ? Number(productData.priceMax) : undefined;
+    const validPriceMax = priceMaxNum && priceMaxNum > baseP ? priceMaxNum : undefined;
+    const formattedPrice = validPriceMax
+      ? `Rp ${baseP.toLocaleString('id-ID')} - Rp ${validPriceMax.toLocaleString('id-ID')}`
+      : `Rp ${baseP.toLocaleString('id-ID')}`;
+
+    const payload = { ...productData, price: baseP, priceMax: validPriceMax, formattedPrice };
     productData = payload;
+
     const catLabelMap: Record<string, string> = {
       beras: 'Beras Sorgum',
       tepung: 'Tepung Sorgum',
@@ -398,8 +378,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               name: productData.name,
               category: productData.category,
               categoryLabel: catLabelMap[productData.category] || 'Produk Sorgum',
-              price: Number(productData.price),
-              formattedPrice: `IDR ${Number(productData.price).toLocaleString('id-ID')}`,
+              price: baseP,
+              priceMax: validPriceMax,
+              formattedPrice,
               composition: productData.composition,
               shelfLife: productData.shelfLife,
               attributes: productData.attributes,
@@ -423,8 +404,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           name: productData.name,
           category: productData.category,
           categoryLabel: catLabelMap[productData.category] || 'Produk Sorgum',
-          price: Number(productData.price),
-          formattedPrice: `IDR ${Number(productData.price).toLocaleString('id-ID')}`,
+          price: baseP,
+          priceMax: validPriceMax,
+          formattedPrice,
           unitInfo: productData.unitInfo,
           weight: productData.weight,
           waContact: productData.waContact || undefined,
@@ -441,16 +423,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateProducts([newProd, ...products]);
       }
     } else {
-      // Produk baru: id ASLI dari BE sudah di-set oleh caller (AdminPage) —
-      // jangan generate id palsu `prod-<timestamp>` (bikin edit/delete 404).
       const newId = productData.id || `prod-${Date.now()}`;
       const newProd: Product = {
         id: newId,
         name: productData.name,
         category: productData.category,
         categoryLabel: catLabelMap[productData.category] || 'Produk Sorgum',
-        price: Number(productData.price),
-        formattedPrice: `IDR ${Number(productData.price).toLocaleString('id-ID')}`,
+        price: baseP,
+        priceMax: validPriceMax,
+        formattedPrice,
         unitInfo: productData.unitInfo,
         weight: productData.weight,
         waContact: productData.waContact || undefined,
@@ -472,41 +453,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateProducts(filtered);
   };
 
-  // FAQ CRUD — SYNC KE BACKEND (sebelumnya localStorage only, hilang pas refresh)
-  const saveFaq = async (faqData: any) => {
-    const saved = await faqApi.saveFaq({
-      id: faqData.id,
-      question: faqData.question,
-      answer: faqData.answer,
-      category: faqData.category || 'Tentang Produk',
-      status: faqData.status || 'AKTIF',
-      order: faqData.order,
-      tags: faqData.tags || [],
-    });
-    // Refresh dari BE biar dapet id asli dari DB
-    const fresh = await faqApi.getAdminFaqs().catch(() => []);
-    if (fresh.length > 0) updateFaqs(fresh);
-    return saved;
-  };
 
-  const deleteFaq = async (id: string) => {
-    await faqApi.deleteFaq(id);
-    const filtered = faqs.filter((f) => f.id !== id);
-    updateFaqs(filtered);
-  };
-
-  const toggleFaqStatus = async (id: string) => {
-    const flipped = await faqApi.toggleStatus(id);
-    if (flipped) {
-      const updated = faqs.map((f) => (f.id === id ? { ...f, status: flipped.status } : f));
-      updateFaqs(updated);
-    }
-  };
-
-  const reorderFaq = async (id: string, direction: 'UP' | 'DOWN') => {
-    const reordered = await faqApi.reorderFaq(id, direction);
-    if (reordered.length > 0) updateFaqs(reordered);
-  };
 
   // Article CRUD
   const saveArticle = (articleData: any) => {
@@ -629,11 +576,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         products,
         saveProduct,
         deleteProduct,
-        faqs,
-        saveFaq,
-        deleteFaq,
-        toggleFaqStatus,
-        reorderFaq,
         articles,
         saveArticle,
         deleteArticle,

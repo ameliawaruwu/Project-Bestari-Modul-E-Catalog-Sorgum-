@@ -12,6 +12,7 @@ const alterColumns = [
   { table: 'products', col: 'review_count', ddl: 'INT UNSIGNED NOT NULL DEFAULT 0' },
   { table: 'products', col: 'sales_count', ddl: 'INT UNSIGNED NOT NULL DEFAULT 0' },
   { table: 'products', col: 'min_order', ddl: 'INT UNSIGNED NOT NULL DEFAULT 1' },
+  { table: 'products', col: 'price_max', ddl: 'INT UNSIGNED NULL DEFAULT NULL' },
   { table: 'products', col: 'shelf_life', ddl: 'VARCHAR(100) NULL' },
   { table: 'products', col: 'storage_instruction', ddl: 'VARCHAR(200) NULL' },
   { table: 'products', col: 'composition', ddl: 'TEXT NULL' },

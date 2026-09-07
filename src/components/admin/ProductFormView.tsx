@@ -10,6 +10,7 @@ interface ProductFormViewProps {
     name: string;
     category: 'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih';
     price: number;
+    priceMax?: number;
     unitInfo: string;
     weight: string;
     waContact?: string;
@@ -47,6 +48,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   >('beras');
   const [categoryIdInput, setCategoryIdInput] = useState<number | undefined>(undefined);
   const [priceInput, setPriceInput] = useState<number | ''>('');
+  const [priceMaxInput, setPriceMaxInput] = useState<number | ''>('');
   const [compositionInput, setCompositionInput] = useState('');
   const [shelfLifeInput, setShelfLifeInput] = useState('');
   const [attributesInput, setAttributesInput] = useState('');
@@ -55,7 +57,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   const [originInput, setOriginInput] = useState('');
   const [waContactInput, setWaContactInput] = useState('');
   const [imageInput, setImageInput] = useState('');
-  const [stockInput, setStockInput] = useState<number | ''>('');
   const [descInput, setDescInput] = useState('');
   const [shippingInfoInput, setShippingInfoInput] = useState('');
   // Galeri produk (maks 4 gambar, diedit admin): URL gambar galeri + file upload per slot
@@ -83,6 +84,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       const catMatch = categoryOptions?.find((c) => c.name.toLowerCase().includes(initialProduct.category));
       setCategoryIdInput(catMatch?.id);
       setPriceInput(initialProduct.price);
+      setPriceMaxInput(initialProduct.priceMax ?? '');
       setCompositionInput(initialProduct.composition || '');
       setShelfLifeInput(initialProduct.shelfLife || '');
       setAttributesInput(initialProduct.attributes || '');
@@ -91,7 +93,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setOriginInput(initialProduct.origin || '');
       setWaContactInput(initialProduct.waContact || '');
       setImageInput(initialProduct.image || '');
-      setStockInput(initialStock);
       setDescInput(initialProduct.description || '');
       setShippingInfoInput(initialProduct.shippingInfo || '');
       // Galeri dari DB (product.images) — max 4, urut sort_order
@@ -102,6 +103,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setCategoryInput('beras');
       setCategoryIdInput(undefined);
       setPriceInput('');
+      setPriceMaxInput('');
       setCompositionInput('');
       setShelfLifeInput('');
       setAttributesInput('');
@@ -110,13 +112,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       setOriginInput('');
       setWaContactInput('');
       setImageInput('');
-      setStockInput('');
       setDescInput('');
       setShippingInfoInput('');
       setGalleryImages([]);
       setGalleryFiles([null, null, null, null]);
     }
-  }, [initialProduct, initialStock, categoryOptions]);
+  }, [initialProduct, categoryOptions]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -173,7 +174,8 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     }
 
     const priceNum = Number(priceInput) || 0;
-    const stockNum = Number(stockInput) || 0;
+    const priceMaxNum = priceMaxInput !== '' ? Number(priceMaxInput) : undefined;
+    const stockNum = typeof initialStock === 'number' && !isNaN(initialStock) ? initialStock : (initialProduct?.stock ?? 100);
 
     // Upload galeri: file baru (dataURL) → kompres → upload → URL final.
     // Slot kosong/URL lama dibiarkan (URL lama tidak perlu di-upload ulang).
@@ -222,6 +224,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       name: nameInput,
       category: categoryInput,
       price: priceNum,
+      priceMax: priceMaxNum && priceMaxNum > priceNum ? priceMaxNum : undefined,
       stock: stockNum,
       composition: compositionInput,
       shelfLife: shelfLifeInput,
@@ -465,11 +468,11 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Harga */}
+          {/* Row 2: Harga (Rentang Harga: Minimum & Maksimum) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
-                Harga Satuan (Rp) <span className="text-red-600">*</span>
+                Harga Minimum / Satuan (Rp) <span className="text-red-600">*</span>
               </label>
               <input
                 type="number"
@@ -479,38 +482,39 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                 required
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
-              <p className="text-[10px] text-[#555555]">Harga jual produk yang tampil di katalog.</p>
+              <p className="text-[10px] text-[#555555]">Harga dasar atau batas bawah rentang harga produk.</p>
             </div>
 
-            {/* Row 3: Stok & Nomor WA */}
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
-                Jumlah Stok (Unit)
+                Harga Maksimum (Rp) <span className="text-xs font-normal text-[#555555]">(Opsional - Rentang Harga)</span>
               </label>
               <input
                 type="number"
-                value={stockInput}
-                onChange={(e) => setStockInput(e.target.value ? Number(e.target.value) : '')}
-                placeholder="100"
+                value={priceMaxInput}
+                onChange={(e) => setPriceMaxInput(e.target.value ? Number(e.target.value) : '')}
+                placeholder="Contoh: 95000"
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
               />
+              <p className="text-[10px] text-[#555555]">Kosongkan jika produk memiliki satu harga tetap (bukan rentang harga).</p>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-[#1B5E20]">
-                Nomor WhatsApp Pemilik Produk
-              </label>
-              <input
-                type="tel"
-                value={waContactInput}
-                onChange={(e) => setWaContactInput(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="6281234567890 (kosongkan = pakai nomor toko)"
-                className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
-              />
-              <p className="text-[10px] text-[#555555]">
-                Nomor tujuan saat pembeli klik "Pesan via WhatsApp" untuk produk ini. Jika kosong, pesanan mengarah ke nomor WhatsApp toko (Pengaturan Toko).
-              </p>
-            </div>
+          {/* Row 3: Nomor WA */}
+          <div className="space-y-2">
+            <label className="block text-sm font-bold text-[#1B5E20]">
+              Nomor WhatsApp Pemilik Produk
+            </label>
+            <input
+              type="tel"
+              value={waContactInput}
+              onChange={(e) => setWaContactInput(e.target.value.replace(/[^0-9]/g, ''))}
+              placeholder="6281234567890 (kosongkan = pakai nomor toko)"
+              className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
+            />
+            <p className="text-[10px] text-[#555555]">
+              Nomor tujuan saat pembeli klik "Pesan via WhatsApp" untuk produk ini. Jika kosong, pesanan mengarah ke nomor WhatsApp toko (Pengaturan Toko).
+            </p>
           </div>
 
           {/* Row 4: Deskripsi */}

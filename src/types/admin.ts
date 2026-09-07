@@ -5,7 +5,6 @@ export type AdminActiveNav =
   | 'landing'
   | 'produk'
   | 'info'
-  | 'faq'
   | 'lain';
 
 export interface BannerSlide {

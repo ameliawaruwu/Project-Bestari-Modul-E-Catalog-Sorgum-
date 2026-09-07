@@ -83,6 +83,7 @@ export const productAdminApi = {
         slug,
         description: fields.description || '',
         price: fields.price,
+        price_max: fields.price_max ?? fields.priceMax ?? null,
         stock: fields.stock,
         weight_spec: fields.weight_spec || '',
         origin: fields.origin || '',
