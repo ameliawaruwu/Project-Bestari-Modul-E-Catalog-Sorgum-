@@ -105,7 +105,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       {/* ── Shopee-Style Product Card Container ── */}
       <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-12 sm:mb-16">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
           {/* ─── Kolom Kiri: Galeri Foto Kompak Proporsional (Shopee Style) ─── */}
           <div className="lg:col-span-5 w-full max-w-[320px] sm:max-w-[350px] mx-auto flex flex-col justify-between space-y-3">
