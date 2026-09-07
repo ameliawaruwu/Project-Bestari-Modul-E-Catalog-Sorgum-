@@ -296,6 +296,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         await productAdminApi.updateProduct(data.id, {
           name: data.name,
           category_id: categoryId,
+          price: basePrice, // BE simpan persis; tanpa ini harga dasar tak bisa diubah
           price_max: priceMax,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
@@ -327,6 +328,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         const created = await productAdminApi.createProduct({
           name: data.name,
           category_id: categoryId,
+          price: basePrice, // wajib: BE validasi butuh price dasar
           price_max: priceMax,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
