@@ -109,13 +109,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              {product.stock === 0 && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="bg-[#D32F2F] text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
-                    {t('Stok Habis', 'Sold Out')}
-                  </span>
-                </div>
-              )}
             </div>
 
             {/* Thumbnail Gallery Row (Carousel Thumbnails) */}
@@ -234,19 +227,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 href={orderWhatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-full sm:w-auto sm:min-w-[270px] sm:max-w-md flex items-center justify-center gap-2 text-white h-11 px-5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer ${
-                  product.stock === 0
-                    ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed pointer-events-none'
-                    : 'bg-[#245B3A] hover:bg-[#14331C]'
-                }`}
+                className="w-full sm:w-auto sm:min-w-[270px] sm:max-w-md flex items-center justify-center gap-2 text-white h-11 px-5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer bg-[#245B3A] hover:bg-[#14331C]"
               >
                 <span className="material-symbols-outlined text-xl" style={{ color: '#25D366' }}>
                   chat
                 </span>
                 <span>
-                  {product.stock === 0
-                    ? t('Stok Habis', 'Sold Out')
-                    : t('Tanya Ketersediaan via WhatsApp', 'Inquire Availability via WhatsApp')}
+                  {t('Tanya Ketersediaan via WhatsApp', 'Inquire Availability via WhatsApp')}
                 </span>
               </a>
               <p className="text-[11px] text-[#556353] dark:text-white/50 mt-1.5 text-left sm:text-right">

@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // realtimeApi — SSE (Server-Sent Events) client untuk sync realtime.
-// BE publish event setelah mutasi data (produk/order/artikel/FAQ/banner/
+// BE publish event setelah mutasi data (produk/artikel/banner/settings).
 // landing/settings/voucher). FE subscribe di sini → AppContext refetch data
 // yang berubah → semua client (admin & user) tampilkan data TERBARU tanpa
 // refresh manual. Data admin == data user, realtime.
@@ -9,7 +9,6 @@
 export type RealtimeEventType =
   | 'products'
   | 'articles'
-  | 'faqs'
   | 'banners'
   | 'landing'
   | 'settings';

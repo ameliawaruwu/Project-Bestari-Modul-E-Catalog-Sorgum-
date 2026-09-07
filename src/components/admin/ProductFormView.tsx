@@ -3,7 +3,6 @@ import { Product } from '../../types';
 
 interface ProductFormViewProps {
   initialProduct?: Product | null;
-  initialStock?: number;
   onSave: (productData: {
     id?: string;
     categoryId?: number;
@@ -15,7 +14,6 @@ interface ProductFormViewProps {
     weight: string;
     waContact?: string;
     image: string;
-    stock: number;
     description: string;
     composition?: string;
     shelfLife?: string;
@@ -35,7 +33,6 @@ interface ProductFormViewProps {
 
 export const ProductFormView: React.FC<ProductFormViewProps> = ({
   initialProduct,
-  initialStock = 100,
   onSave,
   onCancel,
   showToast,
@@ -175,7 +172,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
     const priceNum = Number(priceInput) || 0;
     const priceMaxNum = priceMaxInput !== '' ? Number(priceMaxInput) : undefined;
-    const stockNum = typeof initialStock === 'number' && !isNaN(initialStock) ? initialStock : (initialProduct?.stock ?? 100);
 
     // Upload galeri: file baru (dataURL) → kompres → upload → URL final.
     // Slot kosong/URL lama dibiarkan (URL lama tidak perlu di-upload ulang).
@@ -225,7 +221,6 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       category: categoryInput,
       price: priceNum,
       priceMax: priceMaxNum && priceMaxNum > priceNum ? priceMaxNum : undefined,
-      stock: stockNum,
       composition: compositionInput,
       shelfLife: shelfLifeInput,
       attributes: attributesInput,

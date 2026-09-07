@@ -7,7 +7,6 @@ import { ConnectionErrorModal } from './components/ConnectionErrorModal';
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ArticlesPage } from './pages/ArticlesPage';
-import { FaqPage } from './pages/FaqPage';
 import { LoginPage } from './pages/LoginPage';
 import { Product, Article } from './types';
 import { useApp } from './context/AppContext';
@@ -161,7 +160,6 @@ export function App() {
             {activeTab === 'beranda' && <HomePage onClickProduct={handleSelectProduct} onSelectArticle={handleSelectArticle} setActiveTab={handleTabChange} searchQuery={searchQuery} />}
             {activeTab === 'produk' && <ProductsPage onClickProduct={handleSelectProduct} searchQuery={searchQuery} />}
             {activeTab === 'informasi' && <ArticlesPage selectedArticle={selectedArticle} onClearSelectedArticle={() => setSelectedArticle(null)} onSelectProduct={handleSelectProduct} />}
-            {activeTab === 'faq' && <FaqPage />}
             {activeTab === 'tracking' && <TrackingPage />}
           </Suspense>
         )}

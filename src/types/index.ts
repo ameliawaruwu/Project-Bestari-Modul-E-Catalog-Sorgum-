@@ -17,7 +17,6 @@ export interface Product {
   attributes?: string;
   shippingInfo?: string;
   origin?: string;
-  stock?: number;
   isActive?: boolean;
   /** Nomor WhatsApp pemilik/penjual produk (fallback: nomor global toko). */
   waContact?: string;
@@ -50,18 +49,6 @@ export interface Article {
   productIds?: number[];
   /** Produk terkait (lengkap, dari relasi article_products). */
   relatedProducts?: Product[];
-}
-
-export interface FaqItem {
-  id: string;
-  category: string;
-  question: string;
-  answer: string;
-  status?: 'AKTIF' | 'DRAFT';
-  order?: number;
-  tags?: string[];
-  updatedAt?: string;
-  viewsCount?: number;
 }
 
 export interface User {

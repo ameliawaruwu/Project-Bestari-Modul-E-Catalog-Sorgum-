@@ -12,7 +12,7 @@ async function getProductIdsForArticle(articleId: number): Promise<number[]> {
 // Ambil detail produk terkait (aktif) dari relasi article_products.
 async function getRelatedProductsForArticle(articleId: number): Promise<any[]> {
   const [rows] = await dbPool.query(
-    `SELECT p.id, p.name, p.slug, p.price, p.stock, p.is_active, p.weight_spec,
+    `SELECT p.id, p.name, p.slug, p.price, p.is_active, p.weight_spec,
             p.wa_contact,
             (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) AS primary_image,
             c.name AS category_name
@@ -177,59 +177,5 @@ export async function updateArticle(id: number, fields: Record<string, any>) {
 
 export async function deleteArticle(id: number) {
   const [r] = await dbPool.query('DELETE FROM articles WHERE id = ?', [id]);
-  return (r as any).affectedRows > 0;
-}
-
-// FAQ
-// FAQ — public: cuma AKTIF; admin: include DRAFT
-export async function getFaqs(includeInactive = false) {
-  const where = includeInactive ? '' : 'WHERE status = \'AKTIF\'';
-  const [rows] = await dbPool.query(
-    `SELECT id, question, answer, sort_order, category, status, tags, views_count, updated_at, created_at FROM faq ${where} ORDER BY sort_order ASC`
-  );
-  return rows;
-}
-
-export async function createFaq(fields: Record<string, any>) {
-  const [r] = await dbPool.query(
-    `INSERT INTO faq (question, answer, sort_order, category, status, tags)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [
-      fields.question,
-      fields.answer,
-      fields.sort_order ?? fields.order ?? 0,
-      fields.category || 'Lainnya',
-      fields.status || 'AKTIF',
-      fields.tags ? JSON.stringify(fields.tags) : null,
-    ],
-  );
-  return (r as any).insertId;
-}
-
-const FAQ_ALLOWED_COLUMNS = ['question', 'answer', 'sort_order', 'category', 'status', 'tags'];
-
-export async function updateFaq(id: number, fields: Record<string, any>) {
-  const sets: string[] = [];
-  const vals: any[] = [];
-  for (const [k, v] of Object.entries(fields)) {
-    // Whitelist kolom — cegah SQL injection via dynamic column name
-    if (!FAQ_ALLOWED_COLUMNS.includes(k)) continue;
-    if (v === undefined) continue;
-    if (k === 'tags') {
-      sets.push('tags = ?');
-      vals.push(Array.isArray(v) ? JSON.stringify(v) : v);
-    } else {
-      sets.push(`${k} = ?`);
-      vals.push(v);
-    }
-  }
-  if (sets.length === 0) return false;
-  vals.push(id);
-  const [r] = await dbPool.query(`UPDATE faq SET ${sets.join(', ')} WHERE id = ?`, vals);
-  return (r as any).affectedRows > 0;
-}
-
-export async function deleteFaq(id: number) {
-  const [r] = await dbPool.query('DELETE FROM faq WHERE id = ?', [id]);
   return (r as any).affectedRows > 0;
 }

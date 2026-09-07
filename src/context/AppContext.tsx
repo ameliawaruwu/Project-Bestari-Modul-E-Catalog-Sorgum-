@@ -95,7 +95,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [products, setProducts] = useState<Product[]>([]);
-
   const [articles, setArticles] = useState<Article[]>([]);
 
   const [banners, setBanners] = useState<BannerSlide[]>([]);
@@ -151,21 +150,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (!cancelled) {
         setProducts(list);
       }
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Articles
     articleApi.getArticles().then((list) => {
       if (!cancelled) {
         setArticles(list);
       }
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Shop settings
     shopSettingsApi.getSettingsAsync().then((s) => {
       if (!cancelled) {
         setShopSettings(s as unknown as ShopSettings);
       }
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Banners (via /api/banners public — map ke BannerSlide).
     // JANGAN cache ke localStorage — banner yang di-nonaktifkan di admin
@@ -174,7 +173,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (!cancelled && res?.data) {
         setBanners((res.data as any[]).map(mapBannerRow));
       }
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Landing content (konten beranda) — dari BE, bukan localStorage
     landingContentApi.getLandingContent().then((content) => {
@@ -182,7 +181,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // Merge: konten dari server menang, key yang belum ada diisi default
         setLandingContent((prev) => ({ ...prev, ...content }));
       }
-    }).catch(() => {});
+    }).catch(() => { });
 
     const onStorageChange = (e: StorageEvent) => {
       if (e.key === null || e.key === 'bestari_session_id' || e.key === 'bestari_current_user') {
@@ -208,27 +207,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Data admin == data user, realtime. Subscribe sekali, auto-reconnect di client.
   useEffect(() => {
     const refreshProducts = () => {
-      productApi.getProducts().then((list) => setProducts(list)).catch(() => {});
+      productApi.getProducts().then((list) => setProducts(list)).catch(() => { });
     };
     const refreshArticles = () => {
-      articleApi.getArticles().then((list) => setArticles(list)).catch(() => {});
+      articleApi.getArticles().then((list) => setArticles(list)).catch(() => { });
     };
     const refreshBanners = () => {
       request('/banners').then((res: any) => {
         if (res?.data) {
           setBanners((res.data as any[]).map(mapBannerRow));
         }
-      }).catch(() => {});
+      }).catch(() => { });
     };
     const refreshLanding = () => {
       landingContentApi.getLandingContent().then((content) => {
         setLandingContent((prev) => ({ ...prev, ...content }));
-      }).catch(() => {});
+      }).catch(() => { });
     };
     const refreshSettings = () => {
       shopSettingsApi.getSettingsAsync().then((s) => {
         setShopSettings(s as unknown as ShopSettings);
-      }).catch(() => {});
+      }).catch(() => { });
     };
     const unsubs = [
       realtimeApi.on('products', refreshProducts),
@@ -366,7 +365,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       pemanis: 'Pemanis Alami',
       benih: 'Benih Sorgum',
     };
-    
+
     if (productData.id) {
       // Edit
       const exists = products.some((p) => p.id === productData.id);
@@ -392,7 +391,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               glutenFree: !!productData.glutenFree,
               organic: !!productData.organic,
               shippingInfo: productData.shippingInfo,
-              stock: Number(productData.stock) || undefined,
             };
           }
           return p;
@@ -418,7 +416,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           glutenFree: !!productData.glutenFree,
           organic: !!productData.organic,
           shippingInfo: productData.shippingInfo,
-          stock: Number(productData.stock) || undefined,
         };
         updateProducts([newProd, ...products]);
       }
@@ -452,7 +449,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const filtered = products.filter((p) => p.id !== id);
     updateProducts(filtered);
   };
-
 
 
   // Article CRUD

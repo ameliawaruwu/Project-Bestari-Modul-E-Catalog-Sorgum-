@@ -84,7 +84,6 @@ export const productAdminApi = {
         description: fields.description || '',
         price: fields.price,
         price_max: fields.price_max ?? fields.priceMax ?? null,
-        stock: fields.stock,
         weight_spec: fields.weight_spec || '',
         origin: fields.origin || '',
         is_featured: !!fields.is_featured,

@@ -260,7 +260,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     weight: string;
     waContact?: string;
     image: string;
-    stock: number;
     description: string;
     composition?: string;
     shelfLife?: string;
@@ -297,9 +296,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         await productAdminApi.updateProduct(data.id, {
           name: data.name,
           category_id: categoryId,
-          price: basePrice,
           price_max: priceMax,
-          stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
           origin: data.origin || null,
@@ -330,9 +327,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         const created = await productAdminApi.createProduct({
           name: data.name,
           category_id: categoryId,
-          price: basePrice,
           price_max: priceMax,
-          stock: data.stock,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
           origin: data.origin || null,
@@ -533,7 +528,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             (editingProduct ? (
               <ProductFormView
                 initialProduct={editingProduct.product}
-                initialStock={editingProduct.product?.stock ?? 0}
                 onSave={handleSaveProduct}
                 onCancel={() => setEditingProduct(null)}
                 showToast={showToast}

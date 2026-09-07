@@ -43,15 +43,3 @@ export interface ArticleItem {
   productIds?: number[];
 }
 
-export interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  status?: 'AKTIF' | 'DRAFT';
-  order?: number;
-  tags?: string[];
-  updatedAt?: string;
-  viewsCount?: number;
-}
-
