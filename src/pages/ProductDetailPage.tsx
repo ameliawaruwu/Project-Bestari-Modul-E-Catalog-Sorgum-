@@ -119,36 +119,30 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               />
             </div>
 
-            {/* Thumbnail Gallery Row — grid mengikuti jumlah gambar (4 gambar = 2x2 pas selebar gambar utama) */}
-            {(() => {
-              const n = galleryImages.length;
-              const colsClass = n >= 5 ? 'grid-cols-5' : n === 4 ? 'grid-cols-2' : n === 3 ? 'grid-cols-3' : n === 2 ? 'grid-cols-2' : 'grid-cols-1';
-              return (
-                <div className={`grid ${colsClass} gap-2`}>
-                  {galleryImages.map((img, idx) => {
-                    const isSelected = selectedImage === img;
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setSelectedImage(img)}
-                        className={`aspect-square rounded-lg sm:rounded-xl overflow-hidden cursor-pointer transition-all duration-200 border-2 ${
-                          isSelected
-                            ? 'border-[#245B3A] dark:border-[#86EFAC] shadow-xs'
-                            : 'border-[#E2EFE0] dark:border-white/10 opacity-60 hover:opacity-100 hover:border-[#97B88A]'
-                        }`}
-                      >
-                        <img
-                          src={img}
-                          alt={`${product.name} ${idx + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            })()}
+            {/* Thumbnail Gallery Row — 1 baris x 4 kolom, selebar gambar utama; kalau gambar <4 slot kosong dibiarkan */}
+            <div className="grid grid-cols-4 gap-2">
+              {galleryImages.map((img, idx) => {
+                const isSelected = selectedImage === img;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImage(img)}
+                    className={`aspect-square rounded-lg sm:rounded-xl overflow-hidden cursor-pointer transition-all duration-200 border-2 ${
+                      isSelected
+                        ? 'border-[#245B3A] dark:border-[#86EFAC] shadow-xs'
+                        : 'border-[#E2EFE0] dark:border-white/10 opacity-60 hover:opacity-100 hover:border-[#97B88A]'
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                );
+              })}
+            </div>
 
           </div>
 
