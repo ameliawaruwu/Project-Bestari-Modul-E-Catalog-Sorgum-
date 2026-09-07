@@ -58,11 +58,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const rawWaNumber = (product.waContact || shopSettings.whatsappNumber || '').replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waNumber = rawWaNumber || '';
 
-  // Pesan order alami ala pembeli yang berminat: nama toko, produk, harga.
+  // Pesan order alami ala pembeli yang berminat: sapaan ramah (Kak) + nama produk.
   const orderMessageText =
-    `Halo Admin ${shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'Bestari'}, saya mau pesan produk ini:\n\n` +
-    `${product.name}\n${priceDisplay}\n\n` +
-    `Apakah ready? Kalau iya saya lanjut order ya, Kak.`;
+    `halo kak, apakah produk ${product.name} ini masih tersedia? saya berminat untuk membeli`;
   const orderWhatsappUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(orderMessageText)}` : '#';
 
   return (
