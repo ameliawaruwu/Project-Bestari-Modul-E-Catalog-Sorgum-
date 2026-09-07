@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-all ${
                     isScrolled
                       ? 'bg-white/15 text-[#E3B84B]'
-                      : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#3A8F4B] dark:text-[#65B86B]'
+                      : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#E3B84B]'
                   }`}
                 >
                   <span className="material-symbols-outlined text-xl sm:text-2xl">
@@ -79,13 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
                   </span>
-                  <span
-                    className={`font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 transition-colors ${
-                      isScrolled
-                        ? 'text-[#E3B84B]'
-                        : 'text-[#3A8F4B] dark:text-[#65B86B]'
-                    }`}
-                  >
+                  <span className="font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 text-[#E3B84B]">
                     SORGUM E-CATALOG
                   </span>
                 </div>
