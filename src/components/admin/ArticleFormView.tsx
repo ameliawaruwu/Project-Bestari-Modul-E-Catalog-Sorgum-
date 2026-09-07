@@ -333,66 +333,6 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
             )}
           </div>
 
-          {/* ===== Produk Terkait (artikel↔produk) ===== */}
-          <div className="space-y-2.5 border border-[#E2EFE0] dark:border-white/10 rounded-2xl p-4 sm:p-5 bg-[#FAFCF8] dark:bg-[#0E1A11]">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="block text-sm font-bold text-[#1B5E20] dark:text-[#F4F8F3]">
-                  Produk Terkait di Artikel Ini
-                </label>
-                <p className="text-[11px] text-[#556353] dark:text-white/60 mt-0.5">
-                  Pilih produk sorgum yang dibahas/direkomendasikan artikel. Produk ini tampil di bagian bawah artikel biar pembaca bisa langsung membelinya.
-                </p>
-              </div>
-              {productIds.length > 0 && (
-                <span className="px-2 py-0.5 rounded-md bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] text-[10px] font-extrabold whitespace-nowrap">
-                  {productIds.length} produk
-                </span>
-              )}
-            </div>
-
-            {products.length === 0 ? (
-              <p className="text-xs text-[#C89B3C] bg-[#FFF8E7] dark:bg-[#241E0E] border border-[#F5E6C4] dark:border-white/10 rounded-xl px-3.5 py-3">
-                Belum ada produk aktif. Tambahkan produk dulu di Kelola Produk, lalu kembali ke sini untuk menandai produk terkait.
-              </p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {products.map((p) => {
-                  const pid = Number(p.id);
-                  const selected = productIds.includes(pid);
-                  return (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() =>
-                        setProductIds((prev) =>
-                          selected ? prev.filter((x) => x !== pid) : [...prev, pid],
-                        )
-                      }
-                      className={`inline-flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                        selected
-                          ? 'bg-[#2E7D32] border-[#2E7D32] text-white shadow-xs'
-                          : 'bg-white dark:bg-[#162419] border-[#E0E0E0] dark:border-white/15 text-[#556353] dark:text-white/70 hover:border-[#3A8F4B] hover:text-[#1F5132] dark:hover:text-[#86EFAC]'
-                      }`}
-                    >
-                      <span className={`w-5 h-5 rounded-lg overflow-hidden flex-shrink-0 ${selected ? 'bg-white/20' : 'bg-[#EAF6E8] dark:bg-[#152718]'}`}>
-                        {p.image ? (
-                          <img src={p.image} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className={`material-symbols-outlined text-[11px] leading-5 block text-center ${selected ? 'text-white' : 'text-[#3A8F4B]'}`}>shopping_bag</span>
-                        )}
-                      </span>
-                      <span className="max-w-[180px] truncate">{p.name}</span>
-                      {selected && (
-                        <span className="material-symbols-outlined text-sm">check_circle</span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
           {/* ===== Block Editor ===== */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
@@ -591,6 +531,66 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 Tambah Kutipan
               </button>
             </div>
+          </div>
+
+          {/* ===== Produk Terkait (artikel↔produk) — di bawah/akhir form ===== */}
+          <div className="space-y-2.5 border border-[#E2EFE0] dark:border-white/10 rounded-2xl p-4 sm:p-5 bg-[#FAFCF8] dark:bg-[#0E1A11]">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-sm font-bold text-[#1B5E20] dark:text-[#F4F8F3]">
+                  Produk Terkait di Artikel Ini
+                </label>
+                <p className="text-[11px] text-[#556353] dark:text-white/60 mt-0.5">
+                  Pilih produk sorgum yang dibahas/direkomendasikan artikel. Produk ini tampil di bagian bawah artikel biar pembaca bisa langsung membelinya.
+                </p>
+              </div>
+              {productIds.length > 0 && (
+                <span className="px-2 py-0.5 rounded-md bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] text-[10px] font-extrabold whitespace-nowrap">
+                  {productIds.length} produk
+                </span>
+              )}
+            </div>
+
+            {products.length === 0 ? (
+              <p className="text-xs text-[#C89B3C] bg-[#FFF8E7] dark:bg-[#241E0E] border border-[#F5E6C4] dark:border-white/10 rounded-xl px-3.5 py-3">
+                Belum ada produk aktif. Tambahkan produk dulu di Kelola Produk, lalu kembali ke sini untuk menandai produk terkait.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {products.map((p) => {
+                  const pid = Number(p.id);
+                  const selected = productIds.includes(pid);
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() =>
+                        setProductIds((prev) =>
+                          selected ? prev.filter((x) => x !== pid) : [...prev, pid],
+                        )
+                      }
+                      className={`inline-flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                        selected
+                          ? 'bg-[#2E7D32] border-[#2E7D32] text-white shadow-xs'
+                          : 'bg-white dark:bg-[#162419] border-[#E0E0E0] dark:border-white/15 text-[#556353] dark:text-white/70 hover:border-[#3A8F4B] hover:text-[#1F5132] dark:hover:text-[#86EFAC]'
+                      }`}
+                    >
+                      <span className={`w-5 h-5 rounded-lg overflow-hidden flex-shrink-0 ${selected ? 'bg-white/20' : 'bg-[#EAF6E8] dark:bg-[#152718]'}`}>
+                        {p.image ? (
+                          <img src={p.image} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className={`material-symbols-outlined text-[11px] leading-5 block text-center ${selected ? 'text-white' : 'text-[#3A8F4B]'}`}>shopping_bag</span>
+                        )}
+                      </span>
+                      <span className="max-w-[180px] truncate">{p.name}</span>
+                      {selected && (
+                        <span className="material-symbols-outlined text-sm">check_circle</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Actions */}

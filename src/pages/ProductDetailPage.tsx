@@ -54,7 +54,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const waNumber = rawWaNumber || '';
 
   const orderMessageText =
-    `Halo Admin Bestari Sorgum, saya ingin menanyakan ketersediaan produk:\n*${product.name}*\n\nApakah stok produk ini masih tersedia? Terima kasih!`;
+    `Halo Admin Bestari Sorgum, saya ingin memesan produk:\n*${product.name}*`;
   const orderWhatsappUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(orderMessageText)}` : '#';
 
   return (

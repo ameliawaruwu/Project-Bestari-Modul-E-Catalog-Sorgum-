@@ -64,7 +64,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
       </div>
 
-      {/* 1. 3-Grid KPI Metrics (Tanpa Stok & Tanpa FAQ) */}
+      {/* 1. KPI Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
         {/* KPI 1: Total Produk */}
