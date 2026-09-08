@@ -439,9 +439,9 @@ export const TrackingPage: React.FC = () => {
           href={waHelpUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-md hover:shadow-xl transition-all shrink-0 cursor-pointer active:scale-95"
+          className="group inline-flex items-center gap-2.5 bg-gradient-to-r from-[#14331C] via-[#245B3A] to-[#3A8F4B] hover:from-[#0E2514] hover:via-[#1B472D] hover:to-[#2F773E] text-white font-bold text-xs sm:text-sm px-5 sm:px-6 py-3 rounded-2xl shadow-lg shadow-[#14331C]/25 hover:shadow-xl hover:shadow-[#14331C]/30 border border-[#FADE88]/45 hover:border-[#FADE88]/70 active:scale-95 transition-all duration-200 shrink-0 cursor-pointer"
         >
-          <span className="material-symbols-outlined text-xl text-white">chat</span>
+          <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform" style={{ color: '#25D366' }}>chat</span>
           <span>{t('Hubungi Admin via WA', 'Contact Admin via WA')}</span>
         </a>
       )}
