@@ -200,13 +200,14 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       categoryId: categoryIdInput,
       name: nameInput,
       category: categoryInput,
+      
       price: priceNum,
       priceMax: priceMaxNum && priceMaxNum > priceNum ? priceMaxNum : undefined,
       composition: compositionInput,
       shelfLife: shelfLifeInput,
       attributes: attributesInput,
       // Ukuran/Kemasan (weight_spec) — diisi admin langsung dari form, bukan hardcoded.
-      unitInfo: unitInput.trim() || null,
+      unitInfo: unitInput.trim(),
       weight: weightInput || '1kg',
       origin: originInput,
       waContact: waWithPrefix || undefined,
