@@ -443,7 +443,9 @@ export const TrackingPage: React.FC = () => {
           title={t('Hubungi Admin via WA', 'Contact Admin via WA')}
           className="group inline-flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 bg-gradient-to-r from-[#14331C] via-[#245B3A] to-[#3A8F4B] hover:from-[#0E2514] hover:via-[#1B472D] hover:to-[#2F773E] text-white rounded-2xl shadow-lg shadow-[#14331C]/25 hover:shadow-xl hover:shadow-[#14331C]/30 border border-[#FADE88]/45 hover:border-[#FADE88]/70 active:scale-95 transition-all duration-200 shrink-0 cursor-pointer"
         >
-          <span className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform" style={{ color: '#25D366' }}>chat</span>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 group-hover:scale-110 transition-transform">
+            <path fill="#25D366" d="M16 2.5C8.544 2.5 2.5 8.544 2.5 16c0 2.38.62 4.71 1.8 6.76L2.1 29.9l7.32-2.19c1.98 1.05 4.21 1.61 6.58 1.61 7.456 0 13.5-6.044 13.5-13.5S23.456 2.5 16 2.5zm0 24.45c-2.04 0-4.04-.55-5.78-1.59l-.41-.25-4.34 1.3 1.39-4.23-.27-.43A11.36 11.36 0 0 1 4.7 16c0-6.23 5.07-11.3 11.3-11.3 6.23 0 11.3 5.07 11.3 11.3 0 6.23-5.07 11.25-11.3 11.25zm6.2-8.46c-.34-.17-2-.99-2.31-1.1-.31-.11-.54-.17-.76.17-.23.34-.88 1.1-1.08 1.33-.2.23-.4.25-.74.08-.34-.17-1.43-.53-2.72-1.68-1.01-.9-1.69-2-1.89-2.34-.2-.34-.02-.52.15-.69.15-.15.34-.4.51-.6.17-.2.23-.34.34-.57.11-.23.06-.43-.03-.6-.08-.17-.76-1.84-1.05-2.52-.28-.66-.56-.57-.76-.58h-.65c-.23 0-.6.08-.91.4-.31.34-1.2 1.17-1.2 2.86 0 1.69 1.23 3.32 1.4 3.55.17.23 2.42 3.7 5.87 5.19.82.35 1.46.57 1.96.73.82.26 1.57.22 2.16.13.66-.1 2.02-.83 2.31-1.63.28-.8.28-1.48.2-1.63-.09-.14-.31-.23-.65-.4z"/>
+          </svg>
         </a>
       )}
       </div>
