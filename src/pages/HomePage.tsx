@@ -178,12 +178,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2.5 bg-gradient-to-r from-[#14331C] via-[#245B3A] to-[#3A8F4B] hover:from-[#0E2514] hover:via-[#1B472D] hover:to-[#2F773E] text-white px-5 sm:px-6 py-3 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm border border-[#FADE88]/45 hover:border-[#FADE88]/70 shadow-lg shadow-[#14331C]/25 hover:shadow-xl hover:shadow-[#14331C]/30 active:scale-95 transition-all duration-200 cursor-pointer"
+                aria-label={t('Hubungi via WhatsApp', 'Contact via WhatsApp')}
+                title={t('Hubungi via WhatsApp', 'Contact via WhatsApp')}
+                className="group inline-flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 bg-gradient-to-r from-[#14331C] via-[#245B3A] to-[#3A8F4B] hover:from-[#0E2514] hover:via-[#1B472D] hover:to-[#2F773E] text-white rounded-xl font-['Plus_Jakarta_Sans'] border border-[#FADE88]/45 hover:border-[#FADE88]/70 shadow-lg shadow-[#14331C]/25 hover:shadow-xl hover:shadow-[#14331C]/30 active:scale-95 transition-all duration-200 cursor-pointer"
               >
-                <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform" style={{ color: '#25D366' }}>
+                <span className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform" style={{ color: '#25D366' }}>
                   chat
                 </span>
-                <span>{t('Hubungi via WhatsApp', 'Contact via WhatsApp')}</span>
               </a>
             </div>
           )}
