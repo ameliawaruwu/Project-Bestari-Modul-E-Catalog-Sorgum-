@@ -20,15 +20,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [descExpanded, setDescExpanded] = useState<boolean>(false);
 
   // Gallery images — dari DB (product_images, diedit admin di Kelola Produk).
-  // Gambar utama (is_primary) TIDAK diikutkan sebagai thumbnail supaya tidak dobel
-  // dengan gambar besar di atas; sisanya (galeri tambahan) maks 4.
+  // SEMUA gambar ditampilkan (termasuk gambar utama / is_primary) sebagai
+  // thumbnail di bawah foto besar — bukan hanya yang non-primary. Urut sesuai
+  // sort_order (gambar utama di posisi pertama).
   const galleryImages = (product.images && product.images.length
-    ? product.images
-        .filter((img) => !img.is_primary)
-        .map((img) => img.image_url)
+    ? product.images.map((img) => img.image_url)
     : []
   ).slice(0, 4);
-  // Kalau tidak ada galeri non-primary sama sekali → fallback tampilkan gambar utama
+  // Kalau tidak ada product_images sama sekali → fallback tampilkan gambar utama
   // sebagai thumbnail tunggal (produk lama yang hanya punya 1 foto).
   const effectiveGallery = galleryImages.length ? galleryImages : (product.image ? [product.image] : []);
 
