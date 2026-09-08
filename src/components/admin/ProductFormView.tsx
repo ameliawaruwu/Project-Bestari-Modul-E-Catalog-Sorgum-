@@ -468,12 +468,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   type="tel"
                   value={waContactInput}
                   onChange={(e) => setWaContactInput(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="81234567890 (kosongkan = pakai nomor toko)"
+                  placeholder="81234567890 (kosongkan = order ke nomor admin)"
                   className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-r-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] focus:border-[#2E7D32] outline-none font-mono"
                 />
               </div>
               <p className="text-[10px] text-[#555555]">
-                Cukup ketik angka setelah +62 (contoh: 81234567890). Kosongkan jika ingin memakai nomor WhatsApp toko (Pengaturan Toko).
+                Cukup ketik angka setelah +62 (contoh: 81234567890). Kosongkan jika order produk ini ingin masuk ke nomor WhatsApp admin (Kelola Lain).
               </p>
             </div>
 

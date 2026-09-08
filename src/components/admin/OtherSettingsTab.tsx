@@ -123,7 +123,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
             Pengaturan Toko
           </h2>
           <p className="text-xs text-[#556353] dark:text-white/60 mt-1">
-            Atur tampilan identitas toko dan nomor WhatsApp.
+            Atur tampilan identitas toko dan nomor WhatsApp admin.
           </p>
         </div>
 
@@ -218,6 +218,22 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
                 placeholder="BESTARI Sorghum"
                 className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1.5">
+                Nomor WhatsApp Admin
+              </label>
+              <input
+                type="tel"
+                value={settings.whatsappNumber}
+                onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
+                placeholder="6281234567890"
+                className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
+              />
+              <p className="text-[10px] text-[#556353] dark:text-white/60 mt-1">
+                Nomor admin untuk kontak di footer, banner kemitraan, dan bantuan lacak paket. Produk tanpa nomor WA sendiri akan meneruskan pesanan ke nomor ini.
+              </p>
             </div>
           </div>
         </div>
