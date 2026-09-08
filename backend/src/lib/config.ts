@@ -27,14 +27,6 @@ export const config = {
     maxFileSize: parseInt(process.env.ECATALOG_BESTARI_MAX_FILE_SIZE || '1048576', 10),
   },
 
-  tracking: {
-    pollIntervalHours: parseInt(process.env.ECATALOG_BESTARI_TRACKING_POLL_HOURS || '4', 10),
-  },
-
-  store: {
-    adminWhatsapp: process.env.ECATALOG_BESTARI_ADMIN_WA || '6281234567890',
-  },
-
   // Origin yang di-allow CORS (dipisah koma). Default: FE dev (vite).
   corsOrigins: (process.env.ECATALOG_BESTARI_CORS_ORIGINS || 'http://localhost:3000')
     .split(',')

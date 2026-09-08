@@ -128,7 +128,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveTab('produk')}
-                  className="inline-flex items-center gap-1.5 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1F5132] dark:text-[#86EFAC] hover:text-[#162809] dark:hover:text-white transition-colors cursor-pointer group bg-white dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] px-4 py-2 rounded-xl border border-[#C4C8BC]/40 dark:border-[rgba(165,214,167,0.25)] shadow-xs hover:shadow-sm"
+                  className="inline-flex items-center gap-1.5 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1F5132] dark:text-[#86EFAC] hover:text-[#162809] dark:hover:text-white transition-all duration-200 cursor-pointer group bg-white dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] px-4 py-2 rounded-xl border border-[#C4C8BC]/40 dark:border-[rgba(165,214,167,0.25)] shadow-xs hover:shadow-sm active:scale-[0.98]"
                 >
                   <span>{t('Lihat Seluruh Produk', 'View All Products')}</span>
                   <span className="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">
@@ -172,6 +172,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </p>
             </div>
 
+            {cleanWaNumber && (
             <div className="flex items-center justify-center shrink-0">
               <a
                 href={waUrl}
@@ -180,11 +181,12 @@ export const HomePage: React.FC<HomePageProps> = ({
                 className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5D] text-white px-4.5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-semibold text-xs sm:text-sm shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-lg text-white">
-                  chat
+                  call
                 </span>
                 <span>{t('Hubungi via WhatsApp', 'Contact via WhatsApp')}</span>
               </a>
             </div>
+          )}
           </div>
         </div>
       </section>

@@ -71,7 +71,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
               Daftar Produk
             </h3>
             <p className="text-xs text-[#556353] dark:text-white/60 mt-0.5">
-              Daftar lengkap komoditas dan olahan sorgum Sorgum
+              Daftar lengkap komoditas dan olahan sorgum
             </p>
           </div>
 

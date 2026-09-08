@@ -108,17 +108,17 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* KPI 3: Banner Promosi */}
-        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border-2 border-[#0284C7]/50 dark:border-[#0284C7]/40 p-5 flex flex-col justify-between min-h-[130px] shadow-xs">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border-2 border-[#2B3E1D]/40 dark:border-[rgba(165,214,167,0.3)] p-5 flex flex-col justify-between min-h-[130px] shadow-xs">
           <div className="flex justify-between items-start">
-            <span className="text-[#075985] dark:text-[#7DD3FC]/90 text-[10px] font-extrabold uppercase tracking-wider">
+            <span className="text-[#2B3E1D] dark:text-[#A5D6A7]/90 text-[10px] font-extrabold uppercase tracking-wider">
               Banner Promosi
             </span>
-            <div className="w-9 h-9 rounded-xl bg-[#F0F9FF] dark:bg-[#0C2438] text-[#0284C7] border border-[#0284C7]/20 flex items-center justify-center shadow-2xs">
+            <div className="w-9 h-9 rounded-xl bg-[#F4F8F1] dark:bg-[#142316] text-[#2B3E1D] dark:text-[#86EFAC] border border-[#2B3E1D]/20 dark:border-[rgba(165,214,167,0.2)] flex items-center justify-center shadow-2xs">
               <span className="material-symbols-outlined text-xl">view_carousel</span>
             </div>
           </div>
           <div className="mt-2">
-            <h3 className="text-3xl sm:text-4xl font-black text-[#0369A1] dark:text-[#7DD3FC] font-mono leading-none tracking-tight">
+            <h3 className="text-3xl sm:text-4xl font-black text-[#162809] dark:text-[#86EFAC] font-mono leading-none tracking-tight">
               {bannersCount}
             </h3>
             <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1.5 font-medium">
@@ -249,7 +249,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <p className="text-[10px] font-extrabold uppercase text-[#556353] dark:text-white/60 tracking-wider">WhatsApp Pemesanan</p>
                   <p className="font-bold text-xs text-[#1F5132] dark:text-[#F4F8F3] font-mono mt-0.5">
-                    {shopSettings.whatsappNumber || '+62 812-3456-7890'}
+                    {shopSettings.whatsappNumber || 'Belum diatur'}
                   </p>
                 </div>
                 <span className="material-symbols-outlined text-[#25D366] text-xl">

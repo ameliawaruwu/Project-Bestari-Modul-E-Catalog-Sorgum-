@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
+import { ProductCard } from '../components/ProductCard';
 import { Article } from '../types';
 import { useApp } from '../context/AppContext';
 import { articleApi } from '../api/articleApi';
@@ -250,42 +251,13 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   {activeArticle.relatedProducts.map((prod) => (
-                    <div
+                    <ProductCard
                       key={prod.id}
-                      onClick={() => onSelectProduct(prod)}
-                      className="group bg-white rounded-2xl overflow-hidden border border-[#E0E0E0] hover:border-[#2E7D32]/40 hover:shadow-md transition-all cursor-pointer flex flex-col"
-                    >
-                      <div className="aspect-[4/3] overflow-hidden bg-[#F7F8F6]">
-                        {prod.image ? (
-                          <img src={prod.image} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-[#E8F5E9]">
-                            <span className="material-symbols-outlined text-4xl text-[#3A8F4B]">image</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-3 sm:p-4 flex flex-col flex-grow">
-                        <span className="text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider mb-1 font-['Plus_Jakarta_Sans']">
-                          {prod.categoryLabel}
-                        </span>
-                        <h4 className="text-xs sm:text-sm font-bold text-[#1B5E20] line-clamp-2 mb-1 font-['Plus_Jakarta_Sans'] leading-snug group-hover:text-[#2E7D32] transition-colors">
-                          {prod.name}
-                        </h4>
-                        {prod.unitInfo && (
-                          <p className="text-[10px] sm:text-[11px] text-[#555555] font-['Plus_Jakarta_Sans'] mb-2">{prod.unitInfo}</p>
-                        )}
-                        <div className="mt-auto flex items-center justify-between pt-2 border-t border-[#E0E0E0]/70">
-                          <span className="font-mono text-xs sm:text-sm font-extrabold text-[#1B5E20]">
-                            {typeof prod.formattedPrice === 'string'
-                              ? prod.formattedPrice.replace('IDR ', 'Rp ')
-                              : `Rp ${Number(prod.price || 0).toLocaleString('id-ID')}`}
-                          </span>
-                          <span className="material-symbols-outlined text-base text-[#2E7D32] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
-                        </div>
-                      </div>
-                    </div>
+                      product={prod}
+                      onClickProduct={onSelectProduct}
+                    />
                   ))}
                 </div>
               </section>

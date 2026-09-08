@@ -296,6 +296,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         await productAdminApi.updateProduct(data.id, {
           name: data.name,
           category_id: categoryId,
+          price: basePrice, // BE simpan persis; tanpa ini harga dasar tak bisa diubah
           price_max: priceMax,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
@@ -308,25 +309,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           organic: data.organic ?? false,
           wa_contact: data.waContact || null,
         });
-        // Gambar baru (URL hasil upload) → daftarkan ke product_images.
-        // Hanya kalau image BERUBAH dari produk existing (hindari duplikat tiap save).
-        const existingImage = products.find((p) => p.id === data.id)?.image;
-        if (data.image && !data.image.startsWith('data:') && data.image !== existingImage) {
-          await productAdminApi.addImage(data.id, data.image, true);
-        }
-        // Galeri produk (4 gambar) — replace semua kalau admin mengubahnya.
-        const gallery = data.galleryImages || [];
-        if (gallery.length) {
-          // Gambar utama wajib jadi slot pertama (primary) kalau belum ada di galeri.
-          const urls = data.image && !data.image.startsWith('data:')
-            ? [data.image, ...gallery.filter((u) => u !== data.image)]
-            : gallery;
-          await productAdminApi.replaceImages(data.id, urls);
-        }
+        // Foto produk = satu set galeri (maks 4). Gambar pertama = gambar utama.
+        // replaceImages menjadikan elemen pertama is_primary=1 di BE — tanpa perlu
+        // addImage terpisah (sebelumnya data.image selalu nimpa primary & "Jadikan
+        // Utama" galeri tidak berfungsi). Array kosong = hapus semua foto produk.
+        await productAdminApi.replaceImages(data.id, data.galleryImages || []);
       } else {
         const created = await productAdminApi.createProduct({
           name: data.name,
           category_id: categoryId,
+          price: basePrice, // wajib: BE validasi butuh price dasar
           price_max: priceMax,
           weight_spec: data.unitInfo || data.weight,
           description: data.description,
@@ -339,17 +331,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           organic: data.organic ?? false,
           wa_contact: data.waContact || null,
         });
-        // Gambar baru → daftarkan sebagai primary image produk baru
-        if (data.image && !data.image.startsWith('data:')) {
-          await productAdminApi.addImage(String(created?.id || data.id), data.image, true);
-        }
-        // Galeri produk (4 gambar) — simpan sekaligus untuk produk baru
+        // Foto produk = satu set galeri. Gambar pertama = gambar utama (primary).
         const galleryNew = data.galleryImages || [];
         if (galleryNew.length && created?.id) {
-          const urls = data.image && !data.image.startsWith('data:')
-            ? [data.image, ...galleryNew.filter((u) => u !== data.image)]
-            : galleryNew;
-          await productAdminApi.replaceImages(String(created.id), urls);
+          await productAdminApi.replaceImages(String(created.id), galleryNew);
         }
         // Penting: pakai id ASLI dari BE (bukan prod-<timestamp>) supaya edit/delete
         // produk baru jalan (id string palsu → parseInt NaN → 400/404)

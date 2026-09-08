@@ -434,15 +434,17 @@ export const TrackingPage: React.FC = () => {
           </p>
         </div>
 
+        {cleanWaNumber && (
         <a
           href={waHelpUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-md hover:shadow-xl transition-all shrink-0 cursor-pointer active:scale-95"
         >
-          <span className="material-symbols-outlined text-xl text-white">chat</span>
+          <span className="material-symbols-outlined text-xl text-white">call</span>
           <span>{t('Hubungi Admin via WA', 'Contact Admin via WA')}</span>
         </a>
+      )}
       </div>
 
     </div>
