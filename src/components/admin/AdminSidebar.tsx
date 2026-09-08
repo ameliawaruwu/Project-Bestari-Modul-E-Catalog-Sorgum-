@@ -1,4 +1,5 @@
 import React from 'react';
+import { useApp } from '../../context/AppContext';
 import { AdminActiveNav } from '../../types/admin';
 
 interface AdminSidebarProps {
@@ -30,6 +31,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'lain', label: 'Kelola Lain', icon: 'more_horiz' },
   ];
 
+  // Identitas toko — sinkron dengan logo di header & footer (nama toko dari
+  // Pengaturan Toko, bukan hardcoded "BESTARI") supaya admin selaras dgn toko.
+  const { shopSettings } = useApp();
+  const brandWord = shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI';
+
   return (
     <aside
       className={`h-screen fixed left-0 top-0 bg-[#1F5132] border-r border-white/10 flex flex-col py-3 z-[100] transition-all duration-300 shadow-xl ${
@@ -51,15 +57,17 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             >
               <span className="material-symbols-outlined text-lg">menu</span>
             </button>
+            {/* Logo toko saat sidebar collapsed — gunakan ikon daun (spa) emas,
+                sama dengan logo header & footer agar identitas admin konsisten. */}
             <span className="font-['Plus_Jakarta_Sans'] text-xl text-[#E3B84B] font-black bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-white/15 shadow-2xs">
-              B
+              <span className="material-symbols-outlined text-xl">spa</span>
             </span>
           </div>
         ) : null}
 
         <div className={isCollapsed ? 'lg:hidden block' : 'block'}>
           <h1 className="font-['Plus_Jakarta_Sans'] text-xl text-white font-black tracking-wider">
-            BESTARI
+            {brandWord}
           </h1>
           <p className="text-[#E3B84B] text-[10px] font-bold uppercase tracking-widest mt-0.5">
             SORGUM ADMIN CONSOLE

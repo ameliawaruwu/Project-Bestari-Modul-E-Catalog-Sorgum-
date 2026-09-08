@@ -426,7 +426,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
             <div className="space-y-2">
               <label className="block text-sm font-bold text-[#1B5E20]">
-                Harga Maksimum (Rp) <span className="text-xs font-normal text-[#555555]">(Opsional - Rentang Harga)</span>
+                Harga Maksimum (Rp)
               </label>
               <input
                 type="number"

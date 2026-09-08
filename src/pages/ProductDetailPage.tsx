@@ -67,7 +67,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   // Pesan order alami ala pembeli yang berminat: sapaan ramah (Kak) + nama produk.
   const orderMessageText =
-    `Halo Kak! 👋 Mau tanya untuk produk ${product.name} apakah stoknya masih ada? Kalau ready, saya mau order ya. Terima kasih! 🙏😊`;
+    `Halo Kak! Mau tanya untuk produk ${product.name} apakah stoknya masih ada? Kalau ready, saya mau order ya. Terima kasih!`;
   const orderWhatsappUrl = waNumber ? `https://wa.me/${waNumber}?text=${encodeURIComponent(orderMessageText)}` : '#';
 
   return (
