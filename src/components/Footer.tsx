@@ -80,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
       <div className="max-w-[1180px] mx-auto mt-6 sm:mt-8 flex justify-center text-center">
         <p className="font-['Plus_Jakarta_Sans'] text-[11px] text-white/65">
-          © 2026 BESTARI — Kemurnian Alami untuk Hidup Sehat.
+          {t('© 2026 BESTARI · Kemurnian Alami untuk Hidup Sehat.', '© 2026 BESTARI · Pure Nature for Healthy Living.')}
         </p>
       </div>
     </footer>

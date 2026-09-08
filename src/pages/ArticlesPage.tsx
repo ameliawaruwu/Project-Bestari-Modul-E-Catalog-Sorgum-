@@ -164,7 +164,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
               "{block.content}"
               {block.author && (
                 <footer className="mt-3 text-right text-sm font-bold not-italic text-[#1B5E20]">
-                  — {block.author}
+                  · {block.author}
                 </footer>
               )}
             </blockquote>

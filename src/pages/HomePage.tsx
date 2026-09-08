@@ -79,7 +79,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* 2. Koleksi Produk Pilihan */}
       <div id="product-catalog-section" className="text-center pt-6 sm:pt-8 pb-4 px-4 sm:px-6 lg:px-8 max-w-[1180px] mx-auto relative z-10">
-        <h2 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#1F5132] dark:text-[#F4F8F3] tracking-tight">
+        <h2 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#162809] dark:text-[#F4F8F3] tracking-tight">
           {t(landingContent.featuredTitleId || 'Koleksi Produk Pilihan SORGUM', landingContent.featuredTitleEn || 'Featured Sorghum Collection')}
         </h2>
 
@@ -128,7 +128,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveTab('produk')}
-                  className="inline-flex items-center gap-1.5 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#3A8F4B] dark:text-[#65B86B] hover:text-[#1F5132] dark:hover:text-white transition-colors cursor-pointer group bg-white dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] px-4 py-2 rounded-xl border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.25)] shadow-xs"
+                  className="inline-flex items-center gap-1.5 font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1F5132] dark:text-[#86EFAC] hover:text-[#162809] dark:hover:text-white transition-colors cursor-pointer group bg-white dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] px-4 py-2 rounded-xl border border-[#C4C8BC]/40 dark:border-[rgba(165,214,167,0.25)] shadow-xs hover:shadow-sm"
                 >
                   <span>{t('Lihat Seluruh Produk', 'View All Products')}</span>
                   <span className="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">

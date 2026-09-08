@@ -146,17 +146,17 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
           {/* Dynamic Title connected to Admin "Kelola Landing Page" */}
           <div className="space-y-0.5">
             {line1 && (
-              <h1 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] font-extrabold text-[#1F5132] dark:text-[#F4F8F3] leading-[1.15] tracking-tight">
+              <h1 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.15] tracking-tight">
                 {line1}
               </h1>
             )}
             {line2 && (
-              <h2 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] font-extrabold text-[#1F5132] dark:text-[#F4F8F3] leading-[1.15] tracking-tight">
+              <h2 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.15] tracking-tight">
                 {line2}
               </h2>
             )}
             {accent && (
-              <p className="font-serif italic font-normal text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] text-[#3A8F4B] dark:text-[#65B86B] leading-[1.18] pt-1 select-none">
+              <p className="font-['Plus_Jakarta_Sans'] italic font-extrabold text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] text-[#2B3E1D] dark:text-[#65B86B] leading-[1.18] pb-1.5 pt-0.5 select-none tracking-tight">
                 {accent}
               </p>
             )}
@@ -174,11 +174,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
 
           {/* Dual Action Buttons (Primary button text from Admin Panel) */}
           <div className="flex flex-wrap items-center gap-3 pt-1.5">
-            {/* Primary Green Gradient CTA Button */}
+            {/* Primary Green CTA Button */}
             <button
               type="button"
               onClick={onShopNow}
-              className="inline-flex items-center justify-center bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-5.5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-[#1F5132] to-[#2B3E1D] hover:from-[#162809] hover:to-[#203116] text-white px-5.5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
             >
               <span>{t(landingContent.heroBtnId || 'Belanja Sekarang', landingContent.heroBtnEn || 'Shop Now')}</span>
             </button>
@@ -187,7 +187,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
             <button
               type="button"
               onClick={handleLearnMore}
-              className="inline-flex items-center justify-center bg-white/90 dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] text-[#1F5132] dark:text-[#65B86B] border border-[#3A8F4B]/30 px-5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs"
+              className="inline-flex items-center justify-center bg-white/95 dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] text-[#162809] dark:text-[#65B86B] border border-[#2B3E1D]/25 dark:border-[rgba(165,214,167,0.25)] px-5 py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs"
             >
               <span>{t('Baca Artikel', 'Read Articles')}</span>
             </button>
