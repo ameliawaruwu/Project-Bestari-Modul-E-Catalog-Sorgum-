@@ -57,10 +57,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             >
               <span className="material-symbols-outlined text-lg">menu</span>
             </button>
-            {/* Logo toko saat sidebar collapsed — gunakan ikon daun (spa) emas,
-                sama dengan logo header & footer agar identitas admin konsisten. */}
-            <span className="font-['Plus_Jakarta_Sans'] text-xl text-[#E3B84B] font-black bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-white/15 shadow-2xs">
-              <span className="material-symbols-outlined text-xl">spa</span>
+            {/* Logo toko saat sidebar collapsed — gambar dari Pengaturan Toko
+                (store_logo) supaya identitas admin sinkron dgn header/footer. */}
+            <span className="font-['Plus_Jakarta_Sans'] text-xl text-[#E3B84B] font-black bg-white/10 w-9 h-9 flex items-center justify-center rounded-xl border border-white/15 shadow-2xs overflow-hidden">
+              {shopSettings.logoUrl ? (
+                <img
+                  src={shopSettings.logoUrl}
+                  alt={shopSettings.storeName || 'Logo toko'}
+                  className="w-full h-full object-contain p-0.5"
+                />
+              ) : (
+                <span className="material-symbols-outlined text-xl">spa</span>
+              )}
             </span>
           </div>
         ) : null}

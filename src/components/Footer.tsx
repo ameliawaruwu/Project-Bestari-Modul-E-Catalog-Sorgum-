@@ -13,9 +13,15 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
       <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row justify-between items-start gap-8 lg:gap-12">
         <div className="max-w-xs">
           <div className="flex items-center gap-2 mb-2.5">
-            <span className="material-symbols-outlined text-[#E3B84B] text-xl font-bold">
-              spa
-            </span>
+            {/* Logo toko: gambar dari Pengaturan Toko (store_logo), sama seperti
+                header — tidak pakai ikon default. Kosong = belum di-upload admin. */}
+            {shopSettings.logoUrl ? (
+              <img
+                src={shopSettings.logoUrl}
+                alt={shopSettings.storeName || 'Logo toko'}
+                className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-lg"
+              />
+            ) : null}
             <span className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
               {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
             </span>

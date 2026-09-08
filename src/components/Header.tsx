@@ -58,17 +58,30 @@ export const Header: React.FC<HeaderProps> = ({
               className="text-left flex items-center gap-2.5 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer group"
             >
               <div className="flex items-center gap-2">
-                <div
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-all ${
-                    isScrolled
-                      ? 'bg-white/15 text-[#E3B84B]'
-                      : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#E3B84B]'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-xl sm:text-2xl">
-                    spa
-                  </span>
-                </div>
+                {/* Logo toko: SELALU gambar dari Pengaturan Toko (store_logo).
+                    Tanpa fallback ikon — wajib di-upload admin supaya identitas
+                    header/footer/admin sinkron. */}
+                {shopSettings.logoUrl ? (
+                  <div
+                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden shadow-2xs group-hover:scale-105 transition-all ${
+                      isScrolled ? 'bg-white/15' : 'bg-[#E8F5E9] dark:bg-[#152718]'
+                    }`}
+                  >
+                    <img
+                      src={shopSettings.logoUrl}
+                      alt={shopSettings.storeName || 'Logo toko'}
+                      className="w-full h-full object-contain p-0.5"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-all ${
+                      isScrolled
+                        ? 'bg-white/15 text-[#E3B84B]'
+                        : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#E3B84B]'
+                    }`}
+                  />
+                )}
                 <div>
                   <span
                     className={`font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-black tracking-tight uppercase block leading-none transition-colors ${
