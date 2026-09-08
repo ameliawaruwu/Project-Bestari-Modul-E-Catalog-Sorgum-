@@ -75,7 +75,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <h5 className="font-['Plus_Jakarta_Sans'] text-[11px] font-bold text-[#E3B84B] mb-2.5 uppercase tracking-wider">
               {t('Kontak', 'Contact')}
             </h5>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90">WhatsApp: {shopSettings.whatsappNumber}</p>
+            {shopSettings.whatsappNumber && (
+              <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90">WhatsApp: {shopSettings.whatsappNumber}</p>
+            )}
             <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90">Email: {shopSettings.storeEmail || 'halo@bestari.id'}</p>
             {shopSettings.storeAddress && (
               <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90">Alamat: {shopSettings.storeAddress}</p>

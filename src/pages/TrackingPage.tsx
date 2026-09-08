@@ -434,6 +434,7 @@ export const TrackingPage: React.FC = () => {
           </p>
         </div>
 
+        {cleanWaNumber && (
         <a
           href={waHelpUrl}
           target="_blank"
@@ -443,6 +444,7 @@ export const TrackingPage: React.FC = () => {
           <span className="material-symbols-outlined text-xl text-white">chat</span>
           <span>{t('Hubungi Admin via WA', 'Contact Admin via WA')}</span>
         </a>
+      )}
       </div>
 
     </div>

@@ -219,22 +219,6 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
                 className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
               />
             </div>
-
-            <div>
-              <label className="block text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-1.5">
-                Nomor WhatsApp Toko
-              </label>
-              <input
-                type="text"
-                value={settings.whatsappNumber}
-                onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
-                placeholder="6281234567890"
-                className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
-              />
-              <p className="text-[10px] text-[#556353] dark:text-white/60 mt-1">
-                Nomor default untuk tombol Pesan via WhatsApp di detail produk. Dipakai hanya jika produk tidak punya nomor pemilik sendiri.
-              </p>
-            </div>
           </div>
         </div>
       </div>

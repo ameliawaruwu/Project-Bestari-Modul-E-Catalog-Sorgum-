@@ -249,7 +249,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <p className="text-[10px] font-extrabold uppercase text-[#556353] dark:text-white/60 tracking-wider">WhatsApp Pemesanan</p>
                   <p className="font-bold text-xs text-[#1F5132] dark:text-[#F4F8F3] font-mono mt-0.5">
-                    {shopSettings.whatsappNumber || '+62 812-3456-7890'}
+                    {shopSettings.whatsappNumber || 'Belum diatur'}
                   </p>
                 </div>
                 <span className="material-symbols-outlined text-[#25D366] text-xl">

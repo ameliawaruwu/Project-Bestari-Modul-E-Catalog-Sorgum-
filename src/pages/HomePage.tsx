@@ -172,6 +172,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </p>
             </div>
 
+            {cleanWaNumber && (
             <div className="flex items-center justify-center shrink-0">
               <a
                 href={waUrl}
@@ -185,6 +186,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <span>{t('Hubungi via WhatsApp', 'Contact via WhatsApp')}</span>
               </a>
             </div>
+          )}
           </div>
         </div>
       </section>
