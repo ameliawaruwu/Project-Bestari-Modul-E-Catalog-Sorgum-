@@ -3,6 +3,7 @@ import { HeroBanner } from '../components/HeroBanner';
 import { ProductCard } from '../components/ProductCard';
 import { Product, Article } from '../types';
 import { useApp } from '../context/AppContext';
+import { filterProductsBySearch } from '../utils/productSearch';
 
 interface HomePageProps {
   onClickProduct: (product: Product) => void;
@@ -22,16 +23,13 @@ export const HomePage: React.FC<HomePageProps> = ({
   const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
   const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent('Halo Admin Bestari Sorgum, saya ingin berkonsultasi mengenai produk/kemitraan sorgum.')}`;
 
-  const visibleProducts = useMemo(() => {
-    if (!searchQuery || searchQuery.trim() === '') return products;
-    const q = searchQuery.toLowerCase().trim();
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        (p.description && p.description.toLowerCase().includes(q)) ||
-        (p.categoryLabel && p.categoryLabel.toLowerCase().includes(q))
-    );
-  }, [products, searchQuery]);
+  // Pencarian: nama produk ATAU kategori (mis. "camilan" → produk Camilan Sehat).
+  // Pakai helper bersama supaya hasil di Beranda = halaman Produk (konsisten
+  // dengan pencarian server-side di backend). Deskripsi tidak diikutkan lagi.
+  const visibleProducts = useMemo(
+    () => filterProductsBySearch(products, searchQuery),
+    [products, searchQuery],
+  );
 
   const featuredProducts = useMemo(() => {
     if (!visibleProducts.length) return [];

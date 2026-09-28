@@ -11,7 +11,10 @@ const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
   const page = Math.max(1, parseInt(req.query.page as string) || 1);
-  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 12));
+  // Cap 100 = jumlah yang diminta FE (productApi.getProducts mengirim limit=100
+  // supaya seluruh katalog masuk & bisa difilter di klien). Sebelumnya 50 →
+  // produk ke-51+ tidak pernah muncul/ikut terfilter.
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 12));
 
   const result = await getProducts({
     category: req.query.category ? parseInt(req.query.category as string) : undefined,

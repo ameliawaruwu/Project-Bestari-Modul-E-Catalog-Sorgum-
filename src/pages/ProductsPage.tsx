@@ -17,6 +17,9 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
   const { t } = useApp();
   const [sortBy, setSortBy] = useState<'populer' | 'harga-terendah' | 'harga-tertinggi' | 'terbaru'>('populer');
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
+  // Nilai yang sudah "ditenang-kan" (debounced) — dipakai untuk request ke server.
+  // Tanpa ini, tiap ketikan memicu 1 request (boros & hasil berkedip).
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery || '');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,12 +28,19 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     setLocalSearchQuery(searchQuery || '');
   }, [searchQuery]);
 
-  // Load products from backend
+  // Debounce input user (300ms) sebelum dikirim ke backend.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(localSearchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [localSearchQuery]);
+
+  // Load products from backend — pencarian mencakup NAMA PRODUK & KATEGORI
+  // (ditangani server-side di products_service.getProducts → filters.search).
   const loadProducts = useCallback(() => {
     let cancelled = false;
     setLoading(true);
     productApi
-      .getProducts({ searchQuery: localSearchQuery, sortBy })
+      .getProducts({ searchQuery: debouncedSearch, sortBy })
       .then((list) => {
         if (!cancelled) setProducts(list);
       })
@@ -41,7 +51,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [localSearchQuery, sortBy]);
+  }, [debouncedSearch, sortBy]);
 
   useEffect(() => {
     return loadProducts();
@@ -68,7 +78,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             </span>
             <input
               type="text"
-              placeholder={t('Cari produk sorgum (misal: beras, tepung, camilan)...', 'Search sorghum products (e.g. rice, flour, snacks)...')}
+              placeholder={t('Cari produk atau kategori (misal: beras, camilan)...', 'Search product or category (e.g. rice, snacks)...')}
               value={localSearchQuery}
               onChange={(e) => setLocalSearchQuery(e.target.value)}
               className="w-full pl-10 pr-9 py-2.5 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] rounded-xl border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.2)] font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1F5132] dark:text-[#F4F7F2] placeholder-[#555555]/60 dark:placeholder-[#94A390]/60 focus:outline-none focus:border-[#3A8F4B] dark:focus:border-[#A5D6A7] focus:ring-1 focus:ring-[#3A8F4B] transition-all font-medium"
@@ -118,7 +128,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             {t('Produk Tidak Ditemukan', 'Product Not Found')}
           </h3>
           <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555E54] dark:text-[#C4CDC1]">
-            {t('Tidak ada produk yang cocok dengan kata kunci pencarian atau kategori filter Anda.', 'No products match your search keywords or filter category.')}
+            {t('Tidak ada produk yang cocok. Coba kata kunci lain — Anda bisa mencari nama produk atau kategori (misal: beras, tepung, camilan, pemanis, benih).', 'No matching products. Try another keyword — you can search by product name or category (e.g. rice, flour, snacks, sweetener, seeds).')}
           </p>
         </div>
       ) : (

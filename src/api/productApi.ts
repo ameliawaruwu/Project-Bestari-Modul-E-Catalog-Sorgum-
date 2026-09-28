@@ -94,6 +94,8 @@ export const productApi = {
     sortBy?: 'populer' | 'harga-terendah' | 'harga-tertinggi' | 'terbaru';
   }): Promise<Product[]> => {
     const qs = new URLSearchParams();
+    // Batas maksimum yang diterima backend (products_routes: limit ≤ 100).
+    // Daftar produk toko kecil, jadi ambil semua sekaligus untuk filter klien.
     qs.set('limit', '100');
 
     if (params?.category && params.category !== 'semua' && params.category !== 'all') {

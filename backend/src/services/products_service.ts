@@ -77,11 +77,18 @@ export async function getProducts(filters: ProductFilters) {
     params.push(filters.category);
   }
   if (filters.search) {
-    // Cari di NAMA produk saja (bukan description) — user mengharapkan hasil
-    // sesuai nama. Sebelumnya pakai FULLTEXT MATCH(name, description) yg juga
-    // match kata di deskripsi (mis. "nasi" match "nasional") → hasil tidak sesuai.
-    where += ' AND p.name LIKE ?';
-    params.push(`%${filters.search.trim()}%`);
+    // Cari di NAMA produk ATAU NAMA/SLUG kategori (mis. ketik "camilan" → ketemu
+    // semua produk kategori "Camilan Sehat"). Deskripsi TIDAK diikutkan: dulu
+    // FULLTEXT(name, description) bikin "nasi" match "nasional" → hasil tidak
+    // sesuai (keputusan lama, dipertahankan).
+    const term = filters.search.trim();
+    if (term) {
+      // Escape wildcard LIKE supaya input user diperlakukan literal (%, _, \)
+      const escaped = term.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+      const like = `%${escaped}%`;
+      where += ' AND (p.name LIKE ? OR c.name LIKE ? OR c.slug LIKE ?)';
+      params.push(like, like, like);
+    }
   }
   if (filters.minPrice !== undefined) {
     where += ' AND p.price >= ?';
@@ -100,7 +107,9 @@ export async function getProducts(filters: ProductFilters) {
 
   const offset = (filters.page - 1) * filters.limit;
 
-  const countSql = `SELECT COUNT(*) as total FROM products p ${where}`;
+  // JOIN categories wajib di sini juga: klausa WHERE bisa merujuk c.name/c.slug
+  // (pencarian kategori). Tanpa JOIN → error "Unknown column 'c.name'".
+  const countSql = `SELECT COUNT(*) as total FROM products p JOIN categories c ON c.id = p.category_id ${where}`;
   const [countRows] = await dbPool.query(countSql, params);
   const total = (countRows as any[])[0].total;
 
