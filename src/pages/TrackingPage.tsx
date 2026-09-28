@@ -7,6 +7,7 @@ export const TrackingPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState<string | null>(null);
   const [courier, setCourier] = useState('');
   const [courierOpen, setCourierOpen] = useState(false);
   const [courierSearch, setCourierSearch] = useState('');
@@ -92,17 +93,54 @@ export const TrackingPage: React.FC = () => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setNotFound(null);
     try {
       const qs = selectedCourier ? `?courier=${encodeURIComponent(selectedCourier)}` : '';
       const res = await fetch(`/api/tracking/${encodeURIComponent(trimmed)}${qs}`);
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || t('Gagal melacak resi', 'Failed to track package'));
-      if (json?.status === 500 || json?.error) throw new Error(json?.message || json?.error);
+      const json = await res.json().catch(() => null);
+
+      // Respon baru (setelah perbaikan error handling): klasifikasi jujur dari server.
+      // - 200 status ok        -> hasil valid
+      // - 404 status not_found -> resi tidak ditemukan (bukan hasil palsu)
+      // - 502/503/504 error    -> error teknis / upstream
+      if (!res.ok || json?.status === 'error' || json?.status === 'not_found') {
+        if (json?.status === 'not_found' || res.status === 404) {
+          // Pesan RAMAH untuk user; detail teknis asli cukup di log
+          console.warn('[tracking] resi tidak ditemukan:', { resi: trimmed, courier: selectedCourier, status: res.status, detail: json?.detail || json?.message });
+          setNotFound(t(
+            'Nomor resi ini belum bisa dilacak. Pastikan nomornya sudah benar, atau hubungi admin untuk bantuan.',
+            'This tracking number cannot be found. Make sure the number is correct, or contact our admin for help.'
+          ));
+          return;
+        }
+        // error teknis (502/503/504) — pesan ramah, detail real ke log
+        console.error('[tracking] error teknis:', { resi: trimmed, courier: selectedCourier, status: res.status, kode: json?.kode, detail: json?.detail || json?.message });
+        let pesan;
+        if (res.status === 504 || json?.kode === 'UPSTREAM_TIMEOUT') {
+          pesan = t('Layanan pelacakan sedang lambat. Silakan coba lagi beberapa saat.', 'Tracking service is slow. Please try again in a moment.');
+        } else if (res.status === 503 || json?.kode === 'UPSTREAM_UNAVAILABLE' || json?.kode === 'UPSTREAM_DOWN') {
+          pesan = t('Layanan pelacakan sedang sibuk. Silakan coba lagi beberapa saat.', 'Tracking service is busy. Please try again in a moment.');
+        } else {
+          pesan = t('Maaf, sedang ada kendala teknis saat melacak resi. Silakan coba lagi.', 'Sorry, we are having technical issues tracking this number. Please try again.');
+        }
+        setError(pesan);
+        return;
+      }
+
+      // Respon lama / fallback shape: { status: 200, data: { valid, data: {...} } }
       const data = json?.data?.data || json?.data || json;
-      if (json?.data?.valid === false) throw new Error(t('Resi tidak valid atau belum terdaftar di sistem kurir', 'Tracking number invalid or not registered yet'));
+      if (json?.data?.valid === false) {
+        setNotFound(t('Resi tidak valid atau belum terdaftar di sistem kurir', 'Tracking number invalid or not registered yet'));
+        return;
+      }
       setResult(data);
     } catch (err: any) {
-      setError(err?.message || t('Gagal melacak resi. Coba lagi beberapa saat.', 'Failed to track package. Please try again.'));
+      const msg = String(err?.message || err);
+      if (/Failed to fetch|NetworkError|load failed/i.test(msg)) {
+        setError(t('Koneksi bermasalah. Periksa internet Anda dan coba lagi.', 'Connection problem. Check your internet and try again.'));
+      } else {
+        setError(msg || t('Gagal melacak resi. Coba lagi beberapa saat.', 'Failed to track package. Please try again.'));
+      }
     } finally {
       setLoading(false);
     }
@@ -283,11 +321,25 @@ export const TrackingPage: React.FC = () => {
           </div>
         </form>
 
-        {/* Error Alert */}
+        {/* Not Found Alert — resi tidak ketemu (netral/kuning, ajakan cek ulang) */}
+        {notFound && !error && !result && (
+          <div className="mt-5 p-4 rounded-2xl bg-[#FFF8E1] dark:bg-amber-950/40 border border-[#FDE8C8] dark:border-amber-700/40 text-xs sm:text-sm text-[#7a5c00] dark:text-amber-200 flex items-start gap-2.5">
+            <span className="material-symbols-outlined text-lg shrink-0 text-[#B45309] dark:text-amber-400 mt-0.5">search_off</span>
+            <div>
+              <p className="font-bold">{t('Resi belum bisa dilacak', 'Number cannot be tracked yet')}</p>
+              <p className="mt-0.5 opacity-90">{notFound}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error Alert — kendala teknis (merah, ajakan coba lagi) */}
         {error && (
-          <div className="mt-5 p-4 rounded-2xl bg-[#FFEBEE] dark:bg-red-950/40 border border-[#FFCDD2] dark:border-red-900/50 text-xs sm:text-sm text-[#D32F2F] dark:text-red-300 flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-lg shrink-0">error</span>
-            <span>{error}</span>
+          <div className="mt-5 p-4 rounded-2xl bg-[#FFF1F0] dark:bg-red-950/40 border border-[#FFD0CC] dark:border-red-900/50 text-xs sm:text-sm text-[#B3261E] dark:text-red-200 flex items-start gap-2.5">
+            <span className="material-symbols-outlined text-lg shrink-0 mt-0.5">error</span>
+            <div>
+              <p className="font-bold">{t('Gagal melacak resi', 'Failed to track number')}</p>
+              <p className="mt-0.5 opacity-90">{error}</p>
+            </div>
           </div>
         )}
 

@@ -61,15 +61,33 @@ router.get('/:resi', async (req: Request, res: Response) => {
   const url = `${CEK_RESI_URL}/${encodeURIComponent(resi)}${courier ? `?exp=${encodeURIComponent(courier)}` : ''}`;
 
   try {
-    const r = await fetch(url, { signal: AbortSignal.timeout(20000) });
+    // Timeout 45s (cekresi.com kadang lambat; request valid bisa makan 30-40s)
+    const r = await fetch(url, { signal: AbortSignal.timeout(45000) });
     const json: any = await r.json().catch(() => null);
+
+    // Teruskan status & body cek-resi apa adanya (ok/not_found/error + kode + detail)
+    // supaya FE bisa tampilkan pesan jujur sesuai klasifikasi, bukan flatten 500 mentah.
     if (!r.ok) {
-      res.status(r.status).json(json || { error: 'Gagal dari layanan cek-resi' });
+      res.status(r.status).json(json || {
+        status: 'error',
+        message: 'Layanan cek-resi mengembalikan error tanpa detail.',
+        kode: 'UPSTREAM_EMPTY_ERROR',
+      });
       return;
     }
     res.json(json);
-  } catch {
-    res.status(502).json({ error: 'Layanan cek-resi tidak tersedia. Coba lagi.' });
+  } catch (e: any) {
+    // Bedakan: timeout / layanan mati
+    const msg = String(e?.message || e);
+    const isTimeout = /timeout|abort/i.test(msg);
+    res.status(isTimeout ? 504 : 502).json({
+      status: 'error',
+      message: isTimeout
+        ? 'Layanan pelacakan tidak merespons tepat waktu. Coba lagi nanti.'
+        : 'Layanan cek-resi tidak tersedia. Coba lagi.',
+      detail: msg.slice(0, 300),
+      kode: isTimeout ? 'UPSTREAM_TIMEOUT' : 'UPSTREAM_DOWN',
+    });
   }
 });
 
