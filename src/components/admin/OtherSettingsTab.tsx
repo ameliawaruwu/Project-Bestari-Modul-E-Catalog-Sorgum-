@@ -215,7 +215,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
                 type="text"
                 value={settings.storeName}
                 onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
-                placeholder="BESTARI Sorghum"
+                placeholder="KWT Melati Sorgum"
                 className="w-full px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] focus:outline-none focus:border-[#3A8F4B] focus:ring-1 focus:ring-[#3A8F4B] text-[#1F5132] dark:text-[#F4F8F3]"
               />
             </div>

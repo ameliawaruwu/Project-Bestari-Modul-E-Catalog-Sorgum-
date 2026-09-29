@@ -21,7 +21,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [loadingProducts, setLoadingProducts] = useState(products.length === 0);
 
   const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
-  const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent('Halo Admin Bestari Sorgum, saya ingin berkonsultasi mengenai produk/kemitraan sorgum.')}`;
+  const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent('Halo Admin KWT Sorgum, saya ingin berkonsultasi mengenai produk/kemitraan sorgum.')}`;
 
   // Pencarian: nama produk ATAU kategori (mis. "camilan" → produk Camilan Sehat).
   // Pakai helper bersama supaya hasil di Beranda = halaman Produk (konsisten

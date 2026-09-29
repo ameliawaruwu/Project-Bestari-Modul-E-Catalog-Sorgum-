@@ -32,9 +32,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   ];
 
   // Identitas toko — sinkron dengan logo di header & footer (nama toko dari
-  // Pengaturan Toko, bukan hardcoded "BESTARI") supaya admin selaras dgn toko.
+  // Pengaturan Toko, bukan hardcoded "KWT") supaya admin selaras dgn toko.
   const { shopSettings } = useApp();
-  const brandWord = shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI';
+  const brandWord = shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT';
 
   return (
     <aside

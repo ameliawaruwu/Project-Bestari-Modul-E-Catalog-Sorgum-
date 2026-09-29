@@ -567,7 +567,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
         {/* FOOTER / BRANDING BOTTOM */}
         <footer className="mt-auto px-6 py-4 border-t border-[#E2EFE0] dark:border-white/10 bg-[#F8FAF6] dark:bg-[#08100A] flex justify-center items-center text-[#556353] dark:text-white/60 text-xs font-medium text-center">
-          <p>© 2026 BESTARI SORGUM E-Catalog</p>
+          <p>© 2026 KWT SORGUM E-Catalog</p>
         </footer>
       </div>
 

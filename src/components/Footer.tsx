@@ -23,7 +23,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               />
             ) : null}
             <span className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
-              {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
+              {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT'}
             </span>
           </div>
           <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/80 leading-relaxed font-normal">
@@ -80,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             {shopSettings.whatsappNumber && (
               <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">WhatsApp: {shopSettings.whatsappNumber}</p>
             )}
-            <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">Email: {shopSettings.storeEmail || 'halo@bestari.id'}</p>
+            <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">Email: {shopSettings.storeEmail || 'halo@kwt.id'}</p>
             {shopSettings.storeAddress && (
               <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">Alamat: {shopSettings.storeAddress}</p>
             )}
@@ -90,7 +90,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
       <div className="max-w-[1180px] mx-auto mt-6 sm:mt-8 flex justify-center text-center px-2">
         <p className="font-['Plus_Jakarta_Sans'] text-[11px] text-white/65">
-          {t('© 2026 BESTARI · Kemurnian Alami untuk Hidup Sehat.', '© 2026 BESTARI · Pure Nature for Healthy Living.')}
+          {t('© 2026 KWT · Kemurnian Alami untuk Hidup Sehat.', '© 2026 KWT · Pure Nature for Healthy Living.')}
         </p>
       </div>
     </footer>

@@ -25,7 +25,7 @@ function mapSettings(map: Record<string, string>): ShopSettings {
     whatsappNumber: map.whatsapp_number || DEFAULT_SHOP_SETTINGS.whatsappNumber,
     // Field ini ADA di DB/API tapi sebelumnya TIDAK dipetakan → di halaman user
     // selalu fallback (mis. Email footer selalu "halo@sorgum.id" padahal admin
-    // set "halo@bestari.id"). (Keputusan user 2026-08-10)
+    // set "halo@kwt.id"). (Keputusan user 2026-08-10)
     faviconUrl: map.favicon_url || '',
     storeAddress: map.store_address || '',
     storeEmail: map.store_email || '',

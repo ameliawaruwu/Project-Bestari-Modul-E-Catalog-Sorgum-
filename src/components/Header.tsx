@@ -76,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         <div className="max-w-[1180px] mx-auto flex items-center justify-between">
           
-          {/* Brand Logo (Green Leaves + BESTARI SORGUM) */}
+          {/* Brand Logo (Green Leaves + KWT SORGUM) */}
           <div className="flex items-center shrink-0">
             <button
               onClick={() => {
@@ -118,7 +118,7 @@ export const Header: React.FC<HeaderProps> = ({
                         : 'text-[#1F5132] dark:text-[#F4F8F3]'
                     }`}
                   >
-                    {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'BESTARI'}
+                    {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT'}
                   </span>
                   <span className="font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 text-[#E3B84B]">
                     SORGUM E-CATALOG

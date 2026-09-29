@@ -236,7 +236,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 <div>
                   <p className="text-[10px] font-extrabold uppercase text-[#556353] dark:text-white/60 tracking-wider">Nama Brand Toko</p>
                   <p className="font-bold text-sm text-[#1F5132] dark:text-[#F4F8F3] mt-0.5">
-                    {shopSettings.storeName || 'BESTARI Sorgum'}
+                    {shopSettings.storeName || 'KWT Sorgum'}
                   </p>
                 </div>
                 <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#EAF6E8] text-[#1F5132] dark:bg-[#152718] dark:text-[#86EFAC]">

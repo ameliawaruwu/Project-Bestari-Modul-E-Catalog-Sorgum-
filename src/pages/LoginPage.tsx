@@ -76,7 +76,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
         {/* Banner Footer */}
         <div className="relative z-20 text-[10px] text-white/60 tracking-wider font-medium">
-          © 2026 BESTARI SORGUM E-Catalog. All rights reserved.
+          © 2026 KWT SORGUM E-Catalog. All rights reserved.
         </div>
       </div>
 

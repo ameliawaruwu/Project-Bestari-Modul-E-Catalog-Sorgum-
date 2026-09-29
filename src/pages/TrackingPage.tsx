@@ -152,7 +152,7 @@ export const TrackingPage: React.FC = () => {
   };
 
   const cleanWaNumber = shopSettings.whatsappNumber.replace(/[^0-9]/g, '').replace(/^0/, '62');
-  const waHelpUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent('Halo Admin Bestari, saya ingin bertanya tentang status pengiriman paket saya.')}`;
+  const waHelpUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent('Halo Admin KWT, saya ingin bertanya tentang status pengiriman paket saya.')}`;
 
   return (
     <div className="pt-5 sm:pt-8 pb-24 md:pb-16 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto min-h-screen animate-fadeIn">
@@ -371,7 +371,7 @@ export const TrackingPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-[#F9FBF7] dark:bg-[#152718] p-4 rounded-2xl border border-[#E2EFE0] dark:border-white/10">
                 <div>
                   <span className="text-[#556353] dark:text-white/50 block mb-0.5">{t('Pengirim', 'Shipper')}</span>
-                  <p className="font-bold text-sm text-[#14331C] dark:text-white">{result.pengirim || 'Bestari Sorgum Official'}</p>
+                  <p className="font-bold text-sm text-[#14331C] dark:text-white">{result.pengirim || 'KWT Sorgum Official'}</p>
                 </div>
                 <div>
                   <span className="text-[#556353] dark:text-white/50 block mb-0.5">{t('Tujuan Pengiriman', 'Destination')}</span>
@@ -486,7 +486,7 @@ export const TrackingPage: React.FC = () => {
           </h3>
           <p className="text-xs sm:text-sm text-white/80 max-w-xl">
             {t(
-              'Tim admin Bestari siap membantu pengecekan langsung ke pihak ekspedisi untuk memastikan paket Anda sampai tepat waktu.',
+              'Tim admin KWT siap membantu pengecekan langsung ke pihak ekspedisi untuk memastikan paket Anda sampai tepat waktu.',
               'Our team is ready to cross-check directly with couriers to ensure your package arrives promptly.'
             )}
           </p>
