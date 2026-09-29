@@ -33,8 +33,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         nonInteractive ? 'cursor-default' : 'cursor-pointer hover:border-[#3A8F4B]/40 dark:hover:border-[#65B86B]/40 transform hover:-translate-y-1 active:scale-[0.98]'
       }`}
     >
-      {/* Image Container */}
-      <div className="h-44 sm:h-48 overflow-hidden bg-gradient-to-b from-[#F0F8EF] to-[#FFFDF5] dark:bg-[#122316] relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
+      {/* Image Container — di HP (2 kolom) proporsinya dibuat lebih pendek */}
+      <div className="h-32 sm:h-48 overflow-hidden bg-gradient-to-b from-[#F0F8EF] to-[#FFFDF5] dark:bg-[#122316] relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
         {product.image ? (
           <img
             src={product.image}
@@ -51,34 +51,34 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Details Container */}
-      <div className="p-3.5 sm:p-4 flex flex-col flex-grow">
-        <div className="flex items-center justify-between gap-2 mb-1.5">
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider border shadow-2xs ${badgeClass}`}>
+      <div className="p-2.5 sm:p-4 flex flex-col flex-grow">
+        <div className="flex items-center justify-between gap-2 mb-1 sm:mb-1.5">
+          <span className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider border shadow-2xs ${badgeClass}`}>
             {product.categoryLabel || product.category}
           </span>
         </div>
 
-        <h3 className="font-['Plus_Jakarta_Sans'] text-sm font-bold text-[#162809] dark:text-[#F4F8F3] mb-0.5 group-hover:text-[#2B3E1D] dark:group-hover:text-[#86EFAC] transition-colors leading-snug line-clamp-2">
+        <h3 className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#162809] dark:text-[#F4F8F3] mb-0.5 group-hover:text-[#2B3E1D] dark:group-hover:text-[#86EFAC] transition-colors leading-snug line-clamp-2">
           {product.name}
         </h3>
 
         {product.unitInfo && (
-          <p className="text-[#6B756E] dark:text-[#CBD5C8]/80 font-['Plus_Jakarta_Sans'] text-[11px] mb-3 font-medium flex items-center gap-1">
+          <p className="text-[#6B756E] dark:text-[#CBD5C8]/80 font-['Plus_Jakarta_Sans'] text-[10px] sm:text-[11px] mb-2 sm:mb-3 font-medium flex items-center gap-1">
             <span className="material-symbols-outlined text-xs text-[#3A8F4B]/80 dark:text-[#65B86B]/80">scale</span>
-            <span>{product.unitInfo}</span>
+            <span className="truncate">{product.unitInfo}</span>
           </p>
         )}
 
-        <div className="mt-auto pt-2.5 border-t border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] flex justify-between items-center">
-          <span className="font-['JetBrains_Mono'] text-sm sm:text-base text-[#162809] dark:text-[#86EFAC] font-black tracking-tight">
+        <div className="mt-auto pt-2 sm:pt-2.5 border-t border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] flex justify-between items-center gap-1.5">
+          <span className="font-['JetBrains_Mono'] text-sm sm:text-base text-[#162809] dark:text-[#86EFAC] font-black tracking-tight truncate">
             {product.formattedPrice}
           </span>
 
           <div
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] group-hover:bg-[#1F5132] text-[#1F5132] dark:text-[#86EFAC] group-hover:text-white transition-all duration-200 flex items-center justify-center shadow-2xs group-hover:scale-105"
+            className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] group-hover:bg-[#1F5132] text-[#1F5132] dark:text-[#86EFAC] group-hover:text-white transition-all duration-200 flex items-center justify-center shadow-2xs group-hover:scale-105"
             aria-label={t('Lihat Detail', 'View Details')}
           >
-            <span className="material-symbols-outlined text-base sm:text-lg transition-transform group-hover:translate-x-0.5">
+            <span className="material-symbols-outlined text-sm sm:text-base lg:text-lg transition-transform group-hover:translate-x-0.5">
               arrow_forward
             </span>
           </div>

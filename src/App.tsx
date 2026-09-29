@@ -131,7 +131,7 @@ export function App() {
 
   // Public shop
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFDF5] dark:bg-[#08100A] text-[#20352A] dark:text-[#F4F8F3] font-['Plus_Jakarta_Sans'] selection:bg-[#3A8F4B]/20 selection:text-[#3A8F4B] relative pb-16 md:pb-0 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-[#FFFDF5] dark:bg-[#08100A] text-[#20352A] dark:text-[#F4F8F3] font-['Plus_Jakarta_Sans'] selection:bg-[#3A8F4B]/20 selection:text-[#3A8F4B] relative pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0 transition-colors duration-300">
       {toastMessage && (
         <div className={`fixed top-5 left-1/2 -translate-x-1/2 z-[100] text-white px-6 py-3 rounded-full shadow-2xl border text-xs sm:text-sm font-semibold animate-fadeIn flex items-center gap-2 max-w-[90vw] ${toastType === 'error' ? 'bg-[#D32F2F] border-white/20' : toastType === 'info' ? 'bg-[#E3B84B] border-white/20' : 'bg-[#3A8F4B] border-white/20'}`}>
           <span className="material-symbols-outlined text-sm">{toastType === 'error' ? 'error' : toastType === 'info' ? 'info' : 'check_circle'}</span>

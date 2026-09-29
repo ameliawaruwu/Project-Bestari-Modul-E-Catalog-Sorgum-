@@ -79,8 +79,32 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     ? 'bg-[#FDF0EB] text-[#9E4324] dark:bg-[#291712] dark:text-[#FDBA74] border-[#F2D2C6]/60 dark:border-white/10'
     : 'bg-[#F0F5EE] text-[#2B3E1D] dark:bg-[#162418] dark:text-[#A5D6A7] border-[#D6E6D2]/60 dark:border-white/10';
 
+  // Tombol order WhatsApp + teks bantuan.
+  // Dirender DUA tempat: di HP tampil tepat di bawah harga (biar tidak terkubur
+  // di dasar halaman setelah deskripsi panjang), di desktop tetap di bawah.
+  const waOrderCta = (
+    <>
+      <a
+        href={orderWhatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full sm:w-auto sm:min-w-[270px] sm:max-w-md flex items-center justify-center gap-2.5 text-white h-12 px-6 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D]"
+      >
+        <span className="material-symbols-outlined text-xl text-white">
+          call
+        </span>
+        <span>
+          {t('Pesan via WhatsApp', 'Order via WhatsApp')}
+        </span>
+      </a>
+      <p className="text-[11px] text-[#556353] dark:text-white/50 mt-1.5 text-left sm:text-right">
+        {t('Klik untuk chat admin, pesan otomatis terisi produk yang Anda pilih.', 'Click to chat the admin; the message auto-fills with your chosen product.')}
+      </p>
+    </>
+  );
+
   return (
-    <main className="pt-6 sm:pt-8 pb-16 px-4 sm:px-6 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
+    <main className="pt-5 sm:pt-8 pb-24 md:pb-16 px-4 sm:px-6 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
 
       {/* ── Breadcrumb & Tombol Kembali (Di Bawah Breadcrumb) ── */}
       <div className="mb-4 sm:mb-6 flex flex-col items-start gap-2.5">
@@ -117,14 +141,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       </div>
 
       {/* ── Shopee-Style Product Card Container ── */}
-      <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-12 sm:mb-16">
+      <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-10 sm:mb-16">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
           {/* ─── Kolom Kiri: Galeri Foto Kompak Proporsional (Shopee Style) ─── */}
-          <div className="lg:col-span-5 w-full max-w-[320px] sm:max-w-[350px] mx-auto flex flex-col justify-between space-y-3">
+          <div className="lg:col-span-5 w-full lg:max-w-[350px] mx-auto flex flex-col justify-between space-y-3">
             
-            {/* Foto Utama — Ukuran Terukur & Pas */}
+            {/* Foto Utama — full width di HP, ukuran terukur di desktop */}
             <div className="aspect-square w-full bg-[#FAF7EE] dark:bg-[#122316] rounded-xl sm:rounded-2xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
               <img
                 src={selectedImage}
@@ -187,6 +211,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </span>
               </div>
 
+              {/* 2b. CTA WhatsApp — HANYA MOBILE, tepat di bawah harga.
+                  Di HP tombol asli di dasar halaman terkubur setelah deskripsi
+                  panjang, padahal ini inti bisnis (pesan via WA). */}
+              <div className="lg:hidden flex flex-col items-stretch pt-1">
+                {waOrderCta}
+              </div>
+
               {/* 3. Specs / Info Produk (Berat & Pengiriman) */}
               <div className="bg-[#F9FBF7] dark:bg-[#122316] p-3 sm:p-3.5 rounded-xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] space-y-2.5 my-2">
                 {/* Row Berat */}
@@ -247,24 +278,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             </div>
 
-            {/* 5. Action Button: Pesan via WhatsApp */}
-            <div className="pt-3 border-t border-[#E2EFE0]/60 dark:border-white/5 flex flex-col items-start sm:items-end">
-              <a
-                href={orderWhatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto sm:min-w-[270px] sm:max-w-md flex items-center justify-center gap-2.5 text-white h-12 px-6 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D]"
-              >
-                <span className="material-symbols-outlined text-xl text-white">
-                  call
-                </span>
-                <span>
-                  {t('Pesan via WhatsApp', 'Order via WhatsApp')}
-                </span>
-              </a>
-              <p className="text-[11px] text-[#556353] dark:text-white/50 mt-1.5 text-left sm:text-right">
-                {t('Klik untuk chat admin, pesan otomatis terisi produk yang Anda pilih.', 'Click to chat the admin; the message auto-fills with your chosen product.')}
-              </p>
+            {/* 5. Action Button: Pesan via WhatsApp — DESKTOP SAJA
+                (di HP tombol sudah muncul di bawah harga, lihat 2b) */}
+            <div className="hidden lg:flex pt-3 border-t border-[#E2EFE0]/60 dark:border-white/5 flex-col items-end">
+              {waOrderCta}
             </div>
 
           </div>
@@ -285,7 +302,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
             {relatedProducts.map((rel) => (
               <ProductCard
                 key={rel.id}

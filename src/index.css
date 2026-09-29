@@ -445,20 +445,23 @@
 .dark ::-webkit-scrollbar-thumb  { background: #363430; }
 .dark ::-webkit-scrollbar-thumb:hover { background: #524e4b; }
 
-/* UI Compact Scaling & Spacing Overrides for 100% Desktop View */
+/* ── Skala Teks: Desktop rapat, Mobile lega ─────────────────────────
+   Desktop sengaja dirapatkan (13–13.5px) supaya muat pada 100% zoom.
+   Mobile (≤767px) TIDAK dirapatkan — layar HP butuh teks lega (15px).
+   Ini akar keluhan "terasa seperti desktop yang dikecilkan" di HP. */
 html {
   font-size: 13px !important;
-}
-
-@media (min-width: 640px) {
-  html {
-    font-size: 13px !important;
-  }
 }
 
 @media (min-width: 1024px) {
   html {
     font-size: 13.5px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html {
+    font-size: 15px !important;
   }
 }
 
@@ -487,48 +490,53 @@ html {
   max-width: 1180px !important;
 }
 
-/* Compact Header Height Adjustment */
-#main-header {
-  height: 4.25rem !important;
-}
+/* ── Rapat-rapat spacing: DESKTOP SAJA ──────────────────────────────
+   Di mobile, spacing dibiarkan natural (default Tailwind) supaya tidak
+   sesak. Bagian dari perbaikan tata letak HP (bukan sekadar responsif). */
+@media (min-width: 768px) {
+  /* Compact Header Height Adjustment */
+  #main-header {
+    height: 4.25rem !important;
+  }
 
-/* Compact Spacing Overrides for Sections */
-.py-20 {
-  padding-top: 3rem !important;
-  padding-bottom: 3rem !important;
-}
-.py-24 {
-  padding-top: 3.75rem !important;
-  padding-bottom: 3.75rem !important;
-}
-.py-16 {
-  padding-top: 2.25rem !important;
-  padding-bottom: 2.25rem !important;
-}
-.pb-20 {
-  padding-bottom: 3rem !important;
-}
-.space-y-8 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 1.25rem !important;
-}
+  /* Compact Spacing Overrides for Sections */
+  .py-20 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  .py-24 {
+    padding-top: 3.75rem !important;
+    padding-bottom: 3.75rem !important;
+  }
+  .py-16 {
+    padding-top: 2.25rem !important;
+    padding-bottom: 2.25rem !important;
+  }
+  .pb-20 {
+    padding-bottom: 3rem !important;
+  }
+  .space-y-8 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1.25rem !important;
+  }
 
-/* Tighter Padding for Cards and Sections */
-.p-8 {
-  padding: 1.25rem !important;
-}
-.p-6 {
-  padding: 1rem !important;
-}
-.p-5 {
-  padding: 0.8125rem !important;
-}
-.px-6 {
-  padding-left: 1rem !important;
-  padding-right: 1rem !important;
-}
-.py-6 {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
+  /* Tighter Padding for Cards and Sections */
+  .p-8 {
+    padding: 1.25rem !important;
+  }
+  .p-6 {
+    padding: 1rem !important;
+  }
+  .p-5 {
+    padding: 0.8125rem !important;
+  }
+  .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .py-6 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
 }
 
 /* Table Density Scaling for Admin Panel */
@@ -537,18 +545,21 @@ table th, table td {
   font-size: 0.8125rem !important;
 }
 
-/* Form Sizing and Input Fields Compactness */
-.custom-input,
-.input-field,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select,
-textarea {
-  padding-top: 0.45rem !important;
-  padding-bottom: 0.45rem !important;
-  border-radius: 6px !important;
-  font-size: 0.8125rem !important;
+/* Form Sizing and Input Fields Compactness — DESKTOP SAJA.
+   Di mobile input dibiarkan lega supaya nyaman disentuh (jari, bukan kursor). */
+@media (min-width: 768px) {
+  .custom-input,
+  .input-field,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.45rem !important;
+    border-radius: 6px !important;
+    font-size: 0.8125rem !important;
+  }
 }
 
 /* Admin Premium Dashboard Styling (Sage Green & Matte Charcoal Redesign) */
@@ -782,4 +793,30 @@ textarea {
 
 .animate-orb-pulse {
   animation: orbPulse 5s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MOBILE LAYOUT UTILITIES (≤767px)
+   Dipakai komponen untuk tata letak khusus HP: area sentuh ≥44px
+   (standar Apple HIG / Material), safe-area iPhone, dan baris scroll-x.
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Safe area iPhone (notch / home indicator) untuk bottom nav */
+  .safe-bottom-nav {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+  }
+  /* Area sentuh minimum 44px */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Baris chip yang bisa di-scroll horizontal tanpa memunculkan scrollbar */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

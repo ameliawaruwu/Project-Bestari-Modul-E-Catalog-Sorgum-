@@ -15,10 +15,19 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
+  searchQuery = '',
+  setSearchQuery,
 }) => {
   const { language, theme, toggleLanguage, toggleTheme, t, shopSettings } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  // Draft pencarian di header (mobile). Commit saat Enter / tombol cari,
+  // supaya tidak memicu filter tiap ketikan.
+  const [draftSearch, setDraftSearch] = useState(searchQuery);
+
+  useEffect(() => {
+    setDraftSearch(searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
     let ticking = false;
@@ -43,6 +52,17 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'informasi', label: t('Artikel', 'Articles') },
     { id: 'tracking', label: t('Lacak Pesanan', 'Track Order') },
   ];
+
+  // Pencarian dari header mobile: commit nilai draft lalu arahkan ke tab Produk
+  // (di sana daftar produk memakai searchQuery yang sama → hasil konsisten).
+  const submitSearch = (value: string) => {
+    const q = value.trim();
+    if (setSearchQuery) setSearchQuery(q);
+    if (q) {
+      setActiveTab('produk');
+      setMobileMenuOpen(false);
+    }
+  };
 
   return (
     <header id="main-header" className="sticky top-0 z-50 w-full transition-all duration-300">
@@ -138,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Theme Switcher */}
             <button
               onClick={toggleTheme}
-              className={`w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
+              className={`touch-target w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
                 isScrolled
                   ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                   : 'bg-white dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] hover:border-[#3A8F4B]/40'
@@ -153,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Language Switcher */}
             <button
               onClick={toggleLanguage}
-              className={`h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full flex items-center gap-1 transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
+              className={`touch-target h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full flex items-center gap-1 transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
                 isScrolled
                   ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                   : 'bg-white dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] hover:border-[#3A8F4B]/40'
@@ -169,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              className={`md:hidden touch-target w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                 isScrolled
                   ? 'bg-white/10 text-white border border-white/20'
                   : 'bg-white dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)]'
@@ -183,6 +203,56 @@ export const Header: React.FC<HeaderProps> = ({
 
           </div>
 
+        </div>
+
+        {/* ── Mobile Search Row (≤767px) ────────────────────────────────
+            Sebelumnya tidak ada kotak pencarian di header, jadi dari Beranda
+            user tidak punya cara mencari produk. Baris ini muncul khusus HP. */}
+        <div className="md:hidden max-w-[1180px] mx-auto mt-2">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-base select-none text-[#6B756E] dark:text-[#94A390]">
+              search
+            </span>
+            <input
+              type="search"
+              inputMode="search"
+              enterKeyHint="search"
+              value={draftSearch}
+              onChange={(e) => setDraftSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') submitSearch(draftSearch);
+              }}
+              placeholder={t('Cari produk atau kategori...', 'Search product or category...')}
+              aria-label={t('Cari produk', 'Search products')}
+              className={`w-full pl-9 pr-11 py-2.5 rounded-xl border font-['Plus_Jakarta_Sans'] text-sm font-medium transition-all focus:outline-none ${
+                isScrolled
+                  ? 'bg-white/10 border-white/20 text-white placeholder-white/60 focus:bg-white/15 focus:border-white/40'
+                  : 'bg-[#F7F5EF] dark:bg-[#152718] border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] text-[#20352A] dark:text-[#F4F8F3] placeholder-[#6B756E]/70 dark:placeholder-[#94A390]/60 focus:bg-white dark:focus:bg-[#1B2C1F] focus:border-[#3A8F4B]'
+              }`}
+            />
+            {draftSearch ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setDraftSearch('');
+                  submitSearch('');
+                }}
+                aria-label={t('Hapus pencarian', 'Clear search')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full text-[#6B756E] dark:text-[#94A390] hover:text-[#1F5132] dark:hover:text-white cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-base">close</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => submitSearch(draftSearch)}
+                aria-label={t('Cari', 'Search')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-[#1F5132] text-white cursor-pointer active:scale-95 transition-transform"
+              >
+                <span className="material-symbols-outlined text-base">arrow_forward</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

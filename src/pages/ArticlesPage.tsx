@@ -141,7 +141,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
         case 'image':
           return block.image_url ? (
             <figure key={idx} className="my-4">
-              <div className="relative rounded-xl overflow-hidden h-80 md:h-96 my-8 group shadow-sm bg-[#dfd9d3] border border-[#E0E0E0]/20">
+              <div className="relative rounded-xl overflow-hidden h-56 sm:h-80 md:h-96 my-6 sm:my-8 group shadow-sm bg-[#dfd9d3] border border-[#E0E0E0]/20">
                 <img
                   src={block.image_url}
                   alt={block.alt || activeArticle.title}
@@ -149,7 +149,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                 />
               </div>
               {block.caption && (
-                <figcaption className="text-center text-xs sm:text-sm text-[#75786e] italic mt-1 font-['Plus_Jakarta_Sans'] -mt-5">
+                <figcaption className="text-center text-xs sm:text-sm text-[#75786e] italic mt-2 font-['Plus_Jakarta_Sans']">
                   {block.caption}
                 </figcaption>
               )}
@@ -160,7 +160,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           return (
             <blockquote
               key={idx}
-              className="bg-[#F7F8F6] p-8 rounded-xl border-l-4 border-[#1B5E20] italic text-[#1B5E20] font-['Plus_Jakarta_Sans'] text-base md:text-lg my-8 leading-relaxed shadow-2xs border-t border-r border-b border-[#E0E0E0]"
+              className="bg-[#F7F8F6] p-5 sm:p-8 rounded-xl border-l-4 border-[#1B5E20] italic text-[#1B5E20] font-['Plus_Jakarta_Sans'] text-base md:text-lg my-6 sm:my-8 leading-relaxed shadow-2xs border-t border-r border-b border-[#E0E0E0]"
             >
               "{block.content}"
               {block.author && (
@@ -178,7 +178,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             return (
               <p
                 key={idx}
-                className="text-[#555555] text-base md:text-lg leading-relaxed first-letter:float-left first-letter:text-5xl first-letter:leading-[4rem] first-letter:pr-3 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#1B5E20]"
+                className="text-[#555555] text-base md:text-lg leading-relaxed first-letter:float-left first-letter:text-4xl sm:first-letter:text-5xl first-letter:leading-[2.5rem] sm:first-letter:leading-[4rem] first-letter:pr-3 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#1B5E20]"
               >
                 {block.content}
               </p>
@@ -203,20 +203,20 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           <span>{t('Kembali ke Daftar Artikel', 'Back to Article List')}</span>
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12 items-start">
           {/* Main Article Content */}
           <article className="lg:col-span-8 space-y-6">
             <header className="space-y-4">
               <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] px-3.5 py-1 rounded-md font-['Plus_Jakarta_Sans'] text-xs font-bold uppercase tracking-wider shadow-2xs inline-block">
                 {activeArticle.category}
               </span>
-              <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] leading-tight">
+              <h1 className="font-['Playfair_Display'] text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] leading-tight">
                 {activeArticle.title}
               </h1>
             </header>
 
-            {/* Featured Hero Image */}
-            <div className="relative rounded-2xl overflow-hidden h-80 md:h-[450px] shadow-2xs bg-[#F7F8F6] border border-[#E0E0E0]">
+            {/* Featured Hero Image — lebih pendek di HP supaya tidak mendominasi */}
+            <div className="relative rounded-2xl overflow-hidden h-52 sm:h-80 md:h-[450px] shadow-2xs bg-[#F7F8F6] border border-[#E0E0E0]">
               {activeArticle.image ? (
                 <img
                   src={activeArticle.image}
@@ -264,10 +264,10 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             )}
           </article>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-8 sticky top-28">
+          {/* Sidebar — sticky hanya di desktop; di HP mengalir di bawah artikel */}
+          <aside className="lg:col-span-4 space-y-6 sm:space-y-8 lg:sticky lg:top-28">
             {/* Info Penerbit & Tanggal Terbit (dipindah dari bawah judul) */}
-            <section className="bg-[#FFFFFF] p-8 rounded-2xl shadow-2xs border border-[#E0E0E0]">
+            <section className="bg-[#FFFFFF] p-5 sm:p-8 rounded-2xl shadow-2xs border border-[#E0E0E0]">
               <h3 className="text-xl font-bold text-[#1B5E20] mb-6 font-['Playfair_Display']">
                 {t('Info Terbit', 'Publication Info')}
               </h3>
@@ -403,13 +403,13 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
       {/* Article Cards Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 py-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-96 bg-[#FFFFFF] animate-pulse border border-[#E0E0E0] rounded-2xl shadow-2xs"></div>
+            <div key={i} className="h-72 sm:h-96 bg-[#FFFFFF] animate-pulse border border-[#E0E0E0] rounded-2xl shadow-2xs"></div>
           ))}
         </div>
       ) : filteredArticles.length === 0 ? (
-        <div className="text-center py-20 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-8 shadow-2xs my-4">
+        <div className="text-center py-16 sm:py-20 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-6 sm:p-8 shadow-2xs my-4">
           <span className="material-symbols-outlined text-5xl text-[#C89B3C] mb-2 animate-pulse">search_off</span>
           <h3 className="text-xl font-bold text-[#1B5E20] mb-1 font-['Playfair_Display']">
             {t('Artikel Tidak Ditemukan', 'Article Not Found')}
@@ -419,51 +419,58 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 py-2">
           {pageArticles.map((art) => (
             <ArticleCard key={art.id} article={art} onSelectArticle={handleCardClick} />
           ))}
         </div>
       )}
 
-      {/* Pagination */}
+      {/* Pagination — angka halaman disembunyikan di HP (bisa overflow),
+          diganti indikator "Hal. x / y". Navigasi tetap bisa dipakai. */}
       {filteredArticles.length > 0 && totalPages > 1 && (
-        <div className="mt-12 flex flex-col items-center gap-4">
+        <div className="mt-10 sm:mt-12 flex flex-col items-center gap-3 sm:gap-4">
           <div className="flex justify-center items-center gap-2">
             <button
               onClick={() => goToPage(safePage - 1)}
               disabled={safePage <= 1}
-              className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Halaman sebelumnya"
             >
               <span className="material-symbols-outlined text-xl">chevron_left</span>
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                onClick={() => goToPage(p)}
-                className={`w-10 h-10 flex items-center justify-center rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm transition-all cursor-pointer ${
-                  p === safePage
-                    ? 'bg-[#2E7D32] text-white shadow-2xs'
-                    : 'text-[#555555] hover:bg-[#E8F5E9] border border-[#E0E0E0] bg-[#FFFFFF]'
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+            <span className="sm:hidden px-4 text-sm font-bold text-[#1B5E20] font-['Plus_Jakarta_Sans']">
+              {safePage} / {totalPages}
+            </span>
+
+            <div className="hidden sm:flex items-center gap-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => goToPage(p)}
+                  className={`w-10 h-10 flex items-center justify-center rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm transition-all cursor-pointer ${
+                    p === safePage
+                      ? 'bg-[#2E7D32] text-white shadow-2xs'
+                      : 'text-[#555555] hover:bg-[#E8F5E9] border border-[#E0E0E0] bg-[#FFFFFF]'
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
 
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages}
-              className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Halaman berikutnya"
             >
               <span className="material-symbols-outlined text-xl">chevron_right</span>
             </button>
           </div>
-          <span className="text-xs text-[#555555] font-['Plus_Jakarta_Sans']">
-            Menampilkan {Math.min(ITEMS_PER_PAGE, filteredArticles.length - (safePage - 1) * ITEMS_PER_PAGE)} dari {filteredArticles.length} artikel • Halaman {safePage}/{totalPages}
+          <span className="text-xs text-[#555555] font-['Plus_Jakarta_Sans'] text-center px-4">
+            {t('Menampilkan', 'Showing')} {Math.min(ITEMS_PER_PAGE, filteredArticles.length - (safePage - 1) * ITEMS_PER_PAGE)} {t('dari', 'of')} {filteredArticles.length} {t('artikel', 'articles')}
           </span>
         </div>
       )}

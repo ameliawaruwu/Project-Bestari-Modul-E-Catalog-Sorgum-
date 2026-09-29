@@ -136,4 +136,11 @@ export const enLocale: Record<string, string> = {
   "produk-di-artikel-ini": "Products in This Article",
   "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Order the sorghum products featured in this article directly.",
   "klik-untuk-chat-admin-pesan-otomatis-terisi-produk-yang": "Click to chat the admin; the message auto-fills with your chosen product.",
+  "cari-produk-atau-kategori": "Search product or category...",
+  "cari-produk": "Search products",
+  "hapus-pencarian": "Clear search",
+  "cari": "Search",
+  "menampilkan": "Showing",
+  "dari": "of",
+  "artikel": "articles",
 };

@@ -90,22 +90,22 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section className="pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1180px] mx-auto bg-transparent relative z-10">
         <div>
           {searchQuery && (
-            <div className="mb-4 p-3.5 bg-white dark:bg-[#121C14] rounded-xl border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.15)] flex items-center justify-between shadow-2xs">
-              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555E54] dark:text-[#C4CDC1]">
+            <div className="mb-4 p-3 sm:p-3.5 bg-white dark:bg-[#121C14] rounded-xl border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.15)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 shadow-2xs">
+              <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#555E54] dark:text-[#C4CDC1] leading-relaxed">
                 {t('Menampilkan hasil pencarian untuk', 'Showing search results for')} &quot;<span className="font-bold text-[#245B3A] dark:text-[#A5D6A7]">{searchQuery}</span>&quot;
               </p>
-              <span className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#245B3A] dark:text-[#A5D6A7] bg-[#EAF4E8] dark:bg-[#162419] px-2.5 py-0.5 rounded-full border border-[#245B3A]/20">
+              <span className="font-['Plus_Jakarta_Sans'] text-xs font-bold text-[#245B3A] dark:text-[#A5D6A7] bg-[#EAF4E8] dark:bg-[#162419] px-2.5 py-1 rounded-full border border-[#245B3A]/20 self-start sm:self-auto whitespace-nowrap">
                 {visibleProducts.length} {t('produk ditemukan', 'products found')}
               </span>
             </div>
           )}
 
           {loadingProducts ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 py-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 py-4">
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="h-72 rounded-xl bg-white dark:bg-[#121C14] animate-pulse border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.15)] shadow-2xs"
+                  className="h-56 sm:h-72 rounded-xl bg-white dark:bg-[#121C14] animate-pulse border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.15)] shadow-2xs"
                 />
               ))}
             </div>
@@ -135,7 +135,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 w-full">
                 {featuredProducts.map((product) => (
                   <ProductCard
                     key={product.id}

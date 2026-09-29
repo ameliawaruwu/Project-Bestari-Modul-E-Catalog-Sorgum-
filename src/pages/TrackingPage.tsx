@@ -155,10 +155,10 @@ export const TrackingPage: React.FC = () => {
   const waHelpUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent('Halo Admin Bestari, saya ingin bertanya tentang status pengiriman paket saya.')}`;
 
   return (
-    <div className="pt-6 sm:pt-8 pb-16 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto min-h-screen animate-fadeIn">
+    <div className="pt-5 sm:pt-8 pb-24 md:pb-16 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto min-h-screen animate-fadeIn">
       
       {/* ── 1. Hero Header Section ── */}
-      <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-3">
+      <div className="text-center max-w-2xl mx-auto mb-7 sm:mb-12 space-y-2.5 sm:space-y-3">
         <h1 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
           {t('Lacak Pengiriman Pesanan', 'Track Your Shipment')}
         </h1>
@@ -172,7 +172,7 @@ export const TrackingPage: React.FC = () => {
       </div>
 
       {/* ── 2. Interactive Tracking Box ── */}
-      <div className="bg-white dark:bg-[#0E1A11] p-6 sm:p-8 rounded-3xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-10 max-w-3xl mx-auto">
+      <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-8 sm:mb-10 max-w-3xl mx-auto">
         <form onSubmit={handleCheck} className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -433,47 +433,53 @@ export const TrackingPage: React.FC = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="bg-white dark:bg-[#0E1A11] p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs text-center space-y-2.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] flex items-center justify-center mx-auto border border-[#245B3A]/20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-5">
+          <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs flex md:block items-start gap-3.5 md:gap-0 md:text-center">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] flex items-center justify-center md:mx-auto md:mb-2.5 border border-[#245B3A]/20">
               <span className="material-symbols-outlined text-2xl">mark_chat_read</span>
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-[#14331C] dark:text-white">
-              1. {t('Dapatkan Resi via WhatsApp', 'Get Tracking from WhatsApp')}
-            </h3>
-            <p className="text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed">
-              {t('Admin kami mengirimkan nomor resi segera setelah pesanan Anda dipacking dan dipickup oleh kurir.', 'Admin will send your tracking code right after the package is packed and picked up.')}
-            </p>
+            <div className="min-w-0 flex-1 md:flex-none">
+              <h3 className="font-bold text-sm sm:text-base text-[#14331C] dark:text-white">
+                1. {t('Dapatkan Resi via WhatsApp', 'Get Tracking from WhatsApp')}
+              </h3>
+              <p className="text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed mt-1 md:mt-0">
+                {t('Admin kami mengirimkan nomor resi segera setelah pesanan Anda dipacking dan dipickup oleh kurir.', 'Admin will send your tracking code right after the package is packed and picked up.')}
+              </p>
+            </div>
           </div>
 
-          <div className="bg-white dark:bg-[#0E1A11] p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs text-center space-y-2.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] flex items-center justify-center mx-auto border border-[#245B3A]/20">
+          <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs flex md:block items-start gap-3.5 md:gap-0 md:text-center">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] flex items-center justify-center md:mx-auto md:mb-2.5 border border-[#245B3A]/20">
               <span className="material-symbols-outlined text-2xl">sync_saved_locally</span>
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-[#14331C] dark:text-white">
-              2. {t('Pantau Status Real-Time', 'Real-time Tracking')}
-            </h3>
-            <p className="text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed">
-              {t('Cek posisi hub transit dan estimasi tiba di lokasi tujuan dengan akurat tanpa perlu membuka banyak aplikasi.', 'Check transit hubs and estimated arrival time accurately in one single page.')}
-            </p>
+            <div className="min-w-0 flex-1 md:flex-none">
+              <h3 className="font-bold text-sm sm:text-base text-[#14331C] dark:text-white">
+                2. {t('Pantau Status Real-Time', 'Real-time Tracking')}
+              </h3>
+              <p className="text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed mt-1 md:mt-0">
+                {t('Cek posisi hub transit dan estimasi tiba di lokasi tujuan dengan akurat tanpa perlu membuka banyak aplikasi.', 'Check transit hubs and estimated arrival time accurately in one single page.')}
+              </p>
+            </div>
           </div>
 
-          <div className="bg-white dark:bg-[#0E1A11] p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs text-center space-y-2.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] flex items-center justify-center mx-auto border border-[#245B3A]/20">
+          <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs flex md:block items-start gap-3.5 md:gap-0 md:text-center">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-[#EAF6E8] dark:bg-[#152718] text-[#245B3A] dark:text-[#86EFAC] flex items-center justify-center md:mx-auto md:mb-2.5 border border-[#245B3A]/20">
               <span className="material-symbols-outlined text-2xl">verified</span>
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-[#14331C] dark:text-white">
-              3. {t('Paket Tiba Segar & Aman', 'Package Arrives Safely')}
-            </h3>
-            <p className="text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed">
-              {t('Setiap kemasan sorgum dikemas dengan standar higienis dan kardus kokoh agar tiba dalam kualitas prima.', 'Each product is packed securely in sturdy boxes to ensure pristine quality upon arrival.')}
-            </p>
+            <div className="min-w-0 flex-1 md:flex-none">
+              <h3 className="font-bold text-sm sm:text-base text-[#14331C] dark:text-white">
+                3. {t('Paket Tiba Segar & Aman', 'Package Arrives Safely')}
+              </h3>
+              <p className="text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed mt-1 md:mt-0">
+                {t('Setiap kemasan sorgum dikemas dengan standar higienis dan kardus kokoh agar tiba dalam kualitas prima.', 'Each product is packed securely in sturdy boxes to ensure pristine quality upon arrival.')}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── 4. WhatsApp Customer Service Support Banner ── */}
-      <div className="bg-gradient-to-r from-[#14331C] to-[#245B3A] text-white p-6 sm:p-8 rounded-3xl shadow-lg flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-[#14331C] to-[#245B3A] text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-lg flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6">
         <div className="space-y-1.5 text-center sm:text-left">
           <h3 className="text-lg sm:text-xl font-extrabold leading-snug">
             {t('Resi Tidak Terlacak atau Paket Terkendala?', 'Tracking Code Issue or Shipment Delay?')}
@@ -491,7 +497,7 @@ export const TrackingPage: React.FC = () => {
           href={waHelpUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-md hover:shadow-xl transition-all shrink-0 cursor-pointer active:scale-95"
+          className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-sm px-6 py-3.5 rounded-2xl shadow-md hover:shadow-xl transition-all shrink-0 cursor-pointer active:scale-95 w-full sm:w-auto"
         >
           <span className="material-symbols-outlined text-xl text-white">call</span>
           <span>{t('Hubungi Admin via WA', 'Contact Admin via WA')}</span>

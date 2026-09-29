@@ -136,4 +136,11 @@ export const idLocale: Record<string, string> = {
   "produk-di-artikel-ini": "Produk di Artikel Ini",
   "langsung-pesan-produk-sorgum-yang-dibahas-di-artikel-ini": "Langsung pesan produk sorgum yang dibahas di artikel ini.",
   "klik-untuk-chat-admin-pesan-otomatis-terisi-produk-yang": "Klik untuk chat admin, pesan otomatis terisi produk yang Anda pilih.",
+  "cari-produk-atau-kategori": "Cari produk atau kategori...",
+  "cari-produk": "Cari produk",
+  "hapus-pencarian": "Hapus pencarian",
+  "cari": "Cari",
+  "menampilkan": "Menampilkan",
+  "dari": "dari",
+  "artikel": "artikel",
 };
