@@ -19,7 +19,6 @@ export const Header: React.FC<HeaderProps> = ({
   setSearchQuery,
 }) => {
   const { language, theme, toggleLanguage, toggleTheme, t, shopSettings } = useApp();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   // Draft pencarian di header (mobile). Commit saat Enter / tombol cari,
   // supaya tidak memicu filter tiap ketikan.
@@ -60,7 +59,6 @@ export const Header: React.FC<HeaderProps> = ({
     if (setSearchQuery) setSearchQuery(q);
     if (q) {
       setActiveTab('produk');
-      setMobileMenuOpen(false);
     }
   };
 
@@ -79,10 +77,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Brand Logo (Green Leaves + KWT SORGUM) */}
           <div className="flex items-center shrink-0">
             <button
-              onClick={() => {
-                setActiveTab('beranda');
-                setMobileMenuOpen(false);
-              }}
+              onClick={() => setActiveTab('beranda')}
               className="text-left flex items-center gap-2.5 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer group"
             >
               <div className="flex items-center gap-2">
@@ -186,20 +181,10 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
 
-            {/* Mobile Hamburger Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden touch-target w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                isScrolled
-                  ? 'bg-white/10 text-white border border-white/20'
-                  : 'bg-white dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)]'
-              }`}
-              aria-label="Toggle Menu"
-            >
-              <span className="material-symbols-outlined text-lg">
-                {mobileMenuOpen ? 'close' : 'menu'}
-              </span>
-            </button>
+            {/* Tombol hamburger DIHAPUS (keputusan user 2026-09-29):
+                di HP navigasi sudah diwakili MobileBottomNav, jadi menu
+                dropdown ini duplikat. Nav horizontal desktop tetap ada
+                (di desktop tidak ada bottom nav). */}
 
           </div>
 
@@ -256,40 +241,8 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      {mobileMenuOpen && (
-        <div
-          className={`md:hidden border-b shadow-xl px-5 py-3 flex flex-col gap-2 animate-slideUp transition-colors ${
-            isScrolled
-              ? 'bg-[#1F5132] dark:bg-[#070D08] border-[#3A8F4B]/30 text-white'
-              : 'bg-white dark:bg-[#101A12] border-[#E2EAE0] dark:border-[rgba(165,214,167,0.15)]'
-          }`}
-        >
-          {navLinks.map((link) => {
-            const isActive = activeTab === link.id;
-            return (
-              <button
-                key={link.id}
-                onClick={() => {
-                  setActiveTab(link.id);
-                  setMobileMenuOpen(false);
-                }}
-                className={`text-left font-['Plus_Jakarta_Sans'] text-xs font-bold py-2 px-3 rounded-lg transition-all cursor-pointer ${
-                  isScrolled
-                    ? isActive
-                      ? 'bg-white/15 text-[#E3B84B]'
-                      : 'text-white/80 hover:bg-white/10 hover:text-white'
-                    : isActive
-                      ? 'bg-[#EAF4E8] text-[#245B3A] dark:bg-[#1B3521] dark:text-[#A5D6A7]'
-                      : 'text-[#44483F] hover:bg-[#F7F5EF] dark:text-[#C4CDC1] dark:hover:bg-[#162419]'
-                }`}
-              >
-                {link.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Dropdown menu mobile DIHAPUS — di HP navigasi sudah lewat
+          MobileBottomNav (4 menu yang sama), jadi ini duplikat. */}
 
     </header>
   );
