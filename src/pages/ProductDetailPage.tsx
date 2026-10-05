@@ -104,7 +104,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   );
 
   return (
-    <main className="pt-4 sm:pt-6 pb-16 md:pb-12 px-4 sm:px-6 md:px-8 max-w-[1100px] mx-auto animate-fadeIn min-h-screen w-full max-w-full overflow-x-hidden">
+    <main className="pt-4 sm:pt-6 pb-16 md:pb-12 px-4 sm:px-6 md:px-8 max-w-[1140px] mx-auto animate-fadeIn min-h-screen w-full overflow-x-hidden">
 
       {/* ── Breadcrumb & Tombol Kembali (Di Bawah Breadcrumb) ── */}
       <div className="mb-3 sm:mb-4 flex flex-col items-start gap-2">
@@ -141,12 +141,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       </div>
 
       {/* ── Shopee-Style Product Card Container ── */}
-      <div className="bg-white dark:bg-[#0E1A11] p-3.5 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs mb-8 sm:mb-10 w-full overflow-hidden">
+      <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-6 md:p-7 rounded-xl sm:rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs mb-8 sm:mb-10 w-full overflow-hidden">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start w-full">
 
           {/* ─── Kolom Kiri: Galeri Foto Kompak Proporsional (Shopee Style) ─── */}
-          <div className="lg:col-span-5 w-full lg:max-w-[320px] mx-auto flex flex-col justify-between space-y-2.5">
+          <div className="lg:col-span-5 w-full flex flex-col justify-between space-y-2.5">
             
             {/* Foto Utama — full width di HP, ukuran terukur di desktop */}
             <div className="aspect-square w-full bg-[#FAF7EE] dark:bg-[#122316] rounded-lg sm:rounded-xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
