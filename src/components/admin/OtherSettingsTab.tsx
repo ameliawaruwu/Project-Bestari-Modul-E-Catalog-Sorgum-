@@ -106,7 +106,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12 max-w-5xl mx-auto">
+    <div className="space-y-6 animate-fadeIn pb-12 w-full max-w-5xl mx-auto overflow-hidden">
       {/* Top Header & Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

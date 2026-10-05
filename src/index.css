@@ -57,17 +57,40 @@
 }
 
 @layer base {
-  * {
+  *, *::before, *::after {
+    box-sizing: border-box;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
+  html {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    position: relative;
     background-color: #FFFDF5;
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: #20352A;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+  }
+
+  img, svg, video, canvas, audio, iframe, embed, object {
+    max-width: 100%;
+    height: auto;
   }
 
   .material-symbols-outlined {

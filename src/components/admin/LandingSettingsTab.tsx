@@ -120,7 +120,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn w-full max-w-full overflow-hidden">
       {/* Header & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

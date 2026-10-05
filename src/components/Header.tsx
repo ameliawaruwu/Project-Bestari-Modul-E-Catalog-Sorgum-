@@ -66,48 +66,35 @@ export const Header: React.FC<HeaderProps> = ({
     <header id="main-header" className="sticky top-0 z-50 w-full transition-all duration-300">
       {/* ── Dynamic Navigation Bar (White at top, Evergreen when scrolled) ── */}
       <div
-        className={`px-4 sm:px-6 lg:px-12 py-2.5 sm:py-3 transition-all duration-300 backdrop-blur-md ${
+        className={`px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 transition-all duration-300 backdrop-blur-md ${
           isScrolled
-            ? 'bg-[#1F5132]/95 dark:bg-[#070D08]/95 text-white border-b border-[#3A8F4B]/30 shadow-md'
-            : 'bg-white/95 dark:bg-[#0B1A10]/95 text-[#20352A] dark:text-[#F4F8F3] border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] shadow-xs'
+            ? 'bg-[#1F5132]/95 dark:bg-[#070D08]/95 text-white border-b border-[#3A8F4B]/30 shadow-sm'
+            : 'bg-white/95 dark:bg-[#0B1A10]/95 text-[#20352A] dark:text-[#F4F8F3] border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] shadow-2xs'
         }`}
       >
-        <div className="max-w-[1180px] mx-auto flex items-center justify-between">
+        <div className="max-w-[1140px] mx-auto flex items-center justify-between">
           
           {/* Brand Logo (Green Leaves + KWT SORGUM) */}
           <div className="flex items-center shrink-0">
             <button
               onClick={() => setActiveTab('beranda')}
-              className="text-left flex items-center gap-2.5 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer group"
+              className="text-left flex items-center gap-2 focus:outline-none hover:opacity-90 transition-opacity cursor-pointer group"
             >
               <div className="flex items-center gap-2">
-                {/* Logo toko: SELALU gambar dari Pengaturan Toko (store_logo).
-                    Tanpa fallback ikon — wajib di-upload admin supaya identitas
-                    header/footer/admin sinkron. */}
-                {shopSettings.logoUrl ? (
-                  <div
-                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden shadow-2xs group-hover:scale-105 transition-all ${
-                      isScrolled ? 'bg-white/15' : 'bg-[#E8F5E9] dark:bg-[#152718]'
-                    }`}
-                  >
-                    <img
-                      src={shopSettings.logoUrl}
-                      alt={shopSettings.storeName || 'Logo toko'}
-                      className="w-full h-full object-contain p-0.5"
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-all ${
-                      isScrolled
-                        ? 'bg-white/15 text-[#E3B84B]'
-                        : 'bg-[#E8F5E9] dark:bg-[#152718] text-[#E3B84B]'
-                    }`}
+                <div
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center overflow-hidden shadow-2xs group-hover:scale-105 transition-all ${
+                    isScrolled ? 'bg-white/15' : 'bg-[#E8F5E9] dark:bg-[#152718]'
+                  }`}
+                >
+                  <img
+                    src={shopSettings.logoUrl || '/favicon-spa2.svg'}
+                    alt={shopSettings.storeName || 'Logo toko'}
+                    className="w-full h-full object-contain p-0.5"
                   />
-                )}
+                </div>
                 <div>
                   <span
-                    className={`font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-black tracking-tight uppercase block leading-none transition-colors ${
+                    className={`font-['Plus_Jakarta_Sans'] text-sm sm:text-base font-black tracking-tight uppercase block leading-none transition-colors ${
                       isScrolled
                         ? 'text-white'
                         : 'text-[#1F5132] dark:text-[#F4F8F3]'
@@ -115,7 +102,7 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT'}
                   </span>
-                  <span className="font-['Plus_Jakarta_Sans'] text-[9px] sm:text-[10px] font-bold tracking-widest uppercase block mt-0.5 text-[#E3B84B]">
+                  <span className="font-['Plus_Jakarta_Sans'] text-[8px] sm:text-[9px] font-bold tracking-widest uppercase block mt-0.5 text-[#E3B84B]">
                     SORGUM E-CATALOG
                   </span>
                 </div>
@@ -124,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-7">
             {navLinks.map((link) => {
               const isActive = activeTab === link.id;
               return (
@@ -153,14 +140,14 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Theme Switcher */}
             <button
               onClick={toggleTheme}
-              className={`touch-target w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
+              className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
                 isScrolled
                   ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                   : 'bg-white dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] hover:border-[#3A8F4B]/40'
               }`}
               title={theme === 'light' ? t('Mode Gelap', 'Dark Mode') : t('Mode Terang', 'Light Mode')}
             >
-              <span className="material-symbols-outlined text-base sm:text-lg">
+              <span className="material-symbols-outlined text-sm sm:text-base">
                 {theme === 'light' ? 'dark_mode' : 'light_mode'}
               </span>
             </button>
@@ -168,34 +155,27 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Language Switcher */}
             <button
               onClick={toggleLanguage}
-              className={`touch-target h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full flex items-center gap-1 transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
+              className={`h-7.5 sm:h-8 px-2 sm:px-2.5 rounded-full flex items-center gap-1 transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs ${
                 isScrolled
                   ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                   : 'bg-white dark:bg-[#152718] text-[#1F5132] dark:text-[#65B86B] border border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] hover:border-[#3A8F4B]/40'
               }`}
               title={language === 'id' ? 'Switch to English' : 'Ubah ke Bahasa Indonesia'}
             >
-              <span className="material-symbols-outlined text-sm sm:text-base">language</span>
-              <span className="text-[11px] font-bold font-['Plus_Jakarta_Sans'] uppercase">
+              <span className="material-symbols-outlined text-xs sm:text-sm">language</span>
+              <span className="text-[10px] font-bold font-['Plus_Jakarta_Sans'] uppercase">
                 {language}
               </span>
             </button>
-
-            {/* Tombol hamburger DIHAPUS (keputusan user 2026-09-29):
-                di HP navigasi sudah diwakili MobileBottomNav, jadi menu
-                dropdown ini duplikat. Nav horizontal desktop tetap ada
-                (di desktop tidak ada bottom nav). */}
 
           </div>
 
         </div>
 
-        {/* ── Mobile Search Row (≤767px) ────────────────────────────────
-            Sebelumnya tidak ada kotak pencarian di header, jadi dari Beranda
-            user tidak punya cara mencari produk. Baris ini muncul khusus HP. */}
-        <div className="md:hidden max-w-[1180px] mx-auto mt-2">
+        {/* ── Mobile Search Row (≤767px) ── */}
+        <div className="md:hidden max-w-[1140px] mx-auto mt-1.5">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-base select-none text-[#6B756E] dark:text-[#94A390]">
+            <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-sm select-none text-[#6B756E] dark:text-[#94A390]">
               search
             </span>
             <input
@@ -209,13 +189,13 @@ export const Header: React.FC<HeaderProps> = ({
               }}
               placeholder={t('Cari produk atau kategori...', 'Search product or category...')}
               aria-label={t('Cari produk', 'Search products')}
-              className={`w-full pl-9 pr-11 py-2.5 rounded-xl border font-['Plus_Jakarta_Sans'] text-sm font-medium transition-all focus:outline-none ${
+              className={`w-full pl-8 pr-8 py-2 rounded-lg border font-['Plus_Jakarta_Sans'] text-xs font-medium transition-all focus:outline-none ${
                 isScrolled
                   ? 'bg-white/10 border-white/20 text-white placeholder-white/60 focus:bg-white/15 focus:border-white/40'
                   : 'bg-[#F7F5EF] dark:bg-[#152718] border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] text-[#20352A] dark:text-[#F4F8F3] placeholder-[#6B756E]/70 dark:placeholder-[#94A390]/60 focus:bg-white dark:focus:bg-[#1B2C1F] focus:border-[#3A8F4B]'
               }`}
             />
-            {draftSearch ? (
+            {draftSearch && (
               <button
                 type="button"
                 onClick={() => {
@@ -226,15 +206,6 @@ export const Header: React.FC<HeaderProps> = ({
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full text-[#6B756E] dark:text-[#94A390] hover:text-[#1F5132] dark:hover:text-white cursor-pointer"
               >
                 <span className="material-symbols-outlined text-base">close</span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => submitSearch(draftSearch)}
-                aria-label={t('Cari', 'Search')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-[#1F5132] text-white cursor-pointer active:scale-95 transition-transform"
-              >
-                <span className="material-symbols-outlined text-base">arrow_forward</span>
               </button>
             )}
           </div>

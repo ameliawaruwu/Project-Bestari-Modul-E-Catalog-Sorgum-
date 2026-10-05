@@ -435,7 +435,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAF6] dark:bg-[#08100A] text-[#1F5132] dark:text-[#F4F8F3] admin-theme relative flex">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAF6] dark:bg-[#08100A] text-[#1F5132] dark:text-[#F4F8F3] admin-theme relative flex">
       {/* Drawer Overlay for Mobile */}
       {isSidebarOpen && (
         <div

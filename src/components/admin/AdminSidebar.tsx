@@ -38,7 +38,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   return (
     <aside
-      className={`h-screen fixed left-0 top-0 bg-[#1F5132] border-r border-white/10 flex flex-col py-3 z-[100] transition-all duration-300 shadow-xl ${
+      className={`h-screen fixed left-0 top-0 bg-[#1F5132] border-r border-white/10 flex flex-col py-3 z-[100] transition-all duration-300 shadow-xl max-w-[85vw] ${
         isCollapsed ? 'lg:w-20' : 'lg:w-64'
       } ${
         isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full lg:translate-x-0'
@@ -67,7 +67,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   className="w-full h-full object-contain p-0.5"
                 />
               ) : (
-                <span className="material-symbols-outlined text-xl">spa</span>
+                <img
+                  src="/favicon-spa2.svg"
+                  alt="Logo toko"
+                  className="w-full h-full object-contain p-0.5"
+                />
               )}
             </span>
           </div>
@@ -117,10 +121,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   setActiveNav(item.id);
                   onClose(); // Close mobile drawer
                 }}
-                className={`group w-full flex items-center py-2.5 text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
+                className={`group w-full flex items-center py-2 text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? 'bg-[#163D24] text-white border-l-4 border-l-[#E3B84B] rounded-r-xl rounded-l-xs shadow-md pl-3.5'
-                    : 'text-white/75 rounded-xl hover:text-white hover:bg-white/10 pl-3.5'
+                    ? 'bg-[#163D24] text-white border-l-4 border-l-[#E3B84B] rounded-r-lg rounded-l-xs shadow-sm pl-3'
+                    : 'text-white/75 rounded-lg hover:text-white hover:bg-white/10 pl-3'
                 } ${
                   isCollapsed
                     ? 'lg:justify-center lg:px-0 justify-start'
@@ -129,7 +133,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 title={item.label}
               >
                 <span
-                  className={`material-symbols-outlined text-lg flex-shrink-0 transition-colors ${
+                  className={`material-symbols-outlined text-base flex-shrink-0 transition-colors ${
                     isActive ? 'text-[#E3B84B]' : 'text-white/70 group-hover:text-[#E3B84B]'
                   }`}
                 >

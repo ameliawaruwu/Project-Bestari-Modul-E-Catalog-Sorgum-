@@ -9,19 +9,15 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
   const { t, shopSettings } = useApp();
 
   return (
-    <footer className="w-full py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8 bg-[#1F5132] dark:bg-[#070D08] text-white border-t border-[#3A8F4B]/30 dark:border-[rgba(165,214,167,0.15)] transition-colors duration-300 relative z-10">
-      <div className="max-w-[1180px] mx-auto flex flex-col md:flex-row justify-between items-start gap-7 sm:gap-8 lg:gap-12">
+    <footer className="w-full max-w-full overflow-hidden py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8 bg-[#1F5132] dark:bg-[#070D08] text-white border-t border-[#3A8F4B]/30 dark:border-[rgba(165,214,167,0.15)] transition-colors duration-300 relative z-10">
+      <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row justify-between items-start gap-7 sm:gap-8 lg:gap-12">
         <div className="max-w-xs">
           <div className="flex items-center gap-2 mb-2.5">
-            {/* Logo toko: gambar dari Pengaturan Toko (store_logo), sama seperti
-                header — tidak pakai ikon default. Kosong = belum di-upload admin. */}
-            {shopSettings.logoUrl ? (
-              <img
-                src={shopSettings.logoUrl}
-                alt={shopSettings.storeName || 'Logo toko'}
-                className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-lg"
-              />
-            ) : null}
+            <img
+              src={shopSettings.logoUrl || '/favicon-spa2.svg'}
+              alt={shopSettings.storeName || 'Logo toko'}
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-lg"
+            />
             <span className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
               {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT'}
             </span>
@@ -88,7 +84,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
         </div>
       </div>
 
-      <div className="max-w-[1180px] mx-auto mt-6 sm:mt-8 flex justify-center text-center px-2">
+      <div className="max-w-[1100px] mx-auto mt-5 sm:mt-6 flex justify-center text-center px-2">
         <p className="font-['Plus_Jakarta_Sans'] text-[11px] text-white/65">
           {t('© 2026 KWT · Kemurnian Alami untuk Hidup Sehat.', '© 2026 KWT · Pure Nature for Healthy Living.')}
         </p>

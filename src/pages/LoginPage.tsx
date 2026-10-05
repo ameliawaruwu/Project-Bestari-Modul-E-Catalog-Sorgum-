@@ -51,7 +51,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-[#F8FAF6] text-[#1F5132] font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden grid grid-cols-1 lg:grid-cols-12 bg-[#F8FAF6] text-[#1F5132] font-['Plus_Jakarta_Sans']">
       {/* Left Column: Visual Storytelling Banner (Hidden on Mobile) */}
       <div
         className="hidden lg:flex lg:col-span-5 flex-col justify-end p-12 bg-cover bg-center relative overflow-hidden"
@@ -81,14 +81,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       </div>
 
       {/* Right Column: Clean Form Container */}
-      <div className="lg:col-span-7 flex flex-col justify-center items-center py-12 px-4 sm:px-6 md:px-8 bg-[#F8FAF6]">
-        <div className="w-full max-w-[460px] bg-white rounded-2xl p-8 border border-[#E2EFE0] shadow-md">
+      <div className="lg:col-span-7 flex flex-col justify-center items-center py-8 sm:py-10 px-4 sm:px-6 md:px-8 bg-[#F8FAF6]">
+        <div className="w-full max-w-[420px] bg-white rounded-xl p-6 sm:p-7 border border-[#E2EFE0] shadow-sm">
           
           {/* Back Button */}
           <button
             type="button"
             onClick={onNavigateHome}
-            className="mb-8 inline-flex items-center gap-1.5 text-xs font-bold text-[#556353] hover:text-[#1F5132] transition-colors cursor-pointer group"
+            className="mb-5 inline-flex items-center gap-1.5 text-xs font-bold text-[#556353] hover:text-[#1F5132] transition-colors cursor-pointer group"
           >
             <span className="material-symbols-outlined text-base transition-transform group-hover:-translate-x-1">
               arrow_back
@@ -97,36 +97,36 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </button>
 
           {/* Form Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1F5132] mb-1 font-['Plus_Jakarta_Sans'] tracking-tight">
+          <div className="mb-6">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-[#1F5132] mb-1 font-['Plus_Jakarta_Sans'] tracking-tight">
               {t('Selamat Datang Kembali', 'Welcome Back')}
             </h1>
-            <p className="text-xs sm:text-sm text-[#556353] font-medium">
+            <p className="text-xs text-[#556353] font-medium">
               {t('Masuk untuk melanjutkan belanja sehat Anda', 'Sign in to continue your healthy shopping')}
             </p>
           </div>
 
           {errorMsg && (
-            <div className="mb-6 p-3.5 bg-[#FFEBEE] text-[#D32F2F] text-xs font-semibold rounded-xl text-center border border-[#D32F2F]/20">
+            <div className="mb-4 p-3 bg-[#FFEBEE] text-[#D32F2F] text-xs font-semibold rounded-lg text-center border border-[#D32F2F]/20">
               {errorMsg}
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-6 p-3.5 bg-[#EAF6E8] text-[#1F5132] text-xs font-semibold rounded-xl text-center border border-[#3A8F4B]/30">
+            <div className="mb-4 p-3 bg-[#EAF6E8] text-[#1F5132] text-xs font-semibold rounded-lg text-center border border-[#3A8F4B]/30">
               {successMsg}
             </div>
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Input 1: Email / WhatsApp */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label className="block text-xs font-bold text-[#3B4839] ml-0.5" htmlFor="email">
                 Email
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#556353] text-lg select-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#556353] text-base select-none">
                   person
                 </span>
                 <input
@@ -136,18 +136,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('Masukkan Email Anda', 'Enter Your Email')}
                   required
-                  className="w-full h-12 pl-12 pr-4 bg-[#F8FAF6] focus:bg-white border border-[#E2EFE0] rounded-xl text-xs sm:text-sm text-[#1F5132] placeholder-[#556353]/60 focus:outline-none focus:border-[#1F5132] focus:ring-1 focus:ring-[#1F5132] transition-all font-medium"
+                  className="w-full h-10 sm:h-10.5 pl-10 pr-3 bg-[#F8FAF6] focus:bg-white border border-[#E2EFE0] rounded-lg text-xs sm:text-sm text-[#1F5132] placeholder-[#556353]/60 focus:outline-none focus:border-[#1F5132] focus:ring-1 focus:ring-[#1F5132] transition-all font-medium"
                 />
               </div>
             </div>
 
             {/* Input 2: Password */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label className="block text-xs font-bold text-[#3B4839] ml-0.5" htmlFor="password">
                 Password
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#556353] text-lg select-none">
+                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#556353] text-base select-none">
                   lock
                 </span>
                 <input
@@ -158,15 +158,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   placeholder={t('Masukkan Password Anda', 'Enter Your Password')}
                   required
                   autoComplete="current-password"
-                  className="w-full h-12 pl-12 pr-12 bg-[#F8FAF6] focus:bg-white border border-[#E2EFE0] rounded-xl text-xs sm:text-sm text-[#1F5132] placeholder-[#556353]/60 focus:outline-none focus:border-[#1F5132] focus:ring-1 focus:ring-[#1F5132] transition-all font-medium"
+                  className="w-full h-10 sm:h-10.5 pl-10 pr-10 bg-[#F8FAF6] focus:bg-white border border-[#E2EFE0] rounded-lg text-xs sm:text-sm text-[#1F5132] placeholder-[#556353]/60 focus:outline-none focus:border-[#1F5132] focus:ring-1 focus:ring-[#1F5132] transition-all font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#556353] hover:text-[#1F5132] transition-colors cursor-pointer flex items-center justify-center"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#556353] hover:text-[#1F5132] transition-colors cursor-pointer flex items-center justify-center"
                   title={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
                 >
-                  <span className="material-symbols-outlined text-lg">
+                  <span className="material-symbols-outlined text-base">
                     {showPassword ? 'visibility_off' : 'visibility'}
                   </span>
                 </button>
@@ -174,13 +174,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </div>
 
             {/* Extra Options Row: Ingat Saya */}
-            <div className="flex items-center justify-between pt-1 text-xs font-medium">
-              <label className="flex items-center gap-2 cursor-pointer select-none text-[#556353]">
+            <div className="flex items-center justify-between pt-0.5 text-xs font-medium">
+              <label className="flex items-center gap-1.5 cursor-pointer select-none text-[#556353]">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#E2EFE0] text-[#1F5132] focus:ring-[#1F5132] cursor-pointer"
+                  className="w-3.5 h-3.5 rounded border-[#E2EFE0] text-[#1F5132] focus:ring-[#1F5132] cursor-pointer"
                 />
                 <span>{t('Ingat Saya', 'Remember Me')}</span>
               </label>
@@ -190,7 +190,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-[#1F5132] hover:bg-[#163D24] text-white rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-md mt-4 disabled:opacity-70 cursor-pointer active:scale-98"
+              className="w-full h-10 sm:h-10.5 bg-[#1F5132] hover:bg-[#163D24] text-white rounded-lg font-bold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-xs mt-3 disabled:opacity-70 cursor-pointer active:scale-98"
             >
               <span>{loading ? 'Memproses...' : 'Masuk'}</span>
             </button>

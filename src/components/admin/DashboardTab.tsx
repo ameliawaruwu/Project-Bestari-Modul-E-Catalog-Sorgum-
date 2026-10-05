@@ -32,7 +32,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   }
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-8 max-w-7xl mx-auto">
+    <div className="space-y-6 animate-fadeIn pb-8 w-full max-w-7xl mx-auto overflow-hidden">
       {/* Breadcrumb & Welcome Heading */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -68,60 +68,60 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
         {/* KPI 1: Total Produk */}
-        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border-2 border-[#3A8F4B]/50 dark:border-[#3A8F4B]/40 p-5 flex flex-col justify-between min-h-[130px] shadow-xs">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-xl border-2 border-[#3A8F4B]/50 dark:border-[#3A8F4B]/40 p-4 flex flex-col justify-between min-h-[110px] shadow-xs">
           <div className="flex justify-between items-start">
             <span className="text-[#2E6B3E] dark:text-[#86EFAC]/90 text-[10px] font-extrabold uppercase tracking-wider">
               Katalog Produk
             </span>
-            <div className="w-9 h-9 rounded-xl bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shadow-2xs">
-              <span className="material-symbols-outlined text-xl">inventory_2</span>
+            <div className="w-8 h-8 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shadow-2xs">
+              <span className="material-symbols-outlined text-lg">inventory_2</span>
             </div>
           </div>
-          <div className="mt-2">
-            <h3 className="text-3xl sm:text-4xl font-black text-[#1F5132] dark:text-[#86EFAC] font-mono leading-none tracking-tight">
+          <div className="mt-1.5">
+            <h3 className="text-2xl sm:text-3xl font-black text-[#1F5132] dark:text-[#86EFAC] font-mono leading-none tracking-tight">
               {totalProductsCount}
             </h3>
-            <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1.5 font-medium">
+            <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1 font-medium">
               Varietas Olahan Sorgum
             </p>
           </div>
         </div>
 
         {/* KPI 2: Artikel & Informasi */}
-        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border-2 border-[#E3B84B]/70 dark:border-[#E3B84B]/50 p-5 flex flex-col justify-between min-h-[130px] shadow-xs">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-xl border-2 border-[#E3B84B]/70 dark:border-[#E3B84B]/50 p-4 flex flex-col justify-between min-h-[110px] shadow-xs">
           <div className="flex justify-between items-start">
             <span className="text-[#92400E] dark:text-[#FDE68A]/90 text-[10px] font-extrabold uppercase tracking-wider">
               Artikel &amp; Info
             </span>
-            <div className="w-9 h-9 rounded-xl bg-[#FFFDF5] dark:bg-[#1C2818] text-[#E3B84B] border border-[#E3B84B]/30 flex items-center justify-center shadow-2xs">
-              <span className="material-symbols-outlined text-xl">info</span>
+            <div className="w-8 h-8 rounded-lg bg-[#FFFDF5] dark:bg-[#1C2818] text-[#E3B84B] border border-[#E3B84B]/30 flex items-center justify-center shadow-2xs">
+              <span className="material-symbols-outlined text-lg">info</span>
             </div>
           </div>
-          <div className="mt-2">
-            <h3 className="text-3xl sm:text-4xl font-black text-[#92400E] dark:text-[#FDE68A] font-mono leading-none tracking-tight">
+          <div className="mt-1.5">
+            <h3 className="text-2xl sm:text-3xl font-black text-[#92400E] dark:text-[#FDE68A] font-mono leading-none tracking-tight">
               {articlesCount}
             </h3>
-            <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1.5 font-medium">
+            <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1 font-medium">
               Edukasi &amp; Resep Sorgum
             </p>
           </div>
         </div>
 
         {/* KPI 3: Banner Promosi */}
-        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border-2 border-[#2B3E1D]/40 dark:border-[rgba(165,214,167,0.3)] p-5 flex flex-col justify-between min-h-[130px] shadow-xs">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-xl border-2 border-[#2B3E1D]/40 dark:border-[rgba(165,214,167,0.3)] p-4 flex flex-col justify-between min-h-[110px] shadow-xs">
           <div className="flex justify-between items-start">
             <span className="text-[#2B3E1D] dark:text-[#A5D6A7]/90 text-[10px] font-extrabold uppercase tracking-wider">
               Banner Promosi
             </span>
-            <div className="w-9 h-9 rounded-xl bg-[#F4F8F1] dark:bg-[#142316] text-[#2B3E1D] dark:text-[#86EFAC] border border-[#2B3E1D]/20 dark:border-[rgba(165,214,167,0.2)] flex items-center justify-center shadow-2xs">
-              <span className="material-symbols-outlined text-xl">view_carousel</span>
+            <div className="w-8 h-8 rounded-lg bg-[#F4F8F1] dark:bg-[#142316] text-[#2B3E1D] dark:text-[#86EFAC] border border-[#2B3E1D]/20 dark:border-[rgba(165,214,167,0.2)] flex items-center justify-center shadow-2xs">
+              <span className="material-symbols-outlined text-lg">view_carousel</span>
             </div>
           </div>
-          <div className="mt-2">
-            <h3 className="text-3xl sm:text-4xl font-black text-[#162809] dark:text-[#86EFAC] font-mono leading-none tracking-tight">
+          <div className="mt-1.5">
+            <h3 className="text-2xl sm:text-3xl font-black text-[#162809] dark:text-[#86EFAC] font-mono leading-none tracking-tight">
               {bannersCount}
             </h3>
-            <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1.5 font-medium">
+            <p className="text-[11px] text-[#556353] dark:text-white/60 mt-1 font-medium">
               Banner Landing Page
             </p>
           </div>
@@ -130,15 +130,15 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       </div>
 
       {/* 2. 2-Column Grid: Akses Cepat (Kiri) & Informasi Toko (Kanan) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-stretch">
         
         {/* Left Card: Akses Cepat Pengelolaan */}
-        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] p-5 space-y-3.5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] p-4 sm:p-5 space-y-3 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between border-b border-[#E2EFE0] dark:border-white/10 pb-3 mb-3.5">
-              <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-lg text-[#1F5132] dark:text-[#86EFAC]">bolt</span>
-                <h3 className="font-['Plus_Jakarta_Sans'] text-sm font-extrabold text-[#1F5132] dark:text-[#F4F8F3] uppercase tracking-wider">
+            <div className="flex items-center justify-between border-b border-[#E2EFE0] dark:border-white/10 pb-2.5 mb-3">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-[#1F5132] dark:text-[#86EFAC]">bolt</span>
+                <h3 className="font-['Plus_Jakarta_Sans'] text-xs font-extrabold text-[#1F5132] dark:text-[#F4F8F3] uppercase tracking-wider">
                   Akses Cepat Pengelolaan
                 </h3>
               </div>
@@ -147,17 +147,17 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <button
                 type="button"
                 onClick={() => {
                   if (onOpenCreateProduct) onOpenCreateProduct();
                   else setActiveNav('produk');
                 }}
-                className="w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] hover:border-[#3A8F4B]/50 transition-all text-left cursor-pointer group shadow-2xs"
+                className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] hover:border-[#3A8F4B]/50 transition-all text-left cursor-pointer group shadow-2xs"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-                  <span className="material-symbols-outlined text-xl">inventory_2</span>
+                <div className="w-8.5 h-8.5 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-lg">inventory_2</span>
                 </div>
                 <div className="min-w-0 flex-grow">
                   <p className="text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] group-hover:text-[#3A8F4B] transition-colors">
@@ -173,10 +173,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveNav('landing')}
-                className="w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] hover:border-[#3A8F4B]/50 transition-all text-left cursor-pointer group shadow-2xs"
+                className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] hover:border-[#3A8F4B]/50 transition-all text-left cursor-pointer group shadow-2xs"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-                  <span className="material-symbols-outlined text-xl">web</span>
+                <div className="w-8.5 h-8.5 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-lg">web</span>
                 </div>
                 <div className="min-w-0 flex-grow">
                   <p className="text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] group-hover:text-[#3A8F4B] transition-colors">
@@ -192,10 +192,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveNav('info')}
-                className="w-full flex items-center gap-3 p-3 rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] hover:border-[#3A8F4B]/50 transition-all text-left cursor-pointer group shadow-2xs"
+                className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] hover:border-[#3A8F4B]/50 transition-all text-left cursor-pointer group shadow-2xs"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-                  <span className="material-symbols-outlined text-xl">info</span>
+                <div className="w-8.5 h-8.5 rounded-lg bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] border border-[#3A8F4B]/20 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <span className="material-symbols-outlined text-lg">info</span>
                 </div>
                 <div className="min-w-0 flex-grow">
                   <p className="text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] group-hover:text-[#3A8F4B] transition-colors">
@@ -212,12 +212,12 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* Right Card: Identitas & Konfigurasi Toko */}
-        <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] p-5 space-y-3.5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#0E1A11] rounded-xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] p-4 sm:p-5 space-y-3 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-center border-b border-[#E2EFE0] dark:border-white/10 pb-3 mb-3.5">
+            <div className="flex justify-between items-center border-b border-[#E2EFE0] dark:border-white/10 pb-2.5 mb-3">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-xl text-[#1F5132] dark:text-[#86EFAC]">storefront</span>
-                <h3 className="font-['Plus_Jakarta_Sans'] font-extrabold text-sm text-[#1F5132] dark:text-[#F4F8F3] uppercase tracking-wider">
+                <span className="material-symbols-outlined text-lg text-[#1F5132] dark:text-[#86EFAC]">storefront</span>
+                <h3 className="font-['Plus_Jakarta_Sans'] font-extrabold text-xs text-[#1F5132] dark:text-[#F4F8F3] uppercase tracking-wider">
                   Informasi &amp; Konfigurasi Toko
                 </h3>
               </div>
@@ -230,12 +230,12 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
+            <div className="space-y-2.5 text-xs">
               {/* Store Name */}
-              <div className="p-3 bg-[#F9FBF7] dark:bg-[#122316] rounded-xl border border-[#E2EFE0] dark:border-white/10 flex items-center justify-between">
+              <div className="p-2.5 bg-[#F9FBF7] dark:bg-[#122316] rounded-lg border border-[#E2EFE0] dark:border-white/10 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-extrabold uppercase text-[#556353] dark:text-white/60 tracking-wider">Nama Brand Toko</p>
-                  <p className="font-bold text-sm text-[#1F5132] dark:text-[#F4F8F3] mt-0.5">
+                  <p className="font-bold text-xs sm:text-sm text-[#1F5132] dark:text-[#F4F8F3] mt-0.5">
                     {shopSettings.storeName || 'KWT Sorgum'}
                   </p>
                 </div>
@@ -245,20 +245,20 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               </div>
 
               {/* WhatsApp */}
-              <div className="p-3 bg-[#F9FBF7] dark:bg-[#122316] rounded-xl border border-[#E2EFE0] dark:border-white/10 flex items-center justify-between">
+              <div className="p-2.5 bg-[#F9FBF7] dark:bg-[#122316] rounded-lg border border-[#E2EFE0] dark:border-white/10 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-extrabold uppercase text-[#556353] dark:text-white/60 tracking-wider">WhatsApp Pemesanan</p>
                   <p className="font-bold text-xs text-[#1F5132] dark:text-[#F4F8F3] font-mono mt-0.5">
                     {shopSettings.whatsappNumber || 'Belum diatur'}
                   </p>
                 </div>
-                <span className="material-symbols-outlined text-[#25D366] text-xl">
+                <span className="material-symbols-outlined text-[#25D366] text-lg">
                   chat
                 </span>
               </div>
 
               {/* Landing Page Status */}
-              <div className="p-3 bg-[#F9FBF7] dark:bg-[#122316] rounded-xl border border-[#E2EFE0] dark:border-white/10 flex items-center justify-between">
+              <div className="p-2.5 bg-[#F9FBF7] dark:bg-[#122316] rounded-lg border border-[#E2EFE0] dark:border-white/10 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-extrabold uppercase text-[#556353] dark:text-white/60 tracking-wider">Status Beranda &amp; Carousel</p>
                   <p className="font-bold text-xs text-[#1F5132] dark:text-[#F4F8F3] mt-0.5">

@@ -138,11 +138,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
         </div>
       </div>
 
-      {/* ── 2. Left Content Container (Jarak lega & proporsional dari navbar sticky) ── */}
-      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10 pt-4 sm:pt-12 lg:pt-14 pb-10 sm:pb-18 lg:pb-20">
+      {/* ── 2. Left Content Container (Jarak proporsional & compact di zoom 100%) ── */}
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-3 sm:pt-6 lg:pt-8 pb-7 sm:pb-10 lg:pb-12">
 
         {/* ── Mobile / Tablet Photo Container — DULUAN di HP (ala aplikasi) ── */}
-        <div className="lg:hidden w-full h-[210px] sm:h-[320px] rounded-2xl overflow-hidden relative shadow-md mb-5">
+        <div className="lg:hidden w-full h-[180px] sm:h-[260px] rounded-xl overflow-hidden relative shadow-sm mb-4">
           {hasSlides ? (
             slides.map((imgUrl, index) => {
               const isActive = currentIdx === index;
@@ -170,14 +170,14 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
 
           {/* Carousel Slide Indicators for Mobile */}
           {hasSlides && slides.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full">
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIdx(idx)}
                   aria-label={`Slide ${idx + 1}`}
                   className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    currentIdx === idx ? 'bg-[#FADE88] w-6' : 'bg-white/60 w-1.5'
+                    currentIdx === idx ? 'bg-[#FADE88] w-5' : 'bg-white/60 w-1.5'
                   }`}
                 />
               ))}
@@ -185,29 +185,29 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
           )}
         </div>
 
-        <div className="w-full lg:w-[48%] space-y-3.5 sm:space-y-5 animate-fadeIn lg:pl-4 xl:pl-6">
+        <div className="w-full lg:w-[48%] space-y-3 sm:space-y-4 animate-fadeIn lg:pl-2 xl:pl-4">
 
           {/* Dynamic Title connected to Admin "Kelola Landing Page" */}
           <div className="space-y-0.5">
             {line1 && (
-              <h1 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.15] tracking-tight">
+              <h1 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.18] tracking-tight">
                 {line1}
               </h1>
             )}
             {line2 && (
-              <h2 className="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl lg:text-[36px] xl:text-[40px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.15] tracking-tight">
+              <h2 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.18] tracking-tight">
                 {line2}
               </h2>
             )}
             {accent && (
-              <p className="font-['Plus_Jakarta_Sans'] italic font-extrabold text-[26px] sm:text-4xl lg:text-[42px] xl:text-[46px] text-[#2B3E1D] dark:text-[#65B86B] leading-[1.18] pb-1 pt-0.5 select-none tracking-tight">
+              <p className="font-['Plus_Jakarta_Sans'] italic font-extrabold text-2xl sm:text-[30px] lg:text-[34px] xl:text-[38px] text-[#2B3E1D] dark:text-[#65B86B] leading-[1.18] pb-0.5 pt-0.5 select-none tracking-tight">
                 {accent}
               </p>
             )}
           </div>
 
           {/* Subtitle Description from Admin Panel */}
-          <p className="font-['Plus_Jakarta_Sans'] text-sm text-[#6B756E] dark:text-[#CBD5C8] leading-relaxed max-w-md font-normal">
+          <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] text-[#6B756E] dark:text-[#CBD5C8] leading-relaxed max-w-md font-normal">
             {t(
               landingContent.heroDescId ||
                 'Ragam olahan pangan sorgum unggul bebas gluten dan kaya nutrisi dari petani nusantara untuk menemani hidup sehat Anda sekeluarga.',
@@ -216,13 +216,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
             )}
           </p>
 
-          {/* Dual Action Buttons — full width di HP supaya mudah ditekan */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 pt-1.5">
+          {/* Dual Action Buttons — compact & responsive */}
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 pt-1">
             {/* Primary Green CTA Button */}
             <button
               type="button"
               onClick={onShopNow}
-              className="inline-flex items-center justify-center bg-gradient-to-r from-[#1F5132] to-[#2B3E1D] hover:from-[#162809] hover:to-[#203116] text-white px-5.5 py-3 sm:py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-[#1F5132] to-[#2B3E1D] hover:from-[#162809] hover:to-[#203116] text-white px-4.5 py-2.5 sm:py-2 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
             >
               <span>{t(landingContent.heroBtnId || 'Belanja Sekarang', landingContent.heroBtnEn || 'Shop Now')}</span>
             </button>
@@ -231,7 +231,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
             <button
               type="button"
               onClick={handleLearnMore}
-              className="inline-flex items-center justify-center bg-white/95 dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] text-[#162809] dark:text-[#65B86B] border border-[#2B3E1D]/25 dark:border-[rgba(165,214,167,0.25)] px-5 py-3 sm:py-2.5 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs"
+              className="inline-flex items-center justify-center bg-white/95 dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] text-[#162809] dark:text-[#65B86B] border border-[#2B3E1D]/25 dark:border-[rgba(165,214,167,0.25)] px-4 py-2.5 sm:py-2 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs"
             >
               <span>{t('Baca Artikel', 'Read Articles')}</span>
             </button>

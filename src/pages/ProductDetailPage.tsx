@@ -88,26 +88,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         href={orderWhatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full sm:w-auto sm:min-w-[270px] sm:max-w-md flex items-center justify-center gap-2.5 text-white h-12 px-6 rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D]"
+        className="w-full sm:w-auto sm:min-w-[240px] sm:max-w-md flex items-center justify-center gap-2 text-white h-10 px-5 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D]"
       >
-        <span className="material-symbols-outlined text-xl text-white">
+        <span className="material-symbols-outlined text-lg text-white">
           call
         </span>
         <span>
           {t('Pesan via WhatsApp', 'Order via WhatsApp')}
         </span>
       </a>
-      <p className="text-[11px] text-[#556353] dark:text-white/50 mt-1.5 text-left sm:text-right">
+      <p className="text-[10px] text-[#556353] dark:text-white/50 mt-1 text-left sm:text-right">
         {t('Klik untuk chat admin, pesan otomatis terisi produk yang Anda pilih.', 'Click to chat the admin; the message auto-fills with your chosen product.')}
       </p>
     </>
   );
 
   return (
-    <main className="pt-5 sm:pt-8 pb-24 md:pb-16 px-4 sm:px-6 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
+    <main className="pt-4 sm:pt-6 pb-16 md:pb-12 px-4 sm:px-6 md:px-8 max-w-[1100px] mx-auto animate-fadeIn min-h-screen w-full max-w-full overflow-x-hidden">
 
       {/* ── Breadcrumb & Tombol Kembali (Di Bawah Breadcrumb) ── */}
-      <div className="mb-4 sm:mb-6 flex flex-col items-start gap-2.5">
+      <div className="mb-3 sm:mb-4 flex flex-col items-start gap-2">
         <nav className="flex items-center flex-wrap gap-y-0.5 space-x-1.5 font-['Plus_Jakarta_Sans'] text-xs text-[#556353] dark:text-white/60">
           <button
             onClick={() => setActiveTab('beranda')}
@@ -131,9 +131,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('produk')}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#245B3A] dark:text-[#86EFAC] bg-white/80 dark:bg-[#122316] hover:bg-[#EAF6E8] dark:hover:bg-[#1A3320] border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.2)] px-3.5 py-1.5 rounded-full transition-all duration-200 active:scale-95 shadow-2xs cursor-pointer group"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#245B3A] dark:text-[#86EFAC] bg-white/80 dark:bg-[#122316] hover:bg-[#EAF6E8] dark:hover:bg-[#1A3320] border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.2)] px-3 py-1 rounded-full transition-all duration-200 active:scale-95 shadow-2xs cursor-pointer group"
         >
-          <span className="material-symbols-outlined text-base transition-transform group-hover:-translate-x-0.5">
+          <span className="material-symbols-outlined text-sm transition-transform group-hover:-translate-x-0.5">
             arrow_back
           </span>
           <span>{t('Kembali ke Katalog', 'Back to Catalog')}</span>
@@ -141,15 +141,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       </div>
 
       {/* ── Shopee-Style Product Card Container ── */}
-      <div className="bg-white dark:bg-[#0E1A11] p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-10 sm:mb-16">
+      <div className="bg-white dark:bg-[#0E1A11] p-3.5 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs mb-8 sm:mb-10 w-full overflow-hidden">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start w-full">
 
           {/* ─── Kolom Kiri: Galeri Foto Kompak Proporsional (Shopee Style) ─── */}
-          <div className="lg:col-span-5 w-full lg:max-w-[350px] mx-auto flex flex-col justify-between space-y-3">
+          <div className="lg:col-span-5 w-full lg:max-w-[320px] mx-auto flex flex-col justify-between space-y-2.5">
             
             {/* Foto Utama — full width di HP, ukuran terukur di desktop */}
-            <div className="aspect-square w-full bg-[#FAF7EE] dark:bg-[#122316] rounded-xl sm:rounded-2xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
+            <div className="aspect-square w-full bg-[#FAF7EE] dark:bg-[#122316] rounded-lg sm:rounded-xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
               <img
                 src={selectedImage}
                 alt={product.name}
@@ -157,8 +157,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               />
             </div>
 
-            {/* Thumbnail Gallery Row — 1 baris x 4 kolom, selebar gambar utama; kalau gambar <4 slot kosong dibiarkan */}
-            <div className="grid grid-cols-4 gap-2">
+            {/* Thumbnail Gallery Row */}
+            <div className="grid grid-cols-4 gap-1.5 w-full">
               {effectiveGallery.map((img, idx) => {
                 const isSelected = selectedImage === img;
                 return (
@@ -185,67 +185,65 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           {/* ─── Kolom Kanan: Detail Produk (Shopee Specs & WA Direct Order) ─── */}
-          <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-4">
+          <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-4 min-w-0 w-full">
 
             {/* Bagian Konten Atas */}
-            <div className="space-y-3.5">
+            <div className="space-y-3 min-w-0 w-full">
               
               {/* 1. Nama & Kategori Produk */}
-              <div>
-                <div className="mb-2">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md font-['Plus_Jakarta_Sans'] text-[11px] font-bold uppercase tracking-wider border shadow-2xs ${badgeClass}`}>
+              <div className="min-w-0">
+                <div className="mb-1.5">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider border shadow-2xs ${badgeClass}`}>
                     {product.categoryLabel || product.category}
                   </span>
                 </div>
-                <h1 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] leading-snug">
+                <h1 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] leading-snug break-words">
                   {product.name}
                 </h1>
               </div>
 
-              {/* 2. Harga Produk (Stand Out Tanpa Garis Border) */}
-              <div className="py-2 sm:py-2.5 my-0.5 flex items-baseline gap-2.5 flex-wrap">
-                <span className="font-['JetBrains_Mono'] font-black text-2xl sm:text-[26px] tracking-tight text-[#245B3A] dark:text-[#86EFAC]">
+              {/* 2. Harga Produk */}
+              <div className="py-1 sm:py-1.5 flex items-baseline gap-2 flex-wrap">
+                <span className="font-['JetBrains_Mono'] font-black text-xl sm:text-2xl tracking-tight text-[#245B3A] dark:text-[#86EFAC] break-words">
                   {product.priceMax && product.priceMax > product.price
                     ? `Rp ${product.price.toLocaleString('id-ID')} - Rp ${product.priceMax.toLocaleString('id-ID')}`
                     : `Rp ${product.price.toLocaleString('id-ID')}`}
                 </span>
               </div>
 
-              {/* 2b. CTA WhatsApp — HANYA MOBILE, tepat di bawah harga.
-                  Di HP tombol asli di dasar halaman terkubur setelah deskripsi
-                  panjang, padahal ini inti bisnis (pesan via WA). */}
-              <div className="lg:hidden flex flex-col items-stretch pt-1">
+              {/* 2b. CTA WhatsApp — HANYA MOBILE */}
+              <div className="lg:hidden flex flex-col items-stretch pt-0.5 w-full">
                 {waOrderCta}
               </div>
 
               {/* 3. Specs / Info Produk (Berat & Pengiriman) */}
-              <div className="bg-[#F9FBF7] dark:bg-[#122316] p-3 sm:p-3.5 rounded-xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] space-y-2.5 my-2">
+              <div className="bg-[#F9FBF7] dark:bg-[#122316] p-2.5 sm:p-3 rounded-lg border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] space-y-2 my-1.5 w-full">
                 {/* Row Berat */}
                 {(product.unitInfo || product.weight) && (
-                  <div className="grid grid-cols-12 gap-2 items-center text-xs sm:text-sm">
-                    <span className="col-span-4 sm:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-sm text-[#3A8F4B]">scale</span>
+                  <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-xs">
+                    <span className="sm:col-span-4 lg:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5 shrink-0">
+                      <span className="material-symbols-outlined text-[13px] text-[#3A8F4B]">balance</span>
                       <span>{t('Berat / Kemasan', 'Weight / Unit')}</span>
                     </span>
-                    <div className="col-span-8 sm:col-span-9 font-bold text-[#14331C] dark:text-white">
+                    <div className="sm:col-span-8 lg:col-span-9 font-bold text-[#14331C] dark:text-white text-xs break-words">
                       {product.unitInfo || product.weight}
                     </div>
                   </div>
                 )}
 
                 {/* Row Pengiriman */}
-                <div className="grid grid-cols-12 gap-2 items-center text-xs sm:text-sm">
-                  <span className="col-span-4 sm:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-sm text-[#3A8F4B]">local_shipping</span>
+                <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-xs">
+                  <span className="sm:col-span-4 lg:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5 shrink-0">
+                    <span className="material-symbols-outlined text-[13px] text-[#3A8F4B]">local_shipping</span>
                     <span>{t('Pengiriman', 'Shipping')}</span>
                   </span>
-                  <div className="col-span-8 sm:col-span-9 font-semibold text-[#14331C] dark:text-white">
+                  <div className="sm:col-span-8 lg:col-span-9 font-semibold text-[#14331C] dark:text-white text-xs break-words">
                     {t('Kirim ke Seluruh Nusantara', 'Nationwide Delivery')}
                   </div>
                 </div>
               </div>
 
-              {/* 4. Deskripsi Produk (Minimal 2 Paragraf Sebelum Baca Selengkapnya) */}
+              {/* 4. Deskripsi Produk */}
               {product.description && (() => {
                 const paragraphs = product.description.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
                 const hasMore = paragraphs.length > 2 || product.description.length > 350;
@@ -254,11 +252,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   : product.description;
 
                 return (
-                  <div className="pt-2.5 border-t border-[#E2EFE0] dark:border-white/10 space-y-1.5">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#14331C] dark:text-white">
+                  <div className="pt-2 border-t border-[#E2EFE0] dark:border-white/10 space-y-1">
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#14331C] dark:text-white">
                       {t('Deskripsi Produk', 'Product Description')}
                     </h4>
-                    <p className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#465444] dark:text-[#CBD5C8] leading-relaxed whitespace-pre-line ${
+                    <p className={`font-['Plus_Jakarta_Sans'] text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed whitespace-pre-line ${
                       !descExpanded && paragraphs.length <= 2 && hasMore ? 'line-clamp-6' : ''
                     }`}>
                       {displayedText}
@@ -278,9 +276,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             </div>
 
-            {/* 5. Action Button: Pesan via WhatsApp — DESKTOP SAJA
-                (di HP tombol sudah muncul di bawah harga, lihat 2b) */}
-            <div className="hidden lg:flex pt-3 border-t border-[#E2EFE0]/60 dark:border-white/5 flex-col items-end">
+            {/* 5. Action Button: Pesan via WhatsApp — DESKTOP SAJA */}
+            <div className="hidden lg:flex pt-2.5 border-t border-[#E2EFE0]/60 dark:border-white/5 flex-col items-end">
               {waOrderCta}
             </div>
 
@@ -292,17 +289,17 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
       {/* ─── Produk Terkait (Shopee Related Products) ─── */}
       {relatedProducts.length > 0 && (
-        <section className="mb-8">
-          <div className="mb-5 sm:mb-6">
-            <h2 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-bold text-[#14331C] dark:text-white mb-1">
+        <section className="mb-6">
+          <div className="mb-3 sm:mb-4">
+            <h2 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-bold text-[#14331C] dark:text-white mb-0.5">
               {t('Produk Terkait Lainnya', 'Other Related Products')}
             </h2>
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#556353] dark:text-white/60">
+            <p className="font-['Plus_Jakarta_Sans'] text-xs text-[#556353] dark:text-white/60">
               {t('Pilihan nutrisi sorgum terbaik untuk keluarga Anda', 'The best sorghum nutrition choices for your family')}
             </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4">
             {relatedProducts.map((rel) => (
               <ProductCard
                 key={rel.id}

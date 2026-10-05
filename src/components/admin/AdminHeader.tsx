@@ -31,7 +31,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#F8FAF6] dark:bg-[#08100A] backdrop-blur-md border-b border-[#E2EFE0] dark:border-white/10 px-5 py-3 flex justify-between items-center shadow-xs">
+      <header className="sticky top-0 z-40 bg-[#F8FAF6] dark:bg-[#08100A] backdrop-blur-md border-b border-[#E2EFE0] dark:border-white/10 px-4 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center shadow-xs">
         {/* Mobile Drawer Hamburger Button */}
         <button
           type="button"
@@ -46,7 +46,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
         <div ref={dropdownRef} className="relative ml-auto flex items-center">
           <div
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center space-x-3 cursor-pointer group select-none hover:opacity-85 transition-opacity"
+            className="flex items-center space-x-2.5 cursor-pointer group select-none hover:opacity-85 transition-opacity"
             title="Menu Profil"
           >
             {/* Profile Label */}
@@ -61,7 +61,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
             {/* Profile Avatar */}
             <div className="flex items-center">
-              <span className="material-symbols-outlined text-[#1F5132] dark:text-[#65B86B] text-3xl group-active:opacity-70 transition-opacity">
+              <span className="material-symbols-outlined text-[#1F5132] dark:text-[#65B86B] text-2xl group-active:opacity-70 transition-opacity">
                 account_circle
               </span>
             </div>
@@ -69,8 +69,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
           {/* Dropdown Menu Box */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-[#fdfbf7] rounded-2xl border border-[#e2ded4] shadow-md py-1.5 z-50 animate-fadeIn text-xs text-[#1B5E20]">
-              <div className="px-4 py-2 border-b border-[#e2ded4]/60 sm:hidden">
+            <div className="absolute right-0 top-full mt-1.5 w-48 bg-[#fdfbf7] rounded-xl border border-[#e2ded4] shadow-md py-1 z-50 animate-fadeIn text-xs text-[#1B5E20]">
+              <div className="px-3 py-1.5 border-b border-[#e2ded4]/60 sm:hidden">
                 <p className="font-bold text-[#1B5E20] truncate">{user?.name || 'Administrator Sorgum'}</p>
                 <p className="text-[10px] text-gray-500 font-medium">Administrator</p>
               </div>
@@ -81,7 +81,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                   setShowProfileModal(true);
                   setIsDropdownOpen(false);
                 }}
-                className="w-full text-left px-4 py-2 hover:bg-[#f4efe8] transition-colors flex items-center gap-2 cursor-pointer font-semibold"
+                className="w-full text-left px-3 py-1.5 hover:bg-[#f4efe8] transition-colors flex items-center gap-2 cursor-pointer font-semibold"
               >
                 <span className="material-symbols-outlined text-base text-gray-500">person</span>
                 <span>Lihat Profil</span>
@@ -94,32 +94,32 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
       {/* Profile Details Modal Dialog */}
       {showProfileModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[110] animate-fadeIn p-4">
-          <div className="bg-[#fdfbf7] rounded-2xl border border-[#e2ded4] max-w-sm w-full p-6 shadow-xl space-y-5 text-center relative">
+          <div className="bg-[#fdfbf7] rounded-xl border border-[#e2ded4] max-w-xs w-full p-5 shadow-xl space-y-4 text-center relative">
             <button
               type="button"
               onClick={() => setShowProfileModal(false)}
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+              className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
               title="Tutup"
             >
-              <span className="material-symbols-outlined text-xl">close</span>
+              <span className="material-symbols-outlined text-lg">close</span>
             </button>
 
             {/* Avatar Header */}
-            <div className="mx-auto w-16 h-16 rounded-full bg-[#2E7D32]/10 flex items-center justify-center text-[#1B5E20]">
-              <span className="material-symbols-outlined text-4xl">admin_panel_settings</span>
+            <div className="mx-auto w-12 h-12 rounded-full bg-[#2E7D32]/10 flex items-center justify-center text-[#1B5E20]">
+              <span className="material-symbols-outlined text-2xl">admin_panel_settings</span>
             </div>
 
-            <div className="space-y-1">
-              <h3 className="font-bold text-lg text-[#1B5E20]">
+            <div className="space-y-0.5">
+              <h3 className="font-bold text-base text-[#1B5E20]">
                 {user?.name || 'Administrator Sorgum'}
               </h3>
-              <p className="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-full inline-block uppercase tracking-wider">
+              <p className="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-full inline-block uppercase tracking-wider">
                 Administrator
               </p>
             </div>
 
             {/* Profile Fields List */}
-            <div className="text-left bg-[#f4efe8] p-4 rounded-xl border border-[#e2ded4]/60 space-y-3 text-xs">
+            <div className="text-left bg-[#f4efe8] p-3 rounded-lg border border-[#e2ded4]/60 space-y-2 text-xs">
               <div>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">Nama Akun</p>
                 <p className="font-semibold text-gray-700">{user?.name || 'Administrator Sorgum'}</p>
@@ -138,7 +138,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             <button
               type="button"
               onClick={() => setShowProfileModal(false)}
-              className="w-full py-2 bg-[#2E7D32] hover:opacity-90 text-white font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer"
+              className="w-full py-2 bg-[#2E7D32] hover:opacity-90 text-white font-bold text-xs rounded-lg transition-all shadow-xs cursor-pointer"
             >
               Selesai
             </button>

@@ -219,7 +219,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn max-w-4xl mx-auto">
+    <div className="space-y-6 animate-fadeIn w-full max-w-4xl mx-auto overflow-hidden">
       {/* Header & Breadcrumbs */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -261,7 +261,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 
       {/* Form Card */}
       <div className="bg-[#FFFFFF] rounded-2xl shadow-2xs border border-[#E0E0E0] overflow-hidden">
-        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 w-full max-w-full">
           {/* Galeri Produk (4 Gambar) — foto produk; gambar pertama = gambar utama */}
           <div className="space-y-3">
             <div>
@@ -506,17 +506,17 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end pt-4 space-x-4">
+          <div className="flex flex-col-reverse sm:flex-row justify-end pt-4 gap-3">
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 text-[#556353] dark:text-white/60 font-bold text-xs hover:bg-[#EAF6E8] transition-all cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 text-[#556353] dark:text-white/60 font-bold text-xs hover:bg-[#EAF6E8] transition-all cursor-pointer text-center"
             >
               Batalkan
             </button>
             <button
               type="submit"
-              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
+              className="w-full sm:w-auto bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer text-center"
             >
               {initialProduct ? 'Simpan Perubahan Produk' : 'Simpan Produk Baru'}
             </button>

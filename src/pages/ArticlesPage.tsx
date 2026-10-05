@@ -140,8 +140,8 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
       switch (block.type) {
         case 'image':
           return block.image_url ? (
-            <figure key={idx} className="my-4">
-              <div className="relative rounded-xl overflow-hidden h-56 sm:h-80 md:h-96 my-6 sm:my-8 group shadow-sm bg-[#dfd9d3] border border-[#E0E0E0]/20">
+            <figure key={idx} className="my-3 sm:my-4">
+              <div className="relative rounded-xl overflow-hidden h-44 sm:h-60 md:h-72 my-4 sm:my-5 group shadow-xs bg-[#dfd9d3] border border-[#E0E0E0]/20">
                 <img
                   src={block.image_url}
                   alt={block.alt || activeArticle.title}
@@ -149,7 +149,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                 />
               </div>
               {block.caption && (
-                <figcaption className="text-center text-xs sm:text-sm text-[#75786e] italic mt-2 font-['Plus_Jakarta_Sans']">
+                <figcaption className="text-center text-xs text-[#75786e] italic mt-1.5 font-['Plus_Jakarta_Sans']">
                   {block.caption}
                 </figcaption>
               )}
@@ -160,11 +160,11 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           return (
             <blockquote
               key={idx}
-              className="bg-[#F7F8F6] p-5 sm:p-8 rounded-xl border-l-4 border-[#1B5E20] italic text-[#1B5E20] font-['Plus_Jakarta_Sans'] text-base md:text-lg my-6 sm:my-8 leading-relaxed shadow-2xs border-t border-r border-b border-[#E0E0E0]"
+              className="bg-[#F7F8F6] p-4 sm:p-5 rounded-xl border-l-4 border-[#1B5E20] italic text-[#1B5E20] font-['Plus_Jakarta_Sans'] text-sm md:text-base my-4 sm:my-5 leading-relaxed shadow-2xs border-t border-r border-b border-[#E0E0E0]"
             >
               "{block.content}"
               {block.author && (
-                <footer className="mt-3 text-right text-sm font-bold not-italic text-[#1B5E20]">
+                <footer className="mt-2 text-right text-xs font-bold not-italic text-[#1B5E20]">
                   · {block.author}
                 </footer>
               )}
@@ -178,14 +178,14 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             return (
               <p
                 key={idx}
-                className="text-[#555555] text-base md:text-lg leading-relaxed first-letter:float-left first-letter:text-4xl sm:first-letter:text-5xl first-letter:leading-[2.5rem] sm:first-letter:leading-[4rem] first-letter:pr-3 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#1B5E20]"
+                className="text-[#555555] text-sm md:text-base leading-relaxed first-letter:float-left first-letter:text-3xl sm:first-letter:text-4xl first-letter:leading-[2rem] sm:first-letter:leading-[2.5rem] first-letter:pr-2.5 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#1B5E20]"
               >
                 {block.content}
               </p>
             );
           }
           return (
-            <p key={idx} className="text-[#555555] text-base md:text-lg leading-relaxed font-normal">
+            <p key={idx} className="text-[#555555] text-sm md:text-base leading-relaxed font-normal">
               {block.content}
             </p>
           );
@@ -193,30 +193,30 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     };
 
     return (
-      <div className="pt-6 sm:pt-8 pb-16 px-4 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
+      <div className="pt-4 sm:pt-6 pb-12 px-3 sm:px-6 lg:px-8 max-w-[1100px] mx-auto animate-fadeIn min-h-screen w-full max-w-full overflow-x-hidden">
         {/* Tombol Kembali */}
         <button
           onClick={handleBack}
-          className="mb-6 flex items-center gap-2 text-sm font-bold text-[#1B5E20] hover:text-[#2E7D32] transition-colors cursor-pointer"
+          className="mb-4 flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#1B5E20] hover:text-[#2E7D32] transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          <span className="material-symbols-outlined text-lg">arrow_back</span>
           <span>{t('Kembali ke Daftar Artikel', 'Back to Article List')}</span>
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start w-full">
           {/* Main Article Content */}
-          <article className="lg:col-span-8 space-y-6">
-            <header className="space-y-4">
-              <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] px-3.5 py-1 rounded-md font-['Plus_Jakarta_Sans'] text-xs font-bold uppercase tracking-wider shadow-2xs inline-block">
+          <article className="lg:col-span-8 space-y-5 min-w-0 w-full break-words">
+            <header className="space-y-2.5">
+              <span className="bg-[#E8F5E9] text-[#1B5E20] border border-[#A5D6A7] px-2.5 py-0.5 rounded text-[11px] font-['Plus_Jakarta_Sans'] font-bold uppercase tracking-wider shadow-2xs inline-block">
                 {activeArticle.category}
               </span>
-              <h1 className="font-['Playfair_Display'] text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1B5E20] leading-tight">
+              <h1 className="font-['Playfair_Display'] text-xl sm:text-2xl lg:text-3xl font-bold text-[#1B5E20] leading-tight">
                 {activeArticle.title}
               </h1>
             </header>
 
             {/* Featured Hero Image — lebih pendek di HP supaya tidak mendominasi */}
-            <div className="relative rounded-2xl overflow-hidden h-52 sm:h-80 md:h-[450px] shadow-2xs bg-[#F7F8F6] border border-[#E0E0E0]">
+            <div className="relative rounded-xl overflow-hidden h-44 sm:h-64 md:h-72 shadow-2xs bg-[#F7F8F6] border border-[#E0E0E0]">
               {activeArticle.image ? (
                 <img
                   src={activeArticle.image}
@@ -241,17 +241,17 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             {/* Produk di Artikel Ini (relasi artikel↔produk) */}
             {activeArticle.relatedProducts && activeArticle.relatedProducts.length > 0 && onSelectProduct && (
               <section className="pt-2 border-t border-[#E0E0E0]">
-                <div className="mb-4">
-                  <h3 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl font-bold text-[#1B5E20] flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#2E7D32]">shopping_bag</span>
+                <div className="mb-3">
+                  <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-bold text-[#1B5E20] flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[#2E7D32] text-lg">shopping_bag</span>
                     {t('Produk di Artikel Ini', 'Products in This Article')}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#555555] mt-0.5">
+                  <p className="text-xs text-[#555555] mt-0.5">
                     {t('Langsung pesan produk sorgum yang dibahas di artikel ini.', 'Order the sorghum products featured in this article directly.')}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {activeArticle.relatedProducts.map((prod) => (
                     <ProductCard
                       key={prod.id}
@@ -265,42 +265,42 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           </article>
 
           {/* Sidebar — sticky hanya di desktop; di HP mengalir di bawah artikel */}
-          <aside className="lg:col-span-4 space-y-6 sm:space-y-8 lg:sticky lg:top-28">
-            {/* Info Penerbit & Tanggal Terbit (dipindah dari bawah judul) */}
-            <section className="bg-[#FFFFFF] p-5 sm:p-8 rounded-2xl shadow-2xs border border-[#E0E0E0]">
-              <h3 className="text-xl font-bold text-[#1B5E20] mb-6 font-['Playfair_Display']">
+          <aside className="lg:col-span-4 space-y-4 sm:space-y-5 lg:sticky lg:top-24">
+            {/* Info Penerbit & Tanggal Terbit */}
+            <section className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl shadow-xs border border-[#E0E0E0]">
+              <h3 className="text-base sm:text-lg font-bold text-[#1B5E20] mb-3.5 font-['Playfair_Display']">
                 {t('Info Terbit', 'Publication Info')}
               </h3>
-              <ul className="space-y-5 text-sm">
-                <li className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">calendar_today</span>
+              <ul className="space-y-3 text-xs sm:text-sm">
+                <li className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-lg">calendar_today</span>
                   <div>
-                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans']">
+                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans'] text-xs">
                       {t('Tanggal Terbit', 'Published')}
                     </span>
-                    <span className="text-[#555555] font-['Plus_Jakarta_Sans']">
+                    <span className="text-[#555555] font-['Plus_Jakarta_Sans'] text-xs">
                       {activeArticle.date || '3 November 2024'}
                     </span>
                   </div>
                 </li>
-                <li className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">schedule</span>
+                <li className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-lg">schedule</span>
                   <div>
-                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans']">
+                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans'] text-xs">
                       {t('Durasi Baca', 'Reading Time')}
                     </span>
-                    <span className="text-[#555555] font-['Plus_Jakarta_Sans']">
+                    <span className="text-[#555555] font-['Plus_Jakarta_Sans'] text-xs">
                       {activeArticle.readTime || '5 Menit Baca'}
                     </span>
                   </div>
                 </li>
-                <li className="flex items-start gap-4">
-                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-xl">person</span>
+                <li className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-[#2E7D32] pt-0.5 text-lg">person</span>
                   <div>
-                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans']">
+                    <span className="font-bold text-[#1B5E20] block font-['Plus_Jakarta_Sans'] text-xs">
                       {t('Penerbit', 'Author')}
                     </span>
-                    <span className="text-[#555555] font-['Plus_Jakarta_Sans']">
+                    <span className="text-[#555555] font-['Plus_Jakarta_Sans'] text-xs">
                       {activeArticle.author || 'Tim Ahli Gizi Sorgum'}
                     </span>
                   </div>
@@ -309,27 +309,27 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             </section>
 
             {/* Read Other Articles */}
-            <section className="bg-[#FFFFFF] p-6 rounded-2xl border border-[#E0E0E0] shadow-2xs">
-              <h4 className="text-lg font-bold text-[#1B5E20] mb-4 font-['Playfair_Display']">
+            <section className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E0E0E0] shadow-xs">
+              <h4 className="text-base sm:text-lg font-bold text-[#1B5E20] mb-3 font-['Playfair_Display']">
                 {t('Artikel Lainnya', 'Other Articles')}
               </h4>
-              <div className="space-y-4">
+              <div className="space-y-2.5">
                 {otherArticles.map((other) => (
                     <div
                       key={other.id}
                       onClick={() => handleCardClick(other)}
-                      className="flex gap-3 items-center cursor-pointer group hover:bg-[#E8F5E9] p-2 rounded-xl transition-all"
+                      className="flex gap-2.5 items-center cursor-pointer group hover:bg-[#E8F5E9] p-1.5 rounded-lg transition-all"
                     >
                       <img
                         src={other.image}
                         alt={other.title}
-                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0 border border-[#E0E0E0]"
+                        className="w-13 h-13 rounded-lg object-cover flex-shrink-0 border border-[#E0E0E0]"
                       />
                       <div>
                         <span className="text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider block font-['Plus_Jakarta_Sans']">
                           {other.category}
                         </span>
-                        <h5 className="text-sm font-bold text-[#1B5E20] line-clamp-2 group-hover:text-[#2E7D32] transition-colors font-['Playfair_Display']">
+                        <h5 className="text-xs sm:text-sm font-bold text-[#1B5E20] line-clamp-2 group-hover:text-[#2E7D32] transition-colors font-['Playfair_Display']">
                           {other.title}
                         </h5>
                       </div>
@@ -345,14 +345,14 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
   // Articles List View
   return (
-    <div className="pt-6 sm:pt-8 pb-16 px-4 md:px-8 max-w-[1180px] mx-auto animate-fadeIn min-h-screen">
+    <div className="pt-4 sm:pt-6 pb-12 px-3 sm:px-6 lg:px-8 max-w-[1100px] mx-auto animate-fadeIn min-h-screen">
       {/* Filter and Search Panel */}
-      <div className="bg-white dark:bg-[#121C14] p-4 sm:p-5 rounded-2xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.15)] shadow-sm mb-8 transition-colors duration-300">
-        <div className="flex flex-col md:flex-row gap-3.5 sm:gap-4 items-stretch md:items-center">
+      <div className="bg-white dark:bg-[#121C14] p-3 sm:p-3.5 rounded-xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.15)] shadow-xs mb-5 sm:mb-6 transition-colors duration-300">
+        <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 items-stretch md:items-center">
           
           {/* Search Input */}
           <div className="relative flex-grow">
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#555555] dark:text-[#94A390] text-lg select-none">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#555555] dark:text-[#94A390] text-base select-none">
               search
             </span>
             <input
@@ -360,13 +360,13 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
               placeholder={t('Cari artikel (misal: budidaya, celiac, serat, resep)...', 'Search articles (e.g. cultivation, celiac, fiber, recipes)...')}
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-              className="w-full pl-12 pr-10 py-3 bg-[#F7F8F6] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] rounded-xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.2)] font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1B5E20] dark:text-[#F4F7F2] placeholder-[#555555]/60 dark:placeholder-[#94A390]/60 focus:outline-none focus:border-[#2E7D32] dark:focus:border-[#A5D6A7] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
+              className="w-full pl-9 pr-8 py-2 bg-[#F7F8F6] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] rounded-lg border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.2)] font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1B5E20] dark:text-[#F4F7F2] placeholder-[#555555]/60 dark:placeholder-[#94A390]/60 focus:outline-none focus:border-[#2E7D32] dark:focus:border-[#A5D6A7] focus:ring-1 focus:ring-[#2E7D32] transition-all font-medium"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#555555] dark:text-[#94A390] hover:text-[#1B5E20] dark:hover:text-[#A5D6A7] text-lg focus:outline-none cursor-pointer flex items-center justify-center"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555555] dark:text-[#94A390] hover:text-[#1B5E20] dark:hover:text-[#A5D6A7] text-base focus:outline-none cursor-pointer flex items-center justify-center"
               >
                 <span className="material-symbols-outlined text-base">close</span>
               </button>
@@ -374,7 +374,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           </div>
 
           {/* Category Dropdown (Beside Search Bar) */}
-          <div className="flex items-center gap-2.5 bg-[#F7F8F6] dark:bg-[#162419] px-4 py-3 rounded-xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.2)] shrink-0">
+          <div className="w-full md:w-auto flex items-center gap-2 bg-[#F7F8F6] dark:bg-[#162419] px-3 py-2 rounded-lg border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.2)] shrink-0">
             <span className="material-symbols-outlined text-base text-[#1B5E20] dark:text-[#A5D6A7]">
               tune
             </span>
@@ -384,7 +384,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             <select
               value={selectedCategory}
               onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
-              className="bg-transparent border-none font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1B5E20] dark:text-[#A5D6A7] focus:ring-0 cursor-pointer outline-none"
+              className="w-full md:w-auto bg-transparent border-none font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold text-[#1B5E20] dark:text-[#A5D6A7] focus:ring-0 cursor-pointer outline-none"
             >
               {categories.map((c) => (
                 <option
@@ -403,53 +403,52 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
       {/* Article Cards Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 py-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 py-1.5">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-72 sm:h-96 bg-[#FFFFFF] animate-pulse border border-[#E0E0E0] rounded-2xl shadow-2xs"></div>
+            <div key={i} className="h-64 sm:h-80 bg-[#FFFFFF] animate-pulse border border-[#E0E0E0] rounded-xl shadow-2xs"></div>
           ))}
         </div>
       ) : filteredArticles.length === 0 ? (
-        <div className="text-center py-16 sm:py-20 bg-[#FFFFFF] rounded-2xl border border-[#E0E0E0] p-6 sm:p-8 shadow-2xs my-4">
-          <span className="material-symbols-outlined text-5xl text-[#C89B3C] mb-2 animate-pulse">search_off</span>
-          <h3 className="text-xl font-bold text-[#1B5E20] mb-1 font-['Playfair_Display']">
+        <div className="text-center py-12 sm:py-16 bg-[#FFFFFF] rounded-xl border border-[#E0E0E0] p-5 sm:p-6 shadow-2xs my-4">
+          <span className="material-symbols-outlined text-4xl text-[#C89B3C] mb-1.5 animate-pulse">search_off</span>
+          <h3 className="text-lg font-bold text-[#1B5E20] mb-1 font-['Playfair_Display']">
             {t('Artikel Tidak Ditemukan', 'Article Not Found')}
           </h3>
-          <p className="text-xs sm:text-sm text-[#555555]">
+          <p className="text-xs text-[#555555]">
             {t('Tidak ada artikel yang cocok dengan kata kunci pencarian atau kategori filter Anda.', 'No articles match your search keywords or filter category.')}
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 py-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 py-1.5">
           {pageArticles.map((art) => (
             <ArticleCard key={art.id} article={art} onSelectArticle={handleCardClick} />
           ))}
         </div>
       )}
 
-      {/* Pagination — angka halaman disembunyikan di HP (bisa overflow),
-          diganti indikator "Hal. x / y". Navigasi tetap bisa dipakai. */}
+      {/* Pagination */}
       {filteredArticles.length > 0 && totalPages > 1 && (
-        <div className="mt-10 sm:mt-12 flex flex-col items-center gap-3 sm:gap-4">
-          <div className="flex justify-center items-center gap-2">
+        <div className="mt-6 sm:mt-8 flex flex-col items-center gap-2.5 sm:gap-3">
+          <div className="flex justify-center items-center gap-1.5">
             <button
               onClick={() => goToPage(safePage - 1)}
               disabled={safePage <= 1}
-              className="w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8.5 h-8.5 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Halaman sebelumnya"
             >
-              <span className="material-symbols-outlined text-xl">chevron_left</span>
+              <span className="material-symbols-outlined text-lg">chevron_left</span>
             </button>
 
-            <span className="sm:hidden px-4 text-sm font-bold text-[#1B5E20] font-['Plus_Jakarta_Sans']">
+            <span className="sm:hidden px-3 text-xs font-bold text-[#1B5E20] font-['Plus_Jakarta_Sans']">
               {safePage} / {totalPages}
             </span>
 
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-1.5">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                 <button
                   key={p}
                   onClick={() => goToPage(p)}
-                  className={`w-10 h-10 flex items-center justify-center rounded-xl font-['Plus_Jakarta_Sans'] font-bold text-sm transition-all cursor-pointer ${
+                  className={`w-8 h-8 flex items-center justify-center rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs transition-all cursor-pointer ${
                     p === safePage
                       ? 'bg-[#2E7D32] text-white shadow-2xs'
                       : 'text-[#555555] hover:bg-[#E8F5E9] border border-[#E0E0E0] bg-[#FFFFFF]'
@@ -463,13 +462,13 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages}
-              className="w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8.5 h-8.5 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-[#E0E0E0] text-[#555555] hover:bg-[#2E7D32] hover:text-white hover:border-[#2E7D32] transition-all cursor-pointer bg-[#FFFFFF] disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Halaman berikutnya"
             >
-              <span className="material-symbols-outlined text-xl">chevron_right</span>
+              <span className="material-symbols-outlined text-lg">chevron_right</span>
             </button>
           </div>
-          <span className="text-xs text-[#555555] font-['Plus_Jakarta_Sans'] text-center px-4">
+          <span className="text-[11px] text-[#555555] font-['Plus_Jakarta_Sans'] text-center px-4">
             {t('Menampilkan', 'Showing')} {Math.min(ITEMS_PER_PAGE, filteredArticles.length - (safePage - 1) * ITEMS_PER_PAGE)} {t('dari', 'of')} {filteredArticles.length} {t('artikel', 'articles')}
           </span>
         </div>

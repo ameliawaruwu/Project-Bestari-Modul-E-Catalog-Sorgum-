@@ -33,8 +33,8 @@ export const InfoTab: React.FC<InfoTabProps> = ({
   const paginatedArticles = articles.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fadeIn w-full max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
             <ol className="flex items-center space-x-2">

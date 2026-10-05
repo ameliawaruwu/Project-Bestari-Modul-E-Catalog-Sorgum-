@@ -49,7 +49,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn max-w-4xl mx-auto">
+    <div className="space-y-6 animate-fadeIn w-full max-w-4xl mx-auto overflow-hidden">
       {/* Header & Breadcrumb */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -91,7 +91,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
 
       {/* Form Card */}
       <div className="bg-white dark:bg-[#0E1A11] rounded-2xl shadow-2xs border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] overflow-hidden">
-        <div className="p-6 bg-gradient-to-r from-[#14331C] to-[#245B3A] text-white flex justify-between items-center">
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#14331C] to-[#245B3A] text-white flex justify-between items-center">
           <div>
             <h3 className="font-['Plus_Jakarta_Sans'] text-xl font-bold">
               {initialBanner ? 'Edit Banner' : 'Formulir Banner Beranda'}
@@ -253,17 +253,17 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end pt-4 space-x-4">
+          <div className="flex flex-col-reverse sm:flex-row justify-end pt-4 gap-3">
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 text-[#556353] dark:text-white/60 font-bold text-xs hover:bg-[#EAF6E8] transition-all cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-[#E2EFE0] dark:border-white/10 text-[#556353] dark:text-white/60 font-bold text-xs hover:bg-[#EAF6E8] transition-all cursor-pointer text-center"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
+              className="w-full sm:w-auto bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-8 py-2.5 rounded-xl font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer text-center"
             >
               {initialBanner ? 'Simpan Perubahan Banner' : 'Simpan Banner Baru'}
             </button>
