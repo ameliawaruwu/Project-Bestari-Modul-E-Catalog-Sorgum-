@@ -69,7 +69,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       />
 
       {/* 2. Koleksi Produk Pilihan */}
-      <div id="product-catalog-section" className="text-center pt-6 sm:pt-9 pb-3 px-4 sm:px-6 lg:px-8 max-w-[1140px] mx-auto relative z-10">
+      <div id="product-catalog-section" className="text-center pt-5 sm:pt-7 pb-3 px-4 sm:px-6 lg:px-8 max-w-[1140px] mx-auto relative z-10">
         <h2 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-2xl font-extrabold text-[#162809] dark:text-[#F4F8F3] tracking-tight">
           {t(landingContent.featuredTitleId || 'Koleksi Produk Pilihan SORGUM', landingContent.featuredTitleEn || 'Featured Sorghum Collection')}
         </h2>

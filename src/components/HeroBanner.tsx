@@ -57,12 +57,12 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
   }
 
   return (
-    <section className="w-full max-w-[1140px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-      {/* ── Contained Hero Card: Proporsional, Tidak Gepeng & Fit dengan Lebar Konten ── */}
-      <div className="relative w-full rounded-2xl overflow-hidden bg-gradient-to-r from-[#EDF6EC] via-[#F3F9F1] to-[#F7FAF5] dark:from-[#060D07] dark:via-[#09150B] dark:to-[#0C1C0F] border border-[#DCE8DA] dark:border-white/10 shadow-sm min-h-[380px] lg:min-h-[420px] flex flex-col lg:flex-row items-stretch transition-colors duration-300">
+    <section className="w-full max-w-[1140px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4">
+      {/* ── Contained Hero Card: Compact (~340px), 18px radius, balanced & natural ── */}
+      <div className="relative w-full rounded-[18px] overflow-hidden bg-gradient-to-r from-[#EDF6EC] via-[#F3F9F1] to-[#F7FAF5] dark:from-[#060D07] dark:via-[#09150B] dark:to-[#0C1C0F] border border-[#DCE8DA] dark:border-white/10 shadow-xs min-h-[300px] lg:min-h-[340px] flex flex-col lg:flex-row items-stretch transition-colors duration-300">
         
-        {/* ── 1. Desktop Right Photo (Contained 50% inside the card) ── */}
-        <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-[50%] overflow-hidden z-0">
+        {/* ── 1. Desktop Right Product/Harvest Photo (Contained 48% inside the card) ── */}
+        <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-[48%] overflow-hidden z-0">
           <div className="relative w-full h-full">
             {hasSlides ? (
               slides.map((imgUrl, index) => {
@@ -86,52 +86,29 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
               />
             )}
 
-            {/* Natural sunlight vignette overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-
-            {/* Desktop S-Curve Organic Wave Mask */}
-            <div className="absolute left-0 top-0 bottom-0 w-32 xl:w-40 h-full pointer-events-none z-10">
+            {/* Subtle soft organic transition mask (no thick green strokes, low visual contrast) */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 xl:w-20 h-full pointer-events-none z-10">
               <svg
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
-                className="w-full h-full text-[#F7FAF5] dark:text-[#0C1C0F] fill-current drop-shadow-xs"
+                className="w-full h-full text-[#F7FAF5] dark:text-[#0C1C0F] fill-current"
               >
-                {/* Organic wave */}
-                <path
-                  d="M 0,0 L 46,0 C 58,10 66,22 54,34 C 42,46 34,58 46,70 C 58,82 66,92 52,100 L 0,100 Z"
-                />
-                {/* Soft secondary accent wave */}
-                <path
-                  d="M 44,0 C 56,10 64,22 52,34 C 40,46 32,58 44,70 C 56,82 64,92 50,100"
-                  fill="none"
-                  stroke="#65B86B"
-                  strokeOpacity="0.25"
-                  strokeWidth="6"
-                  vectorEffect="non-scaling-stroke"
-                  strokeLinecap="round"
-                />
-                {/* Fresh Leaf Olive Green Contour Line */}
-                <path
-                  d="M 46,0 C 58,10 66,22 54,34 C 42,46 34,58 46,70 C 58,82 66,92 52,100"
-                  fill="none"
-                  stroke="#48A856"
-                  strokeWidth="3.2"
-                  vectorEffect="non-scaling-stroke"
-                  strokeLinecap="round"
-                />
+                <path d="M 0,0 L 25,0 C 65,30 65,70 25,100 L 0,100 Z" />
               </svg>
             </div>
 
-            {/* Carousel Slide Indicators for Desktop */}
+            {/* Minimal subtle carousel dots positioned neatly at bottom-right */}
             {hasSlides && slides.length > 1 && (
-              <div className="absolute bottom-5 right-6 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full">
+              <div className="absolute bottom-3 right-4 z-20 flex items-center gap-1.5">
                 {slides.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentIdx(idx)}
                     aria-label={`Slide ${idx + 1}`}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${
-                      currentIdx === idx ? 'bg-[#E3B84B] w-6' : 'bg-white/60 w-2 hover:bg-white'
+                    className={`transition-all duration-300 cursor-pointer rounded-full ${
+                      currentIdx === idx
+                        ? 'bg-[#E3B84B] w-4 h-1.5'
+                        : 'bg-white/80 hover:bg-white w-1.5 h-1.5 shadow-2xs'
                     }`}
                   />
                 ))}
@@ -140,8 +117,8 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
           </div>
         </div>
 
-        {/* ── 2. Mobile / Tablet Photo Container (top of card on mobile) ── */}
-        <div className="lg:hidden w-full h-[190px] sm:h-[260px] relative overflow-hidden shrink-0">
+        {/* ── 2. Mobile / Tablet Photo Container (< lg) ── */}
+        <div className="lg:hidden w-full h-[160px] sm:h-[210px] relative overflow-hidden shrink-0">
           {hasSlides ? (
             slides.map((imgUrl, index) => {
               const isActive = currentIdx === index;
@@ -164,18 +141,18 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
             />
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-
-          {/* Carousel Slide Indicators for Mobile */}
+          {/* Minimal subtle carousel dots for mobile */}
           {hasSlides && slides.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full">
+            <div className="absolute bottom-2.5 right-3 z-20 flex items-center gap-1.5">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIdx(idx)}
                   aria-label={`Slide ${idx + 1}`}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    currentIdx === idx ? 'bg-[#FADE88] w-5' : 'bg-white/60 w-1.5'
+                  className={`transition-all duration-300 cursor-pointer rounded-full ${
+                    currentIdx === idx
+                      ? 'bg-[#FADE88] w-3.5 h-1.5'
+                      : 'bg-white/70 hover:bg-white w-1.5 h-1.5 shadow-2xs'
                   }`}
                 />
               ))}
@@ -183,31 +160,31 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
           )}
         </div>
 
-        {/* ── 3. Content Container ── */}
-        <div className="w-full lg:w-[50%] p-5 sm:p-7 lg:p-9 relative z-10 flex flex-col justify-center">
-          <div className="space-y-3 sm:space-y-4 animate-fadeIn">
+        {/* ── 3. Content Container (Balanced proportions & tighter typography) ── */}
+        <div className="w-full lg:w-[52%] px-5 sm:px-7 lg:px-8 py-5 sm:py-6 lg:py-6.5 relative z-10 flex flex-col justify-center">
+          <div className="space-y-2 sm:space-y-2.5 animate-fadeIn">
 
-            {/* Dynamic Title connected to Admin "Kelola Landing Page" */}
+            {/* Headline: Slightly reduced font size & tighter line-height */}
             <div className="space-y-0.5">
               {line1 && (
-                <h1 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.18] tracking-tight">
+                <h1 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-[22px] xl:text-[24px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.16] tracking-tight">
                   {line1}
                 </h1>
               )}
               {line2 && (
-                <h2 className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.18] tracking-tight">
+                <h2 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-[22px] xl:text-[24px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.16] tracking-tight">
                   {line2}
                 </h2>
               )}
               {accent && (
-                <p className="font-['Plus_Jakarta_Sans'] italic font-extrabold text-2xl sm:text-[30px] lg:text-[34px] xl:text-[38px] text-[#2B3E1D] dark:text-[#65B86B] leading-[1.18] pb-0.5 pt-0.5 select-none tracking-tight">
+                <p className="font-['Plus_Jakarta_Sans'] italic font-extrabold text-xl sm:text-2xl lg:text-[25px] xl:text-[27px] text-[#2B3E1D] dark:text-[#65B86B] leading-[1.16] pt-0.5 select-none tracking-tight">
                   {accent}
                 </p>
               )}
             </div>
 
-            {/* Subtitle Description from Admin Panel */}
-            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] text-[#6B756E] dark:text-[#CBD5C8] leading-relaxed max-w-md font-normal">
+            {/* Subtitle Description */}
+            <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] text-[#556353] dark:text-[#CBD5C8] leading-relaxed max-w-md font-normal">
               {t(
                 landingContent.heroDescId ||
                   'Ragam olahan pangan sorgum unggul bebas gluten dan kaya nutrisi dari petani nusantara untuk menemani hidup sehat Anda sekeluarga.',
@@ -216,22 +193,20 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
               )}
             </p>
 
-            {/* Dual Action Buttons — compact & responsive */}
-            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 pt-1">
-              {/* Primary Green CTA Button */}
+            {/* Action Buttons: Proportional size & spacing */}
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 pt-0.5">
               <button
                 type="button"
                 onClick={onShopNow}
-                className="inline-flex items-center justify-center bg-gradient-to-r from-[#1F5132] to-[#2B3E1D] hover:from-[#162809] hover:to-[#203116] text-white px-4.5 py-2.5 sm:py-2 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-[#1F5132] to-[#2B3E1D] hover:from-[#162809] hover:to-[#203116] text-white px-4 py-2 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-[13px] shadow-xs hover:shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
               >
                 <span>{t(landingContent.heroBtnId || 'Belanja Sekarang', landingContent.heroBtnEn || 'Shop Now')}</span>
               </button>
 
-              {/* Secondary Cream/White Button for Articles */}
               <button
                 type="button"
                 onClick={handleLearnMore}
-                className="inline-flex items-center justify-center bg-white/95 dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] text-[#162809] dark:text-[#65B86B] border border-[#2B3E1D]/25 dark:border-[rgba(165,214,167,0.25)] px-4 py-2.5 sm:py-2 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs"
+                className="inline-flex items-center justify-center bg-white/95 dark:bg-[#122316] hover:bg-[#F0F8EF] dark:hover:bg-[#162B1C] text-[#162809] dark:text-[#65B86B] border border-[#2B3E1D]/20 dark:border-[rgba(165,214,167,0.25)] px-3.5 py-2 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-[13px] transition-all duration-200 active:scale-95 cursor-pointer shadow-2xs"
               >
                 <span>{t('Baca Artikel', 'Read Articles')}</span>
               </button>
