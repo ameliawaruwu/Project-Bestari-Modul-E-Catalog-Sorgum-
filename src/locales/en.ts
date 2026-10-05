@@ -142,5 +142,5 @@ export const enLocale: Record<string, string> = {
   "cari": "Search",
   "menampilkan": "Showing",
   "dari": "of",
-  "artikel": "articles",
+  "artikel": "Articles",
 };

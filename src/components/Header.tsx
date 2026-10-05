@@ -118,14 +118,14 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={link.id}
                   onClick={() => setActiveTab(link.id)}
-                  className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm tracking-normal focus:outline-none transition-colors duration-200 cursor-pointer ${
+                  className={`font-['Plus_Jakarta_Sans'] text-xs sm:text-sm font-bold tracking-normal focus:outline-none transition-colors duration-200 cursor-pointer ${
                     isScrolled
                       ? isActive
-                        ? 'text-[#E3B84B] font-bold'
-                        : 'text-white/85 hover:text-[#E3B84B] font-medium'
+                        ? 'text-[#E3B84B]'
+                        : 'text-white/85 hover:text-[#E3B84B]'
                       : isActive
-                        ? 'text-[#3A8F4B] dark:text-[#65B86B] font-bold'
-                        : 'text-[#20352A] dark:text-[#CBD5C8] hover:text-[#3A8F4B] dark:hover:text-[#65B86B] font-medium'
+                        ? 'text-[#3A8F4B] dark:text-[#65B86B]'
+                        : 'text-[#20352A] dark:text-[#CBD5C8] hover:text-[#3A8F4B] dark:hover:text-[#65B86B]'
                   }`}
                 >
                   {link.label}

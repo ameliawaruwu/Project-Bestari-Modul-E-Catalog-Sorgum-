@@ -68,15 +68,8 @@ export const HomePage: React.FC<HomePageProps> = ({
         }}
       />
 
-      {/* Organic Wave Transition into Product Section */}
-      <div className="w-full overflow-hidden leading-none text-[#FFFDF5] dark:text-[#08100A] -mt-1 relative z-10 pointer-events-none">
-        <svg viewBox="0 0 1200 48" preserveAspectRatio="none" className="w-full h-8 sm:h-12 fill-current">
-          <path d="M0,0 C300,35 600,10 900,30 C1050,40 1150,15 1200,0 L1200,48 L0,48 Z" />
-        </svg>
-      </div>
-
       {/* 2. Koleksi Produk Pilihan */}
-      <div id="product-catalog-section" className="text-center pt-4 sm:pt-6 pb-3 px-4 sm:px-6 lg:px-8 max-w-[1140px] mx-auto relative z-10">
+      <div id="product-catalog-section" className="text-center pt-6 sm:pt-9 pb-3 px-4 sm:px-6 lg:px-8 max-w-[1140px] mx-auto relative z-10">
         <h2 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-2xl font-extrabold text-[#162809] dark:text-[#F4F8F3] tracking-tight">
           {t(landingContent.featuredTitleId || 'Koleksi Produk Pilihan SORGUM', landingContent.featuredTitleEn || 'Featured Sorghum Collection')}
         </h2>
