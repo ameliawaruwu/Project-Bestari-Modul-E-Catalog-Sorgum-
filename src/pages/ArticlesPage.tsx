@@ -23,7 +23,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   const [loading, setLoading] = useState(articles.length === 0);
   const [activeArticle, setActiveArticle] = useState<Article | null>(selectedArticle || null);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 8;
 
   useEffect(() => {
     if (selectedArticle) {
@@ -403,9 +403,9 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
       {/* Article Cards Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 py-1.5">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-64 sm:h-80 bg-[#FFFFFF] animate-pulse border border-[#E0E0E0] rounded-xl shadow-2xs"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-4 py-1.5">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="h-64 sm:h-72 bg-[#FFFFFF] dark:bg-[#161410] animate-pulse border border-[#E0E0E0] dark:border-white/10 rounded-xl shadow-2xs"></div>
           ))}
         </div>
       ) : filteredArticles.length === 0 ? (
@@ -419,7 +419,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5 py-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-4 py-1.5">
           {pageArticles.map((art) => (
             <ArticleCard key={art.id} article={art} onSelectArticle={handleCardClick} />
           ))}

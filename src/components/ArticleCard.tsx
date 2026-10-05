@@ -16,7 +16,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, onSelectArtic
     >
       {/* Di HP: gambar di kiri (kartu horizontal, hemat tinggi & cepat dipindai).
           Di layar ≥sm: proporsional & compact di desktop zoom 100%. */}
-      <div className="w-28 sm:w-full h-auto sm:h-36 md:h-40 shrink-0 overflow-hidden relative bg-[#F7F5EF] dark:bg-[#1f1d18] border-r sm:border-r-0 sm:border-b border-[#E2EAE0] dark:border-white/10">
+      <div className="w-28 sm:w-full h-auto sm:h-36 shrink-0 overflow-hidden relative bg-[#F7F5EF] dark:bg-[#1f1d18] border-r sm:border-r-0 sm:border-b border-[#E2EAE0] dark:border-white/10">
         {article.image ? (
           <img
             src={article.image}
