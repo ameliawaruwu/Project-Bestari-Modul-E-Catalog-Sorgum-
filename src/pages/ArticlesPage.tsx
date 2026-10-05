@@ -193,7 +193,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
     };
 
     return (
-      <div className="pt-4 sm:pt-6 pb-12 px-3 sm:px-6 lg:px-8 max-w-[1100px] mx-auto animate-fadeIn min-h-screen w-full max-w-full overflow-x-hidden">
+      <div className="pt-4 sm:pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-[1140px] mx-auto animate-fadeIn min-h-screen w-full overflow-x-hidden">
         {/* Tombol Kembali */}
         <button
           onClick={handleBack}
@@ -345,7 +345,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
   // Articles List View
   return (
-    <div className="pt-4 sm:pt-6 pb-12 px-3 sm:px-6 lg:px-8 max-w-[1100px] mx-auto animate-fadeIn min-h-screen">
+    <div className="pt-4 sm:pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-[1140px] mx-auto animate-fadeIn min-h-screen w-full overflow-x-hidden">
       {/* Filter and Search Panel */}
       <div className="bg-white dark:bg-[#121C14] p-3 sm:p-3.5 rounded-xl border border-[#E0E0E0] dark:border-[rgba(165,214,167,0.15)] shadow-xs mb-5 sm:mb-6 transition-colors duration-300">
         <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 items-stretch md:items-center">
