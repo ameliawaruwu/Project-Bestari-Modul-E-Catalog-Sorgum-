@@ -3,8 +3,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 // ---------------------------------------------------------------------------
 // Panel Data Demo (Seeder) — untuk persiapan presentasi / testing.
 //
-// - "Isi Data Demo"     : tulis snapshot data contoh (produk, kategori, banner,
-//                         artikel + relasinya). Aman diklik berulang.
+// - "Isi Data Demo"     : tulis snapshot data toko (produk, kategori, banner,
+//                         artikel + relasinya) — salinan dari data produksi,
+//                         jadi tampilan toko pulih persis seperti di server.
 // - "Kosongkan Data"    : hapus ISI tabel konten (bukan tabelnya) supaya bisa
 //                         input data asli dari awal. Wajib ketik kata konfirmasi.
 //
@@ -101,7 +102,7 @@ export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataC
       </div>
 
       <p className="text-xs text-[#556353] dark:text-white/60 leading-relaxed">
-        Isi data contoh supaya saat presentasi atau testing toko sudah ada isinya, atau kosongkan
+        Isi data toko supaya saat presentasi atau testing toko sudah ada isinya, atau kosongkan
         data konten untuk memulai input data asli dari awal. Akun admin, pengaturan toko, dan teks
         beranda <span className="font-bold text-[#1F5132] dark:text-[#86EFAC]">tidak ikut terhapus</span>.
       </p>

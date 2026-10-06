@@ -4,72 +4,107 @@
       "id": 1,
       "name": "Beras Sorgum",
       "slug": "beras-sorgum",
-      "sort_order": 1
+      "image_url": null,
+      "sort_order": 1,
+      "created_at": "2026-07-30T00:55:22.000Z",
+      "updated_at": "2026-08-12T03:27:32.000Z"
     },
     {
       "id": 2,
       "name": "Tepung Sorgum",
       "slug": "tepung-sorgum",
-      "sort_order": 2
+      "image_url": null,
+      "sort_order": 2,
+      "created_at": "2026-07-30T00:55:22.000Z",
+      "updated_at": "2026-07-30T00:55:22.000Z"
     },
     {
       "id": 3,
       "name": "Camilan Sehat",
       "slug": "camilan-sehat",
-      "sort_order": 3
+      "image_url": null,
+      "sort_order": 3,
+      "created_at": "2026-07-30T00:55:22.000Z",
+      "updated_at": "2026-07-30T00:55:22.000Z"
     },
     {
       "id": 4,
       "name": "Pemanis Alami",
       "slug": "pemanis-alami",
-      "sort_order": 4
+      "image_url": null,
+      "sort_order": 4,
+      "created_at": "2026-07-30T00:55:22.000Z",
+      "updated_at": "2026-07-30T00:55:22.000Z"
     },
     {
       "id": 5,
       "name": "Paket Hemat",
       "slug": "paket-hemat",
-      "sort_order": 5
+      "image_url": null,
+      "sort_order": 5,
+      "created_at": "2026-07-30T00:55:22.000Z",
+      "updated_at": "2026-07-30T00:55:22.000Z"
     }
   ],
   "products": [
     {
-      "id": 2,
-      "category_id": 2,
-      "name": "Tepung Sorgum Halus",
-      "slug": "tepung-sorgum-halus",
-      "description": "Tepung sorgum dengan kehalusan ekstra untuk pembuatan kue, roti, cookies, dan adonan bebas gluten. Menghasilkan tekstur yang lembut dan citarasa khas yang lezat.",
-      "price": 28500,
-      "price_max": null,
-      "weight_spec": "500g / Gluten Free",
+      "id": 1,
+      "category_id": 1,
+      "name": "Sorgum Putih Premium",
+      "slug": "sorgum-putih-premium",
+      "description": "Beras sorgum putih premium dari KWT Melati Sorgum adalah pengganti nasi yang paling mudah diterima lidah, terutama bagi Anda yang baru pertama kali mengenal sorgum. Rasa sorgum putih yang ringan dan netral dengan tekstur pulen mirip nasi membuat peralihan ke pola makan sehat terasa mulus tanpa perlu mengorbankan kenikmatan bersantap.\n\nSorgum putih kami dipilih dari biji sorgum terbaik, dibersihkan dengan standar higienis, dan dikemas tanpa pemutih atau bahan kimia apa pun. Hasilnya, beras sorgum yang bersih, utuh, dan siap dimasak seperti beras biasa. Bebas gluten, indeks glikemik rendah, dan kaya akan serat, protein, serta mineral seperti zat besi dan magnesium.\n\nCocok untuk nasi putih harian, nasi goreng sorgum, bubur sorgum bayi, hingga campuran salad. Cara memasaknya mudah: cuci bersih, rendam 30 menit, lalu masak dengan takaran air 1 banding 2,5 hingga matang pulen. Keluarga Anda tidak akan menyadari sedang makan sorgum, tapi tubuh mereka akan merasakan bedanya.\n\nTersedia dalam kemasan ukuran 500 gram hingga 1 kilogram dengan harga bersahabat. Pesan sekarang dan mulai langkah kecil menuju pola makan yang lebih sehat dan ramah lingkungan bersama sorgum putih premium KWT Melati Sorgum.",
+      "price": 45000,
+      "price_max": 48000,
+      "original_price": 45000,
+      "discount_percent": 0,
+      "weight_spec": "1kg / Kemasan Vacuum",
       "origin": "Yogyakarta",
-      "shipping_info": null,
+      "shipping_info": "Dikirim dari Yogyakarta dalam kemasan vacuum. Diproses sebelum jam 15:00 WIB, estimasi tiba 2-3 hari.",
       "is_active": 1,
       "is_featured": 1,
-      "gluten_free": 1,
-      "organic": 1,
-      "composition": null,
-      "shelf_life": null,
-      "attributes": null,
+      "created_at": "2026-07-30T00:55:31.000Z",
+      "updated_at": "2026-09-07T07:30:09.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "100% beras sorgum putih organik, tanpa bahan pengawet",
+      "shelf_life": "24 bulan sejak produksi (kemasan vacuum)",
+      "attributes": "Organik, Bebas Gluten, Tekstur Pulen, Cocok untuk Pemula",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
       "wa_contact": "6281234567890"
     },
     {
       "id": 3,
-      "category_id": 3,
+      "category_id": 2,
       "name": "Keripik Sorgum Gurih",
       "slug": "keripik-sorgum-gurih",
-      "description": "Camilan renyah terbuat dari biji sorgum olahan dengan bumbu rempah alami Nusantara. Tanpa MSG buatan dan tanpa pengawet.",
+      "description": "Keripik sorgum gurih adalah camilan renyah yang dibuat dari irisan tipis sorgum organik pilihan, digoreng dengan teknik khusus hingga garing sempurna di setiap gigitan. Rasanya gurih alami dengan sentuhan rempah ringan, tanpa MSG berlebihan, sehingga aman dan nikmat untuk dinikmati kapan saja.\n\nBerbeda dari keripik kentang atau singkong biasa, keripik sorgum menawarkan tekstur renyah yang unik dengan kandungan serat lebih tinggi dan lemak lebih rendah. Bebas gluten dan kaya nutrisi, keripik ini menjadi pilihan camilan yang lebih cerdas untuk menemani Anda bekerja, belajar, atau bersantai bersama keluarga di akhir pekan.\n\nDikemas dalam kemasan praktis yang menjaga kerenyahan lebih lama, keripik sorgum gurih cocok dibawa sebagai bekal, teman perjalanan, atau camilan saat nonton film. Rasanya yang gurih pasti membuat sekali mencoba langsung ketagihan, tanpa rasa bersalah karena tetap sehat.\n\nTersedia dalam pilihan kemasan kecil untuk mencoba dan kemasan ekonomis untuk dinikmati bersama. Pesan sekarang dan jadikan keripik sorgum gurih camilan andalan keluarga yang lezat dan menyehatkan.",
       "price": 18000,
-      "price_max": null,
+      "price_max": 20000,
+      "original_price": 25000,
+      "discount_percent": 28,
       "weight_spec": "150g / Varian Original",
       "origin": "Yogyakarta",
-      "shipping_info": null,
+      "shipping_info": "Dikirim dari Yogyakarta dalam kemasan kedap udara. Estimasi tiba 2-3 hari kerja.",
       "is_active": 1,
       "is_featured": 1,
-      "gluten_free": 1,
-      "organic": 1,
-      "composition": null,
-      "shelf_life": null,
-      "attributes": null,
+      "created_at": "2026-07-30T00:55:31.000Z",
+      "updated_at": "2026-09-07T07:30:09.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "Sorgum organik, minyun kelapa, garam laut, bumbu alami",
+      "shelf_life": "6 bulan sejak produksi",
+      "attributes": "Bebas Gluten, Rendah Lemak, Tanpa MSG, Camilan Sehat",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
       "wa_contact": "6281234567890"
     },
     {
@@ -77,19 +112,29 @@
       "category_id": 4,
       "name": "Nira Sorgum Murni",
       "slug": "nira-sorgum-murni",
-      "description": "Sirup pemanis sehat hasil ektraksi nira batang sorgum pilihan. Memiliki aroma karamel alami dengan kadar glikemik lebih rendah daripada gula pasir biasa.",
+      "description": "Nira sorgum murni adalah minuman tradisional segar yang dihasilkan dari batang sorgum manis pilihan, difermentasi secara alami tanpa bahan kimia atau pengawet apa pun. Proses fermentasi alami menjaga kandungan probiotik yang baik untuk kesehatan pencernaan dan daya tahan tubuh.\n\nNira sorgum memiliki rasa asam manis yang menyegarkan, mirip minuman fermentasi tradisional tapi dengan karakter khas sorgum. Kandungan gulanya lebih rendah daripada minuman manis pada umumnya dan diperkaya mineral alami dari batang sorgum, menjadikannya pilihan minuman yang lebih sehat untuk dinikmati saat cuaca panas atau setelah beraktivitas.\n\nMinuman ini juga sering dinikmati sebagai pendamping makanan berat karena membantu melancarkan pencernaan. Probiotik alami di dalamnya mendukung keseimbangan bakteri baik di usus, sehingga tubuh terasa lebih ringan dan nyaman setelah makan.\n\nDikemas dalam botol higienis dan siap diminum. Nikmati dingin untuk kesegaran maksimal. Pesan sekarang dan rasakan kesegaran alami nira sorgum murni yang menyehatkan, langsung dari petani sorgum lokal KWT Melati Sorgum.",
       "price": 55000,
-      "price_max": null,
+      "price_max": 60000,
+      "original_price": 55000,
+      "discount_percent": 0,
       "weight_spec": "250ml / Botol Kaca",
       "origin": "Yogyakarta",
-      "shipping_info": null,
+      "shipping_info": "Dikirim dalam kemasan kedap suhu. Stok terbatas.",
       "is_active": 1,
       "is_featured": 1,
-      "gluten_free": 1,
-      "organic": 1,
-      "composition": null,
-      "shelf_life": null,
-      "attributes": null,
+      "created_at": "2026-07-30T00:55:31.000Z",
+      "updated_at": "2026-09-07T07:30:10.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "100% nira sorgum murni, difermentasi alami tanpa bahan pengawet",
+      "shelf_life": "12 bulan sejak produksi (botol kaca tertutup)",
+      "attributes": "Probiotik Alami, Rendah Gula, Tanpa Pengawet, Tradisional",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
       "wa_contact": "6281234567890"
     },
     {
@@ -97,19 +142,29 @@
       "category_id": 1,
       "name": "Sorgum Merah Organik",
       "slug": "sorgum-merah-organik",
-      "description": "Sorgum varietas merah tinggi antioksidan dan tanin baik. Memberikan tekstur kenyal unik serta aroma earthy yang menyegarkan.",
+      "description": "Sorgum merah organik dari KWT Melati Sorgum adalah pilihan terbaik untuk Anda yang mencari sumber karbohidrat sehat dengan antioksidan tinggi. Sorgum merah mengandung polifenol dan tanin alami yang jumlahnya paling tinggi dibanding varietas sorgum lainnya, sehingga sangat baik untuk menangkal radikal bebas dan menjaga daya tahan tubuh.\n\nDitanam secara organik di lahan petani lokal tanpa pupuk kimia dan pestisida, sorgum merah kami dipanen pada saat matang optimal lalu dijemur dan dibersihkan dengan standar higienis. Hasilnya, butiran sorgum yang bersih, utuh, dan siap dimasak. Teksturnya kenyal dengan aroma earthy yang khas dan menyegarkan.\n\nSorgum merah sangat fleksibel: bisa dimasak menjadi nasi sorgum merah, dijadikan bubur hangat untuk sarapan, dicampur dalam salad, atau diolah menjadi camilan sehat seperti popcorn sorgum dan cookies. Karena bebas gluten dan kaya serat, sorgum merah aman untuk penderita celiac dan membantu melancarkan pencernaan.\n\nKemasan higienis dengan pilihan ukuran yang fleksibel. Jadikan sorgum merah organik sebagai bagian dari pola makan sehat keluarga Anda. Pesan sekarang, rasakan bedanya energi yang tahan lama dan tubuh yang lebih bugar.",
       "price": 30700,
-      "price_max": null,
+      "price_max": 32000,
+      "original_price": 38400,
+      "discount_percent": 20,
       "weight_spec": "1kg / Kemasan Pouch",
       "origin": "Yogyakarta",
-      "shipping_info": null,
+      "shipping_info": "Dikirim dari Yogyakarta dalam kemasan pouch kedap udara. Estimasi tiba 2-3 hari kerja (Jawa), 3-7 hari (luar Jawa).",
       "is_active": 1,
       "is_featured": 0,
-      "gluten_free": 1,
-      "organic": 1,
-      "composition": "100% biji sorgum merah organik, tanpa bahan pengawet",
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-07T07:30:07.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "100% biji sorgum merah organik, tanpa bahan pengawet, pewarna, dan perasa tambahan",
       "shelf_life": "18 bulan sejak produksi",
-      "attributes": "Gluten-Free, Organik",
+      "attributes": "Organik Bersertifikat, Bebas Gluten, Kaya Antioksidan, Tinggi Polifenol",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
       "wa_contact": "6281234567890"
     },
     {
@@ -117,19 +172,29 @@
       "category_id": 2,
       "name": "Tepung Sorgum Whole Grain",
       "slug": "tepung-sorgum-whole-grain",
-      "description": "Tepung sorgum utuh yang digiling bersama lapisan dedak kaya nutrisi. Sangat baik untuk pembuatan roti gandum bebas gluten.",
+      "description": "Tepung sorgum whole grain adalah tepung serbaguna dari gilingan utuh sorgum organik yang mempertahankan seluruh lapisan biji, termasuk dedak dan kuman yang paling kaya nutrisi. Berbeda dengan tepung olahan biasa yang kehilangan serat, tepung sorgum kami mempertahankan kebaikan alami sorgum sehingga setiap sajian tetap bernutrisi maksimal.\n\nTepung ini bebas gluten dan menjadi solusi sempurna bagi Anda yang alergi gluten atau ingin mengurangi konsumsi gandum. Teksturnya halus dengan rasa earthy yang lembut, menjadikannya bahan ideal untuk roti, kue, cookies, brownies, pancake, hingga mi sehat buatan sendiri. Hasil panggangannya lembut dengan aroma khas yang menggugah selera.\n\nSelain untuk kue dan roti, tepung sorgum whole grain juga bisa digunakan sebagai pengganti tepung terigu pada saus, pelapis gorengan, atau campuran adonan agar lebih sehat dan kaya serat. Satu kemasan tepung sorgum bisa menjadi andalan dapur sehat keluarga Anda.\n\nDikemas higienis dalam kemasan kedap udara agar tetap segar dan bebas kutu. Tersedia dalam pilihan ukuran ekonomis. Pesan sekarang dan mulailah bereksperimen dengan resep sehat berbahan tepung sorgum untuk keluarga tercinta.",
       "price": 50000,
-      "price_max": null,
+      "price_max": 55000,
+      "original_price": null,
+      "discount_percent": 0,
       "weight_spec": "1kg / Premium Kraft",
       "origin": "Yogyakarta",
-      "shipping_info": "Dikirim dari Yogyakarta.",
+      "shipping_info": "Dikirim dari Yogyakarta dalam kemasan kraft kedap udara. Jauhkan dari kelembapan.",
       "is_active": 1,
       "is_featured": 0,
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-08T01:55:24.000Z",
       "gluten_free": 0,
       "organic": 0,
-      "composition": null,
-      "shelf_life": null,
-      "attributes": null,
+      "composition": "100% sorgum utuh organik, digiling halus tanpa pemutihan",
+      "shelf_life": "12 bulan sejak produksi (kemasan kraft)",
+      "attributes": "Whole Grain, Bebas Gluten, Tinggi Serat, Serbaguna",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
       "wa_contact": "6281234567890"
     },
     {
@@ -137,19 +202,29 @@
       "category_id": 3,
       "name": "Popcorn Sorgum Karamel",
       "slug": "popcorn-sorgum-karamel",
-      "description": "Biji sorgum yang dimekarkan (popped sorghum) berlapis nira karamel manis gurih. Bebas kulit biji yang tajam, sangat aman untuk anak-anak.",
-      "price": 22000,
+      "description": "Popcorn sorgum karamel — camilan sehat yang renyah dan manis alami. Terbuat dari biji sorgum pilihan yang dipopcorn dengan teknik tradisional, lalu dilapisi karamel organik. Bebas gluten, rendah kalori, dan mengandung serat tinggi. Cocok untuk camilan keluarga, teman nonton, atau snack di kantor.",
+      "price": 8800,
       "price_max": null,
+      "original_price": 22000,
+      "discount_percent": 60,
       "weight_spec": "100g / Crunchy",
       "origin": "Yogyakarta",
-      "shipping_info": null,
-      "is_active": 1,
+      "shipping_info": "Dikirim dari Yogyakarta dalam kemasan kedap udara. Estimasi tiba 2-3 hari kerja.",
+      "is_active": 0,
       "is_featured": 0,
-      "gluten_free": 1,
-      "organic": 1,
-      "composition": null,
-      "shelf_life": null,
-      "attributes": null,
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-06T06:45:52.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "Biji sorgum organik, gula karamel organik, mentega, sedikit garam laut",
+      "shelf_life": "4 bulan sejak produksi",
+      "attributes": "Bebas Gluten, Rendah Kalori, Tinggi Serat, Camilan Sehat",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
       "wa_contact": "6281234567890"
     },
     {
@@ -157,148 +232,812 @@
       "category_id": 1,
       "name": "Benih Sorgum Bioguma",
       "slug": "benih-sorgum-bioguma",
-      "description": "Benih sorgum unggul bersertifikat nasional dengan kemurnian varietas tinggi dan ketahanan luar biasa terhadap kekeringan.",
-      "price": 35000,
+      "description": "Benih sorgum Bioguma — benih sorgum unggul bersertifikat nasional dengan kemurnian 99%. Cocok untuk petani yang ingin mulai menanam sorgum, atau untuk keperluan penelitian dan percobaan pertanian. Bibit tahan kekeringan dan cocok untuk iklim tropis Indonesia.",
+      "price": 17500,
       "price_max": null,
+      "original_price": 35000,
+      "discount_percent": 50,
       "weight_spec": "250g / Daya Tumbuh 90%",
       "origin": "Yogyakarta",
+      "shipping_info": "Dikirim dari Yogyakarta. Simpan di tempat kering dan sejuk sebelum ditanam.",
+      "is_active": 0,
+      "is_featured": 0,
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-06T06:45:52.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "Benih sorgum bersertifikat, kemurnian 99%",
+      "shelf_life": "12 bulan sejak produksi (simpan di tempat kering)",
+      "attributes": "Bersertifikat, Tahan Kekeringan, Unggul",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "6281234567890"
+    },
+    {
+      "id": 23,
+      "category_id": 3,
+      "name": "Nasi Goreng Sorgum",
+      "slug": "nasi-goreng-sorgum-kpcy",
+      "description": "Nasi goreng sorgum siap saji, menu andalan KWT Melati Sorgum untuk Anda yang ingin makan cepat, praktis, tapi tetap bergizi. Terbuat dari sorgum utuh pilihan yang sudah dimasak sempurna lalu dibumbui dengan racikan rempah khas nusantara. Tidak perlu repot memasak lama, cukup panaskan sebentar di wajan atau microwave dan nasi goreng sorgum yang harum dan lezat langsung siap dinikmati.\n\nKenapa harus nasi goreng sorgum? Karena sorgum adalah biji-bijian purba yang kaya serat, bebas gluten, dan memiliki indeks glikemik lebih rendah daripada nasi putih. Artinya, energi dari sorgum dilepas lebih perlahan sehingga Anda kenyang lebih lama dan kadar gula darah lebih stabil. Cocok untuk menu sarapan, bekal kantor, atau makan malam praktis bagi keluarga yang sadar kesehatan.\n\nSetiap porsi dikemas higienis dan siap santap. Bisa dinikmati langsung, ditambah telur ceplok, ayam suwir, atau acar timun untuk pengalaman bersantap yang lebih lengkap. Rasakan perpaduan gurih, wangi bawang, dan tekstur sorgum yang kenyal memanjakan lidah.\n\nPesan sekarang dan buktikan sendiri kenapa nasi goreng sorgum mulai menjadi favorit keluarga Indonesia yang ingin hidup lebih sehat tanpa mengorbankan rasa. Tersedia dalam pilihan porsi kecil dan besar, dengan harga bersahabat untuk kantong Anda.",
+      "price": 21250,
+      "price_max": 25000,
+      "original_price": 25000,
+      "discount_percent": 15,
+      "weight_spec": "500 gr ",
+      "origin": null,
+      "shipping_info": "Dikirim dari Yogyakarta dalam wadah kedap udara. Simpan di lemari es, panaskan sebelum disantap.",
+      "is_active": 1,
+      "is_featured": 0,
+      "created_at": "2026-08-06T01:38:48.000Z",
+      "updated_at": "2026-09-07T08:14:59.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "Sorgum utuh organik, bumbu alami, minyak kelapa, garam laut",
+      "shelf_life": "7 hari dalam lemari es",
+      "attributes": "Siap Saji, Bebas Gluten, Praktis, Bergizi",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "6281234567890"
+    },
+    {
+      "id": 26,
+      "category_id": 3,
+      "name": "Pizza Sorgum",
+      "slug": "pizza-sorgum-ziap",
+      "description": "Pizza sorgum — pizza kekinian dengan kulit berbahan tepung sorgum bebas gluten. Topping mozzarella, saus tomat homemade, dan sayuran segar. Cocok untuk penderita celiac atau siapa saja yang ingin menikmati pizza sehat tanpa gluten. Tersedia dalam ukuran personal dan family.",
+      "price": 9000,
+      "price_max": null,
+      "original_price": 10000,
+      "discount_percent": 10,
+      "weight_spec": "500gr",
+      "origin": null,
+      "shipping_info": "Dikirim dari Yogyakarta dalam kotak khusus pizza. Simpan di lemari es, panggang 10 menit sebelum dinikmati.",
+      "is_active": 0,
+      "is_featured": 0,
+      "created_at": "2026-08-10T08:00:55.000Z",
+      "updated_at": "2026-09-06T06:45:52.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "Tepung sorgum organik, mozzarella, saus tomat, sayuran segar, rempah alami",
+      "shelf_life": "5 hari dalam lemari es",
+      "attributes": "Bebas Gluten, Pizza Sehat, Topping Premium",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "6281234567890"
+    },
+    {
+      "id": 28,
+      "category_id": 1,
+      "name": "Sorgum Utuh Organik",
+      "slug": "sorgum-2zga",
+      "description": "Beras sorgum utuh organik pilihan dengan tekstur kenyal dan rasa ringan yang khas. Mengandung indeks glikemik rendah (GI 50), tinggi serat, dan kaya mineral seperti zat besi, magnesium, serta zinc. Dipanen dari lahan petani mitra bersertifikat organik di dataran tinggi Jawa Barat, dikeringkan secara alami, dan dikemas higienis dalam kemasan kedap udara. Cocok sebagai pengganti nasi bagi penderita diabetes, pelaku diet sehat, dan keluarga yang ingin hidup lebih bergizi.",
+      "price": 50000,
+      "price_max": null,
+      "original_price": 50000,
+      "discount_percent": 0,
+      "weight_spec": "1 Kg",
+      "origin": "Bandung",
+      "shipping_info": "Dikirim dari Bandung, Jawa Barat dalam kemasan kedap udara. Estimasi tiba 2-3 hari kerja (Jawa), 3-7 hari (luar Jawa).",
+      "is_active": 0,
+      "is_featured": 0,
+      "created_at": "2026-08-11T06:55:19.000Z",
+      "updated_at": "2026-09-06T06:45:52.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": "100% biji sorgum utuh organik dari lahan bersertifikat, tanpa bahan pengawet dan pewarna",
+      "shelf_life": "18 bulan sejak produksi",
+      "attributes": "Organik Bersertifikat, Bebas Gluten, Indeks Glikemik Rendah, Tinggi Serat, Kaya Zat Besi",
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "6281234567890"
+    },
+    {
+      "id": 37,
+      "category_id": 3,
+      "name": "Sorghum Popped",
+      "slug": "sorghum-popped-46sc",
+      "description": "    Sorghum Popped — Camilan Renyah dari Biji Sorgum Utuh\n    \n    Sorghum Popped adalah camilan renyah yang terbuat dari biji sorgum pilihan yang di-pop dengan panas kering sempurna — tanpa digoreng, tanpa minyak berlebih. Setiap butirnya mekar\n    menjadi tekstur ringan dan renyah di mulut, dengan cita rasa gurih yang pas menemani waktu santai Anda.\n    \n    Sorgum sendiri dikenal sebagai salah satu serealia tertua di dunia yang kaya manfaat. Berbeda dari camilan kebanyakan, Sorghum Popped mempertahankan nutrisi alami biji sorgum utuh:\n    kaya serat pangan yang baik untuk pencernaan, sumber protein nabati, serta mengandung zat besi dan antioksidan alami. Cocok untuk Anda yang sedang menjaga pola makan sehat, termasuk\n    yang sedang membatasi konsumsi gluten.\n    \n    Keunggulan Sorghum Popped:\n    - Renyah alami tanpa digoreng — proses popping dengan panas kering\n    - Tinggi serat, membantu kenyang lebih lama\n    - Bebas gluten secara alami, aman untuk diet bebas gluten\n    - Rasa gurih ringan yang tidak membuat enek\n    - Tanpa pengawet tambahan\n    - Dikemas higienis, praktis dibawa ke mana saja\n    \n    Nikmati Sorghum Popped sebagai camilan di kantor, teman belajar, bekal anak, atau pendamping teh dan kopi di sore hari. Produk diolah dari sorgum lokal pilihan oleh KWT Melati Sorgum\n    — sehat, alami, dan mendukung petani sorgum Indonesia.\n",
+      "price": 45000,
+      "price_max": 50000,
+      "original_price": null,
+      "discount_percent": 0,
+      "weight_spec": "1kg",
+      "origin": null,
       "shipping_info": "Dikirim dari Yogyakarta.",
       "is_active": 1,
       "is_featured": 0,
+      "created_at": "2026-09-08T01:11:06.000Z",
+      "updated_at": "2026-09-08T02:13:49.000Z",
       "gluten_free": 0,
       "organic": 0,
       "composition": null,
       "shelf_life": null,
       "attributes": null,
-      "wa_contact": "628995689033"
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "6282293160265"
+    },
+    {
+      "id": 38,
+      "category_id": 3,
+      "name": "Brownies Sorgum",
+      "slug": "brownies-sorgum-fg4e",
+      "description": "Brownies sorgum merupakan olahan kue yang menggunakan tepung sorgum sebagai salah satu bahan utamanya. Brownies ini memiliki tekstur lembut dan moist dengan cita rasa cokelat yang kaya dan menggugah selera. Penggunaan sorgum memberikan karakter rasa yang khas sekaligus menjadi alternatif bahan pangan lokal dalam pembuatan kue. Brownies sorgum cocok dinikmati sebagai camilan bersama keluarga maupun sebagai teman minum teh atau kopi. Dengan perpaduan rasa cokelat yang manis dan aroma khas brownies, produk ini tetap menghadirkan sensasi lezat di setiap gigitan. Brownies sorgum juga dapat menjadi pilihan menarik bagi konsumen yang ingin mengenal dan menikmati produk olahan berbasis pangan lokal.\n",
+      "price": 10000,
+      "price_max": 15000,
+      "original_price": null,
+      "discount_percent": 0,
+      "weight_spec": "200gr/pcs",
+      "origin": "",
+      "shipping_info": null,
+      "is_active": 1,
+      "is_featured": 0,
+      "created_at": "2026-09-08T02:43:50.000Z",
+      "updated_at": "2026-09-08T02:43:50.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": null,
+      "shelf_life": null,
+      "attributes": null,
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "62881022084791"
+    },
+    {
+      "id": 40,
+      "category_id": 3,
+      "name": "Keripik Bayam Sorgum ",
+      "slug": "keripik-bayam-sorgum-e4wz",
+      "description": "Keripik Bayam adalah camilan renyah yang dibuat dari daun bayam pilihan dengan balutan adonan berbumbu yang gurih dan ringan. Diolah hingga menghasilkan tekstur crispy dan renyah, keripik ini cocok dinikmati sebagai camilan sehari-hari maupun teman bersantai. Dengan cita rasa gurih yang nikmat, Keripik Bayam menjadi pilihan camilan sederhana yang lezat dan praktis.",
+      "price": 10000,
+      "price_max": 20000,
+      "original_price": null,
+      "discount_percent": 0,
+      "weight_spec": "250 g/pcs",
+      "origin": "",
+      "shipping_info": null,
+      "is_active": 1,
+      "is_featured": 0,
+      "created_at": "2026-09-09T03:54:27.000Z",
+      "updated_at": "2026-09-09T03:54:27.000Z",
+      "gluten_free": 0,
+      "organic": 0,
+      "composition": null,
+      "shelf_life": null,
+      "attributes": null,
+      "badge_color": null,
+      "rating_avg": "5.00",
+      "review_count": 0,
+      "sales_count": 0,
+      "min_order": 1,
+      "storage_instruction": null,
+      "wa_contact": "62881022084791"
     }
   ],
   "product_images": [
     {
-      "id": 2,
-      "product_id": 2,
-      "image_url": "https://images.unsplash.com/photo-1595475207225-428b62bda831?auto=format&fit=crop&q=80&w=800",
-      "alt_text": "Tepung Sorgum Halus",
-      "is_primary": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 3,
-      "product_id": 3,
-      "image_url": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=800",
-      "alt_text": "Keripik Sorgum Gurih",
-      "is_primary": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 4,
-      "product_id": 4,
-      "image_url": "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&q=80&w=800",
-      "alt_text": "Nira Sorgum Murni",
-      "is_primary": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 5,
-      "product_id": 5,
-      "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=800",
-      "alt_text": "Sorgum Merah Organik",
-      "is_primary": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 7,
-      "product_id": 7,
-      "image_url": "https://images.unsplash.com/photo-1578849278619-e73505e9610f?auto=format&fit=crop&q=80&w=800",
-      "alt_text": "Popcorn Sorgum Karamel",
-      "is_primary": 1,
-      "sort_order": 1
-    },
-    {
-      "id": 24,
-      "product_id": 6,
-      "image_url": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800",
+      "id": 84,
+      "product_id": 28,
+      "image_url": "/uploads/89d629b0b0d2fcf0bfa098f9f0f30697.jpg",
       "alt_text": null,
       "is_primary": 1,
-      "sort_order": 0
+      "sort_order": 0,
+      "created_at": "2026-08-24T09:43:08.000Z"
     },
     {
-      "id": 25,
+      "id": 85,
+      "product_id": 28,
+      "image_url": "/uploads/8189db4a0e1750a1693b84ccbb09b82c.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-08-24T09:43:08.000Z"
+    },
+    {
+      "id": 86,
+      "product_id": 28,
+      "image_url": "/uploads/56af31c76be841111a81e8393a0507cb.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-08-24T09:43:08.000Z"
+    },
+    {
+      "id": 87,
+      "product_id": 28,
+      "image_url": "/uploads/384dc3ba162b309b58ff408248b565b6.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-08-24T09:43:08.000Z"
+    },
+    {
+      "id": 102,
       "product_id": 8,
-      "image_url": "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=800",
+      "image_url": "/uploads/175c46ca0965166140d7e9588cb6a207.jpg",
       "alt_text": null,
       "is_primary": 1,
-      "sort_order": 0
+      "sort_order": 0,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 103,
+      "product_id": 8,
+      "image_url": "/uploads/9b9a89f04e3d00161de5f2b8bed41f91.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 104,
+      "product_id": 8,
+      "image_url": "/uploads/672128e029958a821ea60f0999e51301.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 105,
+      "product_id": 8,
+      "image_url": "/uploads/fabda87be1ca7b8dbaf24799c44939f7.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 110,
+      "product_id": 26,
+      "image_url": "/uploads/1d083cfe7140cecde4695f0e399ac93b.jpg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 111,
+      "product_id": 26,
+      "image_url": "/uploads/209b2f82b76755b77d1564607b7b51d0.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 112,
+      "product_id": 26,
+      "image_url": "/uploads/beb38c2b3bbece3b4503c47001d80dfe.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 113,
+      "product_id": 26,
+      "image_url": "/uploads/f4c2fd8ac4d35f227c86d3012efd02c6.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-08-24T09:43:10.000Z"
+    },
+    {
+      "id": 122,
+      "product_id": 7,
+      "image_url": "/uploads/967ec71b90e96755e644cd19879f1628.jpg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-08-24T09:43:57.000Z"
+    },
+    {
+      "id": 123,
+      "product_id": 7,
+      "image_url": "/uploads/bfa3c8e32ba2e325c39ff41727a84136.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-08-24T09:43:57.000Z"
+    },
+    {
+      "id": 124,
+      "product_id": 7,
+      "image_url": "/uploads/50d02cdd3e98cd2bd88f18aa2740d745.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-08-24T09:43:57.000Z"
+    },
+    {
+      "id": 128,
+      "product_id": 4,
+      "image_url": "/uploads/01fdf1720e97aced2bd20e9e17009052.jpg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-04T01:56:22.000Z"
+    },
+    {
+      "id": 129,
+      "product_id": 4,
+      "image_url": "/uploads/0519b818981cbedf590878ecf03a93f3.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-04T01:56:22.000Z"
+    },
+    {
+      "id": 130,
+      "product_id": 4,
+      "image_url": "/uploads/d5c448eb66f2b91df866a01cd6ed61b0.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-04T01:56:22.000Z"
+    },
+    {
+      "id": 131,
+      "product_id": 4,
+      "image_url": "/uploads/a4b541f44c866aa0c16ab7eb6642366c.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-04T01:56:22.000Z"
+    },
+    {
+      "id": 138,
+      "product_id": 5,
+      "image_url": "/uploads/79432e027dde7891bbadd1fec54812a0.png",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-07T08:09:44.000Z"
+    },
+    {
+      "id": 139,
+      "product_id": 5,
+      "image_url": "/uploads/f6d847827a7b065d1f048a4005284f65.png",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-07T08:09:44.000Z"
+    },
+    {
+      "id": 140,
+      "product_id": 5,
+      "image_url": "/uploads/88756f08c259285df1729453aceb6047.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-07T08:09:44.000Z"
+    },
+    {
+      "id": 141,
+      "product_id": 5,
+      "image_url": "/uploads/436368cef90e0f420b101a044a8b1018.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-07T08:09:44.000Z"
+    },
+    {
+      "id": 142,
+      "product_id": 5,
+      "image_url": "/uploads/630a200321e33d8f6ba4852adc80325a.png",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 4,
+      "created_at": "2026-09-07T08:09:44.000Z"
+    },
+    {
+      "id": 149,
+      "product_id": 23,
+      "image_url": "/uploads/b40b2cd89b896fe4cdd18989066a1a97.png",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-07T08:16:31.000Z"
+    },
+    {
+      "id": 150,
+      "product_id": 23,
+      "image_url": "/uploads/59b29c81b5290ef06fda1df0232e295e.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-07T08:16:31.000Z"
+    },
+    {
+      "id": 151,
+      "product_id": 23,
+      "image_url": "/uploads/9178d372265ca4be88a5026bb8cd7271.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-07T08:16:31.000Z"
+    },
+    {
+      "id": 152,
+      "product_id": 23,
+      "image_url": "/uploads/31307aa8080f68a01602244a28ca4f61.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-07T08:16:31.000Z"
+    },
+    {
+      "id": 163,
+      "product_id": 6,
+      "image_url": "/uploads/f425f840cc4441e8c3e61efc66690264.jpeg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-08T01:55:24.000Z"
+    },
+    {
+      "id": 164,
+      "product_id": 6,
+      "image_url": "/uploads/35ccc61a613ff39a8c7c8ea95b1d4a28.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-08T01:55:24.000Z"
+    },
+    {
+      "id": 165,
+      "product_id": 6,
+      "image_url": "/uploads/d27affe774edadfc5a1a7c196214f800.avif",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-08T01:55:24.000Z"
+    },
+    {
+      "id": 166,
+      "product_id": 6,
+      "image_url": "/uploads/1ca38674c0619ee56022c80b0cb0152c.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-08T01:55:24.000Z"
+    },
+    {
+      "id": 167,
+      "product_id": 1,
+      "image_url": "/uploads/cc3b6548b19c36b678ee42fef99180c6.png",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-08T02:03:11.000Z"
+    },
+    {
+      "id": 168,
+      "product_id": 1,
+      "image_url": "/uploads/69b4b5cb86800516979d6cf41484cc64.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-08T02:03:11.000Z"
+    },
+    {
+      "id": 169,
+      "product_id": 1,
+      "image_url": "/uploads/0708ff40322f526df3397f8a655e6e1d.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-08T02:03:11.000Z"
+    },
+    {
+      "id": 170,
+      "product_id": 1,
+      "image_url": "/uploads/f36585d7ae271d3f0acf2eb3af700b42.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-08T02:03:11.000Z"
+    },
+    {
+      "id": 171,
+      "product_id": 3,
+      "image_url": "/uploads/29c5ef046aac91bd45de5d322f7ebe19.jpg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-08T02:04:38.000Z"
+    },
+    {
+      "id": 172,
+      "product_id": 3,
+      "image_url": "/uploads/21aa11b3863fe9a54a2094d917c25183.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-08T02:04:38.000Z"
+    },
+    {
+      "id": 173,
+      "product_id": 3,
+      "image_url": "/uploads/e636f5eef5ceffa0cd9dac3e8862277c.avif",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-08T02:04:38.000Z"
+    },
+    {
+      "id": 174,
+      "product_id": 3,
+      "image_url": "/uploads/5cb2339e94833e3efaacff4570e72bb5.avif",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-08T02:04:38.000Z"
+    },
+    {
+      "id": 179,
+      "product_id": 37,
+      "image_url": "/uploads/317076d402016a3f4f811f987d2c9291.jpeg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-08T02:13:49.000Z"
+    },
+    {
+      "id": 180,
+      "product_id": 37,
+      "image_url": "/uploads/6e0b067f1eb4fdf69aa1371d0b38cb26.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-08T02:13:49.000Z"
+    },
+    {
+      "id": 181,
+      "product_id": 37,
+      "image_url": "/uploads/3f3fb2cfffa423cbc2d93e8a0303f52f.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-08T02:13:49.000Z"
+    },
+    {
+      "id": 182,
+      "product_id": 37,
+      "image_url": "/uploads/73999c50be69f427db71814531799ac9.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-08T02:13:49.000Z"
+    },
+    {
+      "id": 183,
+      "product_id": 38,
+      "image_url": "/uploads/233d60f4f2e7d0f4e32e9dc748e685b6.jpg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-08T02:43:50.000Z"
+    },
+    {
+      "id": 184,
+      "product_id": 38,
+      "image_url": "/uploads/c33745c2ba07f64e8a84814eaf6dfcaf.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-08T02:43:50.000Z"
+    },
+    {
+      "id": 185,
+      "product_id": 38,
+      "image_url": "/uploads/129dccc22d56ec4359bb3fd94f43b3df.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-08T02:43:50.000Z"
+    },
+    {
+      "id": 186,
+      "product_id": 38,
+      "image_url": "/uploads/d742ab5804b65af46d930e1006d09bd9.jpg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-08T02:43:50.000Z"
+    },
+    {
+      "id": 187,
+      "product_id": 40,
+      "image_url": "/uploads/9c2df9f1befe9fe3c6e7f944121b625b.jpeg",
+      "alt_text": null,
+      "is_primary": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-09T03:54:27.000Z"
+    },
+    {
+      "id": 188,
+      "product_id": 40,
+      "image_url": "/uploads/11bc6f8c38cf5986517d70b1750d83df.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 1,
+      "created_at": "2026-09-09T03:54:27.000Z"
+    },
+    {
+      "id": 189,
+      "product_id": 40,
+      "image_url": "/uploads/f204c8d09373ae2d7724e5897fa15100.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 2,
+      "created_at": "2026-09-09T03:54:27.000Z"
+    },
+    {
+      "id": 190,
+      "product_id": 40,
+      "image_url": "/uploads/f4c10e667ec36b9a48b19b2b3291897f.jpeg",
+      "alt_text": null,
+      "is_primary": 0,
+      "sort_order": 3,
+      "created_at": "2026-09-09T03:54:27.000Z"
     }
   ],
   "banners": [
     {
-      "id": 1,
-      "title": "Panen Raya Sorgum",
-      "title_en": null,
-      "image_url": "/uploads/6eb6b1cfa28d339dae595f39f9f79583.png",
-      "target_type": "store",
-      "target_link": "Halaman Toko: Semua Produk",
-      "is_active": 1,
-      "sort_order": 1
-    },
-    {
       "id": 2,
-      "title": "Premium Flour Promo",
-      "title_en": null,
+      "title": "Promo Tepung Premium",
+      "title_en": "Premium Flour Promo",
       "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuA8wY4rl62cbf__Lmm6OcK6rlnQkthCQP-y7zpoy-tBoB5HOLHpQwSJn0cXw3lZWP1Y8xHrsN1V-eWwjfECt57oXWKH3xB_2E0dg47SLfD7yxZcJfcm830KEZ5_aLP4-nh-4UQrLF4hYkurAbuRJyO065v-dquECxPRORXeR5oKsJONK4OD3xskagnGH9TCjYv5a8V9hq0Qxu0Mr4EQv9LftQeAey3sPDBrw5HPD5OCeqEsyZ7pAqdF",
       "target_type": "store",
       "target_link": "Detail Produk: Tepung Sorgum Halus",
       "is_active": 1,
-      "sort_order": 2
+      "sort_order": 2,
+      "created_at": "2026-08-03T01:51:37.000Z",
+      "updated_at": "2026-08-10T08:06:57.000Z"
+    },
+    {
+      "id": 16,
+      "title": "Panen sorgum putih",
+      "title_en": "Harvest white sorghum",
+      "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9IzpPNgCuDXZVbIgeOwFTxz0LeP2jjalPQHCMwT-ansa0w1Oik3RjZ2Z7cJKsw_-zDonlDODpgkYcGorubQs6PQHMs9gov0OB7FreI0KY&s=10",
+      "target_type": "store",
+      "target_link": "Halaman Toko: Semua Produk",
+      "is_active": 0,
+      "sort_order": 0,
+      "created_at": "2026-08-18T06:46:14.000Z",
+      "updated_at": "2026-09-09T04:05:26.000Z"
+    },
+    {
+      "id": 17,
+      "title": "Eazy FArm",
+      "title_en": "Eazy Farm",
+      "image_url": "/uploads/ee7ef21035e6e97dee325be47593f282.jpeg",
+      "target_type": "store",
+      "target_link": "Halaman Toko: Semua Produk",
+      "is_active": 1,
+      "sort_order": 0,
+      "created_at": "2026-08-18T06:47:05.000Z",
+      "updated_at": "2026-09-04T06:42:11.000Z"
+    },
+    {
+      "id": 19,
+      "title": "Kebun Sorgum",
+      "title_en": "Sorghum Farm",
+      "image_url": "/uploads/77b68c80a374317e1c7da3c0a75ae514.jpg",
+      "target_type": "store",
+      "target_link": "Halaman Toko: Semua Produk",
+      "is_active": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-04T06:45:49.000Z",
+      "updated_at": "2026-09-04T06:45:49.000Z"
+    },
+    {
+      "id": 22,
+      "title": "Kebun Sorgum",
+      "title_en": "Sorghum Farm",
+      "image_url": "https://trubus.id/wp-content/uploads/2022/08/Inilah-8-Manfaat-Tanaman-Sorgum-dok.-trubus.jpg",
+      "target_type": "store",
+      "target_link": "Halaman Toko: Semua Produk",
+      "is_active": 1,
+      "sort_order": 0,
+      "created_at": "2026-09-08T01:06:35.000Z",
+      "updated_at": "2026-09-08T01:06:35.000Z"
     }
   ],
   "articles": [
     {
       "id": 1,
-      "title": "Manfaat Sorghum untuk Diet Bebas Gluten",
+      "title": "Nasi Goreng Sorgum",
       "slug": "manfaat-sorghum-untuk-diet-bebas-gluten",
-      "category": "Nutrisi",
-      "content": "Sorghum secara alami bebas gluten, menjadikannya bahan dasar yang sangat aman untuk berbagai olahan pangan. Namun, keunggulannya tidak berhenti di sana. Sorghum mengandung serat yang sangat tinggi, membantu menjaga kesehatan mikrobioma usus dan memberikan rasa kenyang lebih lama, yang sangat krusial dalam manajemen berat badan.\n\nDiet bebas gluten bukan lagi sekadar tren kesehatan, melainkan kebutuhan bagi banyak individu dengan intoleransi gluten atau penyakit celiac. Di tengah pencarian alternatif gandum yang berkelanjutan dan padat nutrisi, Sorghum muncul sebagai primadona baru di dunia kuliner modern. Biji-bijian kuno ini tidak hanya aman bagi pencernaan, tetapi juga membawa profil nutrisi yang melampaui biji-bijian konvensional lainnya. 99999\n\nIntegrasi sorghum ke dalam diet harian sangatlah mudah. Anda dapat menggunakan tepung sorghum sebagai pengganti tepung terigu dalam pembuatan kue, atau mengolah biji sorghum utuh layaknya nasi atau quinoa. Teksturnya yang sedikit kenyal dan rasanya yang cenderung netral dengan sentuhan nutty menjadikannya kanvas sempurna untuk berbagai bumbu masakan Indonesia.\n\nDi BESTARI, kami berdedikasi untuk menghadirkan sorghum dalam kualitas terbaik melalui proses pengolahan yang menjaga integritas nutrisinya. Dari ladang yang terawat hingga ke meja makan Anda, setiap butir sorghum kami adalah manifestasi dari komitmen terhadap kesehatan dan keberlanjutan lingkungan.\n\n\"Sorghum bukan sekadar pengganti; ia adalah peningkatan kualitas nutrisi dalam piring Anda. Dengan indeks glikemik rendah, ia membantu menjaga stabilitas energi sepanjang hari tanpa lonjakan gula darah.\"",
+      "category": "Promosi",
+      "content": "Diet bebas gluten bukan lagi sekadar tren kesehatan, melainkan kebutuhan bagi banyak individu dengan intoleransi gluten atau penyakit celiac. Di tengah pencarian alternatif gandum yang berkelanjutan dan padat nutrisi, Sorghum muncul sebagai primadona baru di dunia kuliner modern. Biji-bijian kuno ini tidak hanya aman bagi pencernaan, tetapi juga membawa profil nutrisi yang melampaui biji-bijian konvensional lainnya.\n\nNasi Goreng Sorgum: Perpaduan Lezat dan Sehat\n\nSiapa bilang makanan sehat tidak lezat? Nasi goreng sorgum membuktikan sebaliknya. Dengan butiran sorgum yang kenyal dan rasa yang sedikit nutty, nasi goreng sorgum menghadirkan sensasi baru yang menggugah selera — tanpa rasa bersalah.\n\nBahan utama:\n300 gram beras sorgum matang (idealnya dingin semalaman)\n2 butir telur ayam kampung\n3 siung bawang putih, cincang halus\n2 batang daun bawang\nKecap manis, saus sambal, garam, dan merica\nMinyak kelapa atau minyak goreng sehat\n\nCara memasak:\n1. Panaskan minyak, tumis bawang putih hingga harum.\n2. Masukkan telur, orak-arik hingga setengah matang.\n3. Tambahkan beras sorgum dingin, aduk dengan api besar.\n4. Bumbui dengan kecap manis, saus sambal, garam, dan merica.\n5. Masak hingga butiran sorgum sedikit garing dan bumbu meresap.\n6. Taburi daun bawang, angkat, dan sajikan.\n\nKeunggulan Sorgum yang Melampaui Nasi Biasa\n\nSorghum secara alami bebas gluten, menjadikannya bahan dasar yang sangat aman untuk berbagai olahan pangan. Namun keunggulannya tidak berhenti di sana. Sorgum mengandung serat yang sangat tinggi, membantu menjaga kesehatan mikrobioma usus dan memberikan rasa kenyang lebih lama. Hal ini sangat krusial dalam manajemen berat badan.\n\nDengan indeks glikemik rendah, sorgum membantu menjaga stabilitas energi sepanjang hari tanpa lonjakan gula darah — menjadikannya pilihan tepat bagi penderita diabetes dan mereka yang ingin menjaga berat badan ideal.\n\nSorgum di Dapur Modern\n\nIntegrasi sorgum ke dalam diet harian sangatlah mudah. Anda dapat menggunakan tepung sorgum sebagai pengganti tepung terigu dalam pembuatan kue, atau mengolah biji sorgum utuh layaknya nasi atau quinoa. Teksturnya yang sedikit kenyal dan rasanya yang cenderung netral dengan sentuhan nutty menjadikannya kanvas sempurna untuk berbagai bumbu masakan Indonesia.\n\nJadikan Sorgum Bagian Keseharian Anda\n\nDi BESTARI, kami berkomitmen menghadirkan sorghum dalam kualitas terbaik melalui proses pengolahan yang menjaga integritas nutrisinya. Dari ladang yang terawat hingga ke meja makan Anda, setiap butir sorgum kami adalah manifestasi komitmen terhadap kesehatan dan keberlanjutan lingkungan.\n\nPesan produk sorgum BESTARI sekarang dan ciptakan nasi goreng sorgum terlezat di rumah Anda hari ini!",
       "content_blocks": [
         {
-          "id": "blk-msh9vbhk-rpnlu",
           "type": "text",
-          "content": "Sorghum secara alami bebas gluten, menjadikannya bahan dasar yang sangat aman untuk berbagai olahan pangan. Namun, keunggulannya tidak berhenti di sana. Sorghum mengandung serat yang sangat tinggi, membantu menjaga kesehatan mikrobioma usus dan memberikan rasa kenyang lebih lama, yang sangat krusial dalam manajemen berat badan."
+          "content": "Diet bebas gluten bukan lagi sekadar tren kesehatan, melainkan kebutuhan bagi banyak individu dengan intoleransi gluten atau penyakit celiac. Di tengah pencarian alternatif gandum yang berkelanjutan dan padat nutrisi, Sorghum muncul sebagai primadona baru di dunia kuliner modern. Biji-bijian kuno ini tidak hanya aman bagi pencernaan, tetapi juga membawa profil nutrisi yang melampaui biji-bijian konvensional lainnya."
         },
         {
-          "id": "blk-msh9vbhk-zkufw",
           "type": "text",
-          "content": "Diet bebas gluten bukan lagi sekadar tren kesehatan, melainkan kebutuhan bagi banyak individu dengan intoleransi gluten atau penyakit celiac. Di tengah pencarian alternatif gandum yang berkelanjutan dan padat nutrisi, Sorghum muncul sebagai primadona baru di dunia kuliner modern. Biji-bijian kuno ini tidak hanya aman bagi pencernaan, tetapi juga membawa profil nutrisi yang melampaui biji-bijian konvensional lainnya. 99999"
+          "content": "Nasi Goreng Sorgum: Perpaduan Lezat dan Sehat"
         },
         {
-          "id": "blk-msh9vbhk-iq83k",
           "type": "text",
-          "content": "Integrasi sorghum ke dalam diet harian sangatlah mudah. Anda dapat menggunakan tepung sorghum sebagai pengganti tepung terigu dalam pembuatan kue, atau mengolah biji sorghum utuh layaknya nasi atau quinoa. Teksturnya yang sedikit kenyal dan rasanya yang cenderung netral dengan sentuhan nutty menjadikannya kanvas sempurna untuk berbagai bumbu masakan Indonesia."
+          "content": "Siapa bilang makanan sehat tidak lezat? Nasi goreng sorgum membuktikan sebaliknya. Dengan butiran sorgum yang kenyal dan rasa yang sedikit nutty, nasi goreng sorgum menghadirkan sensasi baru yang menggugah selera — tanpa rasa bersalah."
         },
         {
-          "id": "blk-msh9vbhk-z06jw",
-          "alt": "Ilustrasi Manfaat Sorghum untuk Diet Bebas Gluten",
-          "type": "image",
-          "caption": "",
-          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDuHykNwQgW0Rs2Bovsk1_coUM0_feNAbh7qxnNLx9fmCRaL4puO8wRJLeHKQFjM0YytJKC12B2Zy8bTvBK16Acm9iVwOzZymcD_51isSWrea0iG4IL0CcHposBKpAu3nO1-r7rYTkVfJvpESNfBMbwahEuq7FfsqI3vvtIwEPym_pFCJfrjHpyrzrzoqxIKYP67mrjnv4C3Ue85AbHIGvHyfuYpV7aeQ0WbY8y3B7iCoVcq2K1znPAPA"
-        },
-        {
-          "id": "blk-msh9vbhk-bjmlm",
           "type": "text",
-          "content": "Di BESTARI, kami berdedikasi untuk menghadirkan sorghum dalam kualitas terbaik melalui proses pengolahan yang menjaga integritas nutrisinya. Dari ladang yang terawat hingga ke meja makan Anda, setiap butir sorghum kami adalah manifestasi dari komitmen terhadap kesehatan dan keberlanjutan lingkungan."
+          "content": "Bahan utama:\n300 gram beras sorgum matang (idealnya dingin semalaman)\n2 butir telur ayam kampung\n3 siung bawang putih, cincang halus\n2 batang daun bawang\nKecap manis, saus sambal, garam, dan merica\nMinyak kelapa atau minyak goreng sehat"
         },
         {
-          "id": "blk-msh9vbhk-4360l",
-          "type": "quote",
-          "content": "Sorghum bukan sekadar pengganti; ia adalah peningkatan kualitas nutrisi dalam piring Anda. Dengan indeks glikemik rendah, ia membantu menjaga stabilitas energi sepanjang hari tanpa lonjakan gula darah."
+          "type": "text",
+          "content": "Cara memasak:\n1. Panaskan minyak, tumis bawang putih hingga harum.\n2. Masukkan telur, orak-arik hingga setengah matang.\n3. Tambahkan beras sorgum dingin, aduk dengan api besar.\n4. Bumbui dengan kecap manis, saus sambal, garam, dan merica.\n5. Masak hingga butiran sorgum sedikit garing dan bumbu meresap.\n6. Taburi daun bawang, angkat, dan sajikan."
+        },
+        {
+          "type": "text",
+          "content": "Keunggulan Sorgum yang Melampaui Nasi Biasa"
+        },
+        {
+          "type": "text",
+          "content": "Sorghum secara alami bebas gluten, menjadikannya bahan dasar yang sangat aman untuk berbagai olahan pangan. Namun keunggulannya tidak berhenti di sana. Sorgum mengandung serat yang sangat tinggi, membantu menjaga kesehatan mikrobioma usus dan memberikan rasa kenyang lebih lama. Hal ini sangat krusial dalam manajemen berat badan."
+        },
+        {
+          "type": "text",
+          "content": "Dengan indeks glikemik rendah, sorgum membantu menjaga stabilitas energi sepanjang hari tanpa lonjakan gula darah — menjadikannya pilihan tepat bagi penderita diabetes dan mereka yang ingin menjaga berat badan ideal."
+        },
+        {
+          "type": "text",
+          "content": "Sorgum di Dapur Modern"
+        },
+        {
+          "type": "text",
+          "content": "Integrasi sorgum ke dalam diet harian sangatlah mudah. Anda dapat menggunakan tepung sorgum sebagai pengganti tepung terigu dalam pembuatan kue, atau mengolah biji sorgum utuh layaknya nasi atau quinoa. Teksturnya yang sedikit kenyal dan rasanya yang cenderung netral dengan sentuhan nutty menjadikannya kanvas sempurna untuk berbagai bumbu masakan Indonesia."
+        },
+        {
+          "type": "text",
+          "content": "Jadikan Sorgum Bagian Keseharian Anda"
+        },
+        {
+          "type": "text",
+          "content": "Di BESTARI, kami berkomitmen menghadirkan sorghum dalam kualitas terbaik melalui proses pengolahan yang menjaga integritas nutrisinya. Dari ladang yang terawat hingga ke meja makan Anda, setiap butir sorgum kami adalah manifestasi komitmen terhadap kesehatan dan keberlanjutan lingkungan."
+        },
+        {
+          "type": "text",
+          "content": "Pesan produk sorgum BESTARI sekarang dan ciptakan nasi goreng sorgum terlezat di rumah Anda hari ini!"
         }
       ],
-      "excerpt": "Sorghum secara alami bebas gluten, menjadikannya bahan dasar yang sangat aman untuk berbagai olahan pangan. Namun, keunggulannya tidak berhenti di san",
-      "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0LXwH2j90b6WJggBmrB14kjoqnSegxsOx1uEai_zaj3xXC7WlhOqopCEDYBvjVs-GrggVNpRhEvHq5-XNcpE3slznPKeJoxrFu5tXlKOP1A&s=10",
+      "excerpt": "Nasi goreng sorgum: hidangan bebas gluten yang lezat, mengenyangkan, dan menyehatkan. Inilah resep dan manfaat yang wajib Anda coba.",
+      "image_url": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&q=80&w=800",
       "is_published": 1,
       "published_at": "2023-10-12T01:00:00.000Z",
-      "author": "Arisanti Putri",
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-07T06:42:57.000Z",
+      "author": "Muhammad Faisal Rahman",
       "author_role": "Lead Product Researcher",
       "read_time": "5 Menit Baca",
       "sub_image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDuHykNwQgW0Rs2Bovsk1_coUM0_feNAbh7qxnNLx9fmCRaL4puO8wRJLeHKQFjM0YytJKC12B2Zy8bTvBK16Acm9iVwOzZymcD_51isSWrea0iG4IL0CcHposBKpAu3nO1-r7rYTkVfJvpESNfBMbwahEuq7FfsqI3vvtIwEPym_pFCJfrjHpyrzrzoqxIKYP67mrjnv4C3Ue85AbHIGvHyfuYpV7aeQ0WbY8y3B7iCoVcq2K1znPAPA",
@@ -327,23 +1066,63 @@
       "title": "Ketahanan Pangan Melalui Pertanian Lokal",
       "slug": "ketahanan-pangan-melalui-pertanian-lokal",
       "category": "Budidaya",
-      "content": "Pertanian lokal memegang peranan krusial dalam menghadapi krisis iklim global. Sorghum, dengan daya tahannya yang luar biasa terhadap kekeringan dan lahan marjinal, menjadi pilar utama kedaulatan pangan di wilayah Indonesia Timur.\n\nMelalui kemitraan berkeadilan dengan para petani lokal di Flores dan Nusa Tenggara, BESTARI membina ratusan hektar lahan sorghum organik. Hasil panen yang stabil tidak hanya meningkatkan taraf hidup keluarga petani, tetapi juga menjamin ketersediaan bahan pangan bergizi tinggi secara berkelanjutan.",
+      "content": "Pertanian lokal memegang peranan krusial dalam menghadapi krisis iklim global. Sorghum, dengan daya tahannya yang luar biasa terhadap kekeringan dan lahan marjinal, menjadi pilar utama kedaulatan pangan di wilayah Indonesia Timur. Dengan kebutuhan air yang rendah dan kandungan gizi yang kaya, sorgum adalah jaring pengaman pangan sekaligus penggerak ekonomi petani lokal.\n\nSorgum, Tanaman Penyelamat di Masa Kemarau\n\nSorghum memiliki keunggulan agronomis yang jarang dimiliki komoditas lain: tanaman ini hanya membutuhkan sedikit air, toleran terhadap tanah kering, dan dapat dipanen dua kali dalam setahun. Ketika tanaman lain gagal tumbuh akibat musim kemarau panjang, sorgum tetap menghasilkan. Hal ini menjadikannya jaring pengaman pangan yang andal bagi komunitas petani kecil di tengah perubahan iklim yang semakin ekstrem.\n\nBESTARI dan Perjuangan Petani Lokal\n\nMelalui kemitraan berkeadilan dengan para petani lokal, BESTARI membina ratusan hektar lahan sorgum organik di Indonesia Timur. Hasil panen yang stabil tidak hanya meningkatkan taraf hidup keluarga petani, tetapi juga menjamin ketersediaan bahan pangan bergizi tinggi secara berkelanjutan. Dengan pendampingan teknik budidaya, penyediaan benih unggul, dan kepastian pasar, para petani kini memiliki masa depan yang lebih cerah.\n\nMengganti Sebagian Beras demi Ketahanan Pangan\n\nDi sisi gizi, sorgum kaya akan serat, zat besi, dan antioksidan, dengan indeks glikemik yang lebih rendah dibandingkan nasi putih. Mengganti sebagian konsumsi beras dengan sorgum membantu menjaga kadar gula darah tetap stabil, mendukung program diversifikasi pangan, dan mengurangi ketergantungan Indonesia pada impor gandum serta beras. Ketahanan pangan nasional tidak lagi bertumpu pada satu komoditas semata.\n\nDampak Sosial dan Ekonomi yang Nyata\n\nSetiap pembelian sorgum lokal tidak hanya memberi Anda makanan sehat, tetapi juga:\n\nMeningkatkan pendapatan ratusan keluarga petani.\nMenciptakan lapangan kerja di daerah pedesaan.\nMelestarikan lahan pertanian dari alih fungsi.\nMengurangi jejak karbon transportasi pangan impor.\n\nDukung Ketahanan Pangan dari Meja Makan Anda\n\nKe depan, BESTARI terus memperluas jangkauan pertanian lokal. Dengan membeli produk sorgum lokal berkualitas seperti Sorgum Putih Premium dan Sorgum Merah Organik, setiap konsumen turut memperkuat mata rantai ekonomi petani Indonesia dan menjaga ketahanan pangan dari akar rumput. Bersama, kita wujudkan pangan Indonesia yang mandiri dan berkelanjutan.",
       "content_blocks": [
         {
-          "id": "blk-mtqpup5p-dlq03",
           "type": "text",
-          "content": "Pertanian lokal memegang peranan krusial dalam menghadapi krisis iklim global. Sorghum, dengan daya tahannya yang luar biasa terhadap kekeringan dan lahan marjinal, menjadi pilar utama kedaulatan pangan di wilayah Indonesia Timur."
+          "content": "Pertanian lokal memegang peranan krusial dalam menghadapi krisis iklim global. Sorghum, dengan daya tahannya yang luar biasa terhadap kekeringan dan lahan marjinal, menjadi pilar utama kedaulatan pangan di wilayah Indonesia Timur. Dengan kebutuhan air yang rendah dan kandungan gizi yang kaya, sorgum adalah jaring pengaman pangan sekaligus penggerak ekonomi petani lokal."
         },
         {
-          "id": "blk-mtqpup5p-h9tbu",
           "type": "text",
-          "content": "Melalui kemitraan berkeadilan dengan para petani lokal di Flores dan Nusa Tenggara, BESTARI membina ratusan hektar lahan sorghum organik. Hasil panen yang stabil tidak hanya meningkatkan taraf hidup keluarga petani, tetapi juga menjamin ketersediaan bahan pangan bergizi tinggi secara berkelanjutan."
+          "content": "Sorgum, Tanaman Penyelamat di Masa Kemarau"
+        },
+        {
+          "type": "text",
+          "content": "Sorghum memiliki keunggulan agronomis yang jarang dimiliki komoditas lain: tanaman ini hanya membutuhkan sedikit air, toleran terhadap tanah kering, dan dapat dipanen dua kali dalam setahun. Ketika tanaman lain gagal tumbuh akibat musim kemarau panjang, sorgum tetap menghasilkan. Hal ini menjadikannya jaring pengaman pangan yang andal bagi komunitas petani kecil di tengah perubahan iklim yang semakin ekstrem."
+        },
+        {
+          "type": "text",
+          "content": "BESTARI dan Perjuangan Petani Lokal"
+        },
+        {
+          "type": "text",
+          "content": "Melalui kemitraan berkeadilan dengan para petani lokal, BESTARI membina ratusan hektar lahan sorgum organik di Indonesia Timur. Hasil panen yang stabil tidak hanya meningkatkan taraf hidup keluarga petani, tetapi juga menjamin ketersediaan bahan pangan bergizi tinggi secara berkelanjutan. Dengan pendampingan teknik budidaya, penyediaan benih unggul, dan kepastian pasar, para petani kini memiliki masa depan yang lebih cerah."
+        },
+        {
+          "type": "text",
+          "content": "Mengganti Sebagian Beras demi Ketahanan Pangan"
+        },
+        {
+          "type": "text",
+          "content": "Di sisi gizi, sorgum kaya akan serat, zat besi, dan antioksidan, dengan indeks glikemik yang lebih rendah dibandingkan nasi putih. Mengganti sebagian konsumsi beras dengan sorgum membantu menjaga kadar gula darah tetap stabil, mendukung program diversifikasi pangan, dan mengurangi ketergantungan Indonesia pada impor gandum serta beras. Ketahanan pangan nasional tidak lagi bertumpu pada satu komoditas semata."
+        },
+        {
+          "type": "text",
+          "content": "Dampak Sosial dan Ekonomi yang Nyata"
+        },
+        {
+          "type": "text",
+          "content": "Setiap pembelian sorgum lokal tidak hanya memberi Anda makanan sehat, tetapi juga:"
+        },
+        {
+          "type": "text",
+          "content": "Meningkatkan pendapatan ratusan keluarga petani.\nMenciptakan lapangan kerja di daerah pedesaan.\nMelestarikan lahan pertanian dari alih fungsi.\nMengurangi jejak karbon transportasi pangan impor."
+        },
+        {
+          "type": "text",
+          "content": "Dukung Ketahanan Pangan dari Meja Makan Anda"
+        },
+        {
+          "type": "text",
+          "content": "Ke depan, BESTARI terus memperluas jangkauan pertanian lokal. Dengan membeli produk sorgum lokal berkualitas seperti Sorgum Putih Premium dan Sorgum Merah Organik, setiap konsumen turut memperkuat mata rantai ekonomi petani Indonesia dan menjaga ketahanan pangan dari akar rumput. Bersama, kita wujudkan pangan Indonesia yang mandiri dan berkelanjutan."
         }
       ],
-      "excerpt": "Pertanian lokal memegang peranan krusial dalam menghadapi krisis iklim global. Sorghum, dengan daya tahannya yang luar biasa terhadap kekeringan dan l",
-      "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuC-U92ef1AWrRunC_1mYdC7EQH-yNArhPFBQ6oIdXQMm5M0Jy3PMHVPA29vpLt3JyBO5kmgn07CgjPENJcM4obBHNSZSOQSHfSDhYz_HD-Sd6i_AwP3C8h82A2jtXbTuq5AelCOPEliINBXjBJBUEr34MgWC3meRH8oWhEpCKWlR87CeaTLotYRfyLjVV0r3ch2LUsQ3HpICgyg3mEa8-RDYDyqj4LkKEbWN9VN3VNwmQeaednwsXf3Hg",
+      "excerpt": "Bagaimana sorgum menjadi pilar ketahanan pangan Indonesia, memberdayakan petani lokal, dan menjaga lingkungan di tengah perubahan iklim.",
+      "image_url": "/uploads/19760be00924b2fc797a8be41c08d2dd.webp",
       "is_published": 1,
       "published_at": "2023-09-28T01:00:00.000Z",
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-07T06:42:57.000Z",
       "author": "Ahmad Subagyo",
       "author_role": "Koordinator Petani Lokal",
       "read_time": "8 Menit Baca",
@@ -356,24 +1135,66 @@
       "title": "Inovasi Kuliner: Sorghum di Meja Makan Modern",
       "slug": "inovasi-kuliner-sorghum-di-meja-makan-modern",
       "category": "Inspirasi",
-      "content": "Sorghum tidak lagi terbatas pada olahan tradisional. Di tangan para profesional kuliner, biji-bijian ini diubah menjadi berbagai hidangan modern seperti risotto sorghum, gluten-free pasta, hingga dessert lezat.\n\nFlavour profile sorghum yang subtle dan sedikit nutty memberikan dimensi rasa baru yang diminati oleh para pecinta kuliner sehat maupun restoran fine dining.",
+      "content": "Sorghum tidak lagi terbatas pada olahan tradisional. Di tangan para profesional kuliner, biji-bijian ini diubah menjadi berbagai hidangan modern seperti risotto sorgum, gluten-free pasta, hingga dessert bergizi. Inovasi ini membuktikan bahwa bahan pangan lokal mampu bersaing di panggung kuliner dunia.\n\nRisotto Sorgum: Creamy Tanpa Rasa Bersalah\n\nRisotto sorgum menjadi favorit para chef karena teksturnya yang kenyal dan kemampuannya menyerap kaldu dengan sempurna. Hasilnya adalah hidangan yang creamy dan memuaskan tanpa tambahan banyak lemak. Cukup tumis sorgum dengan bawang, tuang kaldu hangat secara bertahap, aduk hingga kental, lalu tambahkan keju parut dan jamur. Hasilnya melebihi ekspektasi.\n\nTepung Sorgum: Revolusi Bebas Gluten\n\nTepung sorgum kini banyak digunakan sebagai pengganti tepung terigu pada roti, kue, dan pasta bagi mereka yang menjalani diet bebas gluten. Teksturnya yang halus dan rasa yang netral membuatnya mudah dipadukan. Roti dari tepung sorgum lebih padat, kaya serat, dan memberikan rasa kenyang lebih lama.\n\nPopcorn Sorgum: Camilan Sehat Keluarga\n\nTak ketinggalan, popcorn sorgum menjadi camilan sehat pengganti popcorn jagung biasa. Ukurannya yang kecil namun kaya serat menjadikannya pilihan ideal untuk camilan keluarga. Cukup panaskan biji sorgum dalam wajan tertutup dengan sedikit minyak — dalam hitungan menit, Anda mendapat mangkuk camilan renyah yang sehat.\n\nKreativitas Tanpa Batas\n\nPara barista bahkan mulai menggunakan sorgum sebagai bahan dasar minuman fermentasi seperti sorgum latte dan kombucha sorgum. Dari makanan hingga minuman, sorgum membuktikan diri sebagai bahan serbaguna yang mampu beradaptasi dengan tren kuliner modern tanpa kehilangan nilai gizinya.\n\nIde hidangan lain yang patut dicoba:\nSalad sorgum dengan sayuran segar dan saus lemon.\nBubur sorgum manis ala oats dengan buah-buahan.\nSop sorgum yang hangat dan mengenyangkan.\nSorgum goreng dengan bumbu balado khas Nusantara.\n\nWujudkan Kreasi Kuliner Anda\n\nKunci inovasi dimulai dari bahan berkualitas. Gunakan Tepung Sorgum Whole Grain dan beras sorgum BESTARI untuk memulai petualangan kuliner modern Anda. Produk kami diproses higienis tanpa bahan pengawet, sehingga setiap hidangan yang Anda buat bebas gluten dan kaya gizi. Pesan sekarang dan jadilah bagian dari revolusi kuliner sorgum Indonesia!",
       "content_blocks": [
         {
           "type": "text",
-          "content": "Sorghum tidak lagi terbatas pada olahan tradisional. Di tangan para profesional kuliner, biji-bijian ini diubah menjadi berbagai hidangan modern seperti risotto sorghum, gluten-free pasta, hingga dessert lezat."
+          "content": "Sorghum tidak lagi terbatas pada olahan tradisional. Di tangan para profesional kuliner, biji-bijian ini diubah menjadi berbagai hidangan modern seperti risotto sorgum, gluten-free pasta, hingga dessert bergizi. Inovasi ini membuktikan bahwa bahan pangan lokal mampu bersaing di panggung kuliner dunia."
         },
         {
           "type": "text",
-          "content": "Flavour profile sorghum yang subtle dan sedikit nutty memberikan dimensi rasa baru yang diminati oleh para pecinta kuliner sehat maupun restoran fine dining."
+          "content": "Risotto Sorgum: Creamy Tanpa Rasa Bersalah"
+        },
+        {
+          "type": "text",
+          "content": "Risotto sorgum menjadi favorit para chef karena teksturnya yang kenyal dan kemampuannya menyerap kaldu dengan sempurna. Hasilnya adalah hidangan yang creamy dan memuaskan tanpa tambahan banyak lemak. Cukup tumis sorgum dengan bawang, tuang kaldu hangat secara bertahap, aduk hingga kental, lalu tambahkan keju parut dan jamur. Hasilnya melebihi ekspektasi."
+        },
+        {
+          "type": "text",
+          "content": "Tepung Sorgum: Revolusi Bebas Gluten"
+        },
+        {
+          "type": "text",
+          "content": "Tepung sorgum kini banyak digunakan sebagai pengganti tepung terigu pada roti, kue, dan pasta bagi mereka yang menjalani diet bebas gluten. Teksturnya yang halus dan rasa yang netral membuatnya mudah dipadukan. Roti dari tepung sorgum lebih padat, kaya serat, dan memberikan rasa kenyang lebih lama."
+        },
+        {
+          "type": "text",
+          "content": "Popcorn Sorgum: Camilan Sehat Keluarga"
+        },
+        {
+          "type": "text",
+          "content": "Tak ketinggalan, popcorn sorgum menjadi camilan sehat pengganti popcorn jagung biasa. Ukurannya yang kecil namun kaya serat menjadikannya pilihan ideal untuk camilan keluarga. Cukup panaskan biji sorgum dalam wajan tertutup dengan sedikit minyak — dalam hitungan menit, Anda mendapat mangkuk camilan renyah yang sehat."
+        },
+        {
+          "type": "text",
+          "content": "Kreativitas Tanpa Batas"
+        },
+        {
+          "type": "text",
+          "content": "Para barista bahkan mulai menggunakan sorgum sebagai bahan dasar minuman fermentasi seperti sorgum latte dan kombucha sorgum. Dari makanan hingga minuman, sorgum membuktikan diri sebagai bahan serbaguna yang mampu beradaptasi dengan tren kuliner modern tanpa kehilangan nilai gizinya."
+        },
+        {
+          "type": "text",
+          "content": "Ide hidangan lain yang patut dicoba:\nSalad sorgum dengan sayuran segar dan saus lemon.\nBubur sorgum manis ala oats dengan buah-buahan.\nSop sorgum yang hangat dan mengenyangkan.\nSorgum goreng dengan bumbu balado khas Nusantara."
+        },
+        {
+          "type": "text",
+          "content": "Wujudkan Kreasi Kuliner Anda"
+        },
+        {
+          "type": "text",
+          "content": "Kunci inovasi dimulai dari bahan berkualitas. Gunakan Tepung Sorgum Whole Grain dan beras sorgum BESTARI untuk memulai petualangan kuliner modern Anda. Produk kami diproses higienis tanpa bahan pengawet, sehingga setiap hidangan yang Anda buat bebas gluten dan kaya gizi. Pesan sekarang dan jadilah bagian dari revolusi kuliner sorgum Indonesia!"
         }
       ],
-      "excerpt": "Eksplorasi resep kreatif dari chef ternama yang menggunakan sorghum sebagai bintang utama dalam hidangan kontemporer yang menggugah selera.",
+      "excerpt": "Dari risotto sorgum hingga popcorn sehat — bagaimana biji-bijian lokal ini bertransformasi menjadi bahan baku kuliner modern.",
       "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDM3gs3-phAENScDeuisQGmk3iMEPfRWGM1tnPsGl2GrcuKF5fcxGlXrKDXn3Jzj8Oy0TVxdi-UXpD8gOOtQtuXctoYqXdnD78Fe9NUWzgtGa-iyJOMa0yDB2NG8CejhHfba11qTzv6myxY7F3PVm7Yq-gInGnsWh_FxgsgsxvOuveJ8YU9rDEoYhTL9i1QAC9RymUi91ztAF9c0qMYE1QcIi0pbnCtdNtMdW14xgHI_vSs8iJQeNlMqA",
       "is_published": 1,
       "published_at": "2023-09-15T01:00:00.000Z",
-      "author": "Chef Budi Santoso",
-      "author_role": "Culinary Specialist",
-      "read_time": "6 Menit Baca",
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-07T06:42:57.000Z",
+      "author": "Tim Bestari",
+      "author_role": "Editor",
+      "read_time": "4 Menit Baca",
       "sub_image": null,
       "quote": null,
       "facts": null
@@ -383,23 +1204,85 @@
       "title": "Memahami Indeks Glikemik Rendah pada Sorghum",
       "slug": "memahami-indeks-glikemik-rendah-pada-sorghum",
       "category": "Nutrisi",
-      "content": "Indeks glikemik (GI) mengukur seberapa cepat karbohidrat dalam makanan meningkatkan kadar gula darah. Sorghum memiliki indeks glikemik tergolong rendah, sehingga dicerna secara perlahan dan melepaskan glukosa secara bertahap.\n\nHal ini menjadikan sorghum pilihan pangan ideal bagi individu yang mengelola diabetes melitus tipe 2 atau sedang menjalani program pemeliharaan berat badan ideal.",
+      "content": "Indeks glikemik (GI) mengukur seberapa cepat karbohidrat dalam makanan meningkatkan kadar gula darah setelah dikonsumsi. Memahami GI sangat penting, terutama bagi mereka yang ingin menjaga kadar gula tetap stabil, mengelola diabetes, atau menurunkan berat badan. Sorghum, dengan indeks glikemik yang rendah, muncul sebagai pilihan cerdas di antara biji-bijian lainnya.\n\nApa Itu Indeks Glikemik?\n\nGI dibagi menjadi tiga kategori: rendah (≤55), sedang (56–69), dan tinggi (≥70). Makanan dengan GI tinggi dicerna cepat, menyebabkan lonjakan gula darah dan insulin yang drastis, lalu diikuti penurunan cepat yang memicu rasa lapar. Sebaliknya, makanan GI rendah dicerna perlahan dan melepaskan energi secara bertahap.\n\nGI Rendah pada Sorgum\n\nSorgum memiliki indeks glikemik sekitar 50–55 tergantung varietas dan cara pengolahan, jauh lebih rendah daripada nasi putih yang mencapai 70–80. Ini menjadikan sorgum pilihan cerdas bagi penderita diabetes tipe 2, prediabetes, serta siapa saja yang ingin menjaga berat badan ideal.\n\nMengapa GI Rendah Itu Penting?\n\nKonsumsi makanan GI rendah secara konsisten membantu:\n\nMenjaga kadar gula darah tetap stabil sepanjang hari.\nMengurangi risiko resistensi insulin.\nMenunda rasa lapar dan mengurangi ngemil berlebihan.\nMemberikan energi berkelanjutan untuk aktivitas.\nMendukung program penurunan berat badan.\n\nPeran Serat dalam Mengontrol Gula Darah\n\nKandungan serat pangan pada sorgum juga berperan penting. Serat memperlambat penyerapan gula di usus, mengurangi lonjakan glukosa setelah makan, serta memberikan rasa kenyang lebih lama. Hal ini membantu mengontrol nafsu makan dan mencegah makan berlebihan.\n\nAntioksidan dan Perlindungan Sel\n\nSelain itu, sorgum kaya akan polifenol dan antioksidan yang membantu melindungi sel tubuh dari kerusakan oksidatif. Konsumsi rutin sorgum sebagai pengganti sebagian nasi dapat menjadi langkah sederhana namun efektif dalam menjaga kadar gula darah tetap stabil dan mendukung kesehatan metabolik jangka panjang.\n\nCara Mengganti Beras dengan Sorgum\n\nMulailah secara bertahap:\n\n1. Campurkan 30% sorgum dengan 70% beras putih.\n2. Tingkatkan porsi sorgum hingga 50% seiring adaptasi.\n3. Gunakan tepung sorgum untuk roti dan kue favorit.\n4. Nikmati bubur sorgum sebagai menu sarapan sehat.\n\nPilihan Tepat untuk Gula Darah Stabil\n\nSorgum Putih Premium dan Sorgum Merah Organik BESTARI adalah pilihan tepat untuk Anda yang ingin menjaga kadar gula darah tetap stabil tanpa mengorbankan kenikmatan makan. Keduanya ditanam organik, dipanen berkualitas, dan dikemas higienis. Pesan sekarang dan kendalikan gula darah Anda dengan cara yang menyehatkan dan lezat.",
       "content_blocks": [
         {
           "type": "text",
-          "content": "Indeks glikemik (GI) mengukur seberapa cepat karbohidrat dalam makanan meningkatkan kadar gula darah. Sorghum memiliki indeks glikemik tergolong rendah, sehingga dicerna secara perlahan dan melepaskan glukosa secara bertahap."
+          "content": "Indeks glikemik (GI) mengukur seberapa cepat karbohidrat dalam makanan meningkatkan kadar gula darah setelah dikonsumsi. Memahami GI sangat penting, terutama bagi mereka yang ingin menjaga kadar gula tetap stabil, mengelola diabetes, atau menurunkan berat badan. Sorghum, dengan indeks glikemik yang rendah, muncul sebagai pilihan cerdas di antara biji-bijian lainnya."
         },
         {
           "type": "text",
-          "content": "Hal ini menjadikan sorghum pilihan pangan ideal bagi individu yang mengelola diabetes melitus tipe 2 atau sedang menjalani program pemeliharaan berat badan ideal."
+          "content": "Apa Itu Indeks Glikemik?"
+        },
+        {
+          "type": "text",
+          "content": "GI dibagi menjadi tiga kategori: rendah (≤55), sedang (56–69), dan tinggi (≥70). Makanan dengan GI tinggi dicerna cepat, menyebabkan lonjakan gula darah dan insulin yang drastis, lalu diikuti penurunan cepat yang memicu rasa lapar. Sebaliknya, makanan GI rendah dicerna perlahan dan melepaskan energi secara bertahap."
+        },
+        {
+          "type": "text",
+          "content": "GI Rendah pada Sorgum"
+        },
+        {
+          "type": "text",
+          "content": "Sorgum memiliki indeks glikemik sekitar 50–55 tergantung varietas dan cara pengolahan, jauh lebih rendah daripada nasi putih yang mencapai 70–80. Ini menjadikan sorgum pilihan cerdas bagi penderita diabetes tipe 2, prediabetes, serta siapa saja yang ingin menjaga berat badan ideal."
+        },
+        {
+          "type": "text",
+          "content": "Mengapa GI Rendah Itu Penting?"
+        },
+        {
+          "type": "text",
+          "content": "Konsumsi makanan GI rendah secara konsisten membantu:"
+        },
+        {
+          "type": "text",
+          "content": "Menjaga kadar gula darah tetap stabil sepanjang hari.\nMengurangi risiko resistensi insulin.\nMenunda rasa lapar dan mengurangi ngemil berlebihan.\nMemberikan energi berkelanjutan untuk aktivitas.\nMendukung program penurunan berat badan."
+        },
+        {
+          "type": "text",
+          "content": "Peran Serat dalam Mengontrol Gula Darah"
+        },
+        {
+          "type": "text",
+          "content": "Kandungan serat pangan pada sorgum juga berperan penting. Serat memperlambat penyerapan gula di usus, mengurangi lonjakan glukosa setelah makan, serta memberikan rasa kenyang lebih lama. Hal ini membantu mengontrol nafsu makan dan mencegah makan berlebihan."
+        },
+        {
+          "type": "text",
+          "content": "Antioksidan dan Perlindungan Sel"
+        },
+        {
+          "type": "text",
+          "content": "Selain itu, sorgum kaya akan polifenol dan antioksidan yang membantu melindungi sel tubuh dari kerusakan oksidatif. Konsumsi rutin sorgum sebagai pengganti sebagian nasi dapat menjadi langkah sederhana namun efektif dalam menjaga kadar gula darah tetap stabil dan mendukung kesehatan metabolik jangka panjang."
+        },
+        {
+          "type": "text",
+          "content": "Cara Mengganti Beras dengan Sorgum"
+        },
+        {
+          "type": "text",
+          "content": "Mulailah secara bertahap:"
+        },
+        {
+          "type": "text",
+          "content": "1. Campurkan 30% sorgum dengan 70% beras putih.\n2. Tingkatkan porsi sorgum hingga 50% seiring adaptasi.\n3. Gunakan tepung sorgum untuk roti dan kue favorit.\n4. Nikmati bubur sorgum sebagai menu sarapan sehat."
+        },
+        {
+          "type": "text",
+          "content": "Pilihan Tepat untuk Gula Darah Stabil"
+        },
+        {
+          "type": "text",
+          "content": "Sorgum Putih Premium dan Sorgum Merah Organik BESTARI adalah pilihan tepat untuk Anda yang ingin menjaga kadar gula darah tetap stabil tanpa mengorbankan kenikmatan makan. Keduanya ditanam organik, dipanen berkualitas, dan dikemas higienis. Pesan sekarang dan kendalikan gula darah Anda dengan cara yang menyehatkan dan lezat."
         }
       ],
-      "excerpt": "Penjelasan ilmiah mengenai mengapa sorghum sangat direkomendasikan bagi penderita diabetes dan mereka yang menjaga kadar gula darah.",
+      "excerpt": "Apa itu indeks glikemik rendah dan mengapa sorgum jadi pilihan terbaik untuk gula darah stabil, diabetes, dan penurunan berat badan.",
       "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuAh5o959jhbN3WAEQeFnpCBu3rXVlovo0i8uV_YZMoQSMfZrXwc6MNO1aoPP4RKAm1IPaxknmQagSnVSs5r_pO_bHrgnV3KYfCIQoeq0eHUye1GYQshy9xQa34RpNFex9deQAMHct3qs_d4vvkBT7HIIeMl08ueRRmNuJvgIkd_zy0yfGbBH5fy70xa_9JhRAm8M4tgEIGHCUGXKo5bf-_pY-h8dV94RLm808QVTcuDEM42TqGWdiXsKA",
       "is_published": 1,
       "published_at": "2023-09-02T01:00:00.000Z",
-      "author": "Dr. Rina Wati",
-      "author_role": "M.Gizi, Konsultan Nutrisi",
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-07T06:42:58.000Z",
+      "author": "Tim Bestari",
+      "author_role": "Editor",
       "read_time": "4 Menit Baca",
       "sub_image": null,
       "quote": null,
@@ -410,47 +1293,480 @@
       "title": "Sorghum: Jejak Sejarah yang Terlupakan",
       "slug": "sorghum-jejak-sejarah-yang-terlupakan",
       "category": "Budidaya",
-      "content": "Sebelum maraknya dominasi beras di abad ke-20, sorghum atau cantel merupakan salah satu makanan pokok penting di banyak wilayah kering di Nusantara. Relief di candi Borobudur bahkan menggambarkan tanaman sorgum sebagai bagian dari kekayaan flora Nusantara.\n\nKini, revitalisasi sorghum membuka lembaran baru sejarah keanekaragaman pangan Indonesia.",
+      "content": "Sebelum maraknya dominasi beras di abad ke-20, sorgum atau cantel merupakan salah satu makanan pokok penting di banyak wilayah kering di Nusantara. Relief di candi Borobudur bahkan menggambarkan tanaman biji-bijian yang diduga kuat sebagai sorgum, menunjukkan bahwa masyarakat Jawa telah mengenalnya sejak abad ke-8. Sejarah panjang ini membuktikan bahwa sorgum bukanlah tanaman asing bagi bangsa Indonesia.\n\nSorgum, Lumbung Pangan Nenek Moyang\n\nSorghum memiliki kemampuan luar biasa beradaptasi dengan lahan kering dan curah hujan rendah, menjadikannya tanaman penyelamat saat musim kemarau panjang melanda. Petani di Nusa Tenggara Timur, Sulawesi Selatan, dan sebagian Jawa Timur secara turun-temurun membudidayakan sorgum sebagai lumbung pangan cadangan. Saat padi gagal panen, sorgum tetap berdiri tegak dan menghasilkan.\n\nSejarah yang Terlupakan\n\nSayangnya, kebijakan pangan nasional yang terpusat pada beras menyebabkan sorgum perlahan ditinggalkan. Padahal, dari perspektif ketahanan pangan, sorgum menawarkan keunggulan yang tak dimiliki komoditas lain: tahan kekeringan, tidak memerlukan irigasi intensif, dan dapat tumbuh di lahan marginal. Pergeseran ini membuat kekayaan pangan lokal kita nyaris terlupakan.\n\nKembalinya Sang Superfood\n\nKini, dengan meningkatnya kesadaran akan pangan berkelanjutan dan kebutuhan diet bebas gluten, sorgum kembali naik daun. Menghidupkan kembali budidaya sorgum bukan sekadar nostalgia, melainkan investasi untuk masa depan pangan yang lebih tangguh di tengah perubahan iklim.\n\nDari ladang kering yang dulu dianggap tandus, sorgum kini diolah menjadi berbagai produk bernilai tinggi: beras sorgum, tepung, hingga nira sorgum yang manis dan menyehatkan.\n\nNira Sorgum: Manisnya Warisan Nusantara\n\nSalah satu olahan sorgum yang paling menarik adalah nira sorgum. Diolah dari batang sorgum yang manis, nira sorgum menjadi pemanis alami yang lebih sehat daripada gula rafinasi. Kandungan glikemiknya yang lebih rendah menjadikannya alternatif menarik bagi Anda yang ingin mengurangi konsumsi gula.\n\nWarisan yang Kembali Hidup\n\nDengan membeli produk sorgum hari ini, Anda tidak hanya mendapatkan makanan sehat, tetapi juga ikut menghidupkan kembali warisan pangan Nusantara. Anda membantu para petani, melestarikan keanekaragaman hayati, dan membangun ketahanan pangan yang lebih kuat untuk generasi mendatang.\n\nJadilah Bagian dari Kebangkitan Sorgum\n\nBESTARI berkomitmen menghidupkan kembali kejayaan sorgum Nusantara melalui produk berkualitas. Coba Nira Sorgum Murni BESTARI sebagai pemanis alami, atau Sorgum Putih Premium untuk kebutuhan harian. Mari bersama-sama menulis ulang sejarah sorgum Indonesia — kali ini sebagai pilihan pangan masa depan yang cerdas dan berkelanjutan.",
       "content_blocks": [
         {
           "type": "text",
-          "content": "Sebelum maraknya dominasi beras di abad ke-20, sorghum atau cantel merupakan salah satu makanan pokok penting di banyak wilayah kering di Nusantara. Relief di candi Borobudur bahkan menggambarkan tanaman sorgum sebagai bagian dari kekayaan flora Nusantara."
+          "content": "Sebelum maraknya dominasi beras di abad ke-20, sorgum atau cantel merupakan salah satu makanan pokok penting di banyak wilayah kering di Nusantara. Relief di candi Borobudur bahkan menggambarkan tanaman biji-bijian yang diduga kuat sebagai sorgum, menunjukkan bahwa masyarakat Jawa telah mengenalnya sejak abad ke-8. Sejarah panjang ini membuktikan bahwa sorgum bukanlah tanaman asing bagi bangsa Indonesia."
         },
         {
           "type": "text",
-          "content": "Kini, revitalisasi sorghum membuka lembaran baru sejarah keanekaragaman pangan Indonesia."
+          "content": "Sorgum, Lumbung Pangan Nenek Moyang"
+        },
+        {
+          "type": "text",
+          "content": "Sorghum memiliki kemampuan luar biasa beradaptasi dengan lahan kering dan curah hujan rendah, menjadikannya tanaman penyelamat saat musim kemarau panjang melanda. Petani di Nusa Tenggara Timur, Sulawesi Selatan, dan sebagian Jawa Timur secara turun-temurun membudidayakan sorgum sebagai lumbung pangan cadangan. Saat padi gagal panen, sorgum tetap berdiri tegak dan menghasilkan."
+        },
+        {
+          "type": "text",
+          "content": "Sejarah yang Terlupakan"
+        },
+        {
+          "type": "text",
+          "content": "Sayangnya, kebijakan pangan nasional yang terpusat pada beras menyebabkan sorgum perlahan ditinggalkan. Padahal, dari perspektif ketahanan pangan, sorgum menawarkan keunggulan yang tak dimiliki komoditas lain: tahan kekeringan, tidak memerlukan irigasi intensif, dan dapat tumbuh di lahan marginal. Pergeseran ini membuat kekayaan pangan lokal kita nyaris terlupakan."
+        },
+        {
+          "type": "text",
+          "content": "Kembalinya Sang Superfood"
+        },
+        {
+          "type": "text",
+          "content": "Kini, dengan meningkatnya kesadaran akan pangan berkelanjutan dan kebutuhan diet bebas gluten, sorgum kembali naik daun. Menghidupkan kembali budidaya sorgum bukan sekadar nostalgia, melainkan investasi untuk masa depan pangan yang lebih tangguh di tengah perubahan iklim."
+        },
+        {
+          "type": "text",
+          "content": "Dari ladang kering yang dulu dianggap tandus, sorgum kini diolah menjadi berbagai produk bernilai tinggi: beras sorgum, tepung, hingga nira sorgum yang manis dan menyehatkan."
+        },
+        {
+          "type": "text",
+          "content": "Nira Sorgum: Manisnya Warisan Nusantara"
+        },
+        {
+          "type": "text",
+          "content": "Salah satu olahan sorgum yang paling menarik adalah nira sorgum. Diolah dari batang sorgum yang manis, nira sorgum menjadi pemanis alami yang lebih sehat daripada gula rafinasi. Kandungan glikemiknya yang lebih rendah menjadikannya alternatif menarik bagi Anda yang ingin mengurangi konsumsi gula."
+        },
+        {
+          "type": "text",
+          "content": "Warisan yang Kembali Hidup"
+        },
+        {
+          "type": "text",
+          "content": "Dengan membeli produk sorgum hari ini, Anda tidak hanya mendapatkan makanan sehat, tetapi juga ikut menghidupkan kembali warisan pangan Nusantara. Anda membantu para petani, melestarikan keanekaragaman hayati, dan membangun ketahanan pangan yang lebih kuat untuk generasi mendatang."
+        },
+        {
+          "type": "text",
+          "content": "Jadilah Bagian dari Kebangkitan Sorgum"
+        },
+        {
+          "type": "text",
+          "content": "BESTARI berkomitmen menghidupkan kembali kejayaan sorgum Nusantara melalui produk berkualitas. Coba Nira Sorgum Murni BESTARI sebagai pemanis alami, atau Sorgum Putih Premium untuk kebutuhan harian. Mari bersama-sama menulis ulang sejarah sorgum Indonesia — kali ini sebagai pilihan pangan masa depan yang cerdas dan berkelanjutan."
         }
       ],
-      "excerpt": "Menelusuri sejarah sorghum di nusantara, dari tanaman pangan utama hingga posisinya yang mulai kembali diperhitungkan dalam ekonomi modern.",
+      "excerpt": "Sebelum beras mendominasi, sorgum adalah makanan pokok Nusantara — kini kembali relevan untuk ketahanan pangan masa depan.",
       "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuB-5o9-XbQB38iqcCd5H7EzCbzBfIXEGXP06KKUq3h-Gr8wFzU4lS6kPoD5FGvrwAwrUe1riwP-DHEb8-Lytp58igCD6Nme-MOBtRMKiflVcvT6_d_oLlZfdX6Cx-kK7gOQillh1EubxF8O-9Vcq9236psgOUQp5lFhzYq-RIyb6M83Gylh0DKFCxRr-ckFrLjWu5Y5ALJvCLzdPfnVqBkD2JW513WVDAObk-9QggWi9fx2Gss4MXvoxA",
       "is_published": 1,
       "published_at": "2023-08-20T01:00:00.000Z",
-      "author": "Tim Sejarah Bestari",
-      "author_role": "Peneliti Pangan Nusantara",
-      "read_time": "10 Menit Baca",
+      "created_at": "2026-08-02T13:06:24.000Z",
+      "updated_at": "2026-09-07T06:42:58.000Z",
+      "author": "Tim Bestari",
+      "author_role": "Editor",
+      "read_time": "4 Menit Baca",
       "sub_image": null,
       "quote": null,
       "facts": null
     },
     {
-      "id": 6,
-      "title": "Masa Depan Berkelanjutan dengan BESTARI",
-      "slug": "masa-depan-berkelanjutan-dengan-bestari",
-      "category": "Inspirasi",
-      "content": "Inovasi pangan berkelanjutan adalah jantung dari pengembagan produk BESTARI. Dengan meminimalkan jejak karbon melalui rantai pasok lokal dan kemasan ramah lingkungan, kami memastikan setiap produk memberikan dampak positif bagi alam dan kesehatan.",
+      "id": 30,
+      "title": "Mengenal Sorgum: Superfood Indonesia yang Perlu Anda Ketahui",
+      "slug": "mengenal-sorgum-superfood-1787563765",
+      "category": "Informasi",
+      "content": "Di tengah kesadaran akan pangan sehat yang semakin meningkat, sorgum muncul sebagai bintang baru yang patut diperhitungkan. Tanaman biji-bijian yang satu ini bukanlah pendatang baru di Indonesia — ia telah tumbuh dan dimanfaatkan nenek moyang kita selama ratusan tahun. Kini, sorgum kembali naik daun sebagai superfood yang ramah lingkungan dan kaya manfaat.\n\nApa Itu Sorgum?\n\nSorgum (Sorghum bicolor) adalah tanaman serealia kuno yang tumbuh subur di iklim tropis dan semi-kering. Biji-bijiannya berukuran kecil dan bulat, dengan warna bervariasi dari putih, kuning, merah, hingga cokelat gelap. Karena ketahanannya yang luar biasa terhadap kekeringan, sorgum menjadi tanaman pangan strategis di berbagai belahan dunia.\n\nMengapa Sorgum Disebut Superfood?\n\n1. Bebas Gluten — Aman dikonsumsi penderita celiac disease dan sensitivitas gluten.\n2. Indeks Glikemik Rendah (GI 50) — Membantu mengontrol kadar gula darah, ideal untuk diabetes.\n3. Kaya Serat — Mendukung pencernaan sehat dan menurunkan kolesterol.\n4. Antioksidan Tinggi — Terutama pada sorgum merah yang kaya polifenol dan tanin.\n5. Sumber Mineral — Mengandung zat besi, magnesium, fosfor, dan zinc.\n6. Ramah Lingkungan — Membutuhkan air 30% lebih sedikit dibandingkan padi.\n\nSorgum, Jawaban Ketahanan Pangan Nasional\n\nKementerian Pertanian telah menjadikan sorgum sebagai salah satu tanaman pangan strategis untuk mendukung ketahanan pangan Indonesia. Program diversifikasi pangan, yang mendorong konsumsi pengganti beras, telah digencarkan di berbagai daerah. Ketahanan sorgum terhadap kekeringan membuatnya andal dipanen bahkan di musim kemarau panjang.\n\nRagam Olahan Sorgum yang Lezat\n\nSorgum sangat serbaguna. Bisa diolah menjadi:\n\nBeras sorgum — pengganti nasi yang pulen dan sehat.\nTepung sorgum — bahan baku roti, kue, dan pasta bebas gluten.\nPopcorn sorgum — camilan sehat ukuran kecil yang renyah.\nNira sorgum — pemanis alami kaya nutrisi.\n\nDi Meja Makan Anda\n\nTeksturnya yang kenyal dan rasa ringan membuat sorgum mudah dikombinasikan dengan berbagai resep, dari menu tradisional hingga kreasi modern. Sebagai langkah awal, campurkan sorgum dengan beras putih, atau gunakan tepung sorgum untuk membuat kue-kue favorit keluarga.\n\nBESTARI, Sahabat Sorgum Indonesia\n\nBESTARI hadir untuk memperkenalkan sorgum kepada masyarakat luas melalui produk olahan organik berkualitas tinggi yang praktis dan lezat. Mulai dari Beras Sorgum Putih Premium, Sorgum Merah Organik, hingga Tepung Sorgum Whole Grain — semuanya diproduksi dengan cinta oleh petani lokal Indonesia. Jadikan sorgum bagian dari pola makan sehat keluarga Anda sekarang.",
       "content_blocks": [
         {
+          "id": "blk-mts13j3r-crst1",
           "type": "text",
-          "content": "Inovasi pangan berkelanjutan adalah jantung dari pengembagan produk BESTARI. Dengan meminimalkan jejak karbon melalui rantai pasok lokal dan kemasan ramah lingkungan, kami memastikan setiap produk memberikan dampak positif bagi alam dan kesehatan."
+          "content": "Di tengah kesadaran akan pangan sehat yang semakin meningkat, sorgum muncul sebagai bintang baru yang patut diperhitungkan. Tanaman biji-bijian yang satu ini bukanlah pendatang baru di Indonesia — ia telah tumbuh dan dimanfaatkan nenek moyang kita selama ratusan tahun. Kini, sorgum kembali naik daun sebagai superfood yang ramah lingkungan dan kaya manfaat."
+        },
+        {
+          "id": "blk-mts13j3r-4ozh5",
+          "type": "text",
+          "content": "Apa Itu Sorgum?"
+        },
+        {
+          "id": "blk-mts13j3r-d3012",
+          "type": "text",
+          "content": "Sorgum (Sorghum bicolor) adalah tanaman serealia kuno yang tumbuh subur di iklim tropis dan semi-kering. Biji-bijiannya berukuran kecil dan bulat, dengan warna bervariasi dari putih, kuning, merah, hingga cokelat gelap. Karena ketahanannya yang luar biasa terhadap kekeringan, sorgum menjadi tanaman pangan strategis di berbagai belahan dunia."
+        },
+        {
+          "id": "blk-mts13j3r-rxvm9",
+          "type": "text",
+          "content": "Mengapa Sorgum Disebut Superfood?"
+        },
+        {
+          "id": "blk-mts13j3r-g4308",
+          "type": "text",
+          "content": "1. Bebas Gluten — Aman dikonsumsi penderita celiac disease dan sensitivitas gluten.\n2. Indeks Glikemik Rendah (GI 50) — Membantu mengontrol kadar gula darah, ideal untuk diabetes.\n3. Kaya Serat — Mendukung pencernaan sehat dan menurunkan kolesterol.\n4. Antioksidan Tinggi — Terutama pada sorgum merah yang kaya polifenol dan tanin.\n5. Sumber Mineral — Mengandung zat besi, magnesium, fosfor, dan zinc.\n6. Ramah Lingkungan — Membutuhkan air 30% lebih sedikit dibandingkan padi."
+        },
+        {
+          "id": "blk-mts13j3r-x2g1s",
+          "type": "text",
+          "content": "Sorgum, Jawaban Ketahanan Pangan Nasional"
+        },
+        {
+          "id": "blk-mts13j3r-y0jvt",
+          "type": "text",
+          "content": "Kementerian Pertanian telah menjadikan sorgum sebagai salah satu tanaman pangan strategis untuk mendukung ketahanan pangan Indonesia. Program diversifikasi pangan, yang mendorong konsumsi pengganti beras, telah digencarkan di berbagai daerah. Ketahanan sorgum terhadap kekeringan membuatnya andal dipanen bahkan di musim kemarau panjang."
+        },
+        {
+          "id": "blk-mts13j3r-fjau7",
+          "type": "text",
+          "content": "Ragam Olahan Sorgum yang Lezat"
+        },
+        {
+          "id": "blk-mts13j3r-9z8eu",
+          "type": "text",
+          "content": "Sorgum sangat serbaguna. Bisa diolah menjadi:"
+        },
+        {
+          "id": "blk-mts13j3r-5m9sk",
+          "type": "text",
+          "content": "Beras sorgum — pengganti nasi yang pulen dan sehat.\nTepung sorgum — bahan baku roti, kue, dan pasta bebas gluten.\nPopcorn sorgum — camilan sehat ukuran kecil yang renyah.\nNira sorgum — pemanis alami kaya nutrisi."
+        },
+        {
+          "id": "blk-mts13j3r-1mjr9",
+          "type": "text",
+          "content": "Di Meja Makan Anda"
+        },
+        {
+          "id": "blk-mts13j3r-fkmz1",
+          "type": "text",
+          "content": "Teksturnya yang kenyal dan rasa ringan membuat sorgum mudah dikombinasikan dengan berbagai resep, dari menu tradisional hingga kreasi modern. Sebagai langkah awal, campurkan sorgum dengan beras putih, atau gunakan tepung sorgum untuk membuat kue-kue favorit keluarga."
+        },
+        {
+          "id": "blk-mts13j3r-a1sfz",
+          "type": "text",
+          "content": "BESTARI, Sahabat Sorgum Indonesia"
+        },
+        {
+          "id": "blk-mts13j3r-l2tvj",
+          "type": "text",
+          "content": "BESTARI hadir untuk memperkenalkan sorgum kepada masyarakat luas melalui produk olahan organik berkualitas tinggi yang praktis dan lezat. Mulai dari Beras Sorgum Putih Premium, Sorgum Merah Organik, hingga Tepung Sorgum Whole Grain — semuanya diproduksi dengan cinta oleh petani lokal Indonesia. Jadikan sorgum bagian dari pola makan sehat keluarga Anda sekarang."
         }
       ],
-      "excerpt": "Bagaimana visi BESTARI dalam menciptakan ekosistem pangan yang tidak hanya sehat bagi konsumen, tetapi juga ramah bagi bumi.",
-      "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuD-9bJk2rqAziBbwuSlpCqsuLtRlnjmXr2kQNqbuxPxap-mpe-kwRkZ4geiGi0QAmDUaSuftNPX6faSuVhUmx6M1Iyynf-lIJkbJ7uTAMgJ1HF0hwOyfP9NuI4AfjIvCa-708ejAAUmGkRHqIUgfcYZKMmzyXhz2XBDCktAwsaE2uKP1n96Uce_RjwklTkI2PMzkEvvy3OXDHE7cm8AqXKKNLJvcHQY6Bv-lENnifdjN7m7hWK2Q_ojGA",
+      "excerpt": "Di tengah kesadaran akan pangan sehat yang semakin meningkat, sorgum muncul sebagai bintang baru yang patut diperhitungkan. Tanaman biji-bijian yang s",
+      "image_url": "/uploads/7370252eef142c21cdc922aaae2a5feb.png",
       "is_published": 1,
-      "published_at": "2023-08-05T01:00:00.000Z",
-      "author": "Redaksi Bestari",
-      "author_role": "Tim Keberlanjutan",
-      "read_time": "7 Menit Baca",
+      "published_at": "2026-08-24T09:29:26.000Z",
+      "created_at": "2026-08-24T09:29:25.000Z",
+      "updated_at": "2026-09-08T02:06:45.000Z",
+      "author": "Tim Sorgum",
+      "author_role": null,
+      "read_time": null,
+      "sub_image": null,
+      "quote": null,
+      "facts": null
+    },
+    {
+      "id": 31,
+      "title": "Manfaat Sorgum untuk Kesehatan: Panduan Lengkap",
+      "slug": "manfaat-sorgum-kesehatan-1787563766",
+      "category": "Nutrisi",
+      "content": "Sorgum adalah salah satu biji-bijian paling menyehatkan di dunia, namun sering luput dari perhatian. Di balik penampilannya yang sederhana, biji-bijian kuno ini menyimpan kekuatan nutrisi yang luar biasa. Dalam panduan lengkap ini, kami mengupas tuntas manfaat kesehatan sorgum yang didukung oleh penelitian ilmiah.\n\n1. Mengontrol Gula Darah dengan Indeks Glikemik Rendah\n\nSalah satu keunggulan sorgum yang paling didambakan adalah indeks glikemik (GI) yang rendah, sekitar 50–55. Berbeda dengan nasi putih yang memiliki GI tinggi hingga 73, sorgum dicerna perlahan sehingga gula darah naik secara bertahap, bukan melonjak. Ini sangat penting bagi penderita diabetes tipe 2 dan prediabetes, sekaligus membantu menjaga energi tetap stabil sepanjang hari.\n\n2. Menjaga Kesehatan Jantung\n\nSorgum merah mengandung antioksidan tinggi, termasuk asam ferulat dan tanin. Berbagai studi menunjukkan antioksidan ini membantu menurunkan kolesterol jahat (LDL), mengurangi peradangan, dan melindungi pembuluh darah — semuanya bermuara pada kesehatan jantung yang lebih baik.\n\n3. Melancarkan Pencernaan dengan Serat Tinggi\n\nSatu porsi sorgum menyediakan sekitar 6 gram serat, hampir seperlima kebutuhan harian Anda. Serat larut dan tidak larut bekerja sama menjaga kesehatan usus, mencegah sembelit, memperlancar BAB, dan menjadi prebiotik bagi bakteri baik di saluran pencernaan.\n\n4. Bebas Gluten, Aman untuk Semua\n\nSorgum secara alami bebas gluten, menjadikannya alternatif sempurna bagi penderita celiac disease maupun mereka yang sensitif terhadap gluten. Tidak seperti gandum, sorgum tidak menyebabkan peradangan pada usus kecil. Anda tetap bisa menikmati makanan kesukaan tanpa khawatir.\n\n5. Kaya Mineral Penting\n\nZat Besi — mencegah anemia dan menjaga kadar hemoglobin.\nMagnesium — mendukung kesehatan tulang, otot, dan saraf.\nFosfor — penting untuk pembentukan tulang dan gigi yang kuat.\nZinc — memperkuat imunitas tubuh dan mempercepat penyembuhan luka.\n\n6. Mendukung Manajemen Berat Badan\n\nKombinasi serat tinggi dan rasa kenyang yang lebih lama membuat sorgum menjadi sekutu ideal dalam program diet. Anda makan lebih sedikit tanpa merasa lapar, mengurangi keinginan ngemil berlebihan, dan menjaga asupan kalori tetap terkendali.\n\n7. Melawan Radikal Bebas dengan Antioksidan\n\nPolifenol dalam sorgum, terutama pada sorgum merah, membantu melindungi sel tubuh dari kerusakan oksidatif yang menjadi pemicu penuaan dini dan penyakit kronis.\n\nCara Terbaik Mengonsumsi Sorgum\n\nUntuk mendapatkan manfaat maksimal, rendam sorgum semalam terlebih dahulu guna mengurangi asam fitat yang menghambat penyerapan mineral. Masak dengan rasio 1 : 2,5 selama 25–30 menit, lalu kombinasikan dengan sayuran dan protein untuk menu yang seimbang.\n\nPilih Sorgum Berkualitas dari BESTARI\n\nManfaat di atas hanya bisa Anda rasakan jika sorgum yang dikonsumsi berkualitas baik. BESTARI menghadirkan Sorgum Putih Premium dan Sorgum Merah Organik yang ditanam tanpa pestisida berbahaya oleh petani lokal Indonesia, dikeringkan dengan higienis, dan dikemas untuk menjaga kesegaran. Pesan sekarang dan mulai perjalanan sehat Anda hari ini.",
+      "content_blocks": [
+        {
+          "id": "blk-mts146on-jr59t",
+          "type": "text",
+          "content": "Sorgum adalah salah satu biji-bijian paling menyehatkan di dunia, namun sering luput dari perhatian. Di balik penampilannya yang sederhana, biji-bijian kuno ini menyimpan kekuatan nutrisi yang luar biasa. Dalam panduan lengkap ini, kami mengupas tuntas manfaat kesehatan sorgum yang didukung oleh penelitian ilmiah."
+        },
+        {
+          "id": "blk-mts146on-7gyqs",
+          "type": "text",
+          "content": "1. Mengontrol Gula Darah dengan Indeks Glikemik Rendah"
+        },
+        {
+          "id": "blk-mts146on-ivfaf",
+          "type": "text",
+          "content": "Salah satu keunggulan sorgum yang paling didambakan adalah indeks glikemik (GI) yang rendah, sekitar 50–55. Berbeda dengan nasi putih yang memiliki GI tinggi hingga 73, sorgum dicerna perlahan sehingga gula darah naik secara bertahap, bukan melonjak. Ini sangat penting bagi penderita diabetes tipe 2 dan prediabetes, sekaligus membantu menjaga energi tetap stabil sepanjang hari."
+        },
+        {
+          "id": "blk-mts146on-ze5vg",
+          "type": "text",
+          "content": "2. Menjaga Kesehatan Jantung"
+        },
+        {
+          "id": "blk-mts146on-upf0p",
+          "type": "text",
+          "content": "Sorgum merah mengandung antioksidan tinggi, termasuk asam ferulat dan tanin. Berbagai studi menunjukkan antioksidan ini membantu menurunkan kolesterol jahat (LDL), mengurangi peradangan, dan melindungi pembuluh darah — semuanya bermuara pada kesehatan jantung yang lebih baik."
+        },
+        {
+          "id": "blk-mts146on-xvd81",
+          "type": "text",
+          "content": "3. Melancarkan Pencernaan dengan Serat Tinggi"
+        },
+        {
+          "id": "blk-mts146on-kpi8q",
+          "type": "text",
+          "content": "Satu porsi sorgum menyediakan sekitar 6 gram serat, hampir seperlima kebutuhan harian Anda. Serat larut dan tidak larut bekerja sama menjaga kesehatan usus, mencegah sembelit, memperlancar BAB, dan menjadi prebiotik bagi bakteri baik di saluran pencernaan."
+        },
+        {
+          "id": "blk-mts146on-g6ni2",
+          "type": "text",
+          "content": "4. Bebas Gluten, Aman untuk Semua"
+        },
+        {
+          "id": "blk-mts146on-w8ybq",
+          "type": "text",
+          "content": "Sorgum secara alami bebas gluten, menjadikannya alternatif sempurna bagi penderita celiac disease maupun mereka yang sensitif terhadap gluten. Tidak seperti gandum, sorgum tidak menyebabkan peradangan pada usus kecil. Anda tetap bisa menikmati makanan kesukaan tanpa khawatir."
+        },
+        {
+          "id": "blk-mts146on-ha4al",
+          "type": "text",
+          "content": "5. Kaya Mineral Penting"
+        },
+        {
+          "id": "blk-mts146on-utihq",
+          "type": "text",
+          "content": "Zat Besi — mencegah anemia dan menjaga kadar hemoglobin.\nMagnesium — mendukung kesehatan tulang, otot, dan saraf.\nFosfor — penting untuk pembentukan tulang dan gigi yang kuat.\nZinc — memperkuat imunitas tubuh dan mempercepat penyembuhan luka."
+        },
+        {
+          "id": "blk-mts146on-fhz57",
+          "type": "text",
+          "content": "6. Mendukung Manajemen Berat Badan"
+        },
+        {
+          "id": "blk-mts146on-zwxud",
+          "type": "text",
+          "content": "Kombinasi serat tinggi dan rasa kenyang yang lebih lama membuat sorgum menjadi sekutu ideal dalam program diet. Anda makan lebih sedikit tanpa merasa lapar, mengurangi keinginan ngemil berlebihan, dan menjaga asupan kalori tetap terkendali."
+        },
+        {
+          "id": "blk-mts146on-j3vui",
+          "type": "text",
+          "content": "7. Melawan Radikal Bebas dengan Antioksidan"
+        },
+        {
+          "id": "blk-mts146on-8cd8i",
+          "type": "text",
+          "content": "Polifenol dalam sorgum, terutama pada sorgum merah, membantu melindungi sel tubuh dari kerusakan oksidatif yang menjadi pemicu penuaan dini dan penyakit kronis."
+        },
+        {
+          "id": "blk-mts146on-ppje7",
+          "type": "text",
+          "content": "Cara Terbaik Mengonsumsi Sorgum"
+        },
+        {
+          "id": "blk-mts146on-2nccd",
+          "type": "text",
+          "content": "Untuk mendapatkan manfaat maksimal, rendam sorgum semalam terlebih dahulu guna mengurangi asam fitat yang menghambat penyerapan mineral. Masak dengan rasio 1 : 2,5 selama 25–30 menit, lalu kombinasikan dengan sayuran dan protein untuk menu yang seimbang."
+        },
+        {
+          "id": "blk-mts146on-ilxz9",
+          "type": "text",
+          "content": "Pilih Sorgum Berkualitas dari BESTARI"
+        },
+        {
+          "id": "blk-mts146on-fy7u7",
+          "type": "text",
+          "content": "Manfaat di atas hanya bisa Anda rasakan jika sorgum yang dikonsumsi berkualitas baik. BESTARI menghadirkan Sorgum Putih Premium dan Sorgum Merah Organik yang ditanam tanpa pestisida berbahaya oleh petani lokal Indonesia, dikeringkan dengan higienis, dan dikemas untuk menjaga kesegaran. Pesan sekarang dan mulai perjalanan sehat Anda hari ini."
+        }
+      ],
+      "excerpt": "Sorgum adalah salah satu biji-bijian paling menyehatkan di dunia, namun sering luput dari perhatian. Di balik penampilannya yang sederhana, biji-bijia",
+      "image_url": "/uploads/d19304708bf36f2adea7f744d2b750da.jpeg",
+      "is_published": 1,
+      "published_at": "2026-08-24T09:29:26.000Z",
+      "created_at": "2026-08-24T09:29:25.000Z",
+      "updated_at": "2026-09-08T02:07:25.000Z",
+      "author": "Tim Sorgum",
+      "author_role": null,
+      "read_time": null,
+      "sub_image": null,
+      "quote": null,
+      "facts": null
+    },
+    {
+      "id": 32,
+      "title": "Resep Sederhana: Cara Memasak Beras Sorgum yang Lezat",
+      "slug": "resep-memasak-beras-sorgum-1787563767",
+      "category": "Resep",
+      "content": "Beras sorgum kini menjadi favorit baru di dapur Indonesia, dan tidak heran mengapa. Teksturnya yang kenyal, rasa yang netral, dan segudang manfaat kesehatan menjadikannya pengganti nasi putih yang luar biasa. Tapi banyak orang masih ragu: bagaimana cara memasaknya agar tidak keras atau lembek?\n\nDalam artikel ini, kami mengajak Anda menguasai teknik memasak beras sorgum yang benar dari nol — dijamin pulen dan lezat setiap kali masak.\n\nKenapa Harus Beras Sorgum?\n\nBeras sorgum bukan sekadar \"pengganti nasi\". Ia adalah peningkatan kualitas makanan di piring Anda. Dengan indeks glikemik rendah (sekitar 50–55, jauh di bawah nasi putih yang mencapai 70+), sorgum membantu menjaga gula darah tetap stabil sepanjang hari. Tak heran banyak ahli gizi merekomendasikannya untuk penderita diabetes, pelaku diet, bahkan atlet yang butuh energi tahan lama.\n\nKandungan seratnya yang tinggi (lebih dari 5 gram per porsi) membuat Anda kenyang lebih lama sekaligus menyehatkan saluran pencernaan. Tambahan lagi, sorgum bebas gluten secara alami sehingga aman untuk semua orang.\n\nBahan dan Alat yang Dibutuhkan\n\nUntuk menyajikan beras sorgum pulen untuk 2 porsi, siapkan:\n\n200 gram Beras Sorgum Putih Premium BESTARI\n500 ml air bersih (rasio 1 : 2,5)\n1/2 sendok teh garam (opsional)\nRice cooker atau panci bertutup\nSaringan & wadah untuk merendam\n\nLangkah Demi Langkah: Beras Sorgum yang Sempurna\n\n1. Cuci beras sorgum 2–3 kali hingga air bilasan jernih. Ini menghilangkan debu dan pati berlebih.\n2. Rendam dalam air bersih selama 30–60 menit. Merendam membuat tekstur akhir jauh lebih pulen dan mempercepat proses memasak.\n3. Tiriskan air rendaman, lalu masukkan beras sorgum ke rice cooker atau panci.\n4. Tuang 500 ml air bersih, tambahkan sedikit garam bila suka, lalu aduk rata.\n5. Masak dengan mode normal. Jika menggunakan panci, gunakan api kecil selama 25–30 menit.\n6. Setelah matang, diamkan selama 5 menit sebelum diaduk dengan garpu agar uap tersebar rata.\n7. Sajikan hangat bersama lauk kesukaan Anda.\n\nResep Andalan: Nasi Goreng Sorgum Spesial\n\nBeras sorgum dingin semalaman adalah bahan terbaik untuk nasi goreng — butirannya tidak akan lembek atau menggumpal. Inilah cara membuatnya:\n\nBahan:\n300 gram beras sorgum matang (dingin)\n2 butir telur\n2 siung bawang putih, cincang halus\n3 sdm kecap manis\n1 sdm saus sambal (sesuaikan selera)\nGaram, merica, dan kaldu bubuk secukupnya\nMinyak goreng dan daun bawang untuk taburan\n\nCara membuat:\n1. Panaskan minyak, tumis bawang putih hingga harum. Masukkan telur, orak-arik hingga matang.\n2. Masukkan beras sorgum dingin, aduk rata dengan api besar.\n3. Bumbui dengan kecap manis, saus sambal, garam, merica, dan kaldu.\n4. Aduk terus hingga semua bumbu meresap dan butiran sorgum sedikit garing.\n5. Taburi daun bawang, angkat, dan sajikan selagi hangat.\n\nTips Memasak Sorgum ala Profesional\n\nUntuk bubur sorgum yang lembut, gunakan rasio air 1 : 4 dan masak lebih lama.\nCampurkan 30% sorgum dengan 70% beras putih sebagai pengenalan bertahap bagi anak-anak.\nTambahkan daun pandan atau serai saat merebus untuk aroma yang lebih harum.\nSorgum panggang: campur sorgum matang dengan telur, keju parut, dan sayuran, panggang 180°C selama 20 menit — renyah di luar, lembut di dalam.\n\nSiap Memulai Perjalanan Sehat Anda?\n\nBeras sorgum mudah dimasak, serbaguna, dan kaya gizi. Semua resep di atas bisa langsung Anda praktikkan hari ini menggunakan Beras Sorgum Putih Premium BESTARI yang ditanam organik oleh petani lokal Indonesia. Klik tombol di bawah untuk memesan dan rasakan bedanya di dapur Anda.",
+      "content_blocks": [
+        {
+          "id": "blk-mts135gq-8e89c",
+          "type": "text",
+          "content": "Beras sorgum kini menjadi favorit baru di dapur Indonesia, dan tidak heran mengapa. Teksturnya yang kenyal, rasa yang netral, dan segudang manfaat kesehatan menjadikannya pengganti nasi putih yang luar biasa. Tapi banyak orang masih ragu: bagaimana cara memasaknya agar tidak keras atau lembek?"
+        },
+        {
+          "id": "blk-mts135gq-7k0zk",
+          "type": "text",
+          "content": "Dalam artikel ini, kami mengajak Anda menguasai teknik memasak beras sorgum yang benar dari nol — dijamin pulen dan lezat setiap kali masak."
+        },
+        {
+          "id": "blk-mts135gq-1rvmx",
+          "type": "text",
+          "content": "Kenapa Harus Beras Sorgum?"
+        },
+        {
+          "id": "blk-mts135gq-0jnlx",
+          "type": "text",
+          "content": "Beras sorgum bukan sekadar \"pengganti nasi\". Ia adalah peningkatan kualitas makanan di piring Anda. Dengan indeks glikemik rendah (sekitar 50–55, jauh di bawah nasi putih yang mencapai 70+), sorgum membantu menjaga gula darah tetap stabil sepanjang hari. Tak heran banyak ahli gizi merekomendasikannya untuk penderita diabetes, pelaku diet, bahkan atlet yang butuh energi tahan lama."
+        },
+        {
+          "id": "blk-mts135gq-5t0lt",
+          "type": "text",
+          "content": "Kandungan seratnya yang tinggi (lebih dari 5 gram per porsi) membuat Anda kenyang lebih lama sekaligus menyehatkan saluran pencernaan. Tambahan lagi, sorgum bebas gluten secara alami sehingga aman untuk semua orang."
+        },
+        {
+          "id": "blk-mts135gq-5wq1o",
+          "type": "text",
+          "content": "Bahan dan Alat yang Dibutuhkan"
+        },
+        {
+          "id": "blk-mts135gq-esy4t",
+          "type": "text",
+          "content": "Untuk menyajikan beras sorgum pulen untuk 2 porsi, siapkan:"
+        },
+        {
+          "id": "blk-mts135gq-cb2zh",
+          "type": "text",
+          "content": "200 gram Beras Sorgum Putih Premium BESTARI\n500 ml air bersih (rasio 1 : 2,5)\n1/2 sendok teh garam (opsional)\nRice cooker atau panci bertutup\nSaringan & wadah untuk merendam"
+        },
+        {
+          "id": "blk-mts135gq-x1otn",
+          "type": "text",
+          "content": "Langkah Demi Langkah: Beras Sorgum yang Sempurna"
+        },
+        {
+          "id": "blk-mts135gq-4khmb",
+          "type": "text",
+          "content": "1. Cuci beras sorgum 2–3 kali hingga air bilasan jernih. Ini menghilangkan debu dan pati berlebih.\n2. Rendam dalam air bersih selama 30–60 menit. Merendam membuat tekstur akhir jauh lebih pulen dan mempercepat proses memasak.\n3. Tiriskan air rendaman, lalu masukkan beras sorgum ke rice cooker atau panci.\n4. Tuang 500 ml air bersih, tambahkan sedikit garam bila suka, lalu aduk rata.\n5. Masak dengan mode normal. Jika menggunakan panci, gunakan api kecil selama 25–30 menit.\n6. Setelah matang, diamkan selama 5 menit sebelum diaduk dengan garpu agar uap tersebar rata.\n7. Sajikan hangat bersama lauk kesukaan Anda."
+        },
+        {
+          "id": "blk-mts135gq-e0dq4",
+          "type": "text",
+          "content": "Resep Andalan: Nasi Goreng Sorgum Spesial"
+        },
+        {
+          "id": "blk-mts135gq-3r6x7",
+          "type": "text",
+          "content": "Beras sorgum dingin semalaman adalah bahan terbaik untuk nasi goreng — butirannya tidak akan lembek atau menggumpal. Inilah cara membuatnya:"
+        },
+        {
+          "id": "blk-mts135gq-fv002",
+          "type": "text",
+          "content": "Bahan:\n300 gram beras sorgum matang (dingin)\n2 butir telur\n2 siung bawang putih, cincang halus\n3 sdm kecap manis\n1 sdm saus sambal (sesuaikan selera)\nGaram, merica, dan kaldu bubuk secukupnya\nMinyak goreng dan daun bawang untuk taburan"
+        },
+        {
+          "id": "blk-mts135gq-byh1m",
+          "type": "text",
+          "content": "Cara membuat:\n1. Panaskan minyak, tumis bawang putih hingga harum. Masukkan telur, orak-arik hingga matang.\n2. Masukkan beras sorgum dingin, aduk rata dengan api besar.\n3. Bumbui dengan kecap manis, saus sambal, garam, merica, dan kaldu.\n4. Aduk terus hingga semua bumbu meresap dan butiran sorgum sedikit garing.\n5. Taburi daun bawang, angkat, dan sajikan selagi hangat."
+        },
+        {
+          "id": "blk-mts135gq-9z3cc",
+          "type": "text",
+          "content": "Tips Memasak Sorgum ala Profesional"
+        },
+        {
+          "id": "blk-mts135gq-ybmgx",
+          "type": "text",
+          "content": "Untuk bubur sorgum yang lembut, gunakan rasio air 1 : 4 dan masak lebih lama.\nCampurkan 30% sorgum dengan 70% beras putih sebagai pengenalan bertahap bagi anak-anak.\nTambahkan daun pandan atau serai saat merebus untuk aroma yang lebih harum.\nSorgum panggang: campur sorgum matang dengan telur, keju parut, dan sayuran, panggang 180°C selama 20 menit — renyah di luar, lembut di dalam."
+        },
+        {
+          "id": "blk-mts135gq-ffynt",
+          "type": "text",
+          "content": "Siap Memulai Perjalanan Sehat Anda?"
+        },
+        {
+          "id": "blk-mts135gq-kraft",
+          "type": "text",
+          "content": "Beras sorgum mudah dimasak, serbaguna, dan kaya gizi. Semua resep di atas bisa langsung Anda praktikkan hari ini menggunakan Beras Sorgum Putih Premium BESTARI yang ditanam organik oleh petani lokal Indonesia. Klik tombol di bawah untuk memesan dan rasakan bedanya di dapur Anda."
+        }
+      ],
+      "excerpt": "Beras sorgum kini menjadi favorit baru di dapur Indonesia, dan tidak heran mengapa. Teksturnya yang kenyal, rasa yang netral, dan segudang manfaat kes",
+      "image_url": "/uploads/3528e66d4b68aa9216119d6c0201bdf8.jpg",
+      "is_published": 1,
+      "published_at": "2026-08-24T09:29:26.000Z",
+      "created_at": "2026-08-24T09:29:26.000Z",
+      "updated_at": "2026-09-08T02:06:33.000Z",
+      "author": "Tim Nutrisi Sorgum",
+      "author_role": null,
+      "read_time": null,
+      "sub_image": null,
+      "quote": null,
+      "facts": null
+    },
+    {
+      "id": 33,
+      "title": "Brownies Sorgum: Camilan Lezat dengan Sentuhan Pangan Lokal",
+      "slug": "brownies-sorgum-camilan-lezat-dengan-sentuhan-pangan-lokal-jtpz",
+      "category": "Promosi",
+      "content": "Brownies sorgum merupakan inovasi olahan pangan yang memadukan kelezatan brownies dengan pemanfaatan sorgum sebagai bahan pangan lokal. Tepung sorgum digunakan sebagai salah satu bahan dalam pembuatan brownies sehingga menghasilkan camilan dengan cita rasa yang khas. Perpaduan rasa cokelat yang kaya dengan tekstur brownies yang lembut membuat produk ini cocok dinikmati oleh berbagai kalangan.\n\nBrownies sorgum memiliki tekstur lembut dan moist dengan aroma cokelat yang menggugah selera. Penggunaan sorgum memberikan karakter tersendiri pada produk tanpa menghilangkan kenikmatan brownies yang familiar. Setiap potongannya cocok dijadikan teman bersantai, hidangan untuk keluarga, maupun camilan saat berkumpul bersama teman.\n\n\"Dari pangan lokal menjadi camilan lezat yang cocok dinikmati kapan saja.\" — Irina Shayk\n\nSorgum merupakan salah satu komoditas pangan yang memiliki potensi untuk dikembangkan menjadi berbagai produk olahan. Melalui brownies sorgum, bahan pangan lokal dapat dihadirkan dalam bentuk yang lebih modern, menarik, dan mudah diterima oleh masyarakat. Inovasi ini juga menjadi salah satu langkah untuk memperkenalkan beragam manfaat dan potensi sorgum kepada konsumen.\n\nCocok untuk Berbagai Kesempatan\n\nBrownies sorgum dapat dinikmati sebagai camilan sehari-hari maupun sebagai pilihan sajian untuk berbagai acara. Rasanya yang manis dengan sentuhan cokelat membuatnya cocok dipadukan dengan teh, kopi, atau minuman favorit lainnya. Produk ini juga dapat menjadi pilihan menarik bagi Anda yang ingin mencoba kreasi baru berbahan dasar pangan lokal.\n\nYuk, Coba Brownies Sorgum!\n\nIngin merasakan brownies dengan sentuhan pangan lokal? Brownies Sorgum dari KWT Melati Sorgum hadir sebagai pilihan camilan yang lezat dan menarik untuk dinikmati bersama keluarga maupun orang-orang terdekat. Kenali lebih jauh produknya dan nikmati cita rasa brownies dengan inovasi berbahan dasar sorgum.",
+      "content_blocks": [
+        {
+          "id": "blk-mts2l7s1-0n3y7",
+          "type": "text",
+          "content": "Brownies sorgum merupakan inovasi olahan pangan yang memadukan kelezatan brownies dengan pemanfaatan sorgum sebagai bahan pangan lokal. Tepung sorgum digunakan sebagai salah satu bahan dalam pembuatan brownies sehingga menghasilkan camilan dengan cita rasa yang khas. Perpaduan rasa cokelat yang kaya dengan tekstur brownies yang lembut membuat produk ini cocok dinikmati oleh berbagai kalangan."
+        },
+        {
+          "id": "blk-mts2l7s1-siq1d",
+          "type": "text",
+          "content": "Brownies sorgum memiliki tekstur lembut dan moist dengan aroma cokelat yang menggugah selera. Penggunaan sorgum memberikan karakter tersendiri pada produk tanpa menghilangkan kenikmatan brownies yang familiar. Setiap potongannya cocok dijadikan teman bersantai, hidangan untuk keluarga, maupun camilan saat berkumpul bersama teman."
+        },
+        {
+          "id": "blk-mts2l7s1-5huc9",
+          "type": "quote",
+          "author": "Irina Shayk",
+          "content": "Dari pangan lokal menjadi camilan lezat yang cocok dinikmati kapan saja."
+        },
+        {
+          "id": "blk-mts2l7s1-9spxt",
+          "type": "text",
+          "content": "Sorgum merupakan salah satu komoditas pangan yang memiliki potensi untuk dikembangkan menjadi berbagai produk olahan. Melalui brownies sorgum, bahan pangan lokal dapat dihadirkan dalam bentuk yang lebih modern, menarik, dan mudah diterima oleh masyarakat. Inovasi ini juga menjadi salah satu langkah untuk memperkenalkan beragam manfaat dan potensi sorgum kepada konsumen."
+        },
+        {
+          "id": "blk-mts2l7s1-r3pgy",
+          "type": "text",
+          "content": "Cocok untuk Berbagai Kesempatan\n\nBrownies sorgum dapat dinikmati sebagai camilan sehari-hari maupun sebagai pilihan sajian untuk berbagai acara. Rasanya yang manis dengan sentuhan cokelat membuatnya cocok dipadukan dengan teh, kopi, atau minuman favorit lainnya. Produk ini juga dapat menjadi pilihan menarik bagi Anda yang ingin mencoba kreasi baru berbahan dasar pangan lokal."
+        },
+        {
+          "id": "blk-mts2l7s1-u97xv",
+          "type": "text",
+          "content": "Yuk, Coba Brownies Sorgum!\n\nIngin merasakan brownies dengan sentuhan pangan lokal? Brownies Sorgum dari KWT Melati Sorgum hadir sebagai pilihan camilan yang lezat dan menarik untuk dinikmati bersama keluarga maupun orang-orang terdekat. Kenali lebih jauh produknya dan nikmati cita rasa brownies dengan inovasi berbahan dasar sorgum."
+        }
+      ],
+      "excerpt": "Brownies sorgum merupakan inovasi olahan pangan yang memadukan kelezatan brownies dengan pemanfaatan sorgum sebagai bahan pangan lokal. Tepung sorgum ",
+      "image_url": "/uploads/45ccda1053b9f7672e43a3e0f47964a9.jpg",
+      "is_published": 1,
+      "published_at": "2026-09-08T02:47:15.000Z",
+      "created_at": "2026-09-08T02:47:15.000Z",
+      "updated_at": "2026-09-08T02:49:03.000Z",
+      "author": "Tim KWT Melati ",
+      "author_role": null,
+      "read_time": null,
+      "sub_image": null,
+      "quote": null,
+      "facts": null
+    },
+    {
+      "id": 35,
+      "title": "Keripik Bayam Sorgum: Camilan Renyah dengan Sentuhan Sorgum",
+      "slug": "keripik-bayam-sorgum-camilan-renyah-dengan-sentuhan-sorgum-k7aa",
+      "category": "Nutrisi",
+      "content": "Keripik Bayam Sorgum merupakan inovasi camilan berbahan daun bayam segar dan tepung sorgum yang diolah menjadi keripik renyah dan gurih. Perpaduan bahan lokal ini menghasilkan camilan dengan cita rasa khas yang cocok dinikmati kapan saja, baik sebagai teman bersantai maupun sebagai camilan keluarga.\n\n\"Dari bahan pangan lokal, lahir camilan renyah dengan cita rasa yang istimewa\"\n\nMelalui pengolahan bayam dan sorgum menjadi keripik, produk ini turut menghadirkan alternatif olahan pangan lokal yang praktis dan menarik. Keripik Bayam Sorgum dapat menjadi pilihan bagi masyarakat yang ingin menikmati camilan dengan sentuhan bahan pangan lokal dalam sajian yang modern.",
+      "content_blocks": [
+        {
+          "id": "blk-mttkm822-6snej",
+          "type": "text",
+          "content": "Keripik Bayam Sorgum merupakan inovasi camilan berbahan daun bayam segar dan tepung sorgum yang diolah menjadi keripik renyah dan gurih. Perpaduan bahan lokal ini menghasilkan camilan dengan cita rasa khas yang cocok dinikmati kapan saja, baik sebagai teman bersantai maupun sebagai camilan keluarga."
+        },
+        {
+          "id": "blk-mttknvw4-vjqm7",
+          "type": "quote",
+          "content": "Dari bahan pangan lokal, lahir camilan renyah dengan cita rasa yang istimewa"
+        },
+        {
+          "id": "blk-mttkmo3f-l6bcb",
+          "type": "text",
+          "content": "Melalui pengolahan bayam dan sorgum menjadi keripik, produk ini turut menghadirkan alternatif olahan pangan lokal yang praktis dan menarik. Keripik Bayam Sorgum dapat menjadi pilihan bagi masyarakat yang ingin menikmati camilan dengan sentuhan bahan pangan lokal dalam sajian yang modern."
+        }
+      ],
+      "excerpt": "Keripik Bayam Sorgum merupakan inovasi camilan berbahan daun bayam segar dan tepung sorgum yang diolah menjadi keripik renyah dan gurih. Perpaduan bah",
+      "image_url": "/uploads/40d002d4a13745a1d013e97c75497aea.jpg",
+      "is_published": 1,
+      "published_at": "2026-09-09T03:59:11.000Z",
+      "created_at": "2026-09-09T03:59:10.000Z",
+      "updated_at": "2026-09-09T04:02:19.000Z",
+      "author": "Tim KWT Melati ",
+      "author_role": null,
+      "read_time": null,
       "sub_image": null,
       "quote": null,
       "facts": null
@@ -458,21 +1774,137 @@
   ],
   "article_products": [
     {
-      "id": 4,
+      "id": 28,
       "article_id": 1,
-      "product_id": 2
+      "product_id": 23,
+      "created_at": "2026-09-07T06:42:57.000Z"
     },
     {
-      "id": 5,
+      "id": 29,
+      "article_id": 1,
+      "product_id": 1,
+      "created_at": "2026-09-07T06:42:57.000Z"
+    },
+    {
+      "id": 30,
       "article_id": 2,
-      "product_id": 5
+      "product_id": 5,
+      "created_at": "2026-09-07T06:42:57.000Z"
+    },
+    {
+      "id": 31,
+      "article_id": 2,
+      "product_id": 1,
+      "created_at": "2026-09-07T06:42:57.000Z"
+    },
+    {
+      "id": 32,
+      "article_id": 3,
+      "product_id": 6,
+      "created_at": "2026-09-07T06:42:57.000Z"
+    },
+    {
+      "id": 33,
+      "article_id": 3,
+      "product_id": 3,
+      "created_at": "2026-09-07T06:42:57.000Z"
+    },
+    {
+      "id": 34,
+      "article_id": 4,
+      "product_id": 1,
+      "created_at": "2026-09-07T06:42:58.000Z"
+    },
+    {
+      "id": 35,
+      "article_id": 4,
+      "product_id": 5,
+      "created_at": "2026-09-07T06:42:58.000Z"
+    },
+    {
+      "id": 36,
+      "article_id": 5,
+      "product_id": 4,
+      "created_at": "2026-09-07T06:42:58.000Z"
+    },
+    {
+      "id": 37,
+      "article_id": 5,
+      "product_id": 1,
+      "created_at": "2026-09-07T06:42:58.000Z"
+    },
+    {
+      "id": 38,
+      "article_id": 32,
+      "product_id": 23,
+      "created_at": "2026-09-08T02:06:33.000Z"
+    },
+    {
+      "id": 39,
+      "article_id": 32,
+      "product_id": 37,
+      "created_at": "2026-09-08T02:06:33.000Z"
+    },
+    {
+      "id": 40,
+      "article_id": 30,
+      "product_id": 1,
+      "created_at": "2026-09-08T02:06:45.000Z"
+    },
+    {
+      "id": 41,
+      "article_id": 30,
+      "product_id": 5,
+      "created_at": "2026-09-08T02:06:45.000Z"
+    },
+    {
+      "id": 42,
+      "article_id": 30,
+      "product_id": 6,
+      "created_at": "2026-09-08T02:06:45.000Z"
+    },
+    {
+      "id": 43,
+      "article_id": 31,
+      "product_id": 1,
+      "created_at": "2026-09-08T02:07:25.000Z"
+    },
+    {
+      "id": 44,
+      "article_id": 31,
+      "product_id": 5,
+      "created_at": "2026-09-08T02:07:25.000Z"
+    },
+    {
+      "id": 45,
+      "article_id": 31,
+      "product_id": 6,
+      "created_at": "2026-09-08T02:07:25.000Z"
+    },
+    {
+      "id": 46,
+      "article_id": 31,
+      "product_id": 4,
+      "created_at": "2026-09-08T02:07:25.000Z"
+    },
+    {
+      "id": 48,
+      "article_id": 33,
+      "product_id": 38,
+      "created_at": "2026-09-08T02:49:03.000Z"
+    },
+    {
+      "id": 51,
+      "article_id": 35,
+      "product_id": 40,
+      "created_at": "2026-09-09T04:02:19.000Z"
     }
   ],
   "featured_product_ids": [
-    "2",
-    "3",
-    "4",
+    "28",
     "5",
+    "3",
+    "1",
     "6"
   ]
 }

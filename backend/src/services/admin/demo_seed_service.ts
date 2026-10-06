@@ -5,6 +5,10 @@ import { upsertLandingContent } from '../landing_content_service';
 // ---------------------------------------------------------------------------
 // Demo Seeder — isi / kosongkan data konten toko untuk keperluan demo & testing.
 //
+// Sumber snapshot = DATA PRODUKSI (bukan data dev). Isi file `data/demo_seed.json`
+// adalah salinan apa adanya dari tabel konten di server produksi, jadi menekan
+// "Isi Data Demo" memulihkan tampilan toko persis seperti kondisi produksi.
+//
 // Dua aksi:
 //   clearDemoContent()  → hapus ISI tabel konten (bukan tabelnya). Struktur
 //                         tabel & akun admin TIDAK disentuh.
@@ -14,10 +18,17 @@ import { upsertLandingContent } from '../landing_content_service';
 //
 // Kenapa ID tetap (bukan auto-increment)?
 //   Data lain menyimpan referensi produk pakai ID sebagai teks:
-//     landing_content.featuredProductIds = ["2","3","4","5","6"]  (produk unggulan beranda)
+//     landing_content.featuredProductIds = ["28","5","3","1","6"]  (produk unggulan beranda)
 //     article_products.article_id / product_id
 //   Kalau ID berubah tiap seed, "Koleksi Produk Pilihan" di beranda jadi kosong
 //   dan artikel kehilangan produk terkaitnya. ID tetap = hasil seed selalu sama.
+//
+// Catatan gambar: gambar produk/banner di snapshot menunjuk file `/uploads/...`
+// di server (bukan URL eksternal). File fisiknya ada di
+// `backend/uploads_ecatalog_bestari/` dan TIDAK ikut git — jadi seeder hanya
+// memulihkan baris DB-nya; file harus sudah ada di server tujuan. Karena
+// "Kosongkan Data" juga tidak menghapus file di disk, isi → kosongkan → isi
+// ulang aman dilakukan berulang di server yang sama.
 //
 // Yang TIDAK pernah disentuh: users (akun admin), site_settings (nama toko, WA,
 // logo, QRIS), badges. Dari landing_content, HANYA featuredProductIds yang
@@ -61,7 +72,7 @@ const SEED = seedData as unknown as SeedFile;
 // Produk unggulan di beranda diambil dari landing_content.featuredProductIds
 // (JSON array berisi ID produk sebagai STRING). Kalau tidak diperbaiki, beranda
 // tampil kosong di bagian "Koleksi Produk Pilihan" meski seeder sukses —
-// karena array itu masih menunjuk ID lama yang sudah tidak ada (mis. ["1","25"]).
+// karena array itu masih menunjuk ID lama yang sudah tidak ada.
 // Daftar diambil dari file seed, tapi disaring dulu: hanya ID yang benar-benar
 // ikut ter-seed yang dipakai, supaya tidak ada referensi menggantung.
 const SEEDED_PRODUCT_IDS = new Set(SEED.products.map((p) => String(p.id)));
@@ -87,9 +98,22 @@ function toSqlValue(value: unknown): unknown {
 // Bangun satu statement INSERT multi-baris dari array objek.
 // Nilai selalu lewat placeholder (?) — tidak ada string yang di-rakit ke SQL,
 // jadi aman dari injeksi meski isi file JSON nanti diubah.
-function buildInsert(table: string, rows: Array<Record<string, unknown>>): { sql: string; params: unknown[] } {
+//
+// `allowedColumns` = daftar kolom yang BENAR-BENAR ada di tabel tujuan
+// (dibaca dari information_schema). Snapshot boleh berisi kolom yang tidak ada
+// di suatu environment (mis. `discount_percent`/`badge_color` cuma ada di DB
+// produksi) — kolom seperti itu dibuang otomatis, bukan bikin INSERT gagal.
+function buildInsert(
+  table: string,
+  rows: Array<Record<string, unknown>>,
+  allowedColumns: Set<string>,
+): { sql: string; params: unknown[] } {
   if (rows.length === 0) return { sql: '', params: [] };
-  const columns = Object.keys(rows[0]);
+
+  // Ambil irisan kolom: urutan ikut baris pertama, hanya yang diizinkan.
+  const columns = Object.keys(rows[0]).filter((c) => allowedColumns.has(c));
+  if (columns.length === 0) return { sql: '', params: [] };
+
   const params: unknown[] = [];
   const tuples = rows.map((row) => {
     const marks = columns.map((col) => {
@@ -100,6 +124,15 @@ function buildInsert(table: string, rows: Array<Record<string, unknown>>): { sql
   });
   const sql = `INSERT INTO \`${table}\` (${columns.map((c) => `\`${c}\``).join(', ')}) VALUES ${tuples.join(', ')}`;
   return { sql, params };
+}
+
+// Baca daftar kolom asli sebuah tabel dari information_schema (sekali per tabel).
+async function getTableColumns(table: string): Promise<Set<string>> {
+  const [rows] = await dbPool.query(
+    'SELECT COLUMN_NAME FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ?',
+    [table],
+  );
+  return new Set((rows as Array<{ COLUMN_NAME: string }>).map((r) => r.COLUMN_NAME));
 }
 
 // Hapus ISI tabel konten. Struktur tabel tetap utuh; akun admin & pengaturan
@@ -164,7 +197,13 @@ export async function seedDemoContent(): Promise<SeedCounts> {
         inserted[table] = 0;
         continue;
       }
-      const { sql, params } = buildInsert(table, rows);
+      // Saring kolom sesuai skema tabel yang ada di DB ini (bukan sesuai isi file).
+      const allowed = await getTableColumns(table);
+      const { sql, params } = buildInsert(table, rows, allowed);
+      if (!sql) {
+        inserted[table] = 0;
+        continue;
+      }
       await conn.query(sql, params);
       inserted[table] = rows.length;
     }
