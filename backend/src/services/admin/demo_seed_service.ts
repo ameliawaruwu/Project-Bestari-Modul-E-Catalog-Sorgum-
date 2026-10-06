@@ -208,16 +208,13 @@ export async function seedDemoContent(): Promise<SeedCounts> {
       inserted[table] = rows.length;
     }
 
-    // AUTO_INCREMENT ikut dinaikkan supaya input data baru setelah seed tidak
-    // menabrak ID yang baru saja ditulis (mis. produk baru dapat ID 9, bukan 2).
-    for (const [key, table] of order) {
-      const rows = SEED[key] || [];
-      if (rows.length === 0) continue;
-      const maxId = Math.max(...rows.map((r) => Number(r.id) || 0));
-      if (maxId > 0) {
-        await conn.query(`ALTER TABLE \`${table}\` AUTO_INCREMENT = ?`, [maxId + 1]);
-      }
-    }
+    // Catatan: AUTO_INCREMENT tidak perlu di-set manual. InnoDB otomatis
+    // menaikkan counter-nya saat kita meng-INSERT nilai id eksplisit yang lebih
+    // besar, jadi produk baru setelah seed tetap dapat id di atas id tertinggi
+    // (mis. max id 40 → produk baru dapat 41). Sebelumnya ada `ALTER TABLE ...
+    // AUTO_INCREMENT` di sini — dihapus karena DDL memicu IMPLICIT COMMIT di
+    // MySQL, sehingga transaksi ter-commit lebih awal dan jaminan "semua atau
+    // tidak sama sekali" jadi palsu.
 
     await conn.commit();
 
