@@ -65,6 +65,10 @@ interface SeedFile {
   articles: Array<Record<string, unknown>>;
   article_products: Array<Record<string, unknown>>;
   featured_product_ids: string[];
+  // Isi kartu "Lacak Paket" contoh. Disimpan ke landing_content (key
+  // `demoTracking`) — halaman Lacak Paket membacanya lewat endpoint landing-content
+  // yang sudah ada, lalu menampilkan kartunya otomatis tanpa user mengetik resi.
+  demo_tracking?: Record<string, unknown>;
 }
 
 const SEED = seedData as unknown as SeedFile;
@@ -156,6 +160,11 @@ export async function clearDemoContent(): Promise<SeedCounts> {
     // produk yang sudah tidak ada. (Key lain di landing_content tidak disentuh.)
     await upsertLandingContent({ featuredProductIds: '[]' }).catch(() => 0);
 
+    // Kartu "Lacak Paket" contoh ikut dikosongkan supaya halaman Lacak Paket
+    // kembali bersih (tidak menampilkan kartu contoh apa pun). Key lain di
+    // landing_content TIDAK disentuh.
+    await upsertLandingContent({ demoTracking: '' }).catch(() => 0);
+
     return removed as unknown as SeedCounts;
   } catch (e) {
     await conn.rollback();
@@ -223,6 +232,14 @@ export async function seedDemoContent(): Promise<SeedCounts> {
     // tidak fatal kalau gagal — data produk sudah tersimpan dengan benar.
     if (FEATURED_IDS.length > 0) {
       await upsertLandingContent({ featuredProductIds: JSON.stringify(FEATURED_IDS) }).catch(() => 0);
+    }
+
+    // Simpan kartu "Lacak Paket" contoh ke landing_content (key `demoTracking`).
+    // Halaman Lacak Paket membacanya dari endpoint landing-content yang sudah ada,
+    // jadi kartunya tampil otomatis tanpa user mengetik nomor resi apa pun.
+    // Nilai disimpan sebagai string JSON (kolom value bertipe TEXT).
+    if (SEED.demo_tracking) {
+      await upsertLandingContent({ demoTracking: JSON.stringify(SEED.demo_tracking) }).catch(() => 0);
     }
 
     return inserted as unknown as SeedCounts;

@@ -43,6 +43,10 @@ export interface LandingContent {
   featuredDescId: string;
   featuredDescEn: string;
   featuredProductIds: string;
+  // Kartu "Lacak Paket" contoh (string JSON). Diisi/dikosongkan oleh fitur
+  // "Data Demo" di panel admin; kalau terisi, halaman Lacak Paket langsung
+  // menampilkan kartunya tanpa user mengetik nomor resi apa pun.
+  demoTracking: string;
 }
 
 export const DEFAULT_LANDING_CONTENT: LandingContent = {
@@ -85,4 +89,6 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
   featuredDescId: 'Jelajahi produk sorgum terbaik pilihan kami.',
   featuredDescEn: 'Explore our best-selected sorghum products.',
   featuredProductIds: '',
+  // Kosong = halaman Lacak Paket tampil seperti biasa (user mengetik resi sendiri).
+  demoTracking: '',
 };

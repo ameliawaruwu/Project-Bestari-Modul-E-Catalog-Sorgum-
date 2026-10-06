@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import {
-  DEMO_TRACKING_RESULT,
-  isDemoTrackingNumber,
-} from '../data/demoTracking';
 
 export const TrackingPage: React.FC = () => {
-  const { t, shopSettings } = useApp();
+  const { t, shopSettings, landingContent } = useApp();
   const [resi, setResi] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -15,6 +11,30 @@ export const TrackingPage: React.FC = () => {
   const [courier, setCourier] = useState('');
   const [courierOpen, setCourierOpen] = useState(false);
   const [courierSearch, setCourierSearch] = useState('');
+
+  // ── Kartu "Lacak Paket" contoh ────────────────────────────────────────────
+  // Diisi/dikosongkan dari panel admin (fitur "Data Demo", sama seperti produk
+  // & banner). Kalau terisi, kartunya LANGSUNG tampil di halaman ini tanpa user
+  // mengetik nomor resi apa pun — dan tanpa memanggil layanan cek-resi.
+  const demoResult = useMemo(() => {
+    const raw = landingContent?.demoTracking;
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && parsed.noResi ? parsed : null;
+    } catch {
+      return null;
+    }
+  }, [landingContent?.demoTracking]);
+
+  // Tampilkan kartu contoh otomatis begitu datanya tersedia: isi kolom resi &
+  // ekspedisi, lalu set hasilnya. Tidak menimpa kalau user sudah melacak sendiri.
+  useEffect(() => {
+    if (!demoResult) return;
+    setResi((prev) => prev || demoResult.noResi || '');
+    setCourier((prev) => prev || 'SPX');
+    setResult((prev) => prev || demoResult);
+  }, [demoResult]);
 
   // Semua ekspedisi yang didukung cekresi.com (61) — sinkron dengan
   // https://cekresi.com/daftar-jasa-pengiriman/. 14 pertama = menu utama
@@ -91,14 +111,13 @@ export const TrackingPage: React.FC = () => {
       return;
     }
 
-    // ── Resi contoh (data statis) ──────────────────────────────────────────
-    // Ditampilkan LANGSUNG tanpa memanggil layanan cek-resi apa pun, supaya
-    // saat presentasi kartunya selalu muncul walau internet/layanan bermasalah.
-    // Hanya berlaku untuk nomor contoh; resi lain tetap dilacak live seperti biasa.
-    if (isDemoTrackingNumber(trimmed)) {
+    // Kalau yang diketik adalah nomor resi contoh yang sedang aktif, tampilkan
+    // kartu contoh itu lagi (jangan tembak layanan cek-resi) — supaya menekan
+    // tombol "Lacak Paket Sekarang" tidak menghilangkan kartunya saat presentasi.
+    if (demoResult && trimmed.toUpperCase() === String(demoResult.noResi || '').toUpperCase()) {
       setError(null);
       setNotFound(null);
-      setResult(DEMO_TRACKING_RESULT);
+      setResult(demoResult);
       return;
     }
 
