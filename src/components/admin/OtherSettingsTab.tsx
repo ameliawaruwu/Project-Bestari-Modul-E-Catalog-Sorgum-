@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, ShopSettings } from '../../context/AppContext';
+import { DemoSeedPanel } from './DemoSeedPanel';
 
 interface OtherSettingsTabProps {
   showToast: (msg: string, type?: 'success' | 'error') => void;
+  /** Dipanggil setelah data demo diisi/dikosongkan, supaya panel admin refresh. */
+  onDataChanged?: () => void;
 }
 
 const PRESET_LOGOS = [
@@ -32,7 +35,7 @@ const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
   storeEmail: '',
 };
 
-export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast }) => {
+export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, onDataChanged }) => {
   const { shopSettings, saveShopSettings } = useApp();
   const [settings, setSettings] = useState<ShopSettings>(shopSettings || DEFAULT_SETTINGS_FALLBACK);
 
@@ -238,6 +241,9 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast })
           </div>
         </div>
       </div>
+
+      {/* CARD: DATA DEMO (SEEDER) — paling bawah, bagian pengaturan lanjutan */}
+      <DemoSeedPanel showToast={showToast} onDataChanged={onDataChanged} />
     </div>
   );
 };

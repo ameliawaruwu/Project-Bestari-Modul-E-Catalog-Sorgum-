@@ -182,3 +182,37 @@ export const bannerAdminApi = {  // GET /api/admin/banners
     await request(`/admin/banners/${id}`, { method: 'DELETE', auth: true });
   },
 };
+
+// ---------------------------------------------------------------------------
+// Data demo (seeder) — untuk persiapan presentasi/testing.
+// apply = isi data demo (idempotent), clear = kosongkan isi tabel konten
+// (butuh kata konfirmasi; akun admin & pengaturan toko tidak ikut terhapus).
+// ---------------------------------------------------------------------------
+export const demoSeedApi = {
+  // GET /api/admin/demo-seed — jumlah baris data konten saat ini + kata konfirmasi
+  getStatus: async (): Promise<{ counts: Record<string, number>; confirmWord: string } | null> => {
+    const res = await request<{ data: { counts: Record<string, number>; confirmWord: string } }>(
+      '/admin/demo-seed',
+      { auth: true },
+    );
+    return res?.data || null;
+  },
+
+  // POST /api/admin/demo-seed/apply — isi data demo
+  apply: async (): Promise<Record<string, number> | null> => {
+    const res = await request<{ message: string; data: Record<string, number> }>(
+      '/admin/demo-seed/apply',
+      { method: 'POST', body: {}, auth: true },
+    );
+    return res?.data || null;
+  },
+
+  // POST /api/admin/demo-seed/clear — kosongkan data konten (wajib kata konfirmasi)
+  clear: async (confirm: string): Promise<Record<string, number> | null> => {
+    const res = await request<{ message: string; data: Record<string, number> }>(
+      '/admin/demo-seed/clear',
+      { method: 'POST', body: { confirm }, auth: true },
+    );
+    return res?.data || null;
+  },
+};

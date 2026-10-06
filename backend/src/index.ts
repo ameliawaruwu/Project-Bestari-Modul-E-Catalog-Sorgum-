@@ -20,6 +20,7 @@ import adminProductsRoutes from './routes/admin/products_routes';
 import adminBannersRoutes from './routes/admin/banners_routes';
 import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
+import adminDemoSeedRoutes from './routes/admin/demo_seed_routes';
 import eventsRoutes from './routes/events_routes';
 
 const app = express();
@@ -92,6 +93,8 @@ app.use('/api/admin/products', adminProductsRoutes);
 app.use('/api/admin/banners', adminBannersRoutes);
 app.use('/api/admin/articles', adminArticlesRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
+// Data demo (seeder) — isi / kosongkan data konten untuk presentasi & testing.
+app.use('/api/admin/demo-seed', adminDemoSeedRoutes);
 
 // SSE realtime — harus sebelum 404 catch-all
 app.use('/api/events', eventsRoutes);

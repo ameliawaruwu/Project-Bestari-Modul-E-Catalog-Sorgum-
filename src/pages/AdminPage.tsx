@@ -72,25 +72,27 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   // State global `banners` (dari AppContext) hanya berisi banner AKTIF (API public),
   // jadi panel admin butuh sumber sendiri supaya banner nonaktif tetap terlihat & bisa di-toggle.
   const [adminBanners, setAdminBanners] = useState<BannerSlide[]>([]);
+  const refreshAdminBanners = useCallback(async () => {
+    try {
+      const { bannerAdminApi } = await import('../api/adminApi');
+      const list = await bannerAdminApi.listBanners();
+      const mapped: BannerSlide[] = (list || []).map((b: any) => ({
+        id: String(b.id),
+        title: b.title,
+        uploadDate: formatDate(b.created_at, 'short'),
+        targetLink: b.target_link || '',
+        image: b.image_url || '',
+        active: !!b.is_active,
+      }));
+      setAdminBanners(mapped);
+    } catch {
+      // Fallback: state global (bisa kosong kalau tak ada banner aktif)
+      setAdminBanners(banners);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [banners]);
   useEffect(() => {
-    (async () => {
-      try {
-        const { bannerAdminApi } = await import('../api/adminApi');
-        const list = await bannerAdminApi.listBanners();
-        const mapped: BannerSlide[] = (list || []).map((b: any) => ({
-          id: String(b.id),
-          title: b.title,
-          uploadDate: formatDate(b.created_at, 'short'),
-          targetLink: b.target_link || '',
-          image: b.image_url || '',
-          active: !!b.is_active,
-        }));
-        setAdminBanners(mapped);
-      } catch {
-        // Fallback: state global (bisa kosong kalau tak ada banner aktif)
-        setAdminBanners(banners);
-      }
-    })();
+    refreshAdminBanners();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -158,8 +160,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     const unsubs = [
       realtimeApi.on('products', () => refreshProducts().catch(() => {})),
       realtimeApi.on('articles', () => refreshAdminArticles()),
+      realtimeApi.on('banners', () => refreshAdminBanners()),
     ];
     return () => unsubs.forEach((u) => u());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Dipanggil oleh panel Data Demo setelah data diisi/dikosongkan: segarkan
+  // semua daftar yang tampil di panel admin supaya angkanya langsung benar.
+  const handleDemoDataChanged = useCallback(() => {
+    refreshProducts().catch(() => {});
+    refreshAdminArticles();
+    refreshAdminBanners();
+    loadCategoryOptions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -561,6 +574,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           {activeNav === 'lain' && (
             <OtherSettingsTab
               showToast={showToast}
+              onDataChanged={handleDemoDataChanged}
             />
           )}
         </main>
