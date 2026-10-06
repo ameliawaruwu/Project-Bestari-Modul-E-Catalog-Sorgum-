@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import dbPool from '../lib/db';
 
 const router = Router();
 
@@ -57,26 +56,6 @@ router.get('/:resi', async (req: Request, res: Response) => {
   const resi = String(req.params.resi || '').trim();
   const courier = normalizeCourier(String(req.query.courier || '').trim());
   if (!resi) { res.status(400).json({ error: 'Resi wajib diisi' }); return; }
-
-  // ── Resi demo (diisi lewat fitur "Data Demo" di panel admin) ──────────────
-  // Dicek LEBIH DULU sebelum memanggil layanan luar: resi yang terdaftar di
-  // tabel demo_tracking dikembalikan dari salinan tersimpan, sehingga presentasi
-  // tetap jalan walau internet/layanan cek-resi bermasalah. Resi lain tetap
-  // dilacak live seperti biasa.
-  try {
-    const [rows] = await dbPool.query(
-      'SELECT payload FROM demo_tracking WHERE tracking_number = ? LIMIT 1',
-      [resi.toUpperCase()],
-    );
-    const row = (rows as Array<{ payload: unknown }>)[0];
-    if (row) {
-      const payload = typeof row.payload === 'string' ? JSON.parse(row.payload) : row.payload;
-      res.json({ status: 'ok', data: { valid: true, data: payload } });
-      return;
-    }
-  } catch {
-    // Tabel demo belum ada / DB bermasalah → jangan blokir pelacakan asli.
-  }
 
   const CEK_RESI_URL = process.env.CEK_RESI_URL || 'http://localhost:3001/cek-resi';
   const url = `${CEK_RESI_URL}/${encodeURIComponent(resi)}${courier ? `?exp=${encodeURIComponent(courier)}` : ''}`;

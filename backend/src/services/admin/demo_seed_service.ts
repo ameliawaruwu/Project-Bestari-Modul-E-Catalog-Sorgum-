@@ -55,7 +55,6 @@ export interface SeedCounts {
   banners: number;
   articles: number;
   article_products: number;
-  demo_tracking: number;
 }
 
 interface SeedFile {
@@ -66,7 +65,6 @@ interface SeedFile {
   articles: Array<Record<string, unknown>>;
   article_products: Array<Record<string, unknown>>;
   featured_product_ids: string[];
-  demo_tracking?: Array<{ tracking_number: string; courier: string; payload: unknown }>;
 }
 
 const SEED = seedData as unknown as SeedFile;
@@ -151,16 +149,6 @@ export async function clearDemoContent(): Promise<SeedCounts> {
       removed[table] = (result as { affectedRows: number }).affectedRows;
     }
 
-    // Resi demo ikut dikosongkan — supaya "Kosongkan Data" benar-benar bersih
-    // dan resi demo tidak tertinggal setelah data lain hilang.
-    try {
-      const [r] = await conn.query('DELETE FROM demo_tracking');
-      removed.demo_tracking = (r as { affectedRows: number }).affectedRows;
-    } catch {
-      // Tabel demo_tracking belum ada (migrasi 025 belum jalan) → lewati.
-      removed.demo_tracking = 0;
-    }
-
     await conn.commit();
 
     // featuredProductIds menunjuk ID produk. Setelah produk dihapus, array itu
@@ -220,27 +208,6 @@ export async function seedDemoContent(): Promise<SeedCounts> {
       inserted[table] = rows.length;
     }
 
-    // Resi demo untuk halaman "Lacak Paket". Halaman itu memanggil layanan
-    // eksternal, jadi kartunya tidak muncul tanpa internet — dengan menyimpan
-    // salinan hasil pelacakan di sini, resi demo selalu bisa ditampilkan.
-    inserted.demo_tracking = 0;
-    const demoRows = SEED.demo_tracking || [];
-    if (demoRows.length > 0) {
-      try {
-        await conn.query('DELETE FROM demo_tracking');
-        const allowed = await getTableColumns('demo_tracking');
-        const { sql, params } = buildInsert('demo_tracking', demoRows as unknown as Array<Record<string, unknown>>, allowed);
-        if (sql) {
-          await conn.query(sql, params);
-          inserted.demo_tracking = demoRows.length;
-        }
-      } catch {
-        // Tabel demo_tracking belum ada (migrasi 025 belum jalan) → lewati,
-        // data konten lain tetap ter-seed dengan benar.
-        inserted.demo_tracking = 0;
-      }
-    }
-
     // Catatan: AUTO_INCREMENT tidak perlu di-set manual. InnoDB otomatis
     // menaikkan counter-nya saat kita meng-INSERT nilai id eksplisit yang lebih
     // besar, jadi produk baru setelah seed tetap dapat id di atas id tertinggi
@@ -276,26 +243,5 @@ export async function getContentCounts(): Promise<Record<string, number>> {
     const [rows] = await dbPool.query(`SELECT COUNT(*) AS total FROM \`${table}\``);
     out[table] = Number((rows as Array<{ total: number }>)[0]?.total || 0);
   }
-  // Resi demo — tabelnya mungkin belum ada kalau migrasi 025 belum dijalankan.
-  try {
-    const [rows] = await dbPool.query('SELECT COUNT(*) AS total FROM demo_tracking');
-    out.demo_tracking = Number((rows as Array<{ total: number }>)[0]?.total || 0);
-  } catch {
-    out.demo_tracking = 0;
-  }
   return out;
-}
-
-// Daftar nomor resi demo yang aktif (untuk ditampilkan di panel admin, supaya
-// operator tahu nomor apa yang harus diketik saat presentasi).
-export async function getDemoTrackingNumbers(): Promise<Array<{ number: string; courier: string }>> {
-  try {
-    const [rows] = await dbPool.query('SELECT tracking_number, courier FROM demo_tracking ORDER BY id');
-    return (rows as Array<{ tracking_number: string; courier: string }>).map((r) => ({
-      number: r.tracking_number,
-      courier: r.courier,
-    }));
-  } catch {
-    return [];
-  }
 }

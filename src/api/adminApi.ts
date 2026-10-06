@@ -190,18 +190,11 @@ export const bannerAdminApi = {  // GET /api/admin/banners
 // ---------------------------------------------------------------------------
 export const demoSeedApi = {
   // GET /api/admin/demo-seed — jumlah baris data konten saat ini + kata konfirmasi
-  getStatus: async (): Promise<{
-    counts: Record<string, number>;
-    confirmWord: string;
-    demoResi: Array<{ number: string; courier: string }>;
-  } | null> => {
-    const res = await request<{
-      data: {
-        counts: Record<string, number>;
-        confirmWord: string;
-        demoResi: Array<{ number: string; courier: string }>;
-      };
-    }>('/admin/demo-seed', { auth: true });
+  getStatus: async (): Promise<{ counts: Record<string, number>; confirmWord: string } | null> => {
+    const res = await request<{ data: { counts: Record<string, number>; confirmWord: string } }>(
+      '/admin/demo-seed',
+      { auth: true },
+    );
     return res?.data || null;
   },
 

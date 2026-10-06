@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import {
+  DEMO_TRACKING_RESULT,
+  isDemoTrackingNumber,
+} from '../data/demoTracking';
 
 export const TrackingPage: React.FC = () => {
   const { t, shopSettings } = useApp();
@@ -86,6 +90,18 @@ export const TrackingPage: React.FC = () => {
       setError(t('Masukkan nomor resi pengiriman', 'Enter tracking number'));
       return;
     }
+
+    // ── Resi contoh (data statis) ──────────────────────────────────────────
+    // Ditampilkan LANGSUNG tanpa memanggil layanan cek-resi apa pun, supaya
+    // saat presentasi kartunya selalu muncul walau internet/layanan bermasalah.
+    // Hanya berlaku untuk nomor contoh; resi lain tetap dilacak live seperti biasa.
+    if (isDemoTrackingNumber(trimmed)) {
+      setError(null);
+      setNotFound(null);
+      setResult(DEMO_TRACKING_RESULT);
+      return;
+    }
+
     if (!selectedCourier) {
       setError(t('Silakan pilih ekspedisi terlebih dahulu', 'Please select a courier first'));
       return;

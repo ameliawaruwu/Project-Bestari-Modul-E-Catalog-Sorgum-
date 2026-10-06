@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { clearDemoContent, seedDemoContent, getContentCounts, getDemoTrackingNumbers } from '../../services/admin/demo_seed_service';
+import { clearDemoContent, seedDemoContent, getContentCounts } from '../../services/admin/demo_seed_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
 import { AppError } from '../../lib/errors_utils';
@@ -16,10 +16,7 @@ const CONFIRM_WORD = 'SEED';
 // Dipakai panel admin untuk menampilkan "sebelum/sesudah" seed.
 router.get('/', async (_req: Request, res: Response) => {
   const counts = await getContentCounts();
-  // Daftar nomor resi demo yang sedang aktif — ditampilkan di panel supaya
-  // operator tahu persis nomor apa yang harus diketik saat presentasi.
-  const demoResi = await getDemoTrackingNumbers();
-  res.json({ data: { counts, confirmWord: CONFIRM_WORD, demoResi } });
+  res.json({ data: { counts, confirmWord: CONFIRM_WORD } });
 });
 
 // POST /api/admin/demo-seed/clear — kosongkan ISI tabel konten (bukan tabelnya).

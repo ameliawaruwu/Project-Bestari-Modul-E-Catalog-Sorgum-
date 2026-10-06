@@ -24,13 +24,11 @@ const LABELS: Record<string, string> = {
   categories: 'Kategori',
   banners: 'Banner',
   articles: 'Artikel',
-  demo_tracking: 'Lacak Paket',
 };
 
 export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataChanged }) => {
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
   const [confirmWord, setConfirmWord] = useState('SEED');
-  const [demoResi, setDemoResi] = useState<Array<{ number: string; courier: string }>>([]);
   const [isBusy, setIsBusy] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
@@ -42,7 +40,6 @@ export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataC
       if (res) {
         setCounts(res.counts);
         setConfirmWord(res.confirmWord || 'SEED');
-        setDemoResi(res.demoResi || []);
       }
     } catch {
       // biarkan kosong — panel tetap bisa dipakai, angka muncul setelah aksi
@@ -61,7 +58,6 @@ export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataC
       if (res) {
         setCounts({ ...counts, ...res });
       }
-      await loadStatus();
       showToast('Data demo berhasil diisi. Tampilan toko langsung diperbarui.');
       onDataChanged?.();
     } catch (e: any) {
@@ -107,9 +103,8 @@ export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataC
 
       <p className="text-xs text-[#556353] dark:text-white/60 leading-relaxed">
         Isi data toko supaya saat presentasi atau testing toko sudah ada isinya, atau kosongkan
-        data konten untuk memulai input data asli dari awal. Termasuk <span className="font-bold">contoh
-        lacak paket</span> (nomor resi demo) yang bisa dilacak tanpa internet. Akun admin, pengaturan
-        toko, dan teks beranda <span className="font-bold text-[#1F5132] dark:text-[#86EFAC]">tidak ikut terhapus</span>.
+        data konten untuk memulai input data asli dari awal. Akun admin, pengaturan toko, dan teks
+        beranda <span className="font-bold text-[#1F5132] dark:text-[#86EFAC]">tidak ikut terhapus</span>.
       </p>
 
       {/* Jumlah data saat ini */}
@@ -126,7 +121,7 @@ export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataC
             <span className="material-symbols-outlined text-base">refresh</span>
           </button>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {Object.keys(LABELS).map((key) => (
             <div
               key={key}
@@ -149,27 +144,6 @@ export const DemoSeedPanel: React.FC<DemoSeedPanelProps> = ({ showToast, onDataC
           </p>
         )}
       </div>
-
-      {/* Nomor resi demo — ditampilkan supaya operator tahu nomor apa yang
-          harus diketik di halaman "Lacak Paket" saat presentasi. */}
-      {demoResi.length > 0 && (
-        <div className="rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] p-3.5">
-          <div className="text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] mb-2 flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-base">local_shipping</span>
-            Nomor resi demo (bisa dilacak tanpa internet)
-          </div>
-          <div className="space-y-1.5">
-            {demoResi.map((r) => (
-              <div key={r.number} className="flex items-center justify-between gap-2 text-xs">
-                <code className="font-mono font-bold text-[#1F5132] dark:text-[#86EFAC] break-all">{r.number}</code>
-                <span className="shrink-0 px-2 py-0.5 text-[10px] font-bold bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] rounded-md border border-[#3A8F4B]/20">
-                  {r.courier}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Aksi */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
