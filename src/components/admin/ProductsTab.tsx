@@ -56,7 +56,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
         <button
           type="button"
           onClick={onOpenCreateProduct}
-          className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition-all shadow-xs cursor-pointer font-bold text-xs active:scale-95"
+          className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer font-semibold text-xs active:scale-95"
         >
           <span className="material-symbols-outlined text-base">add</span>
           <span>Tambah Produk</span>

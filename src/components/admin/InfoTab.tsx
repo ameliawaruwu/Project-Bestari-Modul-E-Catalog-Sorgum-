@@ -53,10 +53,10 @@ export const InfoTab: React.FC<InfoTabProps> = ({
         <button
           type="button"
           onClick={onOpenCreateArticle}
-          className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
+          className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-3 py-1.5 rounded-lg font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-95"
         >
-          <span className="material-symbols-outlined text-lg">add</span>
-          <span>TAMBAH ARTIKEL</span>
+          <span className="material-symbols-outlined text-base">add</span>
+          <span>Tambah Artikel</span>
         </button>
       </div>
 

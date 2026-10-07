@@ -183,10 +183,10 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
             <button
               type="button"
               onClick={onOpenCreateBanner}
-              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-4.5 py-2.5 rounded-xl flex items-center space-x-1.5 transition-all shadow-xs cursor-pointer font-bold text-xs active:scale-95"
+              className="bg-gradient-to-r from-[#3A8F4B] to-[#65B86B] hover:from-[#2F773E] hover:to-[#559E5B] text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer font-semibold text-xs active:scale-95"
             >
               <span className="material-symbols-outlined text-base">add</span>
-              <span>TAMBAH BANNER BARU</span>
+              <span>Tambah Banner Baru</span>
             </button>
           </div>
           <div className="bg-white dark:bg-[#0E1A11] rounded-2xl shadow-2xs border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] overflow-hidden">
