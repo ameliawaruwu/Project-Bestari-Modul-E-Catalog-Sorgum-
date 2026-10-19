@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArticleItem } from '../../types/admin';
 export type ArticleBlockDraft = {
   id: string;
@@ -8,6 +8,8 @@ export type ArticleBlockDraft = {
   alt?: string;
   caption?: string;
   author?: string;
+  /** Blok teks multi-baris (paragraf/bullet/nomor) dari editor baru. */
+  rich?: boolean;
 };
 
 interface ArticleFormViewProps {
@@ -127,6 +129,138 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   };
 
+  // ===== Rich text (paragraf / bullet / nomor) =====
+  // Ref textarea per blok — dipakai untuk auto-grow + menyisipkan marker di kursor.
+  const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
+
+  const autoGrow = (el: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.max(el.scrollHeight, 96)}px`;
+  };
+
+  // Update isi blok teks + tandai `rich` (hanya blok yang benar-benar diketik
+  // admin). Blok lama yang tidak disentuh tetap tanpa `rich` → tampilan publik
+  // artikel lama tidak berubah.
+  const applyText = (id: string, next: string, cursor?: number) => {
+    updateBlock(id, { content: next, rich: true });
+    if (typeof cursor === 'number') {
+      requestAnimationFrame(() => {
+        const el = textareaRefs.current[id];
+        if (el) {
+          el.focus();
+          el.setSelectionRange(cursor, cursor);
+        }
+      });
+    }
+  };
+
+  // Rapikan penomoran: setiap rangkaian baris bernomor diberi nomor berurutan
+  // mulai dari nomor baris pertamanya. Mencegah nomor ganda ("3." dua kali)
+  // saat admin menekan Enter di tengah daftar. Baris kosong tidak memutus
+  // rangkaian; hanya baris teks biasa (paragraf) yang memutus.
+  const fixNumbering = (text: string) => {
+    const lines = text.split('\n');
+    let next: number | null = null;
+    for (let i = 0; i < lines.length; i++) {
+      const m = /^(\d+)([.)])(\s+)(.*)$/.exec(lines[i]);
+      if (!m) {
+        if (lines[i].trim()) next = null;
+        continue;
+      }
+      const num = next ?? Number(m[1]);
+      lines[i] = `${num}${m[2]}${m[3]}${m[4]}`;
+      next = num + 1;
+    }
+    return lines.join('\n');
+  };
+
+  // Enter = paragraf baru (ada jarak) · Shift+Enter = baris baru (paragraf sama)
+  // Enter di baris bullet/nomor = lanjut daftar · Enter di daftar kosong = keluar.
+  const handleTextKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, id: string) => {
+    if (e.key !== 'Enter') return;
+    const el = e.currentTarget;
+    const value = el.value;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+    const currentLine = value.slice(lineStart, start);
+
+    // Shift+Enter: baris baru tanpa jarak
+    if (e.shiftKey) {
+      e.preventDefault();
+      applyText(id, value.slice(0, start) + '\n' + value.slice(end), start + 1);
+      return;
+    }
+
+    // Di dalam bullet
+    const bullet = /^\s*[-•*]\s+(.*)$/.exec(currentLine);
+    if (bullet) {
+      e.preventDefault();
+      if (!bullet[1].trim()) {
+        // Enter di bullet kosong → keluar dari daftar (baris marker dihapus)
+        applyText(id, value.slice(0, lineStart) + value.slice(end), lineStart);
+      } else {
+        applyText(id, value.slice(0, start) + '\n• ' + value.slice(end), start + 3);
+      }
+      return;
+    }
+
+    // Di dalam daftar nomor
+    const num = /^\s*(\d+)[.)]\s+(.*)$/.exec(currentLine);
+    if (num) {
+      e.preventDefault();
+      if (!num[2].trim()) {
+        // Enter di nomor kosong → keluar dari daftar
+        const out = value.slice(0, lineStart) + value.slice(end);
+        applyText(id, fixNumbering(out), lineStart);
+      } else {
+        const nextNum = Number(num[1]) + 1;
+        const marker = `\n${nextNum}. `;
+        const inserted = value.slice(0, start) + marker + value.slice(end);
+        applyText(id, fixNumbering(inserted), start + marker.length);
+      }
+      return;
+    }
+
+    // Enter biasa: paragraf baru (dua kali baris baru = ada jarak bawah).
+    // Kalau baris sebelumnya sudah kosong, cukup tambah satu baris supaya
+    // kursor tetap turun (tidak "nyangkut") dan tidak jadi 4 baris kosong.
+    e.preventDefault();
+    const before = value.slice(0, start);
+    const insert = /\n$/.test(before) ? '\n' : '\n\n';
+    applyText(id, before + insert + value.slice(end), start + insert.length);
+  };
+
+  // Tombol toolbar: beri/hapus marker bullet atau nomor pada baris yang dipilih.
+  const applyListMarker = (id: string, kind: 'ul' | 'ol') => {
+    const el = textareaRefs.current[id];
+    const block = blocks.find((b) => b.id === id);
+    if (!el || !block) return;
+    const value = block.content || '';
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+    let lineEnd = value.indexOf('\n', end);
+    if (lineEnd === -1) lineEnd = value.length;
+
+    const lines = value.slice(lineStart, lineEnd).split('\n');
+    let seq = 1;
+    const out = lines
+      .map((ln) => {
+        const existing = /^\s*(\d+)[.)]\s+/.exec(ln);
+        const text = ln.replace(/^\s*(?:[-•*]|\d+[.)])\s+/, '').trim();
+        if (kind === 'ul') return `• ${text}`;
+        const n = existing ? Number(existing[1]) : seq;
+        seq = n + 1;
+        return `${n}. ${text}`;
+      })
+      .join('\n');
+
+    const next = value.slice(0, lineStart) + out + value.slice(lineEnd);
+    applyText(id, next, lineStart + out.length);
+  };
+
   // ===== Build content string (kompatibilitas render lama) =====
   const buildContent = (): string => {
     return blocks
@@ -137,6 +271,27 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       })
       .filter((s) => s.trim())
       .join('\n\n');
+  };
+
+  // Ringkasan untuk kartu artikel (excerpt). Untuk blok rich, buang marker
+  // list ("• ", "1. ") supaya kartu tidak menampilkan tanda tersebut.
+  // Blok lama diperlakukan persis seperti sebelumnya.
+  const buildExcerpt = (): string => {
+    const text = blocks
+      .map((b) => {
+        if (b.type === 'quote') return `"${b.content || ''}"${b.author ? ` — ${b.author}` : ''}`;
+        if (b.type !== 'text') return '';
+        const raw = b.content || '';
+        if (!b.rich) return raw;
+        return raw
+          .split('\n')
+          .map((ln) => ln.replace(/^\s*(?:[-•*]|\d+[.)])\s+/, '').trim())
+          .filter(Boolean)
+          .join(' ');
+      })
+      .filter((s) => s.trim())
+      .join('\n\n');
+    return text.slice(0, 150);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -169,7 +324,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
       image: heroImage || firstImg || '',
       subImage: undefined,
       quote: undefined,
-      excerpt: buildContent().slice(0, 150),
+      excerpt: buildExcerpt(),
       productIds,
     });
   };
@@ -407,13 +562,55 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                   {/* Card body */}
                   <div className="p-4">
                     {b.type === 'text' && (
-                      <textarea
-                        rows={4}
-                        value={b.content || ''}
-                        onChange={(e) => updateBlock(b.id, { content: e.target.value })}
-                        placeholder="Tulis paragraf teks artikel di sini..."
-                        className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none leading-relaxed font-medium"
-                      />
+                      <div className="space-y-2">
+                        {/* Toolbar: paragraf / bullet / nomor — menyisipkan marker
+                            di posisi kursor. Tanpa library, murni textarea. */}
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => applyListMarker(b.id, 'ul')}
+                            title="Jadikan bullet (•)"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] font-bold text-[11px] hover:bg-[#E8F5E9] transition-all cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm">format_list_bulleted</span>
+                            Bullet
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyListMarker(b.id, 'ol')}
+                            title="Jadikan daftar bernomor (1. 2. 3.)"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#E0E0E0] bg-[#FFFFFF] text-[#1B5E20] font-bold text-[11px] hover:bg-[#E8F5E9] transition-all cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm">format_list_numbered</span>
+                            Nomor
+                          </button>
+                          <span className="text-[10px] text-[#555555] font-medium ml-auto">
+                            Enter = paragraf baru · Shift+Enter = baris baru
+                          </span>
+                        </div>
+                        <textarea
+                          ref={(el) => { textareaRefs.current[b.id] = el; autoGrow(el); }}
+                          rows={4}
+                          value={b.content || ''}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            const prev = b.content || '';
+                            // Blok lama hanya jadi "rich" kalau ADMIN sendiri yang
+                            // menambah struktur (baris baru / marker daftar) pada
+                            // blok yang sebelumnya tidak punya struktur. Jadi
+                            // artikel lama yang sudah berisi "\n" tetap tampil
+                            // seperti sekarang walaupun diedit seadanya.
+                            const structured = (s: string) =>
+                              s.includes('\n') || /^\s*[-•*]\s+/.test(s) || /^\s*\d+[.)]\s+/.test(s);
+                            const rich = b.rich || (structured(v) && !structured(prev));
+                            updateBlock(b.id, { content: v, rich });
+                            autoGrow(e.target);
+                          }}
+                          onKeyDown={(e) => handleTextKeyDown(e, b.id)}
+                          placeholder={'Tulis isi artikel di sini...\n\nEnter untuk paragraf baru. Untuk daftar, klik tombol Bullet / Nomor atau ketik "- " atau "1. " di awal baris.'}
+                          className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none leading-relaxed font-medium overflow-hidden"
+                        />
+                      </div>
                     )}
 
                     {b.type === 'image' && (

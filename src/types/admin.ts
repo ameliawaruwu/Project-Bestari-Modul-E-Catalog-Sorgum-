@@ -33,6 +33,8 @@ export interface ArticleItem {
     alt?: string;
     caption?: string;
     author?: string;
+    /** Blok teks multi-baris (bullet/nomor/paragraf) dari editor baru. */
+    rich?: boolean;
   }>;
   image?: string;
   subImage?: string;

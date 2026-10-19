@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
+import { ArticleText } from '../components/article/ArticleText';
 import { ProductCard } from '../components/ProductCard';
 import { Article } from '../types';
 import { useApp } from '../context/AppContext';
@@ -127,7 +128,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   if (activeArticle) {
     // Content: blok terurut jika ada; fallback: content teks lama split \n\n
     const hasBlocks = Array.isArray(activeArticle.contentBlocks) && activeArticle.contentBlocks.length > 0;
-    const blocks: Array<{ type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string }> = hasBlocks
+    const blocks: Array<{ type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string; rich?: boolean }> = hasBlocks
       ? activeArticle.contentBlocks!
       : activeArticle.content
         ? activeArticle.content
@@ -136,7 +137,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             .map((p) => ({ type: 'text', content: p }))
         : [];
 
-    const renderBlock = (block: { type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string }, idx: number) => {
+    const renderBlock = (block: { type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string; rich?: boolean }, idx: number) => {
       switch (block.type) {
         case 'image':
           return block.image_url ? (
@@ -173,6 +174,12 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
 
         case 'text':
         default:
+          // Blok teks "rich" (dibuat dari editor baru): hormati baris baru,
+          // bullet, dan nomor. Blok lama tanpa flag ini tetap dirender
+          // seperti sebelumnya (satu <p>), jadi artikel lama tidak berubah.
+          if (block.rich) {
+            return <ArticleText key={idx} content={block.content} dropCap={idx === 0} />;
+          }
           // Paragraf pertama: drop cap (mengikuti gaya artikel "Manfaat Sorghum")
           if (idx === 0) {
             return (

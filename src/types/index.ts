@@ -25,7 +25,7 @@ export interface Product {
 }
 
 export type ArticleContentBlock =
-  | { type: 'text'; content: string }
+  | { type: 'text'; content: string; rich?: boolean }
   | { type: 'image'; image_url: string; alt?: string; caption?: string }
   | { type: 'quote'; content: string; author?: string };
 
