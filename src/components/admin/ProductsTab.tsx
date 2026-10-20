@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../../types';
 
 interface ProductsTabProps {
@@ -16,6 +16,13 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
 }) => {
   const [searchProduct, setSearchProduct] = useState('');
   const [selectedProductCategory, setSelectedProductCategory] = useState<string>('semua');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset ke halaman 1 saat pencarian / filter kategori berubah.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchProduct, selectedProductCategory]);
 
   const filteredProducts = products
     .filter((p) => {
@@ -31,6 +38,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
     })
     // ID urut DESC (terbaru di atas)
     .sort((a, b) => Number(b.id) - Number(a.id));
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -117,7 +129,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E2EFE0] dark:divide-white/10 text-xs sm:text-sm">
-              {filteredProducts.map((prod) => {
+              {paginatedProducts.map((prod) => {
                 return (
                   <tr key={prod.id} className="hover:bg-[#EAF6E8]/60 dark:hover:bg-[#162B1C]/60 transition-colors">
                     <td className="px-3.5 py-2">
@@ -172,16 +184,21 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
         {/* Pagination & Counter */}
         <div className="p-3 bg-[#F9FBF7] dark:bg-[#0E1A11] text-[#556353] dark:text-white/60 text-xs font-medium flex justify-between items-center border-t border-[#E2EFE0] dark:border-white/10">
           <span>
-            Menampilkan {filteredProducts.length} dari {products.length} Produk
+            Menampilkan {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredProducts.length)} dari {filteredProducts.length} Produk
           </span>
           <div className="flex space-x-1.5">
             <button
-              disabled
-              className="px-2.5 py-1 border border-[#E2EFE0] dark:border-white/10 rounded-lg hover:bg-[#EAF6E8] disabled:opacity-50 text-xs cursor-not-allowed font-medium"
+              disabled={safePage <= 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              className="px-2.5 py-1 border border-[#E2EFE0] dark:border-white/10 rounded-lg hover:bg-[#EAF6E8] disabled:opacity-50 text-xs font-medium text-[#1F5132] dark:text-[#86EFAC] cursor-pointer disabled:cursor-not-allowed"
             >
               Sebelumnya
             </button>
-            <button className="px-2.5 py-1 border border-[#E2EFE0] dark:border-white/10 rounded-lg hover:bg-[#EAF6E8] text-xs cursor-pointer font-medium text-[#1F5132] dark:text-[#86EFAC]">
+            <button
+              disabled={safePage >= totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              className="px-2.5 py-1 border border-[#E2EFE0] dark:border-white/10 rounded-lg hover:bg-[#EAF6E8] disabled:opacity-50 text-xs font-medium text-[#1F5132] dark:text-[#86EFAC] cursor-pointer disabled:cursor-not-allowed"
+            >
               Berikutnya
             </button>
           </div>

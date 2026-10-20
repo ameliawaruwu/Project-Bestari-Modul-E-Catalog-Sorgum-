@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, ShopSettings } from '../../context/AppContext';
 import { DemoSeedPanel } from './DemoSeedPanel';
+import { CategoriesTab } from './CategoriesTab';
+import { LogoCleanModal } from './LogoCleanModal';
 
 interface OtherSettingsTabProps {
   showToast: (msg: string, type?: 'success' | 'error') => void;
   /** Dipanggil setelah data demo diisi/dikosongkan, supaya panel admin refresh. */
   onDataChanged?: () => void;
+  /** Dipanggil setelah kategori berubah, supaya dropdown form produk ikut refresh. */
+  onCategoriesChanged?: () => void;
 }
 
 const PRESET_LOGOS = [
@@ -35,7 +39,7 @@ const DEFAULT_SETTINGS_FALLBACK: ShopSettings = {
   storeEmail: '',
 };
 
-export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, onDataChanged }) => {
+export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, onDataChanged, onCategoriesChanged }) => {
   const { shopSettings, saveShopSettings } = useApp();
   const [settings, setSettings] = useState<ShopSettings>(shopSettings || DEFAULT_SETTINGS_FALLBACK);
 
@@ -45,28 +49,32 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
     }
   }, [shopSettings]);
 
-  // Handle local image file upload for Logo — upload ke server via API,
-  // dapat URL /uploads/xxx (bukan base64). URL baru tiap upload → browser
-  // tidak cache gambar lama (root cause QRIS tidak berubah, fix 2026-08-07).
-  const handleLogoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Pilih file → buka jendela hapus background dulu. Upload setelah dibersihkan.
+  const [cropFile, setCropFile] = useState<File | null>(null);
+
+  const handleLogoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      showToast('Ukuran berkas logo terlalu besar (maksimal 2MB)!');
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Ukuran berkas logo terlalu besar (maksimal 5MB)!');
       return;
     }
+    setCropFile(file);
+  };
+
+  // Hasil bersih (PNG transparan persegi) → upload ke server, dapat URL /uploads/xxx.
+  // URL baru tiap upload → browser tidak cache gambar lama.
+  const handleCroppedLogo = async (cropped: File) => {
+    setCropFile(null);
     try {
       const { productAdminApi } = await import('../../api/adminApi');
-      const { compressImage } = await import('../../utils/imageCompress');
-      const toUpload = await compressImage(file, 512);
-      const url = await productAdminApi.uploadImage(toUpload);
+      const url = await productAdminApi.uploadImage(cropped);
       if (!url) throw new Error('upload gagal');
       setSettings((prev) => ({ ...prev, logoUrl: url }));
-      showToast('Gambar logo berhasil diunggah!');
+      showToast('Logo berhasil diunggah! Klik Simpan Pengaturan untuk menerapkan (favicon ikut berubah).');
     } catch (e: any) {
       showToast(e?.message || 'Gagal mengunggah gambar logo.', 'error');
-    } finally {
-      e.target.value = '';
     }
   };
 
@@ -176,7 +184,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
                     <p className="text-xs font-bold text-[#1F5132] dark:text-[#86EFAC]">
                       {settings.logoUrl ? 'Klik untuk mengganti logo' : 'Klik untuk memilih logo dari perangkat'}
                     </p>
-                    <p className="text-[10px] text-[#556353] dark:text-white/60">Format JPG/PNG/WebP, maks. 2MB</p>
+                    <p className="text-[10px] text-[#556353] dark:text-white/60">Format JPG/PNG/WebP, maks. 5MB. Background polos dihapus otomatis &amp; jadi favicon.</p>
                   </div>
                 </div>
               </label>
@@ -241,6 +249,13 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
         {/* CARD 2 (RIGHT): DATA DEMO (SEEDER) */}
         <DemoSeedPanel showToast={showToast} onDataChanged={onDataChanged} />
       </div>
+
+      {/* KELOLA KATEGORI PRODUK */}
+      <CategoriesTab embedded showToast={showToast} onDataChanged={onCategoriesChanged} />
+
+      {cropFile && (
+        <LogoCleanModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={handleCroppedLogo} />
+      )}
     </div>
   );
 };

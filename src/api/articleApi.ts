@@ -78,7 +78,7 @@ function mapRelatedProduct(rp: Record<string, any>): any {
 export const articleApi = {
   getArticles: async (): Promise<Article[]> => {
     try {
-      const res = await request<{ data: ArticleRow[] }>('/articles');
+      const res = await request<{ data: ArticleRow[] }>('/articles?limit=100');
       return (res?.data || []).map(mapArticle);
     } catch {
       return [];

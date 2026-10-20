@@ -260,20 +260,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [theme]);
 
-  // Favicon updater effect
+  // Favicon ikut logo toko: ganti logo → favicon ikut berganti. Logo kosong →
+  // kembali ke favicon bawaan dari index.html. index.html punya beberapa tag icon
+  // (svg/png/ico) — semuanya diganti supaya browser tidak memilih tag lama.
   useEffect(() => {
-    if (shopSettings.faviconUrl) {
-      const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-      if (link) {
-        link.href = shopSettings.faviconUrl;
-      } else {
-        const newLink = document.createElement('link');
-        newLink.rel = 'icon';
-        newLink.href = shopSettings.faviconUrl;
-        document.head.appendChild(newLink);
+    const links = Array.from(document.querySelectorAll<HTMLLinkElement>("link[rel~='icon']"));
+    links.forEach((l) => {
+      if (l.dataset.defaultHref === undefined) {
+        l.dataset.defaultHref = l.getAttribute('href') || '';
+        l.dataset.defaultType = l.getAttribute('type') || '';
       }
+    });
+    const custom = shopSettings.logoUrl || '';
+    if (links.length === 0 && custom) {
+      const newLink = document.createElement('link');
+      newLink.rel = 'icon';
+      newLink.href = custom;
+      document.head.appendChild(newLink);
+      return;
     }
-  }, [shopSettings.faviconUrl]);
+    links.forEach((l) => {
+      if (custom) {
+        l.setAttribute('href', custom);
+        l.removeAttribute('type');
+        l.removeAttribute('sizes');
+      } else {
+        l.setAttribute('href', l.dataset.defaultHref || '');
+        if (l.dataset.defaultType) l.setAttribute('type', l.dataset.defaultType);
+      }
+    });
+  }, [shopSettings.logoUrl]);
 
   const updateProducts = (newProducts: Product[]) => {
     setProducts(newProducts);

@@ -183,6 +183,57 @@ export const bannerAdminApi = {  // GET /api/admin/banners
   },
 };
 
+export const categoryAdminApi = {
+  // GET /api/admin/categories — daftar kategori + jumlah produk per kategori
+  listCategories: async (): Promise<any[]> => {
+    const res = await request<{ data: any[] }>('/admin/categories', { auth: true });
+    return res?.data || [];
+  },
+
+  // POST /api/admin/categories — slug digenerate dari nama (unik)
+  createCategory: async (fields: { name: string; sort_order?: number; image_url?: string | null }) => {
+    const slug = fields.name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .slice(0, 80) + `-${Date.now().toString(36).slice(-4)}`;
+    const res = await request<{ data: { id: number } }>('/admin/categories', {
+      method: 'POST',
+      body: {
+        name: fields.name,
+        slug,
+        sort_order: fields.sort_order ?? 0,
+        image_url: fields.image_url || null,
+      },
+      auth: true,
+    });
+    return res?.data;
+  },
+
+  // PUT /api/admin/categories/:id — nama baru → slug ikut digenerate ulang
+  updateCategory: async (id: string, fields: { name?: string; sort_order?: number; image_url?: string | null }) => {
+    const body: Record<string, any> = {};
+    if (fields.name !== undefined) {
+      body.name = fields.name;
+      body.slug = fields.name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .slice(0, 80) + `-${Date.now().toString(36).slice(-4)}`;
+    }
+    if (fields.sort_order !== undefined) body.sort_order = fields.sort_order;
+    if (fields.image_url !== undefined) body.image_url = fields.image_url;
+    await request(`/admin/categories/${id}`, { method: 'PUT', body, auth: true });
+  },
+
+  // DELETE /api/admin/categories/:id
+  deleteCategory: async (id: string) => {
+    await request(`/admin/categories/${id}`, { method: 'DELETE', auth: true });
+  },
+};
+
 // ---------------------------------------------------------------------------
 // Data demo (seeder) — untuk persiapan presentasi/testing.
 // apply = isi data demo (idempotent), clear = kosongkan isi tabel konten

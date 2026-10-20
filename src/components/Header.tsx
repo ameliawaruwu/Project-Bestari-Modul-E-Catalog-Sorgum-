@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <img
                     src={shopSettings.logoUrl || '/favicon-spa2.svg'}
                     alt={shopSettings.storeName || 'Logo toko'}
-                    className="w-full h-full object-contain p-0.5"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div>

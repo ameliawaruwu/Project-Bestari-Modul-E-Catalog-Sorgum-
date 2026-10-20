@@ -570,11 +570,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ))}
 
-          {/* TAB 8: KELOLA LAIN */}
+          {/* TAB 7: KELOLA LAIN (termasuk Kelola Kategori) */}
           {activeNav === 'lain' && (
             <OtherSettingsTab
               showToast={showToast}
               onDataChanged={handleDemoDataChanged}
+              onCategoriesChanged={loadCategoryOptions}
             />
           )}
         </main>
