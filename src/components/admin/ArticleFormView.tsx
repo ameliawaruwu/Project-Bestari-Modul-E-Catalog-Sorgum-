@@ -11,6 +11,8 @@ export type ArticleBlockDraft = {
   author?: string;
   /** Blok teks multi-baris (paragraf/bullet/nomor) dari editor baru. */
   rich?: boolean;
+  /** Perataan teks blok: rata kiri / kanan / kanan-kiri. */
+  align?: 'left' | 'right' | 'justify';
 };
 
 interface ArticleFormViewProps {
@@ -446,7 +448,9 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                           // disentuh tetap tampil seperti sebelumnya.
                           updateBlock(b.id, { content: text, rich: true });
                         }}
-                        placeholder="Tulis isi artikel di sini… Tekan Enter untuk paragraf baru, atau pakai tombol Bullet / Nomor untuk daftar."
+                        align={b.align}
+                        onAlignChange={(a) => updateBlock(b.id, { align: a })}
+                        placeholder="Tulis isi artikel di sini… Enter = baris baru, Enter 2x = paragraf baru, atau pakai tombol Bullet / Nomor untuk daftar."
                       />
                     )}
 

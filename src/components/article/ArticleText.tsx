@@ -18,6 +18,16 @@ export type ArticleTextProps = {
   content?: string;
   /** Paragraf pertama diberi drop cap (gaya paragraf pembuka artikel). */
   dropCap?: boolean;
+  /** Perataan teks: rata kiri (default) / kanan / kanan-kiri. */
+  align?: TextAlign;
+};
+
+export type TextAlign = 'left' | 'right' | 'justify';
+
+export const ALIGN_CLASS: Record<TextAlign, string> = {
+  left: 'text-left',
+  right: 'text-right',
+  justify: 'text-justify',
 };
 
 type Segment =
@@ -30,9 +40,8 @@ type Token = { kind: 'p' | 'ul' | 'ol' | 'blank'; text: string };
 const BULLET_RE = /^\s*[-•*]\s+(.*)$/;
 const NUMBER_RE = /^\s*\d+[.)]\s+(.*)$/;
 
-// Class disamakan dengan renderer lama supaya tampilan identik.
-const PARA_FIRST_CLASS =
-  "text-[#555555] text-sm md:text-base leading-relaxed first-letter:float-left first-letter:text-3xl sm:first-letter:text-4xl first-letter:leading-[2rem] sm:first-letter:leading-[2.5rem] first-letter:pr-2.5 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#1B5E20]";
+// Drop cap memakai class `article-drop-cap` (src/index.css) agar sejajar.
+export const PARA_FIRST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed article-drop-cap';
 const PARA_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal';
 const LIST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal pl-5 space-y-1.5';
 
@@ -80,16 +89,17 @@ function parseRichText(raw: string): Segment[] {
   return out;
 }
 
-export const ArticleText: React.FC<ArticleTextProps> = ({ content, dropCap }) => {
+export const ArticleText: React.FC<ArticleTextProps> = ({ content, dropCap, align = 'left' }) => {
   const segments = parseRichText(content || '');
   if (segments.length === 0) return null;
+  const alignCls = ALIGN_CLASS[align] || ALIGN_CLASS.left;
 
   return (
     <div className="space-y-4">
       {segments.map((seg, i) => {
         if (seg.kind === 'p') {
           return (
-            <p key={i} className={i === 0 && dropCap ? PARA_FIRST_CLASS : PARA_CLASS}>
+            <p key={i} className={`${i === 0 && dropCap ? PARA_FIRST_CLASS : PARA_CLASS} ${alignCls}`}>
               {seg.lines.map((line, j) => (
                 <React.Fragment key={j}>
                   {j > 0 && <br />}
@@ -104,7 +114,7 @@ export const ArticleText: React.FC<ArticleTextProps> = ({ content, dropCap }) =>
         return (
           <ListTag
             key={i}
-            className={`${LIST_CLASS} ${seg.kind === 'ul' ? 'list-disc' : 'list-decimal'}`}
+            className={`${LIST_CLASS} ${alignCls} ${seg.kind === 'ul' ? 'list-disc' : 'list-decimal'}`}
           >
             {seg.items.map((item, j) => (
               <li key={j}>{item}</li>

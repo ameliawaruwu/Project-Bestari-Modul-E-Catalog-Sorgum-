@@ -35,6 +35,8 @@ export interface ArticleItem {
     author?: string;
     /** Blok teks multi-baris (bullet/nomor/paragraf) dari editor baru. */
     rich?: boolean;
+    /** Perataan teks blok (rata kiri / kanan / kanan-kiri). */
+    align?: 'left' | 'right' | 'justify';
   }>;
   image?: string;
   subImage?: string;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
-import { ArticleText } from '../components/article/ArticleText';
+import { ArticleText, ALIGN_CLASS, PARA_FIRST_CLASS, type TextAlign } from '../components/article/ArticleText';
 import { ProductCard } from '../components/ProductCard';
 import { Article } from '../types';
 import { useApp } from '../context/AppContext';
@@ -128,7 +128,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
   if (activeArticle) {
     // Content: blok terurut jika ada; fallback: content teks lama split \n\n
     const hasBlocks = Array.isArray(activeArticle.contentBlocks) && activeArticle.contentBlocks.length > 0;
-    const blocks: Array<{ type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string; rich?: boolean }> = hasBlocks
+    const blocks: Array<{ type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string; rich?: boolean; align?: TextAlign }> = hasBlocks
       ? activeArticle.contentBlocks!
       : activeArticle.content
         ? activeArticle.content
@@ -137,7 +137,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
             .map((p) => ({ type: 'text', content: p }))
         : [];
 
-    const renderBlock = (block: { type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string; rich?: boolean }, idx: number) => {
+    const renderBlock = (block: { type: string; content?: string; image_url?: string; alt?: string; caption?: string; author?: string; rich?: boolean; align?: TextAlign }, idx: number) => {
       switch (block.type) {
         case 'image':
           return block.image_url ? (
@@ -178,21 +178,18 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           // bullet, dan nomor. Blok lama tanpa flag ini tetap dirender
           // seperti sebelumnya (satu <p>), jadi artikel lama tidak berubah.
           if (block.rich) {
-            return <ArticleText key={idx} content={block.content} dropCap={idx === 0} />;
+            return <ArticleText key={idx} content={block.content} dropCap={idx === 0} align={block.align} />;
           }
           // Paragraf pertama: drop cap (mengikuti gaya artikel "Manfaat Sorghum")
           if (idx === 0) {
             return (
-              <p
-                key={idx}
-                className="text-[#555555] text-sm md:text-base leading-relaxed first-letter:float-left first-letter:text-3xl sm:first-letter:text-4xl first-letter:leading-[2rem] sm:first-letter:leading-[2.5rem] first-letter:pr-2.5 first-letter:font-['Playfair_Display'] first-letter:font-bold first-letter:text-[#1B5E20]"
-              >
+              <p key={idx} className={`${PARA_FIRST_CLASS} ${ALIGN_CLASS[block.align || 'left']}`}>
                 {block.content}
               </p>
             );
           }
           return (
-            <p key={idx} className="text-[#555555] text-sm md:text-base leading-relaxed font-normal">
+            <p key={idx} className={`text-[#555555] text-sm md:text-base leading-relaxed font-normal ${ALIGN_CLASS[block.align || 'left']}`}>
               {block.content}
             </p>
           );

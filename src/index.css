@@ -843,3 +843,17 @@ table th, table td {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Huruf kapital pertama artikel (drop cap), sejajar rapi dengan baris teks.
+   Dihitung dari metrik Plus Jakarta Sans (cap-height 0.745em) dengan
+   line-height body 1.625: tinggi huruf = 2 baris, tepi atas rata dengan
+   huruf kapital baris pertama dan dasar rata dengan baris kedua. */
+.article-drop-cap::first-letter {
+  float: left;
+  font-weight: 700;
+  color: #1B5E20;
+  font-size: 3.18em;
+  line-height: 0.973;
+  padding-right: 0.1em;
+  margin: 0;
+}
