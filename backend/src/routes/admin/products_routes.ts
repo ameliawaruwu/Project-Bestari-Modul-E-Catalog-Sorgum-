@@ -1,11 +1,18 @@
 import { Router, Request, Response } from 'express';
-import { createProduct, updateProduct, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
+import { getProducts, createProduct, updateProduct, deleteProduct, addProductImage, setPrimaryImage, deleteProductImage, replaceProductImages, getProductByIdAdmin } from '../../services/products_service';
 import { AppError } from '../../lib/errors_utils';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
+import { triggerScmSync } from '../../services/admin/scm_sync_runner';
 
 const router = Router();
 router.use(authRequired, adminOnly);
+
+// Daftar produk (admin) — termasuk draft/nonaktif.
+router.get('/', async (_req: Request, res: Response) => {
+  triggerScmSync();
+  res.json(await getProducts({ page: 1, limit: 500, sort: 'newest', includeInactive: true }));
+});
 
 // Detail produk by id (admin) — termasuk nonaktif + galeri images[].
 router.get('/:id', async (req: Request, res: Response) => {
@@ -17,7 +24,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-  const { category_id, name, slug, description, price, price_max, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes, wa_contact, gluten_free, organic } = req.body;
+  const { category_id, name, slug, description, price, price_max, weight_spec, origin, shipping_info, is_featured, composition, shelf_life, attributes, wa_contact, gluten_free, organic, is_active } = req.body;
 
   if (!category_id || !name || !slug || price === undefined) {
     res.status(400).json({ error: 'category_id, name, slug, price wajib diisi' });
@@ -42,6 +49,7 @@ router.post('/', async (req: Request, res: Response) => {
       wa_contact: wa_contact || null,
       gluten_free: !!gluten_free,
       organic: !!organic,
+      is_active: is_active === undefined ? true : !!is_active,
     });
     res.status(201).json({ message: 'Produk berhasil dibuat', data: { id } });
     eventBus.emit(EVENTS.PRODUCTS, { action: 'create', id });

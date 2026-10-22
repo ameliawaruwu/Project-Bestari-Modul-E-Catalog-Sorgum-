@@ -68,6 +68,55 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     loadCategoryOptions();
   }, []);
 
+  // Kelola Produk memakai daftar admin (termasuk draft), bukan daftar toko.
+  // Saat tab dibuka, produk ditarik dulu dari SCM: produk baru masuk sebagai
+  // draft, admin yang mem-publish lewat Edit Produk.
+  const [adminProducts, setAdminProducts] = useState<Product[]>([]);
+  const [isScmSyncing, setIsScmSyncing] = useState(false);
+
+  const loadAdminProducts = useCallback(async () => {
+    try {
+      setAdminProducts(await productAdminApi.listProducts());
+    } catch {
+      // biarkan daftar terakhir
+    }
+  }, []);
+
+  const syncScmProducts = useCallback(async (manual = false) => {
+    setIsScmSyncing(true);
+    try {
+      const { scmSeedApi } = await import('../api/adminApi');
+      const r = await scmSeedApi.sync();
+      if (manual && r && !r.active) {
+        showToast('Data SCM belum aktif. Tekan "Fetch dari SCM" di Pengaturan Lainnya dulu.', 'info');
+      } else if (manual && r?.active) {
+        showToast(
+          r.updated + r.created + r.deactivated === 0
+            ? 'Produk sudah sama dengan SCM.'
+            : `Tarik SCM selesai: ${r.created} draft baru, ${r.updated} diperbarui, ${r.deactivated} dinonaktifkan.`,
+          r.updated + r.created + r.deactivated === 0 ? 'info' : 'success',
+        );
+      } else if (r && r.created > 0) {
+        showToast(`${r.created} produk baru dari SCM masuk sebagai draft.`, 'info');
+      }
+    } catch (e: any) {
+      if (manual) showToast(e?.message || 'Gagal menarik data dari SCM.', 'error');
+    } finally {
+      setIsScmSyncing(false);
+      await loadAdminProducts();
+    }
+  }, [loadAdminProducts, showToast]);
+
+  useEffect(() => {
+    if (activeNav === 'produk') syncScmProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeNav]);
+
+  // Daftar toko berubah (SSE / simpan / hapus) → daftar admin ikut dimuat ulang.
+  useEffect(() => {
+    loadAdminProducts();
+  }, [products, loadAdminProducts]);
+
   // Banner ADMIN: fetch dari /api/admin/banners (semua, termasuk nonaktif).
   // State global `banners` (dari AppContext) hanya berisi banner AKTIF (API public),
   // jadi panel admin butuh sumber sendiri supaya banner nonaktif tetap terlihat & bisa di-toggle.
@@ -166,7 +215,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Dipanggil oleh panel Data Demo setelah data diisi/dikosongkan: segarkan
+  // Dipanggil oleh panel Seeder SCM setelah data diisi/dihapus: segarkan
   // semua daftar yang tampil di panel admin supaya angkanya langsung benar.
   const handleDemoDataChanged = useCallback(() => {
     refreshProducts().catch(() => {});
@@ -283,6 +332,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     shippingInfo?: string;
     origin?: string;
     galleryImages?: string[];
+    isActive?: boolean;
   }) => {
     // Sinkron: kalau kategoriOptions dari Kelola Kategori tersedia, pakai id asli BE.
     // Fallback: map key FE -> id (perilaku lama, aman kalau BE kategori default).
@@ -321,6 +371,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           gluten_free: data.glutenFree ?? false,
           organic: data.organic ?? false,
           wa_contact: data.waContact || null,
+          is_active: data.isActive !== false,
         });
         // Foto produk = satu set galeri (maks 4). Gambar pertama = gambar utama.
         // replaceImages menjadikan elemen pertama is_primary=1 di BE — tanpa perlu
@@ -343,6 +394,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           gluten_free: data.glutenFree ?? false,
           organic: data.organic ?? false,
           wa_contact: data.waContact || null,
+          is_active: data.isActive !== false,
         });
         // Foto produk = satu set galeri. Gambar pertama = gambar utama (primary).
         const galleryNew = data.galleryImages || [];
@@ -364,6 +416,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     // Re-fetch dari BE — produk baru/edit harus langsung tampil sinkron di admin
     // panel MAUPUN sisi user (home/cart/katalog) yang sedang terbuka.
     await refreshProducts().catch(() => {});
+    await loadAdminProducts();
     showToast(data.id
       ? `Katalog produk "${data.name}" berhasil diperbarui!`
       : `Produk baru "${data.name}" berhasil ditambahkan!`);
@@ -533,7 +586,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({
               />
             ) : (
               <ProductsTab
-                products={products}
+                products={adminProducts}
+                isScmSyncing={isScmSyncing}
+                onSyncScm={() => syncScmProducts(true)}
                 onDeleteProduct={(product) => setDeletingProduct(product)}
                 onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
                 onOpenEditProduct={(product) => {
@@ -592,7 +647,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         product={deletingProduct}
         onClose={() => setDeletingProduct(null)}
         onConfirmDelete={(id) => {
-          const prodToDelete = products.find(p => p.id === id);
+          const prodToDelete = adminProducts.find(p => p.id === id) || products.find(p => p.id === id);
           if (prodToDelete) {
             handleDeleteProduct(id, prodToDelete.name);
           }

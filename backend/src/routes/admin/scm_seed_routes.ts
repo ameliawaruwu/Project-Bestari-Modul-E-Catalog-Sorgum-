@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getScmSeedStatus, applyScmSeed, clearScmSeed } from '../../services/admin/scm_seed_service';
+import { getScmSeedStatus, applyScmSeed, clearScmSeed, syncScm } from '../../services/admin/scm_seed_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
 
@@ -18,6 +18,19 @@ router.post('/apply', async (_req: Request, res: Response) => {
   eventBus.emit(EVENTS.PRODUCTS, { action: 'scm-seed-apply' });
   eventBus.emit(EVENTS.ARTICLES, { action: 'scm-seed-apply' });
   eventBus.emit(EVENTS.LANDING, { action: 'scm-seed-apply' });
+});
+
+// POST /api/admin/scm-seed/sync — tarik perubahan SCM ke produk toko (produk baru = draft)
+router.post('/sync', async (_req: Request, res: Response) => {
+  const data = await syncScm();
+  if (!data.active) {
+    res.json({ message: 'Mode SCM belum aktif — tekan "Fetch dari SCM" dulu.', data });
+    return;
+  }
+  res.json({ message: 'Produk berhasil disinkronkan dengan SCM', data });
+  if (data.updated + data.created + data.deactivated > 0) {
+    eventBus.emit(EVENTS.PRODUCTS, { action: 'scm-sync' });
+  }
 });
 
 // POST /api/admin/scm-seed/clear — hapus produk hasil fetch SCM

@@ -24,6 +24,7 @@ interface ProductFormViewProps {
     shippingInfo?: string;
     origin?: string;
     galleryImages?: string[];
+    isActive?: boolean;
   }) => void;
   onCancel: () => void;
   showToast: (msg: string, type?: 'success' | 'error') => void;
@@ -40,6 +41,8 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
 }) => {
   const [idInput, setIdInput] = useState('');
   const [nameInput, setNameInput] = useState('');
+  // Status publish: produk dari SCM masuk sebagai draft; admin publish di sini.
+  const [isActiveInput, setIsActiveInput] = useState(true);
   const [categoryInput, setCategoryInput] = useState<
     'beras' | 'tepung' | 'camilan' | 'pemanis' | 'benih'
   >('beras');
@@ -77,6 +80,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     if (initialProduct) {
       setIdInput(initialProduct.id);
       setNameInput(initialProduct.name);
+      setIsActiveInput(initialProduct.isActive !== false);
       setCategoryInput(initialProduct.category);
       // Sinkron categoryId ke kategori BE (kalau ada di options)
       const catMatch = categoryOptions?.find((c) => c.name.toLowerCase().includes(initialProduct.category));
@@ -100,6 +104,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
     } else {
       setIdInput('');
       setNameInput('');
+      setIsActiveInput(true);
       setCategoryInput('beras');
       setCategoryIdInput(undefined);
       setPriceInput('');
@@ -215,6 +220,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       description: descInput,
       shippingInfo: shippingInfoInput,
       galleryImages: finalGallery,
+      isActive: isActiveInput,
     });
   };
 
@@ -345,6 +351,32 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Status publish */}
+          <div className="space-y-2">
+            <label className="block text-sm font-bold text-[#1B5E20]">Status Produk</label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { value: false, label: 'Draft', icon: 'edit_note', hint: 'Tidak tampil di toko' },
+                { value: true, label: 'Publish', icon: 'public', hint: 'Tampil di toko' },
+              ].map((opt) => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  onClick={() => setIsActiveInput(opt.value)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-colors cursor-pointer ${
+                    isActiveInput === opt.value
+                      ? 'bg-[#EAF6E8] border-[#2E7D32] text-[#1B5E20]'
+                      : 'bg-[#F7F8F6] border-[#E0E0E0] text-[#556353] hover:border-[#2E7D32]/50'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-base">{opt.icon}</span>
+                  <span>{opt.label}</span>
+                  <span className="text-[10px] font-medium opacity-70 hidden sm:inline">· {opt.hint}</span>
+                </button>
+              ))}
             </div>
           </div>
 

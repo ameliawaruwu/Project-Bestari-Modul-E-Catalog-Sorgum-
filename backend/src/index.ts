@@ -21,8 +21,8 @@ import adminBannersRoutes from './routes/admin/banners_routes';
 import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminCategoriesRoutes from './routes/admin/categories_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
-import adminDemoSeedRoutes from './routes/admin/demo_seed_routes';
 import adminScmSeedRoutes from './routes/admin/scm_seed_routes';
+import { triggerScmSync } from './services/admin/scm_sync_runner';
 import eventsRoutes from './routes/events_routes';
 
 const app = express();
@@ -96,8 +96,6 @@ app.use('/api/admin/banners', adminBannersRoutes);
 app.use('/api/admin/articles', adminArticlesRoutes);
 app.use('/api/admin/categories', adminCategoriesRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
-// Data demo (seeder) — isi / kosongkan data konten untuk presentasi & testing.
-app.use('/api/admin/demo-seed', adminDemoSeedRoutes);
 app.use('/api/admin/scm-seed', adminScmSeedRoutes);
 
 // SSE realtime — harus sebelum 404 catch-all
@@ -122,6 +120,15 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
 app.listen(config.port, () => {
   console.log(`[Server] E-Catalog BESTARI running on port ${config.port}`);
   console.log(`[Server] Environment: ${config.nodeEnv}`);
+  startScmAutoSync();
 });
+
+// Sinkron produk dari SCM (live): polling tiap N detik. Ada perubahan → event
+// SSE `products` → admin & user langsung refetch.
+function startScmAutoSync() {
+  if (!config.scm.apiKey || config.scm.syncSeconds <= 0) return;
+  setTimeout(triggerScmSync, 5_000);
+  setInterval(triggerScmSync, config.scm.syncSeconds * 1000).unref();
+}
 
 export default app;

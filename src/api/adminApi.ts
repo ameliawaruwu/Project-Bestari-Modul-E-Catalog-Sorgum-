@@ -1,4 +1,6 @@
 import { request } from './http';
+import { mapProduct } from './productApi';
+import type { Product } from '../types';
 
 // ---------------------------------------------------------------------------
 // Admin-only API helpers for the SORGUM admin panel.
@@ -67,6 +69,12 @@ export const articleAdminApi = {
 };
 
 export const productAdminApi = {
+  // GET /api/admin/products — semua produk termasuk draft (nonaktif)
+  listProducts: async (): Promise<Product[]> => {
+    const res = await request<{ data: any[] }>('/admin/products', { auth: true });
+    return (res?.data || []).map(mapProduct);
+  },
+
   // POST /api/admin/products
   createProduct: async (fields: Record<string, any>) => {
     const slug = (fields.name || 'produk')
@@ -90,6 +98,7 @@ export const productAdminApi = {
         gluten_free: !!fields.gluten_free,
         organic: !!fields.organic,
         wa_contact: fields.wa_contact || null,
+        is_active: fields.is_active === undefined ? true : !!fields.is_active,
       },
       auth: true,
     });
@@ -234,44 +243,18 @@ export const categoryAdminApi = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// Data demo (seeder) — untuk persiapan presentasi/testing.
-// apply = isi data demo (idempotent), clear = kosongkan isi tabel konten
-// (butuh kata konfirmasi; akun admin & pengaturan toko tidak ikut terhapus).
-// ---------------------------------------------------------------------------
-export const demoSeedApi = {
-  // GET /api/admin/demo-seed — jumlah baris data konten saat ini + kata konfirmasi
-  getStatus: async (): Promise<{ counts: Record<string, number>; confirmWord: string } | null> => {
-    const res = await request<{ data: { counts: Record<string, number>; confirmWord: string } }>(
-      '/admin/demo-seed',
-      { auth: true },
-    );
-    return res?.data || null;
-  },
-
-  // POST /api/admin/demo-seed/apply — isi data demo
-  apply: async (): Promise<Record<string, number> | null> => {
-    const res = await request<{ message: string; data: Record<string, number> }>(
-      '/admin/demo-seed/apply',
-      { method: 'POST', body: {}, auth: true },
-    );
-    return res?.data || null;
-  },
-
-  // POST /api/admin/demo-seed/clear — kosongkan data konten (wajib kata konfirmasi)
-  clear: async (confirm: string): Promise<Record<string, number> | null> => {
-    const res = await request<{ message: string; data: Record<string, number> }>(
-      '/admin/demo-seed/clear',
-      { method: 'POST', body: { confirm }, auth: true },
-    );
-    return res?.data || null;
-  },
-};
+export interface ScmSeedStatus {
+  keyConfigured: boolean;
+  fetchedCount: number;
+  productCount: number;
+  syncSeconds: number;
+  lastSyncAt: string | null;
+}
 
 export const scmSeedApi = {
   // GET /api/admin/scm-seed — status seeder SCM
-  getStatus: async (): Promise<{ keyConfigured: boolean; fetchedCount: number; productCount: number } | null> => {
-    const res = await request<{ data: { keyConfigured: boolean; fetchedCount: number; productCount: number } }>(
+  getStatus: async (): Promise<ScmSeedStatus | null> => {
+    const res = await request<{ data: ScmSeedStatus }>(
       '/admin/scm-seed',
       { auth: true },
     );
@@ -282,6 +265,15 @@ export const scmSeedApi = {
   apply: async (): Promise<{ created: number; matched: number; fallback: number } | null> => {
     const res = await request<{ data: { created: number; matched: number; fallback: number } }>(
       '/admin/scm-seed/apply',
+      { method: 'POST', body: {}, auth: true },
+    );
+    return res?.data || null;
+  },
+
+  // POST /api/admin/scm-seed/sync — terapkan perubahan SCM tanpa menghapus produk
+  sync: async (): Promise<{ active: boolean; updated: number; created: number; deactivated: number } | null> => {
+    const res = await request<{ data: { active: boolean; updated: number; created: number; deactivated: number } }>(
+      '/admin/scm-seed/sync',
       { method: 'POST', body: {}, auth: true },
     );
     return res?.data || null;

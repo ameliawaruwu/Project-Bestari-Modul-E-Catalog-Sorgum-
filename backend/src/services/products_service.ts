@@ -55,6 +55,7 @@ interface CreateProductInput {
   composition?: string | null;
   shelf_life?: string | null;
   attributes?: string | null;
+  is_active?: boolean;
 }
 
 const LIST_SELECT = `
@@ -199,11 +200,11 @@ export async function createProduct(input: CreateProductInput) {
   const price = Number(input.price) || 0;
   const price_max = input.price_max ? Number(input.price_max) : null;
   const [result] = await dbPool.query(
-    `INSERT INTO products (category_id, name, slug, description, price, price_max, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, wa_contact, composition, shelf_life, attributes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO products (category_id, name, slug, description, price, price_max, weight_spec, origin, shipping_info, is_featured, gluten_free, organic, wa_contact, composition, shelf_life, attributes, is_active)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [category_id, name, slug, description, price, price_max, weight_spec, origin, input.shipping_info ?? null, is_featured ? 1 : 0,
      input.gluten_free ? 1 : 0, input.organic ? 1 : 0, input.wa_contact ?? null, input.composition ?? null, input.shelf_life ?? null,
-     input.attributes ?? null],
+     input.attributes ?? null, input.is_active === false ? 0 : 1],
   );
   return (result as any).insertId;
 }

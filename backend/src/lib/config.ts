@@ -31,6 +31,8 @@ export const config = {
   scm: {
     apiUrl: (process.env.ECATALOG_BESTARI_SCM_API_URL || 'https://scm.livinglabs.id/api').replace(/\/+$/, ''),
     apiKey: process.env.ECATALOG_BESTARI_SCM_API_KEY || '',
+    // Interval polling sinkron produk dari SCM (detik). 0 = mati.
+    syncSeconds: Math.max(0, parseInt(process.env.ECATALOG_BESTARI_SCM_SYNC_SECONDS || '20', 10) || 0),
   },
 
   // Origin yang di-allow CORS (dipisah koma). Default: FE dev (vite).

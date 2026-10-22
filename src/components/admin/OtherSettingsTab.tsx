@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, ShopSettings } from '../../context/AppContext';
-import { DemoSeedPanel } from './DemoSeedPanel';
 import { ScmSeedPanel } from './ScmSeedPanel';
 import { CategoriesTab } from './CategoriesTab';
 import { LogoCleanModal } from './LogoCleanModal';
 
 interface OtherSettingsTabProps {
   showToast: (msg: string, type?: 'success' | 'error') => void;
-  /** Dipanggil setelah data demo diisi/dikosongkan, supaya panel admin refresh. */
+  /** Dipanggil setelah data SCM di-fetch/dihapus, supaya panel admin refresh. */
   onDataChanged?: () => void;
   /** Dipanggil setelah kategori berubah, supaya dropdown form produk ikut refresh. */
   onCategoriesChanged?: () => void;
@@ -247,10 +246,7 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
           </div>
         </div>
 
-        {/* CARD 2 (RIGHT): DATA DEMO (SEEDER) */}
-        <DemoSeedPanel showToast={showToast} onDataChanged={onDataChanged} />
-
-        {/* CARD 3: DATA SCM (SEEDER) */}
+        {/* CARD 2 (RIGHT): DATA SCM (SEEDER) */}
         <ScmSeedPanel showToast={showToast} onDataChanged={onDataChanged} />
       </div>
 

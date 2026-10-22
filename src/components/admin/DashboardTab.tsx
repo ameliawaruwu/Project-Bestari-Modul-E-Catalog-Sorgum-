@@ -70,7 +70,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             className="bg-white dark:bg-[#0E1A11] border border-[#E2EFE0] dark:border-white/10 hover:border-[#3A8F4B]/50 hover:bg-[#EAF6E8] dark:hover:bg-[#1B2C1F] text-[#1F5132] dark:text-[#86EFAC] px-3.5 py-1.5 rounded-lg font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-95"
           >
             <span className="material-symbols-outlined text-[15px]">database</span>
-            <span>Data Demo (Seeder)</span>
+            <span>Seeder SCM</span>
           </button>
         </div>
       </div>
@@ -229,9 +229,9 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 </div>
                 <div className="min-w-0 flex-grow">
                   <p className="text-xs font-bold text-[#1F5132] dark:text-[#F4F8F3] group-hover:text-[#3A8F4B] transition-colors">
-                    Data Demo (Seeder)
+                    Seeder SCM
                   </p>
-                  <p className="text-[10px] text-[#556353] dark:text-white/60 truncate">Persiapan presentasi &amp; reset konten</p>
+                  <p className="text-[10px] text-[#556353] dark:text-white/60 truncate">Fetch &amp; sinkron produk dari SCM</p>
                 </div>
                 <span className="material-symbols-outlined text-sm text-[#556353] dark:text-white/40 group-hover:translate-x-0.5 transition-transform">
                   chevron_right

@@ -6,6 +6,9 @@ interface ProductsTabProps {
   onDeleteProduct: (product: Product) => void;
   onOpenCreateProduct: () => void;
   onOpenEditProduct: (product: Product) => void;
+  /** Tarik ulang data dari SCM (produk baru masuk sebagai draft). */
+  onSyncScm?: () => void;
+  isScmSyncing?: boolean;
 }
 
 export const ProductsTab: React.FC<ProductsTabProps> = ({
@@ -13,6 +16,8 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
   onDeleteProduct,
   onOpenCreateProduct,
   onOpenEditProduct,
+  onSyncScm,
+  isScmSyncing,
 }) => {
   const [searchProduct, setSearchProduct] = useState('');
   const [selectedProductCategory, setSelectedProductCategory] = useState<string>('semua');
@@ -65,6 +70,19 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
           </h2>
         </div>
 
+        <div className="flex items-center gap-2">
+        {onSyncScm && (
+          <button
+            type="button"
+            onClick={onSyncScm}
+            disabled={isScmSyncing}
+            title="Tarik data produk terbaru dari SCM"
+            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-[#3A8F4B]/30 hover:border-[#3A8F4B]/60 hover:bg-[#EAF6E8] dark:hover:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] transition-colors cursor-pointer font-semibold text-xs disabled:opacity-60 disabled:cursor-wait active:scale-95"
+          >
+            <span className={`material-symbols-outlined text-base ${isScmSyncing ? 'animate-spin' : ''}`}>sync</span>
+            <span>{isScmSyncing ? 'Menarik dari SCM…' : 'Tarik dari SCM'}</span>
+          </button>
+        )}
         <button
           type="button"
           onClick={onOpenCreateProduct}
@@ -73,6 +91,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
           <span className="material-symbols-outlined text-base">add</span>
           <span>Tambah Produk</span>
         </button>
+        </div>
       </section>
 
       {/* Table Card: Daftar Produk */}
@@ -116,7 +135,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
           </div>
         </div>
 
-        {/* Table - 5 Kolom Sesuai Aturan UI */}
+        {/* Table - 6 Kolom Sesuai Aturan UI */}
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse table-auto">
             <thead>
@@ -125,6 +144,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                 <th className="px-3.5 py-2.5 text-[11px] font-extrabold uppercase tracking-wider">NAMA PRODUK</th>
                 <th className="px-3.5 py-2.5 w-[130px] text-[11px] font-extrabold uppercase tracking-wider">KATEGORI</th>
                 <th className="px-3.5 py-2.5 w-[150px] text-[11px] font-extrabold uppercase tracking-wider">HARGA</th>
+                <th className="px-3.5 py-2.5 w-[100px] text-[11px] font-extrabold uppercase tracking-wider">STATUS</th>
                 <th className="px-3.5 py-2.5 text-right w-[100px] text-[11px] font-extrabold uppercase tracking-wider">AKSI</th>
               </tr>
             </thead>
@@ -153,6 +173,19 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                       {prod.priceMax && prod.priceMax > prod.price
                         ? `Rp ${prod.price.toLocaleString('id-ID')} - Rp ${prod.priceMax.toLocaleString('id-ID')}`
                         : `Rp ${prod.price.toLocaleString('id-ID')}`}
+                    </td>
+                    <td className="px-3.5 py-2">
+                      {prod.isActive === false ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#FFF6D6] dark:bg-[#3A3214] text-[#8A6D00] dark:text-[#fade88] text-[10px] font-bold uppercase tracking-wider">
+                          <span className="material-symbols-outlined text-[12px]">edit_note</span>
+                          Draft
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] text-[10px] font-bold uppercase tracking-wider">
+                          <span className="material-symbols-outlined text-[12px]">public</span>
+                          Publish
+                        </span>
+                      )}
                     </td>
                     <td className="px-3.5 py-2 text-right">
                       <div className="flex justify-end gap-1.5">
