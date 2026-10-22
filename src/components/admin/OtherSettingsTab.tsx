@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp, ShopSettings } from '../../context/AppContext';
 import { DemoSeedPanel } from './DemoSeedPanel';
+import { ScmSeedPanel } from './ScmSeedPanel';
 import { CategoriesTab } from './CategoriesTab';
 import { LogoCleanModal } from './LogoCleanModal';
 
@@ -248,6 +249,9 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
 
         {/* CARD 2 (RIGHT): DATA DEMO (SEEDER) */}
         <DemoSeedPanel showToast={showToast} onDataChanged={onDataChanged} />
+
+        {/* CARD 3: DATA SCM (SEEDER) */}
+        <ScmSeedPanel showToast={showToast} onDataChanged={onDataChanged} />
       </div>
 
       {/* KELOLA KATEGORI PRODUK */}

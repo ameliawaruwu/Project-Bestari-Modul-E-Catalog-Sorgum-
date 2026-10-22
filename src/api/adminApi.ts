@@ -267,3 +267,32 @@ export const demoSeedApi = {
     return res?.data || null;
   },
 };
+
+export const scmSeedApi = {
+  // GET /api/admin/scm-seed — status seeder SCM
+  getStatus: async (): Promise<{ keyConfigured: boolean; fetchedCount: number; productCount: number } | null> => {
+    const res = await request<{ data: { keyConfigured: boolean; fetchedCount: number; productCount: number } }>(
+      '/admin/scm-seed',
+      { auth: true },
+    );
+    return res?.data || null;
+  },
+
+  // POST /api/admin/scm-seed/apply — fetch produk dari SCM
+  apply: async (): Promise<{ created: number; matched: number; fallback: number } | null> => {
+    const res = await request<{ data: { created: number; matched: number; fallback: number } }>(
+      '/admin/scm-seed/apply',
+      { method: 'POST', body: {}, auth: true },
+    );
+    return res?.data || null;
+  },
+
+  // POST /api/admin/scm-seed/clear — hapus produk hasil fetch
+  clear: async (): Promise<{ removed: number } | null> => {
+    const res = await request<{ data: { removed: number } }>(
+      '/admin/scm-seed/clear',
+      { method: 'POST', body: {}, auth: true },
+    );
+    return res?.data || null;
+  },
+};

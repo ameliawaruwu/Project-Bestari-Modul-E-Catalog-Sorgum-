@@ -27,6 +27,12 @@ export const config = {
     maxFileSize: parseInt(process.env.ECATALOG_BESTARI_MAX_FILE_SIZE || '1048576', 10),
   },
 
+  // API SCM (sumber produk olahan untuk seeder "Fetch dari SCM").
+  scm: {
+    apiUrl: (process.env.ECATALOG_BESTARI_SCM_API_URL || 'https://scm.livinglabs.id/api').replace(/\/+$/, ''),
+    apiKey: process.env.ECATALOG_BESTARI_SCM_API_KEY || '',
+  },
+
   // Origin yang di-allow CORS (dipisah koma). Default: FE dev (vite).
   corsOrigins: (process.env.ECATALOG_BESTARI_CORS_ORIGINS || 'http://localhost:3000')
     .split(',')
