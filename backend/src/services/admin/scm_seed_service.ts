@@ -21,15 +21,15 @@ import { upsertLandingContent } from '../landing_content_service';
 // ID produk hasil fetch dicatat di landing_content (key `scmSeedMarker`) supaya
 // "Hapus Data Fetch" hanya menghapus produk hasil fetch.
 //
-// Sinkron (`syncScm`): setelah fetch, perubahan di SCM (nama, deskripsi, satuan,
-// status aktif, foto) diterapkan ke produk yang sama TANPA menghapus — harga &
-// kategori yang sudah diatur admin tetap. Produk baru di SCM ditambahkan, produk
-// yang hilang dari SCM dinonaktifkan. Dijalankan otomatis tiap
-// ECATALOG_BESTARI_SCM_SYNC_SECONDS detik, saat daftar produk diminta, dan lewat tombol "Sinkronkan".
+// Fetch otomatis (`autoFetchScm`, tiap ECATALOG_BESTARI_SCM_FETCH_SECONDS detik,
+// default 60) HANYA jalan selama mode SCM aktif (sudah "Fetch dari SCM"). Setelah
+// "Hapus Data Fetch" toko dibiarkan kosong sampai admin Fetch lagi. Fetch ulang
+// hanya terjadi kalau data SCM berubah (dibandingkan lewat hash), supaya id
+// produk tidak berganti tiap menit.
 //
 // QR: SCM menaruh QR di kemasan (QR umum produk, `/packaging`) dan di batch
 // olahan (1 batch = 1 QR, `/production`), keduanya terhubung lewat `productId`.
-// Saat sinkron, QR terbaru tiap produk dicatat di marker (`qr`, key = id produk
+// Saat fetch, QR terbaru tiap produk dicatat di marker (`qr`, key = id produk
 // toko) dan ditampilkan kecil di deskripsi produk.
 // ---------------------------------------------------------------------------
 
@@ -48,8 +48,7 @@ interface Marker {
   ids: number[];
   files: string[];
   map?: Record<string, number>;     // id SCM → id produk toko
-  photos?: Record<string, string>;  // id SCM → hash fotoUrl terakhir
-  scmActive?: Record<string, number>; // id SCM → status aktif terakhir di SCM
+  hash?: string;                    // hash data SCM saat fetch terakhir
   qr?: Record<string, ScmQr>;        // id produk toko → QR dari SCM
 }
 
@@ -213,9 +212,8 @@ async function readMarker(): Promise<Marker> {
       ids: Array.isArray(parsed.ids) ? parsed.ids : [],
       files: Array.isArray(parsed.files) ? parsed.files : [],
       map: parsed.map && typeof parsed.map === 'object' ? parsed.map : undefined,
-      photos: parsed.photos && typeof parsed.photos === 'object' ? parsed.photos : undefined,
-      scmActive: parsed.scmActive && typeof parsed.scmActive === 'object' ? parsed.scmActive : undefined,
       qr: parsed.qr && typeof parsed.qr === 'object' ? parsed.qr : undefined,
+      hash: typeof parsed.hash === 'string' ? parsed.hash : undefined,
     };
   } catch {
     return { ids: [], files: [] };
@@ -223,22 +221,20 @@ async function readMarker(): Promise<Marker> {
 }
 
 const scmKey = (p: ScmProduct) => String(p.id ?? norm(p.name));
-const photoHash = (u: string | null | undefined) =>
-  u ? crypto.createHash('sha1').update(u).digest('hex') : '';
 const unitOf = (p: ScmProduct) => (p.satuanHasil ? String(p.satuanHasil).trim() || null : null);
 const activeOf = (p: ScmProduct) => (p.isActive === false || p.isActive === 0 ? 0 : 1);
 
 // ---- Status ----------------------------------------------------------------
 
-let lastSyncAt: string | null = null;
+let lastFetchAt: string | null = null;
 
 export async function getScmSeedStatus() {
   const marker = await readMarker();
   const [rows] = await dbPool.query('SELECT COUNT(*) AS total FROM products');
   return {
     keyConfigured: Boolean(config.scm.apiKey),
-    syncSeconds: config.scm.syncSeconds,
-    lastSyncAt,
+    fetchSeconds: config.scm.fetchSeconds,
+    lastFetchAt,
     fetchedCount: marker.ids.length,
     productCount: Number((rows as Array<{ total: number }>)[0]?.total || 0),
   };
@@ -290,7 +286,7 @@ function uniqueSlug(name: string, used: Set<string>): string {
 
 // Tambah satu produk SCM baru ke toko. Return id produk & apakah namanya sama persis dgn produk lama.
 async function insertScmProduct(
-  conn: Conn, p: ScmProduct, ctx: InsertCtx, draft = false,
+  conn: Conn, p: ScmProduct, ctx: InsertCtx,
 ): Promise<{ productId: number; exact: boolean }> {
   const name = String(p.name).trim();
 
@@ -315,7 +311,7 @@ async function insertScmProduct(
     description: p.deskripsi ?? (old?.description as string | undefined) ?? null,
     weight_spec: unitOf(p) ?? (old?.weight_spec as string | undefined) ?? null,
     price: old ? Number(old.price) || ctx.medianPrice : ctx.medianPrice,
-    is_active: draft ? 0 : activeOf(p),
+    is_active: activeOf(p),
     is_featured: 0,
     rating_avg: 0,
     review_count: 0,
@@ -354,9 +350,44 @@ async function fetchScmNamed(): Promise<ScmProduct[]> {
   return scm;
 }
 
-export async function applyScmSeed(): Promise<{ created: number; matched: number; fallback: number }> {
-  const scm = await fetchScmNamed();
-  const scmQr = await fetchScmQr();
+// Fetch, fetch otomatis & hapus dijalankan bergantian (antrean), jadi hapus yang
+// ditekan saat fetch otomatis berjalan tetap terjadi SETELAHNYA — data tidak muncul lagi.
+let queue: Promise<unknown> = Promise.resolve();
+function exclusive<T>(fn: () => Promise<T>): Promise<T> {
+  const run = queue.then(fn, fn);
+  queue = run.catch(() => 0);
+  return run;
+}
+
+const scmHash = (scm: ScmProduct[], qr: Record<string, ScmQr> | null) =>
+  crypto.createHash('sha1').update(JSON.stringify([scm, qr])).digest('hex');
+
+export function applyScmSeed() {
+  return exclusive(async () => {
+    const scm = await fetchScmNamed();
+    return doApplyScmSeed(scm, await fetchScmQr());
+  });
+}
+
+// Fetch otomatis: hanya di mode SCM & hanya kalau data SCM berubah.
+// Return true kalau produk toko diganti.
+export function autoFetchScm(): Promise<boolean> {
+  return exclusive(async () => {
+    const marker = await readMarker();
+    if (marker.ids.length === 0) return false; // sudah dihapus / belum pernah fetch
+    const scm = await fetchScmNamed();
+    const scmQr = await fetchScmQr();
+    lastFetchAt = new Date().toISOString();
+    // QR gagal diambil → lewati putaran ini (coba lagi berikutnya) agar QR tidak hilang.
+    if (!scmQr || marker.hash === scmHash(scm, scmQr)) return false;
+    await doApplyScmSeed(scm, scmQr);
+    return true;
+  });
+}
+
+async function doApplyScmSeed(
+  scm: ScmProduct[], scmQr: Record<string, ScmQr> | null,
+): Promise<{ created: number; matched: number; fallback: number }> {
   const written: string[] = [];
   const conn = await dbPool.getConnection();
   let matched = 0;
@@ -369,15 +400,11 @@ export async function applyScmSeed(): Promise<{ created: number; matched: number
 
     const ids: number[] = [];
     const map: Record<string, number> = {};
-    const photos: Record<string, string> = {};
-    const scmActive: Record<string, number> = {};
     for (const p of scm) {
-      scmActive[scmKey(p)] = activeOf(p);
       const { productId, exact } = await insertScmProduct(conn, p, ctx);
       if (exact) matched++;
       ids.push(productId);
       map[scmKey(p)] = productId;
-      photos[scmKey(p)] = photoHash(p.fotoUrl);
     }
     await conn.commit();
 
@@ -386,12 +413,12 @@ export async function applyScmSeed(): Promise<{ created: number; matched: number
     prev.files.forEach((f) => fs.rmSync(path.join(config.upload.dir, path.basename(f)), { force: true }));
 
     await upsertLandingContent({
-      [MARKER_KEY]: JSON.stringify({ ids, files: written, map, photos, scmActive, qr: qrByShopId(scmQr || {}, map) } satisfies Marker),
+      [MARKER_KEY]: JSON.stringify({ ids, files: written, map, qr: qrByShopId(scmQr || {}, map), hash: scmHash(scm, scmQr) } satisfies Marker),
       featuredProductIds: JSON.stringify(ids.slice(0, 5).map(String)),
     }).catch(() => 0);
     qrCache = null;
 
-    lastSyncAt = new Date().toISOString();
+    lastFetchAt = new Date().toISOString();
     return { created: ids.length, matched, fallback: ids.length - matched };
   } catch (e) {
     await conn.rollback();
@@ -402,181 +429,13 @@ export async function applyScmSeed(): Promise<{ created: number; matched: number
   }
 }
 
-// ---- Sync ------------------------------------------------------------------
-//
-// Dipanggil otomatis (interval) dan setiap admin membuka Kelola Produk —
-// hanya di mode SCM (sudah "Fetch dari SCM", belum dihapus lewat "Hapus Data Fetch").
-//  - Produk SCM yang sudah tertaut → nama, deskripsi, satuan, foto ikut SCM.
-//    Harga, kategori & status publish TIDAK disentuh (milik admin).
-//  - Produk SCM yang belum ada di toko → ditautkan ke produk bernama sama,
-//    kalau tidak ada → ditambahkan sebagai DRAFT (is_active = 0). Admin yang
-//    mem-publish lewat Edit Produk.
-//  - Produk dinonaktifkan / dihapus di SCM → dinonaktifkan di toko (sekali, saat
-//    berubah — kalau admin publish ulang, tidak ditimpa lagi).
-
-export interface SyncResult {
-  active: boolean;   // false = mode SCM tidak aktif (belum fetch / sudah dihapus) atau sinkron lain sedang jalan
-  updated: number;
-  created: number;
-  deactivated: number;
-}
-
-let syncing = false;
-
-export async function syncScm(): Promise<SyncResult> {
-  const result: SyncResult = { active: false, updated: 0, created: 0, deactivated: 0 };
-  if (syncing) return result;
-  syncing = true;
-  result.active = true;
-
-  const written: string[] = [];
-  const obsoleteFiles: string[] = [];
-  let conn: Conn | null = null;
-  try {
-    // Sinkron HANYA berjalan di "mode SCM" (setelah "Fetch dari SCM"). Setelah
-    // "Hapus Data Fetch", produk SCM tidak ditarik lagi sampai fetch ulang.
-    const marker = await readMarker();
-    if (marker.ids.length === 0) { result.active = false; return result; }
-    const scm = await fetchScmNamed();
-    const scmQr = await fetchScmQr();
-    conn = await dbPool.getConnection();
-
-    const [rows] = await conn.query('SELECT id, name, slug, description, weight_spec, is_active FROM products');
-    const existing = new Map((rows as Row[]).map((r) => [Number(r.id), r]));
-    const map: Record<string, number> = {};
-    Object.entries(marker.map || {}).forEach(([k, id]) => { if (existing.has(Number(id))) map[k] = Number(id); });
-    const photos: Record<string, string> = { ...(marker.photos || {}) };
-    const scmActive: Record<string, number> = { ...(marker.scmActive || {}) };
-
-    const linked = () => new Set(Object.values(map));
-    // Tautkan produk SCM yang belum punya pasangan → produk toko bernama sama.
-    for (const p of scm) {
-      if (map[scmKey(p)] !== undefined) continue;
-      const used = linked();
-      const hit = [...existing.values()].find((r) => !used.has(Number(r.id)) && norm(r.name) === norm(p.name));
-      if (hit) { map[scmKey(p)] = Number(hit.id); delete photos[scmKey(p)]; }
-    }
-    // Marker lama (sebelum ada pemetaan id SCM): pasangkan sisanya lewat kemiripan nama.
-    if (!marker.map) {
-      for (const p of scm) {
-        if (map[scmKey(p)] !== undefined) continue;
-        const used = linked();
-        let best = 0;
-        let hit: number | undefined;
-        marker.ids.forEach((id) => {
-          const r = existing.get(id);
-          if (!r || used.has(id)) return;
-          const sim = similarity(String(p.name), String(r.name));
-          if (sim > best) { best = sim; hit = id; }
-        });
-        if (hit !== undefined && best >= 0.5) map[scmKey(p)] = hit;
-      }
-    }
-
-    await conn.beginTransaction();
-    const ctx = await loadInsertCtx(conn, written);
-
-    for (const p of scm) {
-      const key = scmKey(p);
-      const row = existing.get(map[key]);
-      const nowActive = activeOf(p);
-      const wasActive = scmActive[key];
-      scmActive[key] = nowActive;
-
-      if (!row) {
-        const { productId } = await insertScmProduct(conn, p, ctx, true);
-        map[key] = productId;
-        photos[key] = photoHash(p.fotoUrl);
-        result.created++;
-        continue;
-      }
-
-      const pid = Number(row.id);
-      const name = String(p.name).trim();
-      const changes: Row = {};
-      if (row.name !== name) {
-        changes.name = name;
-        ctx.usedSlugs.delete(String(row.slug));
-        changes.slug = uniqueSlug(name, ctx.usedSlugs);
-      }
-      if (p.deskripsi != null && row.description !== p.deskripsi) changes.description = p.deskripsi;
-      const unit = unitOf(p);
-      if (unit && row.weight_spec !== unit) changes.weight_spec = unit;
-      // Baru dinonaktifkan di SCM → sembunyikan dari toko.
-      if (nowActive === 0 && wasActive !== 0 && Number(row.is_active) === 1) {
-        changes.is_active = 0;
-        result.deactivated++;
-      }
-
-      const hash = photoHash(p.fotoUrl);
-      const photoChanged = Boolean(p.fotoUrl) && photos[key] !== hash;
-
-      const keys = Object.keys(changes);
-      if (keys.length > 0) {
-        await conn.query(
-          `UPDATE products SET ${keys.map((k) => `\`${k}\` = ?`).join(', ')} WHERE id = ?`,
-          [...keys.map((k) => changes[k]), pid],
-        );
-      }
-      if (photoChanged) {
-        const img = resolveImage(p.fotoUrl, written);
-        if (img) {
-          const [imgRows] = await conn.query('SELECT image_url FROM product_images WHERE product_id = ?', [pid]);
-          (imgRows as Array<{ image_url: string }>).forEach((r) => {
-            const f = path.basename(String(r.image_url));
-            if (marker.files.includes(f)) obsoleteFiles.push(f);
-          });
-          await conn.query('DELETE FROM product_images WHERE product_id = ?', [pid]);
-          await conn.query(
-            'INSERT INTO product_images (product_id, image_url, alt_text, is_primary, sort_order) VALUES (?, ?, ?, 1, 0)',
-            [pid, img, name],
-          );
-        }
-        photos[key] = hash;
-      }
-      if ((keys.length > 0 && !(keys.length === 1 && keys[0] === 'is_active')) || photoChanged) result.updated++;
-    }
-
-    // Produk yang sudah tidak ada di SCM → nonaktifkan & lepas tautannya.
-    const live = new Set(scm.map(scmKey));
-    for (const [key, pid] of Object.entries(map)) {
-      if (live.has(key)) continue;
-      const row = existing.get(pid);
-      if (row && Number(row.is_active) === 1) {
-        await conn.query('UPDATE products SET is_active = 0 WHERE id = ?', [pid]);
-        result.deactivated++;
-      }
-      delete map[key];
-      delete photos[key];
-      delete scmActive[key];
-    }
-
-    await conn.commit();
-
-    const ids = [...new Set([...marker.ids.filter((id) => existing.has(id)), ...Object.values(map)])];
-    const files = [...marker.files.filter((f) => !obsoleteFiles.includes(f)), ...written];
-    const qr = scmQr ? qrByShopId(scmQr, map) : (marker.qr || {});
-    if (JSON.stringify(qr) !== JSON.stringify(marker.qr || {})) result.updated++;
-    await upsertLandingContent({
-      [MARKER_KEY]: JSON.stringify({ ids, files, map, photos, scmActive, qr } satisfies Marker),
-    });
-    qrCache = null;
-    obsoleteFiles.forEach((f) => fs.rmSync(path.join(config.upload.dir, f), { force: true }));
-    lastSyncAt = new Date().toISOString();
-    return result;
-  } catch (e) {
-    await conn?.rollback().catch(() => 0);
-    written.forEach((f) => fs.rmSync(path.join(config.upload.dir, f), { force: true }));
-    throw e;
-  } finally {
-    syncing = false;
-    conn?.release();
-  }
-}
-
 // ---- Delete ----------------------------------------------------------------
 
-export async function clearScmSeed(): Promise<{ removed: number }> {
+export function clearScmSeed() {
+  return exclusive(doClearScmSeed);
+}
+
+async function doClearScmSeed(): Promise<{ removed: number }> {
   const marker = await readMarker();
   let removed = 0;
   if (marker.ids.length > 0) {

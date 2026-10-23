@@ -6,10 +6,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 // - "Fetch dari SCM"   : produk toko DIGANTI produk dari SCM (nama, deskripsi,
 //                        foto dari SCM; harga/kategori dari produk lama yang
 //                        namanya sama di data referensi katalog).
-// - "Sinkronkan"       : terapkan perubahan di SCM (nama, deskripsi, satuan,
-//                        status, foto) ke produk hasil fetch tanpa menghapus;
-//                        harga & kategori dari admin tetap. Juga jalan otomatis.
-// - "Hapus Data Fetch" : hapus produk hasil fetch SCM saja.
+// - "Hapus Data Fetch" : hapus produk hasil fetch SCM saja & matikan fetch
+//                        otomatis → toko tetap kosong sampai Fetch lagi.
+// Selama mode SCM aktif, backend fetch ulang otomatis kalau data SCM berubah.
 // ---------------------------------------------------------------------------
 
 interface ScmSeedPanelProps {
@@ -36,27 +35,6 @@ export const ScmSeedPanel: React.FC<ScmSeedPanelProps> = ({ showToast, onDataCha
   useEffect(() => {
     loadStatus();
   }, [loadStatus]);
-
-  const sync = async () => {
-    setIsBusy(true);
-    try {
-      const { scmSeedApi } = await import('../../api/adminApi');
-      const r = await scmSeedApi.sync();
-      if (!r?.active) {
-        showToast('Data SCM belum aktif — tekan "Fetch dari SCM" dulu.', 'info');
-      } else if (r.updated + r.created + r.deactivated === 0) {
-        showToast('Produk sudah sama dengan SCM.', 'info');
-      } else {
-        showToast(`Sinkron selesai: ${r.created} draft baru, ${r.updated} diperbarui, ${r.deactivated} dinonaktifkan.`);
-      }
-      await loadStatus();
-      onDataChanged?.();
-    } catch (e: any) {
-      showToast(e?.message || 'Sinkron SCM gagal.', 'error');
-    } finally {
-      setIsBusy(false);
-    }
-  };
 
   const run = async (kind: 'apply' | 'clear') => {
     setIsBusy(true);
@@ -124,8 +102,8 @@ export const ScmSeedPanel: React.FC<ScmSeedPanelProps> = ({ showToast, onDataCha
             {status && !status.keyConfigured
               ? 'API key SCM belum diatur di backend/.env (ECATALOG_BESTARI_SCM_API_KEY).'
               : status && status.fetchedCount === 0
-                ? '"Fetch dari SCM" mengisi produk toko dari SCM, lalu perubahan di SCM ikut tersinkron otomatis.'
-                : `Mode SCM aktif. Perubahan SCM ditarik live${status && status.syncSeconds > 0 ? ` (dicek tiap ${status.syncSeconds} detik)` : ''} & saat Kelola Produk dibuka — produk baru masuk sebagai draft.${status?.lastSyncAt ? ` Terakhir: ${new Date(status.lastSyncAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}.` : ''}`}
+                ? 'Mode SCM mati — toko tidak di-fetch otomatis. "Fetch dari SCM" mengisi produk toko dari SCM dan menyalakan fetch otomatis.'
+                : `Mode SCM aktif — data SCM dicek otomatis${status && status.fetchSeconds > 0 ? ` tiap ${status.fetchSeconds >= 60 ? `${Math.round(status.fetchSeconds / 60)} menit` : `${status.fetchSeconds} detik`}` : ''} dan di-fetch ulang kalau berubah. "Hapus Data Fetch" mematikannya.${status?.lastFetchAt ? ` Terakhir: ${new Date(status.lastFetchAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}.` : ''}`}
           </p>
         </div>
       </div>
@@ -139,15 +117,6 @@ export const ScmSeedPanel: React.FC<ScmSeedPanelProps> = ({ showToast, onDataCha
         >
           <span className="material-symbols-outlined text-[15px]">delete_sweep</span>
           <span>Hapus Data Fetch</span>
-        </button>
-        <button
-          type="button"
-          onClick={sync}
-          disabled={isBusy || !status || !status.keyConfigured || status.fetchedCount === 0}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#1F5132] dark:text-[#86EFAC] hover:bg-[#EAF6E8] dark:hover:bg-[#152718] border border-[#3A8F4B]/25 hover:border-[#3A8F4B]/50 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-        >
-          <span className="material-symbols-outlined text-[15px]">sync</span>
-          <span>Sinkronkan</span>
         </button>
         <button
           type="button"
@@ -173,7 +142,7 @@ export const ScmSeedPanel: React.FC<ScmSeedPanelProps> = ({ showToast, onDataCha
               <p className="text-xs text-[#556353] dark:text-white/70 leading-relaxed">
                 {isApply
                   ? 'Semua produk saat ini akan diganti produk dari SCM.'
-                  : 'Produk hasil fetch SCM akan dihapus. Kategori, banner, dan artikel tetap aman.'}
+                  : 'Produk hasil fetch SCM akan dihapus dan fetch otomatis dimatikan sampai Anda Fetch lagi. Kategori, banner, dan artikel tetap aman.'}
               </p>
             </div>
             <div className="flex items-center gap-3 pt-1">

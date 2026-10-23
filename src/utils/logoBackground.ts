@@ -78,7 +78,7 @@ export function cleanLogo(img: HTMLImageElement, opts: CleanLogoOptions): HTMLCa
   return out;
 }
 
-function removeBackground(imageData: ImageData, tolerance: number, includeInner: boolean) {
+export function removeBackground(imageData: ImageData, tolerance: number, includeInner: boolean) {
   const { data, width: w, height: h } = imageData;
   const total = w * h;
 

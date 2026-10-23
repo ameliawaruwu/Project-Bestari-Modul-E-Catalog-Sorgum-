@@ -34,12 +34,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       }`}
     >
       {/* Image Container — proporsional & compact di desktop zoom 100% */}
-      <div className="h-28 sm:h-36 md:h-40 overflow-hidden bg-gradient-to-b from-[#F0F8EF] to-[#FFFDF5] dark:bg-[#122316] relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
+      <div className="h-28 sm:h-36 md:h-40 overflow-hidden relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
         {product.image ? (
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
+            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500 ease-out"
             loading="lazy"
           />
         ) : (

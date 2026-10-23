@@ -4,15 +4,12 @@ import {
   getProductBySlug,
   getProductByIdPublic,
 } from '../services/products_service';
-import { triggerScmSync } from '../services/admin/scm_sync_runner';
 
 const router = Router();
 
 // === PUBLIC ===
 
 router.get('/', async (req: Request, res: Response) => {
-  // Cek perubahan di SCM di latar belakang; kalau ada, SSE `products` menyusul.
-  triggerScmSync();
   const page = Math.max(1, parseInt(req.query.page as string) || 1);
   // Cap 100 = jumlah yang diminta FE (productApi.getProducts mengirim limit=100
   // supaya seluruh katalog masuk & bisa difilter di klien). Sebelumnya 50 →

@@ -3,14 +3,12 @@ import { getProducts, createProduct, updateProduct, deleteProduct, addProductIma
 import { AppError } from '../../lib/errors_utils';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
-import { triggerScmSync } from '../../services/admin/scm_sync_runner';
 
 const router = Router();
 router.use(authRequired, adminOnly);
 
 // Daftar produk (admin) — termasuk draft/nonaktif.
 router.get('/', async (_req: Request, res: Response) => {
-  triggerScmSync();
   res.json(await getProducts({ page: 1, limit: 500, sort: 'newest', includeInactive: true }));
 });
 

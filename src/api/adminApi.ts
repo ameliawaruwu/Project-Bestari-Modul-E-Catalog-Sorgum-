@@ -247,8 +247,8 @@ export interface ScmSeedStatus {
   keyConfigured: boolean;
   fetchedCount: number;
   productCount: number;
-  syncSeconds: number;
-  lastSyncAt: string | null;
+  fetchSeconds: number;
+  lastFetchAt: string | null;
 }
 
 export const scmSeedApi = {
@@ -265,15 +265,6 @@ export const scmSeedApi = {
   apply: async (): Promise<{ created: number; matched: number; fallback: number } | null> => {
     const res = await request<{ data: { created: number; matched: number; fallback: number } }>(
       '/admin/scm-seed/apply',
-      { method: 'POST', body: {}, auth: true },
-    );
-    return res?.data || null;
-  },
-
-  // POST /api/admin/scm-seed/sync — terapkan perubahan SCM tanpa menghapus produk
-  sync: async (): Promise<{ active: boolean; updated: number; created: number; deactivated: number } | null> => {
-    const res = await request<{ data: { active: boolean; updated: number; created: number; deactivated: number } }>(
-      '/admin/scm-seed/sync',
       { method: 'POST', body: {}, auth: true },
     );
     return res?.data || null;

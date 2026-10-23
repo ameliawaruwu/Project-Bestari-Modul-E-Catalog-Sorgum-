@@ -149,11 +149,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="lg:col-span-5 w-full flex flex-col justify-between space-y-2.5">
             
             {/* Foto Utama — full width di HP, ukuran terukur di desktop */}
-            <div className="aspect-square w-full bg-[#FAF7EE] dark:bg-[#122316] rounded-lg sm:rounded-xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
+            <div className="aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
               <img
                 src={selectedImage}
                 alt={product.name}
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-500 group-hover:scale-105"
               />
             </div>
 
@@ -166,7 +166,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImage(img)}
-                    className={`aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-[#FAF7EE] dark:bg-[#122316] cursor-pointer transition-all duration-200 border-2 ${
+                    className={`aspect-square rounded-lg sm:rounded-xl overflow-hidden cursor-pointer transition-all duration-200 border-2 ${
                       isSelected
                         ? 'border-[#245B3A] dark:border-[#86EFAC] shadow-xs'
                         : 'border-[#E2EFE0] dark:border-white/10 opacity-60 hover:opacity-100 hover:border-[#97B88A]'
@@ -175,7 +175,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <img
                       src={img}
                       alt={`${product.name} ${idx + 1}`}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                     />
                   </button>
                 );

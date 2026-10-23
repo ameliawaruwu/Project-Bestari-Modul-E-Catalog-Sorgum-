@@ -324,11 +324,11 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                       }`}
                       onClick={() => toggleProductSelection(String(product.id))}
                     >
-                      <div className="w-14 h-14 rounded-lg bg-[#F7F8F6] overflow-hidden border border-[#E0E0E0] flex-shrink-0">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#E0E0E0] flex-shrink-0">
                         <img
                           src={product.image || ''}
                           alt={product.name}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                         />
                       </div>
                       <div className="flex-1 min-w-0">

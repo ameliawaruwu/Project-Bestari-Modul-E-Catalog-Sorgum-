@@ -22,7 +22,8 @@ import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminCategoriesRoutes from './routes/admin/categories_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
 import adminScmSeedRoutes from './routes/admin/scm_seed_routes';
-import { triggerScmSync } from './services/admin/scm_sync_runner';
+import { autoFetchScm } from './services/admin/scm_seed_service';
+import { eventBus, EVENTS } from './lib/eventBus';
 import eventsRoutes from './routes/events_routes';
 
 const app = express();
@@ -120,15 +121,24 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
 app.listen(config.port, () => {
   console.log(`[Server] E-Catalog BESTARI running on port ${config.port}`);
   console.log(`[Server] Environment: ${config.nodeEnv}`);
-  startScmAutoSync();
+  startScmAutoFetch();
 });
 
-// Sinkron produk dari SCM (live): polling tiap N detik. Ada perubahan → event
-// SSE `products` → admin & user langsung refetch.
-function startScmAutoSync() {
-  if (!config.scm.apiKey || config.scm.syncSeconds <= 0) return;
-  setTimeout(triggerScmSync, 5_000);
-  setInterval(triggerScmSync, config.scm.syncSeconds * 1000).unref();
+// Fetch SCM otomatis (hanya selama mode SCM aktif). Produk diganti → SSE supaya
+// admin & user langsung refetch.
+function startScmAutoFetch() {
+  if (!config.scm.apiKey || config.scm.fetchSeconds <= 0) return;
+  const tick = () =>
+    autoFetchScm()
+      .then((changed) => {
+        if (!changed) return;
+        console.log('[SCM] data berubah, produk di-fetch ulang');
+        eventBus.emit(EVENTS.PRODUCTS, { action: 'scm-seed-apply' });
+        eventBus.emit(EVENTS.ARTICLES, { action: 'scm-seed-apply' });
+        eventBus.emit(EVENTS.LANDING, { action: 'scm-seed-apply' });
+      })
+      .catch((e) => console.error('[SCM] fetch otomatis gagal:', (e as Error).message));
+  setInterval(tick, config.scm.fetchSeconds * 1000).unref();
 }
 
 export default app;

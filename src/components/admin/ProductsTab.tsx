@@ -6,9 +6,6 @@ interface ProductsTabProps {
   onDeleteProduct: (product: Product) => void;
   onOpenCreateProduct: () => void;
   onOpenEditProduct: (product: Product) => void;
-  /** Tarik ulang data dari SCM (produk baru masuk sebagai draft). */
-  onSyncScm?: () => void;
-  isScmSyncing?: boolean;
 }
 
 export const ProductsTab: React.FC<ProductsTabProps> = ({
@@ -16,8 +13,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
   onDeleteProduct,
   onOpenCreateProduct,
   onOpenEditProduct,
-  onSyncScm,
-  isScmSyncing,
 }) => {
   const [searchProduct, setSearchProduct] = useState('');
   const [selectedProductCategory, setSelectedProductCategory] = useState<string>('semua');
@@ -71,18 +66,6 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-        {onSyncScm && (
-          <button
-            type="button"
-            onClick={onSyncScm}
-            disabled={isScmSyncing}
-            title="Tarik data produk terbaru dari SCM"
-            className="px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-[#3A8F4B]/30 hover:border-[#3A8F4B]/60 hover:bg-[#EAF6E8] dark:hover:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] transition-colors cursor-pointer font-semibold text-xs disabled:opacity-60 disabled:cursor-wait active:scale-95"
-          >
-            <span className={`material-symbols-outlined text-base ${isScmSyncing ? 'animate-spin' : ''}`}>sync</span>
-            <span>{isScmSyncing ? 'Menarik dari SCM…' : 'Tarik dari SCM'}</span>
-          </button>
-        )}
         <button
           type="button"
           onClick={onOpenCreateProduct}
@@ -153,11 +136,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                 return (
                   <tr key={prod.id} className="hover:bg-[#EAF6E8]/60 dark:hover:bg-[#162B1C]/60 transition-colors">
                     <td className="px-3.5 py-2">
-                      <div className="w-9 h-9 rounded-lg bg-[#FAF7EE] dark:bg-[#122316] overflow-hidden border border-[#E2EFE0] dark:border-white/10 shadow-2xs flex-shrink-0">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden border border-[#E2EFE0] dark:border-white/10 shadow-2xs flex-shrink-0">
                         <img
                           src={prod.image}
                           alt={prod.name}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                         />
                       </div>
                     </td>

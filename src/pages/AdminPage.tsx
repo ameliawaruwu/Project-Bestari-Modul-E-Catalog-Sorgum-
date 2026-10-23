@@ -69,10 +69,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   }, []);
 
   // Kelola Produk memakai daftar admin (termasuk draft), bukan daftar toko.
-  // Saat tab dibuka, produk ditarik dulu dari SCM: produk baru masuk sebagai
-  // draft, admin yang mem-publish lewat Edit Produk.
   const [adminProducts, setAdminProducts] = useState<Product[]>([]);
-  const [isScmSyncing, setIsScmSyncing] = useState(false);
 
   const loadAdminProducts = useCallback(async () => {
     try {
@@ -82,33 +79,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   }, []);
 
-  const syncScmProducts = useCallback(async (manual = false) => {
-    setIsScmSyncing(true);
-    try {
-      const { scmSeedApi } = await import('../api/adminApi');
-      const r = await scmSeedApi.sync();
-      if (manual && r && !r.active) {
-        showToast('Data SCM belum aktif. Tekan "Fetch dari SCM" di Pengaturan Lainnya dulu.', 'info');
-      } else if (manual && r?.active) {
-        showToast(
-          r.updated + r.created + r.deactivated === 0
-            ? 'Produk sudah sama dengan SCM.'
-            : `Tarik SCM selesai: ${r.created} draft baru, ${r.updated} diperbarui, ${r.deactivated} dinonaktifkan.`,
-          r.updated + r.created + r.deactivated === 0 ? 'info' : 'success',
-        );
-      } else if (r && r.created > 0) {
-        showToast(`${r.created} produk baru dari SCM masuk sebagai draft.`, 'info');
-      }
-    } catch (e: any) {
-      if (manual) showToast(e?.message || 'Gagal menarik data dari SCM.', 'error');
-    } finally {
-      setIsScmSyncing(false);
-      await loadAdminProducts();
-    }
-  }, [loadAdminProducts, showToast]);
-
   useEffect(() => {
-    if (activeNav === 'produk') syncScmProducts();
+    if (activeNav === 'produk') loadAdminProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNav]);
 
@@ -587,8 +559,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             ) : (
               <ProductsTab
                 products={adminProducts}
-                isScmSyncing={isScmSyncing}
-                onSyncScm={() => syncScmProducts(true)}
                 onDeleteProduct={(product) => setDeletingProduct(product)}
                 onOpenCreateProduct={() => setEditingProduct({ isEditing: true, product: null })}
                 onOpenEditProduct={(product) => {

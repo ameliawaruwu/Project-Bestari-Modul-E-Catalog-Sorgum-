@@ -124,9 +124,12 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
   }, [initialProduct, categoryOptions]);
 
   // Upload gambar ke slot galeri tertentu (0-3) — preview dataURL, upload final saat save.
-  const handleGalleryFileChange = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // Background foto langsung dibersihkan (PNG transparan) supaya preview = hasil akhir.
+  const handleGalleryFileChange = async (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0];
+    if (!picked) return;
+    const { cleanProductImage } = await import('../../utils/productImageClean');
+    const file = await cleanProductImage(picked, 800);
     const reader = new FileReader();
     reader.onloadend = () => {
       setGalleryImages((prev) => {
@@ -177,9 +180,7 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
       if (file) {
         try {
           const { productAdminApi } = await import('../../api/adminApi');
-          const { compressImage } = await import('../../utils/imageCompress');
-          const toUpload = await compressImage(file, 800);
-          const uploadedUrl = await productAdminApi.uploadImage(toUpload);
+          const uploadedUrl = await productAdminApi.uploadImage(file);
           if (uploadedUrl) finalGallery.push(uploadedUrl);
           else showToast(`Gagal upload gambar galeri #${i + 1}.`);
         } catch (err: any) {
@@ -295,16 +296,16 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                       htmlFor={`gallery-file-input-${idx}`}
                       className={`block border-2 border-dashed rounded-xl overflow-hidden cursor-pointer transition-all ${
                         val
-                          ? 'border-[#A5D6A7] bg-[#F7F8F6]'
+                          ? 'border-[#A5D6A7]'
                           : 'border-[#E0E0E0] bg-[#F7F8F6] hover:border-[#2E7D32]'
                       }`}
                     >
                       {val ? (
-                        <div className="relative aspect-square bg-[#F7F8F6]">
+                        <div className="relative aspect-square">
                           <img
                             src={val}
                             alt={`Galeri ${idx + 1}`}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                           />
                           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                             <span className="text-white text-xs font-bold">Ganti</span>
