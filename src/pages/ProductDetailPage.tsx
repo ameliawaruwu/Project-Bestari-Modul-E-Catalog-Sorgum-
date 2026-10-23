@@ -153,7 +153,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <img
                 src={selectedImage}
                 alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
               />
             </div>
 
@@ -166,7 +166,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImage(img)}
-                    className={`aspect-square rounded-lg sm:rounded-xl overflow-hidden cursor-pointer transition-all duration-200 border-2 ${
+                    className={`aspect-square rounded-lg sm:rounded-xl overflow-hidden bg-[#FAF7EE] dark:bg-[#122316] cursor-pointer transition-all duration-200 border-2 ${
                       isSelected
                         ? 'border-[#245B3A] dark:border-[#86EFAC] shadow-xs'
                         : 'border-[#E2EFE0] dark:border-white/10 opacity-60 hover:opacity-100 hover:border-[#97B88A]'
@@ -175,7 +175,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <img
                       src={img}
                       alt={`${product.name} ${idx + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   </button>
                 );
@@ -244,7 +244,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
 
               {/* 4. Deskripsi Produk */}
-              {product.description && (() => {
+              {(product.description || product.scmQr) && (() => {
+                const qr = product.scmQr;
+                const qrSrc = qr ? `${qr.qrUrl}${qr.qrUrl.includes('?') ? '&' : '?'}size=256` : '';
                 const paragraphs = product.description.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
                 const hasMore = paragraphs.length > 2 || product.description.length > 350;
                 const displayedText = !descExpanded && paragraphs.length > 2
@@ -256,11 +258,34 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#14331C] dark:text-white">
                       {t('Deskripsi Produk', 'Product Description')}
                     </h4>
-                    <p className={`font-['Plus_Jakarta_Sans'] text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed whitespace-pre-line ${
-                      !descExpanded && paragraphs.length <= 2 && hasMore ? 'line-clamp-6' : ''
-                    }`}>
-                      {displayedText}
-                    </p>
+                    <div className="flex items-start gap-3">
+                      {product.description && (
+                        <p className={`flex-1 min-w-0 font-['Plus_Jakarta_Sans'] text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed whitespace-pre-line ${
+                          !descExpanded && paragraphs.length <= 2 && hasMore ? 'line-clamp-6' : ''
+                        }`}>
+                          {displayedText}
+                        </p>
+                      )}
+                      {qr && (
+                        <a
+                          href={qr.publicUrl || qrSrc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t('Pindai untuk melihat asal produk', 'Scan to see product origin')}
+                          className={`shrink-0 flex flex-col items-center gap-1 ${product.description ? '' : 'mt-1'}`}
+                        >
+                          <img
+                            src={qrSrc}
+                            alt={`QR ${product.name}`}
+                            loading="lazy"
+                            className="w-20 h-20 object-contain bg-white p-1 rounded-md border border-[#E2EFE0] dark:border-white/10"
+                          />
+                          <span className="font-['Plus_Jakarta_Sans'] text-[9px] leading-tight text-center text-[#556353] dark:text-white/60 max-w-[5rem]">
+                            {t('Pindai asal produk', 'Scan product origin')}
+                          </span>
+                        </a>
+                      )}
+                    </div>
                     {hasMore && (
                       <button
                         type="button"

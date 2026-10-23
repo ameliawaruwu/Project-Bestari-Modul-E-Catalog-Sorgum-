@@ -114,8 +114,8 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
             <div className="border-2 border-dashed border-[#E0E0E0] rounded-2xl p-8 text-center bg-[#F7F8F6] hover:border-[#2E7D32] transition-all group relative">
               <div className="space-y-3">
                 {imageInput ? (
-                  <div className="max-w-md mx-auto aspect-[16/6] rounded-xl overflow-hidden border border-[#E0E0E0] shadow-xs">
-                    <img src={imageInput} alt="Preview Slide" className="w-full h-full object-cover" />
+                  <div className="max-w-md mx-auto aspect-[16/6] rounded-xl overflow-hidden border border-[#E0E0E0] bg-white shadow-xs">
+                    <img src={imageInput} alt="Preview Slide" className="w-full h-full object-contain" />
                   </div>
                 ) : (
                   <span className="material-symbols-outlined text-5xl text-[#2E7D32] group-hover:text-[#1B5E20] transition-colors">
@@ -234,7 +234,7 @@ export const BannerFormView: React.FC<BannerFormViewProps> = ({
                 <img
                   src={imageInput}
                   alt="Pratinjau Banner"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-contain"
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>

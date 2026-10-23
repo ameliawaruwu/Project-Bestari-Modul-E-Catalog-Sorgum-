@@ -16,7 +16,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <img
               src={shopSettings.logoUrl || '/favicon-spa2.svg'}
               alt={shopSettings.storeName || 'Logo toko'}
-              className="w-8 h-8 sm:w-9 sm:h-9 object-cover rounded-lg"
+              className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-lg"
             />
             <span className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
               {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT'}

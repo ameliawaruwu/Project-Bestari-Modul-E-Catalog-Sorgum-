@@ -64,7 +64,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <img
                   src={shopSettings.logoUrl}
                   alt={shopSettings.storeName || 'Logo toko'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <img

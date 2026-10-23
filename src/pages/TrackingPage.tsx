@@ -401,20 +401,6 @@ export const TrackingPage: React.FC = () => {
               </span>
             </div>
 
-            {/* Shipper & Receiver */}
-            {(result.pengirim || result.tujuan) && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs bg-[#F9FBF7] dark:bg-[#152718] p-3 rounded-lg border border-[#E2EFE0] dark:border-white/10">
-                <div>
-                  <span className="text-[#556353] dark:text-white/50 block text-[11px] mb-0.5">{t('Pengirim', 'Shipper')}</span>
-                  <p className="font-bold text-xs sm:text-sm text-[#14331C] dark:text-white break-words">{result.pengirim || 'KWT Sorgum Official'}</p>
-                </div>
-                <div>
-                  <span className="text-[#556353] dark:text-white/50 block text-[11px] mb-0.5">{t('Tujuan Pengiriman', 'Destination')}</span>
-                  <p className="font-bold text-xs sm:text-sm text-[#14331C] dark:text-white break-words">{result.tujuan || '-'}</p>
-                </div>
-              </div>
-            )}
-
             {/* Journey Timeline */}
             <div>
               <h4 className="font-bold text-xs sm:text-sm text-[#14331C] dark:text-white mb-2.5 flex items-center gap-1.5">

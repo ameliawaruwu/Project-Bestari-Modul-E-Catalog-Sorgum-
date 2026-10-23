@@ -78,6 +78,7 @@ export function mapProduct(row: ProductRow): Product {
     waContact: row.wa_contact || undefined,
     // Galeri gambar (hanya ada di detail; list tidak membawa images[])
     images: (row as any).images?.length ? (row as any).images : undefined,
+    scmQr: (row as any).scm_qr?.qrUrl ? (row as any).scm_qr : undefined,
   };
 }
 

@@ -169,8 +169,8 @@ export const OtherSettingsTab: React.FC<OtherSettingsTabProps> = ({ showToast, o
                 />
                 <div className="space-y-1.5">
                   {settings.logoUrl ? (
-                    <div className="relative w-24 h-24 mx-auto rounded-lg overflow-hidden border border-[#E2EFE0] shadow-2xs">
-                      <img src={settings.logoUrl} alt="Preview Logo" className="w-full h-full object-cover" />
+                    <div className="relative w-24 h-24 mx-auto rounded-lg overflow-hidden border border-[#E2EFE0] bg-[#F7F8F6] shadow-2xs">
+                      <img src={settings.logoUrl} alt="Preview Logo" className="w-full h-full object-contain" />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <span className="text-white text-xs font-bold">Ganti Logo</span>
                       </div>

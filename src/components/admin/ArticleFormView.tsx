@@ -352,7 +352,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 <img
                   src={heroImage}
                   alt="Pratinjau gambar judul"
-                  className="w-full aspect-[21/9] object-cover"
+                  className="w-full aspect-[21/9] object-contain"
                   onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.3'; }}
                 />
               </div>
@@ -511,7 +511,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                             <img
                               src={b.image_url}
                               alt={b.alt || 'Pratinjau gambar'}
-                              className="w-full max-h-52 object-cover"
+                              className="w-full max-h-52 object-contain"
                               onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.3'; }}
                             />
                           </div>
@@ -615,7 +615,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                     >
                       <span className={`w-5 h-5 rounded-lg overflow-hidden flex-shrink-0 ${selected ? 'bg-white/20' : 'bg-[#EAF6E8] dark:bg-[#152718]'}`}>
                         {p.image ? (
-                          <img src={p.image} alt="" className="w-full h-full object-cover" />
+                          <img src={p.image} alt="" className="w-full h-full object-contain" />
                         ) : (
                           <span className={`material-symbols-outlined text-[11px] leading-5 block text-center ${selected ? 'text-white' : 'text-[#3A8F4B]'}`}>shopping_bag</span>
                         )}

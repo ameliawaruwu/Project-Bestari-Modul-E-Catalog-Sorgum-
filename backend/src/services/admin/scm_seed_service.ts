@@ -26,6 +26,11 @@ import { upsertLandingContent } from '../landing_content_service';
 // kategori yang sudah diatur admin tetap. Produk baru di SCM ditambahkan, produk
 // yang hilang dari SCM dinonaktifkan. Dijalankan otomatis tiap
 // ECATALOG_BESTARI_SCM_SYNC_SECONDS detik, saat daftar produk diminta, dan lewat tombol "Sinkronkan".
+//
+// QR: SCM menaruh QR di kemasan (QR umum produk, `/packaging`) dan di batch
+// olahan (1 batch = 1 QR, `/production`), keduanya terhubung lewat `productId`.
+// Saat sinkron, QR terbaru tiap produk dicatat di marker (`qr`, key = id produk
+// toko) dan ditampilkan kecil di deskripsi produk.
 // ---------------------------------------------------------------------------
 
 const MARKER_KEY = 'scmSeedMarker';
@@ -45,6 +50,13 @@ interface Marker {
   map?: Record<string, number>;     // id SCM → id produk toko
   photos?: Record<string, string>;  // id SCM → hash fotoUrl terakhir
   scmActive?: Record<string, number>; // id SCM → status aktif terakhir di SCM
+  qr?: Record<string, ScmQr>;        // id produk toko → QR dari SCM
+}
+
+export interface ScmQr {
+  qrUrl: string;          // gambar QR (PNG)
+  publicUrl: string | null; // halaman yang dibuka saat QR dipindai
+  label: string | null;   // kode kemasan / batch
 }
 
 type Row = Record<string, unknown>;
@@ -73,17 +85,21 @@ function similarity(a: string, b: string): number {
 // ---- Fetch dari SCM --------------------------------------------------------
 
 async function fetchScmProducts(): Promise<ScmProduct[]> {
+  return fetchScmList<ScmProduct>('products', (p) => String(p.id ?? p.name));
+}
+
+async function fetchScmList<T>(resource: string, idOf: (item: T) => string): Promise<T[]> {
   const { apiKey, apiUrl } = config.scm;
   if (!apiKey) {
     throw new AppError('API key SCM belum diatur. Isi ECATALOG_BESTARI_SCM_API_KEY di backend/.env lalu restart backend.', 400);
   }
 
-  const all: ScmProduct[] = [];
+  const all: T[] = [];
   const seen = new Set<string>();
   for (let page = 1; page <= 20; page++) {
     let res: Response;
     try {
-      res = await fetch(`${apiUrl}/products?limit=100&page=${page}`, {
+      res = await fetch(`${apiUrl}/${resource}?limit=100&page=${page}`, {
         headers: { 'x-api-key': apiKey, Accept: 'application/json' },
         signal: AbortSignal.timeout(30000),
       });
@@ -96,14 +112,75 @@ async function fetchScmProducts(): Promise<ScmProduct[]> {
     if (!res.ok) throw new AppError(`API SCM membalas error (HTTP ${res.status}).`, 502);
 
     const body = (await res.json().catch(() => null)) as { data?: unknown } | null;
-    const list = Array.isArray(body?.data) ? (body!.data as ScmProduct[]) : [];
+    const list = Array.isArray(body?.data) ? (body!.data as T[]) : [];
     // Jika API mengabaikan `page`, data yang sama berulang → berhenti.
-    const fresh = list.filter((p) => !seen.has(String(p.id ?? p.name)));
-    fresh.forEach((p) => seen.add(String(p.id ?? p.name)));
+    const fresh = list.filter((p) => !seen.has(idOf(p)));
+    fresh.forEach((p) => seen.add(idOf(p)));
     all.push(...fresh);
     if (list.length < 100 || fresh.length === 0) break;
   }
   return all;
+}
+
+// ---- QR ------------------------------------------------------------------
+
+interface ScmQrSource {
+  id?: string | number;
+  productId?: string | number | null;
+  kodeKemasan?: string;
+  kodeBatch?: string;
+  tanggalProduksi?: string | null;
+  statusQC?: string | null;
+  createdAt?: string | null;
+  publicUrl?: string | null;
+  qrUrl?: string | null;
+}
+
+// id produk SCM → QR. Kemasan (QR umum produk) diutamakan; kalau produk belum
+// punya kemasan, pakai batch olahan terbaru (yang lolos QC lebih dulu).
+// Return null kalau SCM gagal dihubungi → QR lama dipertahankan.
+async function fetchScmQr(): Promise<Record<string, ScmQr> | null> {
+  try {
+    const idOf = (x: ScmQrSource) => String(x.id ?? x.kodeKemasan ?? x.kodeBatch);
+    const [packs, batches] = await Promise.all([
+      fetchScmList<ScmQrSource>('packaging', idOf),
+      fetchScmList<ScmQrSource>('production', idOf),
+    ]);
+    const newest = (a: ScmQrSource, b: ScmQrSource) =>
+      String(b.tanggalProduksi || b.createdAt || '').localeCompare(String(a.tanggalProduksi || a.createdAt || ''));
+    const out: Record<string, ScmQr> = {};
+    const add = (list: ScmQrSource[], label: (x: ScmQrSource) => string | undefined) => {
+      for (const x of list) {
+        const pid = x.productId == null ? '' : String(x.productId);
+        if (!pid || out[pid] || !x.qrUrl) continue;
+        out[pid] = { qrUrl: String(x.qrUrl), publicUrl: x.publicUrl ? String(x.publicUrl) : null, label: label(x) || null };
+      }
+    };
+    add([...packs].sort(newest), (x) => x.kodeKemasan);
+    const passed = (x: ScmQrSource) => (x.statusQC === 'Lolos QC' ? 0 : 1);
+    add([...batches].sort((a, b) => passed(a) - passed(b) || newest(a, b)), (x) => x.kodeBatch);
+    return out;
+  } catch (e) {
+    console.error('[SCM Sync] QR gagal diambil:', (e as Error).message);
+    return null;
+  }
+}
+
+// key: id SCM → id produk toko.
+function qrByShopId(byScmId: Record<string, ScmQr>, map: Record<string, number>): Record<string, ScmQr> {
+  const out: Record<string, ScmQr> = {};
+  Object.entries(map).forEach(([scmId, pid]) => { if (byScmId[scmId]) out[String(pid)] = byScmId[scmId]; });
+  return out;
+}
+
+let qrCache: { at: number; qr: Record<string, ScmQr> } | null = null;
+
+// QR SCM untuk satu produk toko (dibaca dari marker, cache singkat).
+export async function getScmQr(productId: number): Promise<ScmQr | null> {
+  if (!qrCache || Date.now() - qrCache.at > 5_000) {
+    qrCache = { at: Date.now(), qr: (await readMarker().catch(() => null))?.qr || {} };
+  }
+  return qrCache.qr[String(productId)] || null;
 }
 
 // ---- Gambar ----------------------------------------------------------------
@@ -138,6 +215,7 @@ async function readMarker(): Promise<Marker> {
       map: parsed.map && typeof parsed.map === 'object' ? parsed.map : undefined,
       photos: parsed.photos && typeof parsed.photos === 'object' ? parsed.photos : undefined,
       scmActive: parsed.scmActive && typeof parsed.scmActive === 'object' ? parsed.scmActive : undefined,
+      qr: parsed.qr && typeof parsed.qr === 'object' ? parsed.qr : undefined,
     };
   } catch {
     return { ids: [], files: [] };
@@ -278,6 +356,7 @@ async function fetchScmNamed(): Promise<ScmProduct[]> {
 
 export async function applyScmSeed(): Promise<{ created: number; matched: number; fallback: number }> {
   const scm = await fetchScmNamed();
+  const scmQr = await fetchScmQr();
   const written: string[] = [];
   const conn = await dbPool.getConnection();
   let matched = 0;
@@ -307,9 +386,10 @@ export async function applyScmSeed(): Promise<{ created: number; matched: number
     prev.files.forEach((f) => fs.rmSync(path.join(config.upload.dir, path.basename(f)), { force: true }));
 
     await upsertLandingContent({
-      [MARKER_KEY]: JSON.stringify({ ids, files: written, map, photos, scmActive } satisfies Marker),
+      [MARKER_KEY]: JSON.stringify({ ids, files: written, map, photos, scmActive, qr: qrByShopId(scmQr || {}, map) } satisfies Marker),
       featuredProductIds: JSON.stringify(ids.slice(0, 5).map(String)),
     }).catch(() => 0);
+    qrCache = null;
 
     lastSyncAt = new Date().toISOString();
     return { created: ids.length, matched, fallback: ids.length - matched };
@@ -358,6 +438,7 @@ export async function syncScm(): Promise<SyncResult> {
     const marker = await readMarker();
     if (marker.ids.length === 0) { result.active = false; return result; }
     const scm = await fetchScmNamed();
+    const scmQr = await fetchScmQr();
     conn = await dbPool.getConnection();
 
     const [rows] = await conn.query('SELECT id, name, slug, description, weight_spec, is_active FROM products');
@@ -474,9 +555,12 @@ export async function syncScm(): Promise<SyncResult> {
 
     const ids = [...new Set([...marker.ids.filter((id) => existing.has(id)), ...Object.values(map)])];
     const files = [...marker.files.filter((f) => !obsoleteFiles.includes(f)), ...written];
+    const qr = scmQr ? qrByShopId(scmQr, map) : (marker.qr || {});
+    if (JSON.stringify(qr) !== JSON.stringify(marker.qr || {})) result.updated++;
     await upsertLandingContent({
-      [MARKER_KEY]: JSON.stringify({ ids, files, map, photos, scmActive } satisfies Marker),
+      [MARKER_KEY]: JSON.stringify({ ids, files, map, photos, scmActive, qr } satisfies Marker),
     });
+    qrCache = null;
     obsoleteFiles.forEach((f) => fs.rmSync(path.join(config.upload.dir, f), { force: true }));
     lastSyncAt = new Date().toISOString();
     return result;
@@ -502,6 +586,7 @@ export async function clearScmSeed(): Promise<{ removed: number }> {
   }
   marker.files.forEach((f) => fs.rmSync(path.join(config.upload.dir, path.basename(f)), { force: true }));
   await upsertLandingContent({ [MARKER_KEY]: '', featuredProductIds: '[]' }).catch(() => 0);
+  qrCache = null;
   return { removed };
 }
 

@@ -1,5 +1,6 @@
 import dbPool from '../lib/db';
 import { AppError } from '../lib/errors_utils';
+import { getScmQr, type ScmQr } from './admin/scm_seed_service';
 
 export interface ProductRow {
   id: number;
@@ -25,6 +26,7 @@ export interface ProductRow {
 
 export interface ProductDetail extends ProductRow {
   images: { id: number; image_url: string; alt_text: string | null; is_primary: number; sort_order: number }[];
+  scm_qr: ScmQr | null; // QR produk dari SCM (kemasan / batch olahan), kalau ada
 }
 
 interface ProductFilters {
@@ -145,7 +147,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     [product.id],
   );
 
-  return { ...product, images: images as any[] };
+  return { ...product, images: images as any[], scm_qr: await getScmQr(product.id) };
 }
 
 // Detail produk by ID (untuk admin edit) — include produk nonaktif, + galeri images[].
@@ -166,7 +168,7 @@ export async function getProductByIdAdmin(id: number): Promise<ProductDetail | n
     [product.id],
   );
 
-  return { ...product, images: images as any[] };
+  return { ...product, images: images as any[], scm_qr: await getScmQr(product.id) };
 }
 
 // Detail produk by ID (publik) — hanya aktif, + galeri images[].
@@ -187,7 +189,7 @@ export async function getProductByIdPublic(id: number): Promise<ProductDetail | 
     [product.id],
   );
 
-  return { ...product, images: images as any[] };
+  return { ...product, images: images as any[], scm_qr: await getScmQr(product.id) };
 }
 
 // === ADMIN ===

@@ -146,7 +146,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                 <img
                   src={block.image_url}
                   alt={block.alt || activeArticle.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
               {block.caption && (
@@ -225,7 +225,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                 <img
                   src={activeArticle.image}
                   alt={activeArticle.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[#C89B3C]">
@@ -327,7 +327,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                       <img
                         src={other.image}
                         alt={other.title}
-                        className="w-13 h-13 rounded-lg object-cover flex-shrink-0 border border-[#E0E0E0]"
+                        className="w-13 h-13 rounded-lg object-contain flex-shrink-0 border border-[#E0E0E0]"
                       />
                       <div>
                         <span className="text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider block font-['Plus_Jakarta_Sans']">

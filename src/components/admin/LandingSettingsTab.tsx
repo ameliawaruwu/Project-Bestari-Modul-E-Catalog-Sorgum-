@@ -225,7 +225,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                           <img
                             src={banner.image}
                             alt={banner.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         </div>
                       </td>
@@ -328,7 +328,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                         <img
                           src={product.image || ''}
                           alt={product.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="flex-1 min-w-0">

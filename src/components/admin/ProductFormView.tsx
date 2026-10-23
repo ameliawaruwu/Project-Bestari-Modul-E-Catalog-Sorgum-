@@ -300,11 +300,11 @@ export const ProductFormView: React.FC<ProductFormViewProps> = ({
                       }`}
                     >
                       {val ? (
-                        <div className="relative aspect-square">
+                        <div className="relative aspect-square bg-[#F7F8F6]">
                           <img
                             src={val}
                             alt={`Galeri ${idx + 1}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                             <span className="text-white text-xs font-bold">Ganti</span>

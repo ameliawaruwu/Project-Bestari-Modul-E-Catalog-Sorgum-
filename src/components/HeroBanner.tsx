@@ -6,6 +6,19 @@ interface HeroBannerProps {
   onReadMore?: () => void;
 }
 
+// Foto banner utuh (tidak terpotong): gambar di-`contain` di atas salinan buram
+// dirinya sendiri, jadi area kosong tetap terisi warna foto.
+const FitImage: React.FC<{ src: string; className?: string }> = ({ src, className = '' }) => (
+  <div className={`absolute inset-0 overflow-hidden ${className}`}>
+    <div
+      aria-hidden
+      className="absolute inset-0 bg-cover bg-center scale-110 blur-xl opacity-60"
+      style={{ backgroundImage: `url('${src}')` }}
+    />
+    <img src={src} alt="" className="relative w-full h-full object-contain" />
+  </div>
+);
+
 export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore }) => {
   const { t, banners, landingContent } = useApp();
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -68,22 +81,17 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
               slides.map((imgUrl, index) => {
                 const isActive = currentIdx === index;
                 return (
-                  <div
+                  <FitImage
                     key={index}
-                    className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-                      isActive ? 'opacity-100 scale-100' : 'opacity-0 pointer-events-none'
+                    src={imgUrl}
+                    className={`transition-opacity duration-1000 ease-in-out ${
+                      isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
                     }`}
-                    style={{ backgroundImage: `url('${imgUrl}')` }}
                   />
                 );
               })
             ) : (
-              <div
-                className="w-full h-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=1400&q=80')`,
-                }}
-              />
+              <FitImage src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=1400&q=80" />
             )}
 
             {/* Subtle soft organic transition mask (no thick green strokes, low visual contrast) */}
@@ -123,22 +131,17 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
             slides.map((imgUrl, index) => {
               const isActive = currentIdx === index;
               return (
-                <div
+                <FitImage
                   key={index}
-                  className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-                    isActive ? 'opacity-100 scale-100' : 'opacity-0 pointer-events-none'
+                  src={imgUrl}
+                  className={`transition-opacity duration-1000 ease-in-out ${
+                    isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
                   }`}
-                  style={{ backgroundImage: `url('${imgUrl}')` }}
                 />
               );
             })
           ) : (
-            <div
-              className="w-full h-full bg-cover bg-center"
-              style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=1400&q=80')`,
-              }}
-            />
+            <FitImage src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=1400&q=80" />
           )}
 
           {/* Minimal subtle carousel dots for mobile */}

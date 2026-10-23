@@ -22,6 +22,8 @@ export interface Product {
   waContact?: string;
   // Galeri gambar produk (dari product_images, diatur admin di Kelola Produk)
   images?: { id: number; image_url: string; is_primary: number; sort_order: number }[];
+  /** QR produk dari SCM (kemasan / batch olahan) — hanya ada di detail. */
+  scmQr?: { qrUrl: string; publicUrl: string | null; label: string | null };
 }
 
 export type ArticleContentBlock =

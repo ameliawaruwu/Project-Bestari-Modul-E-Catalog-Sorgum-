@@ -157,7 +157,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
                         <img
                           src={prod.image}
                           alt={prod.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                       </div>
                     </td>
