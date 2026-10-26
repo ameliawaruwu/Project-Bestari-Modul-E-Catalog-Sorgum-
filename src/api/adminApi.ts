@@ -251,6 +251,14 @@ export interface ScmSeedStatus {
   lastFetchAt: string | null;
 }
 
+export interface ScmApplyResult {
+  created: number;
+  updated: number;
+  removed: number;
+  matched: number;
+  fallback: number;
+}
+
 export const scmSeedApi = {
   // GET /api/admin/scm-seed — status seeder SCM
   getStatus: async (): Promise<ScmSeedStatus | null> => {
@@ -262,8 +270,8 @@ export const scmSeedApi = {
   },
 
   // POST /api/admin/scm-seed/apply — fetch produk dari SCM
-  apply: async (): Promise<{ created: number; matched: number; fallback: number } | null> => {
-    const res = await request<{ data: { created: number; matched: number; fallback: number } }>(
+  apply: async (): Promise<ScmApplyResult | null> => {
+    const res = await request<{ data: ScmApplyResult }>(
       '/admin/scm-seed/apply',
       { method: 'POST', body: {}, auth: true },
     );

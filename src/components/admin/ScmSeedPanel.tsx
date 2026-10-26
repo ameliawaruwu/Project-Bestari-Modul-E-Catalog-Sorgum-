@@ -3,9 +3,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 // ---------------------------------------------------------------------------
 // Panel Seeder SCM — ambil produk olahan dari API SCM ke toko.
 //
-// - "Fetch dari SCM"   : produk toko DIGANTI produk dari SCM (nama, deskripsi,
-//                        foto dari SCM; harga/kategori dari produk lama yang
-//                        namanya sama di data referensi katalog).
+// - "Fetch dari SCM"   : fetch pertama mengganti produk toko dengan produk SCM
+//                        (harga/kategori/WA dari data referensi katalog). Fetch
+//                        berikutnya hanya memperbarui yang berubah di SCM —
+//                        editan admin tetap.
 // - "Hapus Data Fetch" : hapus produk hasil fetch SCM saja & matikan fetch
 //                        otomatis → toko tetap kosong sampai Fetch lagi.
 // Selama mode SCM aktif, backend fetch ulang otomatis kalau data SCM berubah.
@@ -42,7 +43,7 @@ export const ScmSeedPanel: React.FC<ScmSeedPanelProps> = ({ showToast, onDataCha
       const { scmSeedApi } = await import('../../api/adminApi');
       if (kind === 'apply') {
         const res = await scmSeedApi.apply();
-        showToast(`${res?.created ?? 0} produk dari SCM berhasil diambil.`);
+        showToast(`Fetch SCM selesai: ${res?.created ?? 0} baru, ${res?.updated ?? 0} diperbarui, ${res?.removed ?? 0} dihapus.`);
       } else {
         await scmSeedApi.clear();
         showToast('Data hasil fetch SCM berhasil dihapus.');
@@ -137,11 +138,13 @@ export const ScmSeedPanel: React.FC<ScmSeedPanelProps> = ({ showToast, onDataCha
             </div>
             <div className="text-center space-y-1.5">
               <h3 className="font-['Plus_Jakarta_Sans'] text-lg font-extrabold text-[#14331C] dark:text-[#F4F8F3]">
-                {isApply ? 'Ganti produk dengan data SCM?' : 'Hapus data hasil fetch SCM?'}
+                {isApply ? 'Ambil data terbaru dari SCM?' : 'Hapus data hasil fetch SCM?'}
               </h3>
               <p className="text-xs text-[#556353] dark:text-white/70 leading-relaxed">
                 {isApply
-                  ? 'Semua produk saat ini akan diganti produk dari SCM.'
+                  ? status && status.fetchedCount > 0
+                    ? 'Produk diperbarui dari SCM: produk baru ditambahkan, yang hilang dari SCM dihapus. Editan admin (deskripsi, harga, nomor WA, pengiriman) tetap.'
+                    : 'Semua produk saat ini akan diganti produk dari SCM.'
                   : 'Produk hasil fetch SCM akan dihapus dan fetch otomatis dimatikan sampai Anda Fetch lagi. Kategori, banner, dan artikel tetap aman.'}
               </p>
             </div>
