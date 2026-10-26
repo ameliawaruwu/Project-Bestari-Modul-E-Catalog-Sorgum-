@@ -238,7 +238,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <span>{t('Pengiriman', 'Shipping')}</span>
                   </span>
                   <div className="sm:col-span-8 lg:col-span-9 font-semibold text-[#14331C] dark:text-white text-xs break-words">
-                    {t('Kirim ke Seluruh Nusantara', 'Nationwide Delivery')}
+                    {product.shippingInfo?.trim() || t('Kirim ke Seluruh Nusantara', 'Nationwide Delivery')}
                   </div>
                 </div>
               </div>

@@ -72,7 +72,7 @@ export function mapProduct(row: ProductRow): Product {
     composition: row.composition || undefined,
     shelfLife: row.shelf_life || undefined,
     attributes: row.attributes || undefined,
-    shippingInfo: row.shipping_info || 'Dikirim dari Yogyakarta.',
+    shippingInfo: row.shipping_info || '',
     origin: row.origin || undefined,
     isActive: !!row.is_active,
     waContact: row.wa_contact || undefined,
