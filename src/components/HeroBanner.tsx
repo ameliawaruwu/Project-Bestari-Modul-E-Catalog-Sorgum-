@@ -6,16 +6,10 @@ interface HeroBannerProps {
   onReadMore?: () => void;
 }
 
-// Foto banner utuh (tidak terpotong): gambar di-`contain` di atas salinan buram
-// dirinya sendiri, jadi area kosong tetap terisi warna foto.
+// Foto banner penuh memenuhi area banner (object-cover).
 const FitImage: React.FC<{ src: string; className?: string }> = ({ src, className = '' }) => (
   <div className={`absolute inset-0 overflow-hidden ${className}`}>
-    <div
-      aria-hidden
-      className="absolute inset-0 bg-cover bg-center scale-110 blur-xl opacity-60"
-      style={{ backgroundImage: `url('${src}')` }}
-    />
-    <img src={src} alt="" className="relative w-full h-full object-contain" />
+    <img src={src} alt="" className="w-full h-full object-cover object-center" />
   </div>
 );
 
