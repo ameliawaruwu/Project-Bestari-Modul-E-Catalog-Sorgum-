@@ -279,3 +279,28 @@ export const scmSeedApi = {
     return res?.data || null;
   },
 };
+
+// ── Seeder Konten (artikel & kartu Lacak Paket contoh dari data katalog) ──────
+export interface ContentSeedStatus {
+  articleCount: number;
+  seededArticleCount: number;
+  seedArticleTotal: number;
+  trackingActive: boolean;
+  trackingResi: string | null;
+  seedTrackingResi: string | null;
+}
+
+export type ContentSeedTarget = 'articles' | 'tracking';
+
+export const contentSeedApi = {
+  // GET /api/admin/content-seed — status seeder konten
+  getStatus: async (): Promise<ContentSeedStatus | null> => {
+    const res = await request<{ data: ContentSeedStatus }>('/admin/content-seed', { auth: true });
+    return res?.data || null;
+  },
+
+  // POST /api/admin/content-seed/{articles|tracking}/{apply|clear}
+  run: async (target: ContentSeedTarget, action: 'apply' | 'clear'): Promise<void> => {
+    await request(`/admin/content-seed/${target}/${action}`, { method: 'POST', body: {}, auth: true });
+  },
+};

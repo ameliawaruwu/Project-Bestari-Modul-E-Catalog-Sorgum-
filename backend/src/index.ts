@@ -22,6 +22,7 @@ import adminArticlesRoutes from './routes/admin/articles_routes';
 import adminCategoriesRoutes from './routes/admin/categories_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
 import adminScmSeedRoutes from './routes/admin/scm_seed_routes';
+import adminContentSeedRoutes from './routes/admin/content_seed_routes';
 import { autoFetchScm } from './services/admin/scm_seed_service';
 import { eventBus, EVENTS } from './lib/eventBus';
 import eventsRoutes from './routes/events_routes';
@@ -98,6 +99,7 @@ app.use('/api/admin/articles', adminArticlesRoutes);
 app.use('/api/admin/categories', adminCategoriesRoutes);
 app.use('/api/admin/upload', adminUploadRoutes);
 app.use('/api/admin/scm-seed', adminScmSeedRoutes);
+app.use('/api/admin/content-seed', adminContentSeedRoutes);
 
 // SSE realtime — harus sebelum 404 catch-all
 app.use('/api/events', eventsRoutes);
