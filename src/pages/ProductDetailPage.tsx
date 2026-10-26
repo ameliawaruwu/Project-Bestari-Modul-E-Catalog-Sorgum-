@@ -216,7 +216,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 {waOrderCta}
               </div>
 
-              {/* 3. Specs / Info Produk (Berat & Pengiriman) */}
+              {/* 3. Specs / Info Produk (Berat & Pengiriman) — kotak hilang kalau keduanya kosong */}
+              {(product.unitInfo || product.weight || product.shippingInfo?.trim()) && (
               <div className="bg-[#F9FBF7] dark:bg-[#122316] p-2.5 sm:p-3 rounded-lg border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] space-y-2 my-1.5 w-full">
                 {/* Row Berat */}
                 {(product.unitInfo || product.weight) && (
@@ -231,17 +232,20 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </div>
                 )}
 
-                {/* Row Pengiriman */}
+                {/* Row Pengiriman — dari admin (shipping_info); disembunyikan kalau kosong */}
+                {product.shippingInfo?.trim() && (
                 <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-xs">
                   <span className="sm:col-span-4 lg:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5 shrink-0">
                     <span className="material-symbols-outlined text-[13px] text-[#3A8F4B]">local_shipping</span>
                     <span>{t('Pengiriman', 'Shipping')}</span>
                   </span>
                   <div className="sm:col-span-8 lg:col-span-9 font-semibold text-[#14331C] dark:text-white text-xs break-words">
-                    {product.shippingInfo?.trim() || t('Kirim ke Seluruh Nusantara', 'Nationwide Delivery')}
+                    {product.shippingInfo}
                   </div>
                 </div>
+                )}
               </div>
+              )}
 
               {/* 4. Deskripsi Produk */}
               {(product.description || product.scmQr) && (() => {

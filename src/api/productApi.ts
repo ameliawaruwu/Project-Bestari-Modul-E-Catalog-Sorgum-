@@ -50,7 +50,7 @@ function formatRupiah(minPrice: number, maxPrice?: number | null): string {
 }
 
 export function mapProduct(row: ProductRow): Product {
-  const weight = row.weight_spec || '1kg';
+  const weight = row.weight_spec || '';
   const priceNum = Number(row.price) || 0;
   const priceMaxNum = row.price_max ? Number(row.price_max) : undefined;
   const validPriceMax = priceMaxNum && priceMaxNum > priceNum ? priceMaxNum : undefined;
