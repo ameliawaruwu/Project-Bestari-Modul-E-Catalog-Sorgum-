@@ -71,15 +71,11 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
           <div className="col-span-2 sm:col-span-1">
             <h5 className="font-['Plus_Jakarta_Sans'] text-[11px] font-bold text-[#E3B84B] mb-2.5 uppercase tracking-wider">
-              {t('Kontak', 'Contact')}
+              {t('Alamat', 'Address')}
             </h5>
-            {shopSettings.whatsappNumber && (
-              <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">WhatsApp: {shopSettings.whatsappNumber}</p>
-            )}
-            <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">Email: {shopSettings.storeEmail || 'halo@kwt.id'}</p>
-            {shopSettings.storeAddress && (
-              <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words">Alamat: {shopSettings.storeAddress}</p>
-            )}
+            <p className="font-['Plus_Jakarta_Sans'] text-xs mb-1.5 text-white/90 break-words leading-relaxed">
+              {shopSettings.storeAddress || 'Jl. Bojongkoneng No.2, Desa Bojongmanggu, Kecamatan Pameungpeuk, Kabupaten Bandung, Jawa Barat 40376'}
+            </p>
           </div>
         </div>
       </div>

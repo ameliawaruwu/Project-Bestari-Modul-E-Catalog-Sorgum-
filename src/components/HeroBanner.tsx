@@ -40,28 +40,17 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
     }
   };
 
-  // Process title: split into two lines and an accent if needed
+  // Judul tampil sebagai SATU kalimat utuh (tidak dipecah per baris).
+  // Kata mulai "Sorgum" diberi warna aksen, tetap menyambung dalam kalimat.
   const rawTitle = t(
-    landingContent.heroTitleId || 'Kemurnian Alam dalam Tiap Butir SORGUM',
+    landingContent.heroTitleId || 'Kemurnian Alam dalam Tiap Butir Sorgum Pilihan',
     landingContent.heroTitleEn || 'Pure Nature in Every Sorghum Grain'
   );
 
-  let line1 = rawTitle;
-  let line2 = '';
-  let accent = '';
-
   const words = rawTitle.split(' ');
-  const sorgumIdx = words.findIndex((w) => w.toUpperCase().includes('SORGUM'));
-
-  if (sorgumIdx !== -1) {
-    line1 = words.slice(0, Math.min(sorgumIdx, 4)).join(' ');
-    line2 = words.slice(Math.min(sorgumIdx, 4), sorgumIdx).join(' ');
-    accent = words.slice(sorgumIdx).join(' ');
-  } else if (words.length > 5) {
-    const mid = Math.ceil(words.length / 2);
-    line1 = words.slice(0, mid).join(' ');
-    line2 = words.slice(mid).join(' ');
-  }
+  const sorgumIdx = words.findIndex((w) => /SORGUM|SORGHUM/i.test(w));
+  const titleMain = sorgumIdx > 0 ? words.slice(0, sorgumIdx).join(' ') : rawTitle;
+  const accent = sorgumIdx > 0 ? words.slice(sorgumIdx).join(' ') : '';
 
   return (
     <section className="w-full max-w-[1140px] mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4">
@@ -162,23 +151,15 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onShopNow, onReadMore })
           <div className="space-y-2 sm:space-y-2.5 animate-fadeIn">
 
             {/* Headline: Slightly reduced font size & tighter line-height */}
-            <div className="space-y-0.5">
-              {line1 && (
-                <h1 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-[22px] xl:text-[24px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.16] tracking-tight">
-                  {line1}
-                </h1>
-              )}
-              {line2 && (
-                <h2 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-[22px] xl:text-[24px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.16] tracking-tight">
-                  {line2}
-                </h2>
-              )}
+            <h1 className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl lg:text-[22px] xl:text-[24px] font-extrabold text-[#162809] dark:text-[#F4F8F3] leading-[1.2] tracking-tight">
+              {titleMain}
               {accent && (
-                <p className="font-['Plus_Jakarta_Sans'] italic font-extrabold text-xl sm:text-2xl lg:text-[25px] xl:text-[27px] text-[#2B3E1D] dark:text-[#65B86B] leading-[1.16] pt-0.5 select-none tracking-tight">
-                  {accent}
-                </p>
+                <>
+                  {' '}
+                  <span className="text-[#2B3E1D] dark:text-[#65B86B]">{accent}</span>
+                </>
               )}
-            </div>
+            </h1>
 
             {/* Subtitle Description */}
             <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] text-[#556353] dark:text-[#CBD5C8] leading-relaxed max-w-md font-normal">
