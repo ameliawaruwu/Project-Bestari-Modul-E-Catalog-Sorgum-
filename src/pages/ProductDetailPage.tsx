@@ -88,7 +88,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         href={orderWhatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full sm:w-auto sm:min-w-[240px] sm:max-w-md flex items-center justify-center gap-2 text-white h-10 px-5 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-xs sm:text-sm shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D]"
+        className="w-full sm:w-auto sm:min-w-[240px] sm:max-w-md flex items-center justify-center gap-2 text-white h-11 px-5 rounded-lg font-['Plus_Jakarta_Sans'] font-bold text-sm shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D]"
       >
         <span className="material-symbols-outlined text-lg text-white">
           call
@@ -97,7 +97,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {t('Pesan via WhatsApp', 'Order via WhatsApp')}
         </span>
       </a>
-      <p className="text-[10px] text-[#556353] dark:text-white/50 mt-1 text-left sm:text-right">
+      <p className="text-xs text-[#556353] dark:text-white/60 mt-1.5 text-left sm:text-right leading-relaxed">
         {t('Klik untuk chat admin, pesan otomatis terisi produk yang Anda pilih.', 'Click to chat the admin; the message auto-fills with your chosen product.')}
       </p>
     </>
@@ -221,12 +221,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <div className="bg-[#F9FBF7] dark:bg-[#122316] p-2.5 sm:p-3 rounded-lg border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] space-y-2 my-1.5 w-full">
                 {/* Row Berat */}
                 {(product.unitInfo || product.weight) && (
-                  <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-xs">
+                  <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-sm">
                     <span className="sm:col-span-4 lg:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5 shrink-0">
-                      <span className="material-symbols-outlined text-[13px] text-[#3A8F4B]">balance</span>
+                      <span className="material-symbols-outlined text-base text-[#3A8F4B]">balance</span>
                       <span>{t('Berat / Kemasan', 'Weight / Unit')}</span>
                     </span>
-                    <div className="sm:col-span-8 lg:col-span-9 font-bold text-[#14331C] dark:text-white text-xs break-words">
+                    <div className="sm:col-span-8 lg:col-span-9 font-bold text-[#14331C] dark:text-white text-sm break-words">
                       {product.unitInfo || product.weight}
                     </div>
                   </div>
@@ -234,12 +234,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                 {/* Row Pengiriman — dari admin (shipping_info); disembunyikan kalau kosong */}
                 {product.shippingInfo?.trim() && (
-                <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-xs">
+                <div className="flex flex-col sm:grid sm:grid-cols-12 gap-0.5 sm:gap-2 sm:items-center text-sm">
                   <span className="sm:col-span-4 lg:col-span-3 text-[#556353] dark:text-white/50 font-medium flex items-center gap-1.5 shrink-0">
-                    <span className="material-symbols-outlined text-[13px] text-[#3A8F4B]">local_shipping</span>
+                    <span className="material-symbols-outlined text-base text-[#3A8F4B]">local_shipping</span>
                     <span>{t('Pengiriman', 'Shipping')}</span>
                   </span>
-                  <div className="sm:col-span-8 lg:col-span-9 font-semibold text-[#14331C] dark:text-white text-xs break-words">
+                  <div className="sm:col-span-8 lg:col-span-9 font-semibold text-[#14331C] dark:text-white text-sm break-words">
                     {product.shippingInfo}
                   </div>
                 </div>
@@ -259,12 +259,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                 return (
                   <div className="pt-2 border-t border-[#E2EFE0] dark:border-white/10 space-y-1">
-                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#14331C] dark:text-white">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#14331C] dark:text-white">
                       {t('Deskripsi Produk', 'Product Description')}
                     </h4>
                     <div className="flex items-start gap-3">
                       {product.description && (
-                        <p className={`flex-1 min-w-0 font-['Plus_Jakarta_Sans'] text-xs text-[#465444] dark:text-[#CBD5C8] leading-relaxed whitespace-pre-line ${
+                        <p className={`flex-1 min-w-0 font-['Plus_Jakarta_Sans'] text-sm text-[#465444] dark:text-[#CBD5C8] leading-relaxed whitespace-pre-line ${
                           !descExpanded && paragraphs.length <= 2 && hasMore ? 'line-clamp-6' : ''
                         }`}>
                           {displayedText}
@@ -284,7 +284,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                             loading="lazy"
                             className="w-20 h-20 object-contain bg-white p-1 rounded-md border border-[#E2EFE0] dark:border-white/10"
                           />
-                          <span className="font-['Plus_Jakarta_Sans'] text-[9px] leading-tight text-center text-[#556353] dark:text-white/60 max-w-[5rem]">
+                          <span className="font-['Plus_Jakarta_Sans'] text-[10px] leading-tight text-center text-[#556353] dark:text-white/60 max-w-[5rem]">
                             {t('Pindai asal produk', 'Scan product origin')}
                           </span>
                         </a>
@@ -294,7 +294,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       <button
                         type="button"
                         onClick={() => setDescExpanded((v) => !v)}
-                        className="text-xs font-bold text-[#245B3A] dark:text-[#86EFAC] hover:underline cursor-pointer pt-0.5 inline-block"
+                        className="text-sm font-bold text-[#245B3A] dark:text-[#86EFAC] hover:underline cursor-pointer pt-0.5 inline-block"
                       >
                         {descExpanded ? t('Sembunyikan', 'Show Less') : t('Baca Selengkapnya', 'Read More')}
                       </button>

@@ -173,9 +173,9 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* ── Mobile Search Row (≤767px) ── */}
-        <div className="md:hidden max-w-[1140px] mx-auto mt-1.5">
-          <div className="relative">
-            <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-sm select-none text-[#6B756E] dark:text-[#94A390]">
+        <div className="md:hidden max-w-[1140px] mx-auto mt-1.5 flex items-stretch gap-1.5">
+          <div className="relative flex-1 min-w-0">
+            <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-base select-none text-[#6B756E] dark:text-[#94A390]">
               search
             </span>
             <input
@@ -189,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({
               }}
               placeholder={t('Cari produk atau kategori...', 'Search product or category...')}
               aria-label={t('Cari produk', 'Search products')}
-              className={`w-full pl-8 pr-8 py-2 rounded-lg border font-['Plus_Jakarta_Sans'] text-xs font-medium transition-all focus:outline-none ${
+              className={`w-full pl-8 pr-8 py-2 rounded-lg border font-['Plus_Jakarta_Sans'] text-sm font-medium transition-all focus:outline-none ${
                 isScrolled
                   ? 'bg-white/10 border-white/20 text-white placeholder-white/60 focus:bg-white/15 focus:border-white/40'
                   : 'bg-[#F7F5EF] dark:bg-[#152718] border-[#E8F5E9] dark:border-[rgba(165,214,167,0.2)] text-[#20352A] dark:text-[#F4F8F3] placeholder-[#6B756E]/70 dark:placeholder-[#94A390]/60 focus:bg-white dark:focus:bg-[#1B2C1F] focus:border-[#3A8F4B]'
@@ -209,6 +209,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
           </div>
+          {/* Tombol Cari yang terlihat jelas — hasil usability test: user bingung
+              mencari tombol cari kalau hanya bisa Enter di keyboard. */}
+          <button
+            type="button"
+            onClick={() => submitSearch(draftSearch)}
+            className={`shrink-0 px-3.5 rounded-lg flex items-center gap-1 font-['Plus_Jakarta_Sans'] text-sm font-bold active:scale-95 transition-all cursor-pointer ${
+              isScrolled
+                ? 'bg-[#E3B84B] text-[#14331C] hover:bg-[#fade88]'
+                : 'bg-[#1F5132] text-white hover:bg-[#14331C] dark:bg-[#3A8F4B] dark:hover:bg-[#1F5132]'
+            }`}
+          >
+            <span className="material-symbols-outlined text-base">search</span>
+            <span>{t('Cari', 'Search')}</span>
+          </button>
         </div>
       </div>
 

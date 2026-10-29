@@ -53,24 +53,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Details Container */}
       <div className="p-2 sm:p-3 flex flex-col flex-grow">
         <div className="flex items-center justify-between gap-2 mb-1">
-          <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-['Plus_Jakarta_Sans'] text-[9px] font-bold uppercase tracking-wider border shadow-2xs ${badgeClass}`}>
+          <span className={`inline-flex items-center px-1.5 py-0.5 rounded font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider border shadow-2xs ${badgeClass}`}>
             {product.categoryLabel || product.category}
           </span>
         </div>
 
-        <h3 className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] font-bold text-[#162809] dark:text-[#F4F8F3] mb-0.5 group-hover:text-[#2B3E1D] dark:group-hover:text-[#86EFAC] transition-colors leading-snug line-clamp-2">
+        <h3 className="font-['Plus_Jakarta_Sans'] text-sm font-bold text-[#162809] dark:text-[#F4F8F3] mb-0.5 group-hover:text-[#2B3E1D] dark:group-hover:text-[#86EFAC] transition-colors leading-snug line-clamp-2">
           {product.name}
         </h3>
 
         {product.unitInfo && (
-          <p className="text-[#6B756E] dark:text-[#CBD5C8]/80 font-['Plus_Jakarta_Sans'] text-[10px] mb-1.5 sm:mb-2 font-medium flex items-center gap-1">
+          <p className="text-[#6B756E] dark:text-[#CBD5C8]/80 font-['Plus_Jakarta_Sans'] text-xs mb-1.5 sm:mb-2 font-medium flex items-center gap-1">
             <span className="material-symbols-outlined text-[12px] text-[#3A8F4B]/90 dark:text-[#65B86B]/90 shrink-0">balance</span>
             <span className="truncate">{product.unitInfo}</span>
           </p>
         )}
 
         <div className="mt-auto pt-1.5 sm:pt-2 border-t border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] flex justify-between items-center gap-1.5">
-          <span className="font-['JetBrains_Mono'] text-xs sm:text-sm text-[#162809] dark:text-[#86EFAC] font-black tracking-tight truncate">
+          <span className="font-['JetBrains_Mono'] text-sm text-[#162809] dark:text-[#86EFAC] font-black tracking-tight truncate">
             {product.formattedPrice}
           </span>
 

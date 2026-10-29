@@ -81,7 +81,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               placeholder={t('Cari produk atau kategori (misal: beras, camilan)...', 'Search product or category (e.g. rice, snacks)...')}
               value={localSearchQuery}
               onChange={(e) => setLocalSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-8 h-[38px] py-2 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] rounded-lg border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.2)] font-['Plus_Jakarta_Sans'] text-xs sm:text-sm text-[#1F5132] dark:text-[#F4F7F2] placeholder-[#555555]/60 dark:placeholder-[#94A390]/60 focus:outline-none focus:border-[#3A8F4B] dark:focus:border-[#A5D6A7] focus:ring-1 focus:ring-[#3A8F4B] transition-all font-medium"
+              className="w-full pl-9 pr-8 h-[42px] sm:h-[38px] py-2 bg-[#F9FBF7] dark:bg-[#162419] focus:bg-white dark:focus:bg-[#1B2C1F] rounded-lg border border-[#E2EAE0] dark:border-[rgba(165,214,167,0.2)] font-['Plus_Jakarta_Sans'] text-sm text-[#1F5132] dark:text-[#F4F7F2] placeholder-[#555555]/60 dark:placeholder-[#94A390]/60 focus:outline-none focus:border-[#3A8F4B] dark:focus:border-[#A5D6A7] focus:ring-1 focus:ring-[#3A8F4B] transition-all font-medium"
             />
             {localSearchQuery && (
               <button
