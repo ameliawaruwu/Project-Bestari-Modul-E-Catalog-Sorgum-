@@ -33,8 +33,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         nonInteractive ? 'cursor-default' : 'cursor-pointer hover:border-[#3A8F4B]/40 dark:hover:border-[#65B86B]/40 transform hover:-translate-y-1 active:scale-[0.98]'
       }`}
     >
-      {/* Image Container — proporsional & compact di desktop zoom 100% */}
-      <div className="h-28 sm:h-36 md:h-40 overflow-hidden relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
+      {/* Image Container — persegi, foto produk (1:1) memenuhi bingkai */}
+      <div className="aspect-square overflow-hidden relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
         {product.image ? (
           <img
             src={product.image}
