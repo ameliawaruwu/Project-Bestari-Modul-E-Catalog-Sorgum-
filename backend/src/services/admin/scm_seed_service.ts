@@ -455,6 +455,75 @@ export function autoFetchScm(): Promise<boolean> {
   });
 }
 
+// Sinkron terbatas: HANYA nama & foto produk hasil fetch yang sudah ada di toko,
+// dan hanya kalau nilainya berubah di SCM sejak fetch terakhir (snapshot marker).
+// Tidak menambah / menghapus produk, tidak menyentuh status, kategori, harga,
+// deskripsi, berat, WA, maupun produk buatan admin. `dryRun` → hanya laporkan.
+export interface ScmNameImageChange { productId: number; name?: [string, string]; foto: boolean }
+
+export function syncScmNameImage(dryRun = false): Promise<ScmNameImageChange[]> {
+  return exclusive(async () => {
+    const prev = await readMarker();
+    if (!prev.map || !prev.snap) return [];
+    const scm = await fetchScmNamed();
+    lastFetchAt = new Date().toISOString();
+    const hash = scmHash(scm, null);
+    if (!dryRun && prev.hash === hash) return [];
+
+    const ids = Object.values(prev.map);
+    const [rows] = await dbPool.query('SELECT id, name FROM products WHERE id IN (?)', [ids.length ? ids : [0]]);
+    const shopName = new Map((rows as Array<{ id: number; name: string }>).map((r) => [Number(r.id), String(r.name)]));
+
+    const snap: Record<string, ScmSnap> = { ...prev.snap };
+    const plan: Array<{ change: ScmNameImageChange; p: ScmProduct; now: ScmSnap }> = [];
+    for (const p of scm) {
+      const key = scmKey(p);
+      const pid = prev.map[key];
+      const before = prev.snap[key];
+      if (!pid || !before || !shopName.has(pid)) continue;
+      const now = snapOf(p);
+      snap[key] = { ...before, name: now.name, foto: now.foto };
+      const change: ScmNameImageChange = { productId: pid, foto: Boolean(now.foto && now.foto !== before.foto) };
+      if (now.name !== before.name) change.name = [shopName.get(pid)!, now.name];
+      if (change.name || change.foto) plan.push({ change, p, now });
+    }
+    if (dryRun) return plan.map((x) => x.change);
+
+    const written: string[] = [];
+    const dropped: string[] = [];
+    const conn = await dbPool.getConnection();
+    try {
+      await conn.beginTransaction();
+      for (const { change, p, now } of plan) {
+        if (change.name) await conn.query('UPDATE products SET name = ? WHERE id = ?', [now.name, change.productId]);
+        const img = change.foto ? resolveImage(p.fotoUrl, written) : null;
+        if (img) {
+          dropped.push(...(await imageUrlsOf(conn, [change.productId])));
+          await conn.query('DELETE FROM product_images WHERE product_id = ?', [change.productId]);
+          await insertImages(conn, change.productId, [img], now.name);
+        }
+      }
+      await conn.commit();
+    } catch (e) {
+      await conn.rollback();
+      written.forEach((f) => fs.rmSync(path.join(config.upload.dir, f), { force: true }));
+      throw e;
+    } finally {
+      conn.release();
+    }
+
+    // Hanya file hasil fetch SCM yang dihapus dari disk; foto upload admin dibiarkan.
+    const droppedNames = new Set(dropped.map((u) => path.basename(u)));
+    prev.files.filter((f) => droppedNames.has(path.basename(f)))
+      .forEach((f) => fs.rmSync(path.join(config.upload.dir, path.basename(f)), { force: true }));
+    const files = [...prev.files.filter((f) => !droppedNames.has(path.basename(f))), ...written];
+    await upsertLandingContent({
+      [MARKER_KEY]: JSON.stringify({ ...prev, files, snap, hash } satisfies Marker),
+    }).catch(() => 0);
+    return plan.map((x) => x.change);
+  });
+}
+
 async function doApplyScmSeed(
   scm: ScmProduct[], scmQr: Record<string, ScmQr> | null,
 ): Promise<{ created: number; updated: number; removed: number; matched: number; fallback: number }> {

@@ -23,6 +23,8 @@ import adminCategoriesRoutes from './routes/admin/categories_routes';
 import adminUploadRoutes from './routes/admin/upload_routes';
 import adminScmSeedRoutes from './routes/admin/scm_seed_routes';
 import adminContentSeedRoutes from './routes/admin/content_seed_routes';
+import { syncScmNameImage } from './services/admin/scm_seed_service';
+import { eventBus, EVENTS } from './lib/eventBus';
 import eventsRoutes from './routes/events_routes';
 
 const app = express();
@@ -121,6 +123,21 @@ app.use((err: any, req: express.Request, res: express.Response, _next: express.N
 app.listen(config.port, () => {
   console.log(`[Server] E-Catalog BESTARI running on port ${config.port}`);
   console.log(`[Server] Environment: ${config.nodeEnv}`);
+  startScmAutoSync();
 });
+
+// Sinkron SCM otomatis, terbatas pada nama & foto produk (lihat syncScmNameImage).
+function startScmAutoSync() {
+  if (!config.scm.apiKey || config.scm.fetchSeconds <= 0) return;
+  const tick = () =>
+    syncScmNameImage()
+      .then((changes) => {
+        if (!changes.length) return;
+        console.log(`[SCM] nama/foto diperbarui: ${changes.map((c) => c.productId).join(', ')}`);
+        eventBus.emit(EVENTS.PRODUCTS, { action: 'scm-sync' });
+      })
+      .catch((e) => console.error('[SCM] sinkron otomatis gagal:', (e as Error).message));
+  setInterval(tick, config.scm.fetchSeconds * 1000).unref();
+}
 
 export default app;
