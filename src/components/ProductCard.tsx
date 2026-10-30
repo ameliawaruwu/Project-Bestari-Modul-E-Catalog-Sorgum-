@@ -33,13 +33,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         nonInteractive ? 'cursor-default' : 'cursor-pointer hover:border-[#3A8F4B]/40 dark:hover:border-[#65B86B]/40 transform hover:-translate-y-1 active:scale-[0.98]'
       }`}
     >
-      {/* Image Container — persegi, foto produk (1:1) memenuhi bingkai */}
-      <div className="aspect-square overflow-hidden relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
+      {/* Image Container — 4:5, foto produk tegak (±3:4 dari SCM) memenuhi bingkai */}
+      <div className="aspect-[4/5] overflow-hidden relative border-b border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)]">
         {product.image ? (
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500 ease-out"
+            className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-500 ease-out"
             loading="lazy"
           />
         ) : (
