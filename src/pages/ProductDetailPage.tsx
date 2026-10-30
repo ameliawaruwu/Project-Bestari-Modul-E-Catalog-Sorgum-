@@ -149,11 +149,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="lg:col-span-5 w-full flex flex-col justify-between space-y-2.5">
             
             {/* Foto Utama — full width di HP, ukuran terukur di desktop */}
-            <div className="aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
+            <div className="aspect-[4/5] w-full rounded-lg sm:rounded-xl overflow-hidden border border-[#E2EFE0] dark:border-white/10 relative group">
               <img
                 src={selectedImage}
                 alt={product.name}
-                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transition-transform duration-500 group-hover:scale-105"
               />
             </div>
 
@@ -175,7 +175,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <img
                       src={img}
                       alt={`${product.name} ${idx + 1}`}
-                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
+                      className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
                     />
                   </button>
                 );
