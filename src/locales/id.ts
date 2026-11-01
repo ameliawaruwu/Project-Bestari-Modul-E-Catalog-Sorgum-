@@ -93,7 +93,7 @@ export const idLocale: Record<string, string> = {
   "harga-tertinggi": "Harga Tertinggi",
   "terbaru": "Terbaru",
   "produk-tidak-ditemukan-2": "Produk Tidak Ditemukan",
-  "tidak-ada-produk-yang-cocok-coba-kata-kunci-lain-anda-bisa-m": "Tidak ada produk yang cocok. Coba kata kunci lain — Anda bisa mencari nama produk atau kategori (misal: beras, tepung, camilan, pemanis, benih).",
+  "tidak-ada-produk-yang-cocok-coba-kata-kunci-lain-misalnya-na": "Tidak ada produk yang cocok. Coba kata kunci lain, misalnya nama produk atau kategori (beras, tepung, camilan, pemanis, benih).",
   "masukkan-nomor-resi-pengiriman": "Masukkan nomor resi pengiriman",
   "silakan-pilih-ekspedisi-terlebih-dahulu": "Silakan pilih ekspedisi terlebih dahulu",
   "nomor-resi-ini-belum-bisa-dilacak-pastikan-nomornya-sudah-be": "Nomor resi ini belum bisa dilacak. Pastikan nomornya sudah benar, atau hubungi admin untuk bantuan.",

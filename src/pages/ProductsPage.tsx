@@ -134,7 +134,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
             {t('Produk Tidak Ditemukan', 'Product Not Found')}
           </h3>
           <p className="font-['Plus_Jakarta_Sans'] text-xs text-[#555E54] dark:text-[#C4CDC1]">
-            {t('Tidak ada produk yang cocok. Coba kata kunci lain — Anda bisa mencari nama produk atau kategori (misal: beras, tepung, camilan, pemanis, benih).', 'No matching products. Try another keyword — you can search by product name or category (e.g. rice, flour, snacks, sweetener, seeds).')}
+            {t('Tidak ada produk yang cocok. Coba kata kunci lain, misalnya nama produk atau kategori (beras, tepung, camilan, pemanis, benih).', 'No matching products. Try another keyword, such as a product name or category (rice, flour, snacks, sweetener, seeds).')}
           </p>
         </div>
       ) : (

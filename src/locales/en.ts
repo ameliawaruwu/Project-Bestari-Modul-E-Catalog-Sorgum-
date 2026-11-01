@@ -93,7 +93,7 @@ export const enLocale: Record<string, string> = {
   "harga-tertinggi": "Highest Price",
   "terbaru": "Newest",
   "produk-tidak-ditemukan-2": "Product Not Found",
-  "tidak-ada-produk-yang-cocok-coba-kata-kunci-lain-anda-bisa-m": "No matching products. Try another keyword — you can search by product name or category (e.g. rice, flour, snacks, sweetener, seeds).",
+  "tidak-ada-produk-yang-cocok-coba-kata-kunci-lain-misalnya-na": "No matching products. Try another keyword, such as a product name or category (rice, flour, snacks, sweetener, seeds).",
   "masukkan-nomor-resi-pengiriman": "Enter tracking number",
   "silakan-pilih-ekspedisi-terlebih-dahulu": "Please select a courier first",
   "nomor-resi-ini-belum-bisa-dilacak-pastikan-nomornya-sudah-be": "This tracking number cannot be found. Make sure the number is correct, or contact our admin for help.",
