@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
 import {
   getContentSeedStatus,
+  applyProductSeed,
+  clearProductSeed,
   applyArticleSeed,
   clearArticleSeed,
   applyTrackingSeed,
@@ -12,9 +14,24 @@ import { eventBus, EVENTS } from '../../lib/eventBus';
 const router = Router();
 router.use(authRequired, adminOnly);
 
-// GET /api/admin/content-seed — jumlah artikel & status kartu lacak contoh
+// GET /api/admin/content-seed — jumlah produk & artikel, status kartu lacak contoh
 router.get('/', async (_req: Request, res: Response) => {
   res.json({ data: await getContentSeedStatus() });
+});
+
+// POST /api/admin/content-seed/products/apply — isi produk dari data katalog
+router.post('/products/apply', async (_req: Request, res: Response) => {
+  const data = await applyProductSeed();
+  res.json({ message: 'Produk berhasil diisi', data });
+  eventBus.emit(EVENTS.PRODUCTS, { action: 'content-seed-apply' });
+  eventBus.emit(EVENTS.LANDING, { action: 'content-seed-apply' });
+});
+
+// POST /api/admin/content-seed/products/clear — hapus produk hasil seeder
+router.post('/products/clear', async (_req: Request, res: Response) => {
+  const data = await clearProductSeed();
+  res.json({ message: 'Produk hasil seeder berhasil dihapus', data });
+  eventBus.emit(EVENTS.PRODUCTS, { action: 'content-seed-clear' });
 });
 
 // POST /api/admin/content-seed/articles/apply — isi artikel dari data katalog

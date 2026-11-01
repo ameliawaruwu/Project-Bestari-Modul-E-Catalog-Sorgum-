@@ -2,9 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { ContentSeedStatus, ContentSeedTarget } from '../../api/adminApi';
 
 // ---------------------------------------------------------------------------
-// Panel Seeder Konten — isi / hapus artikel dan kartu "Lacak Paket" contoh dari
-// data katalog (backend/src/data/catalog_reference.json).
+// Panel Seeder Konten — isi / hapus produk, artikel dan kartu "Lacak Paket"
+// contoh dari data katalog (backend/src/data/catalog_reference.json).
 //
+// - Produk  : "Isi" menulis produk snapshot + fotonya (produk snapshot yang masih
+//             ada dikembalikan ke isi snapshot); "Hapus" menghapus produk
+//             snapshot saja — produk buatan admin aman.
 // - Artikel : "Isi" menulis artikel snapshot (artikel snapshot lama diganti);
 //             "Hapus" menghapus artikel snapshot saja — artikel buatan admin aman.
 // - Lacak   : "Isi" menampilkan kartu resi contoh di halaman Lacak Paket;
@@ -19,6 +22,18 @@ interface ContentSeedPanelProps {
 type Action = { target: ContentSeedTarget; kind: 'apply' | 'clear' };
 
 const COPY: Record<ContentSeedTarget, Record<'apply' | 'clear', { title: string; body: string; done: string }>> = {
+  products: {
+    apply: {
+      title: 'Isi produk dari data katalog?',
+      body: 'Produk, foto, dan kategori dari data katalog ditambahkan. Produk hasil seeder yang masih ada dikembalikan ke isi aslinya; produk buatan admin tetap aman.',
+      done: 'Produk berhasil diisi.',
+    },
+    clear: {
+      title: 'Hapus produk hasil seeder?',
+      body: 'Hanya produk dari data katalog yang dihapus, termasuk dari keranjang & favorit pelanggan. Riwayat pesanan tetap ada.',
+      done: 'Produk hasil seeder berhasil dihapus.',
+    },
+  },
   articles: {
     apply: {
       title: 'Isi artikel dari data katalog?',
@@ -81,6 +96,15 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
 
   const rows: Array<{ target: ContentSeedTarget; icon: string; label: string; info: string; canClear: boolean }> = [
     {
+      target: 'products',
+      icon: 'inventory_2',
+      label: 'Produk',
+      info: status
+        ? `${status.seededProductCount}/${status.seedProductTotal} produk seeder terpasang · total ${status.productCount} produk`
+        : '–',
+      canClear: !!status && status.seededProductCount > 0,
+    },
+    {
       target: 'articles',
       icon: 'article',
       label: 'Artikel',
@@ -106,12 +130,12 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
   const isApply = modal?.kind === 'apply';
 
   return (
-    <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs space-y-5">
+    <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs flex flex-col gap-5 h-full">
       <div className="flex items-center justify-between border-b border-[#E2EFE0] dark:border-white/10 pb-3">
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-xl text-[#1F5132] dark:text-[#86EFAC]">database</span>
           <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-extrabold text-[#14331C] dark:text-[#F4F8F3]">
-            Seeder Artikel &amp; Lacak Pesanan
+            Seeder Data Demo
           </h3>
         </div>
         <button
@@ -125,7 +149,7 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
         </button>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2.5 flex-1">
         {rows.map((r) => (
           <div
             key={r.target}
@@ -161,6 +185,10 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
           </div>
         ))}
       </div>
+
+      <p className="text-[10px] text-[#556353] dark:text-white/60 leading-relaxed border-t border-[#E2EFE0]/60 dark:border-white/10 pt-4">
+        Sumber: data katalog (salinan isi toko saat ini). &quot;Hapus&quot; hanya menghapus data hasil seeder; data buatan admin tidak tersentuh.
+      </p>
 
       {modal && copy && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">

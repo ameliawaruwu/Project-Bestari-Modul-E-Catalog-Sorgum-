@@ -105,9 +105,20 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ showToast, onDataC
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn w-full max-w-full overflow-hidden">
+    // Embedded (di Kelola Lain): satu card dengan header seperti card lain di tab itu.
+    <div
+      className={`animate-fadeIn w-full max-w-full overflow-hidden ${
+        embedded
+          ? 'bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs'
+          : 'space-y-6'
+      }`}
+    >
       {/* Header & Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div
+        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+          embedded ? 'p-5 sm:p-6 border-b border-[#E2EFE0] dark:border-white/10' : ''
+        }`}
+      >
         <div>
           {!embedded && (
             <nav aria-label="Breadcrumb" className="flex text-xs font-medium text-[#556353] dark:text-white/60 mb-1">
@@ -120,13 +131,18 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ showToast, onDataC
               </ol>
             </nav>
           )}
-          <h2
-            className={`font-['Plus_Jakarta_Sans'] font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight ${
-              embedded ? 'text-lg sm:text-xl' : 'text-2xl md:text-3xl'
-            }`}
-          >
-            Kelola Kategori Produk
-          </h2>
+          {embedded ? (
+            <div className="flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-xl text-[#1F5132] dark:text-[#86EFAC]">category</span>
+              <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-extrabold text-[#14331C] dark:text-[#F4F8F3]">
+                Kelola Kategori Produk ({categories.length})
+              </h3>
+            </div>
+          ) : (
+            <h2 className="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#14331C] dark:text-[#F4F8F3] tracking-tight">
+              Kelola Kategori Produk
+            </h2>
+          )}
           <p className="text-xs text-[#556353] dark:text-white/60 mt-1">
             Tambah dan atur kategori yang tampil di dropdown form produk.
           </p>
@@ -146,7 +162,13 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ showToast, onDataC
 
       {/* Form Tambah/Edit Kategori */}
       {editingId !== null && (
-        <div className="bg-white dark:bg-[#0E1A11] p-5 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs">
+        <div
+          className={
+            embedded
+              ? 'p-5 sm:p-6 border-b border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#0A150D]'
+              : 'bg-white dark:bg-[#0E1A11] p-5 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs'
+          }
+        >
           <h3 className="font-['Plus_Jakarta_Sans'] text-base font-extrabold text-[#14331C] dark:text-[#F4F8F3] mb-4">
             {editingId === -1 ? 'Tambah Kategori Baru' : 'Edit Kategori'}
           </h3>
@@ -198,12 +220,14 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ showToast, onDataC
       )}
 
       {/* Daftar Kategori */}
-      <div className="bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-[#E2EFE0] dark:border-white/10">
-          <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-bold text-[#14331C] dark:text-[#F4F8F3]">
-            Daftar Kategori ({categories.length})
-          </h3>
-        </div>
+      <div className={embedded ? '' : 'bg-white dark:bg-[#0E1A11] rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs overflow-hidden'}>
+        {!embedded && (
+          <div className="p-4 sm:p-5 border-b border-[#E2EFE0] dark:border-white/10">
+            <h3 className="font-['Plus_Jakarta_Sans'] text-base sm:text-lg font-bold text-[#14331C] dark:text-[#F4F8F3]">
+              Daftar Kategori ({categories.length})
+            </h3>
+          </div>
+        )}
 
         {loading ? (
           <div className="p-6 text-center text-xs text-[#556353] dark:text-white/60">Memuat kategori...</div>
@@ -216,7 +240,7 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ showToast, onDataC
             {categories.map((c) => (
               <div
                 key={c.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-[#F9FBF7] dark:hover:bg-[#0A150D] transition-colors"
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4 hover:bg-[#F9FBF7] dark:hover:bg-[#0A150D] transition-colors ${embedded ? 'px-5 sm:px-6' : 'px-4'}`}
               >
                 <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">

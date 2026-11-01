@@ -288,8 +288,11 @@ export const scmSeedApi = {
   },
 };
 
-// ── Seeder Konten (artikel & kartu Lacak Paket contoh dari data katalog) ──────
+// ── Seeder Konten (produk, artikel & kartu Lacak Paket contoh dari data katalog) ──
 export interface ContentSeedStatus {
+  productCount: number;
+  seededProductCount: number;
+  seedProductTotal: number;
   articleCount: number;
   seededArticleCount: number;
   seedArticleTotal: number;
@@ -298,7 +301,7 @@ export interface ContentSeedStatus {
   seedTrackingResi: string | null;
 }
 
-export type ContentSeedTarget = 'articles' | 'tracking';
+export type ContentSeedTarget = 'products' | 'articles' | 'tracking';
 
 export const contentSeedApi = {
   // GET /api/admin/content-seed — status seeder konten
@@ -307,7 +310,7 @@ export const contentSeedApi = {
     return res?.data || null;
   },
 
-  // POST /api/admin/content-seed/{articles|tracking}/{apply|clear}
+  // POST /api/admin/content-seed/{products|articles|tracking}/{apply|clear}
   run: async (target: ContentSeedTarget, action: 'apply' | 'clear'): Promise<void> => {
     await request(`/admin/content-seed/${target}/${action}`, { method: 'POST', body: {}, auth: true });
   },
