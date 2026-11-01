@@ -93,6 +93,10 @@
     text-align: justify;
     hyphens: auto;
   }
+  /* ...kecuali di dalam wadah rata tengah/kanan: ikut perataan wadahnya */
+  :where(.text-center, .text-right) p {
+    text-align: inherit;
+  }
 
   img, svg, video, canvas, audio, iframe, embed, object {
     max-width: 100%;
