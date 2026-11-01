@@ -531,9 +531,9 @@ export function syncScmNameImage(dryRun = false, force = false): Promise<ScmName
 // Fetch manual (tombol "Fetch dari SCM" di Kelola Lain-lain):
 //   - produk hasil SCM yang ada di toko → nama disamakan dgn SCM, foto diganti
 //     kalau foto di SCM berubah sejak fetch terakhir;
-//   - produk SCM yang belum ada di toko → ditambahkan (lihat insertScmProduct).
+//   - produk SCM yang belum ada di toko (termasuk yg dihapus admin) → ditambahkan (lihat insertScmProduct).
 // Deskripsi, harga, berat, kategori, status produk yang sudah ada tidak disentuh.
-// Produk yang sudah dihapus admin / hilang dari SCM dibiarkan.
+// Produk yang dihapus admin tapi masih ada di SCM ditambahkan lagi; yang hilang dari SCM dibiarkan.
 export interface ScmFetchResult { renamed: number; photos: number; created: string[]; drafts: string[] }
 
 export function fetchScmUpdates(): Promise<ScmFetchResult> {
@@ -560,8 +560,7 @@ export function fetchScmUpdates(): Promise<ScmFetchResult> {
         const key = scmKey(p);
         const now = snapOf(p);
         const pid = map[key];
-        if (pid) {
-          if (!shopName.has(pid)) continue; // sudah dihapus dari toko → biarkan
+        if (pid && shopName.has(pid)) {
           const before = snap[key];
           if (now.name !== shopName.get(pid)) {
             await conn.query('UPDATE products SET name = ? WHERE id = ?', [now.name, pid]);
@@ -577,6 +576,7 @@ export function fetchScmUpdates(): Promise<ScmFetchResult> {
           snap[key] = { ...(before || now), name: now.name, foto: now.foto };
           continue;
         }
+        // Belum ada di toko (baru di SCM, atau sudah dihapus admin) → tambahkan lagi.
         const { productId, exact } = await insertScmProduct(conn, p, ctx);
         map[key] = productId;
         snap[key] = now;
