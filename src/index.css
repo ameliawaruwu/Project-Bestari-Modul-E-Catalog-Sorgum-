@@ -88,6 +88,12 @@
     min-height: 100vh;
   }
 
+  /* Paragraf rata kanan-kiri; utilitas text-left/center/right tetap menang (layer utilities) */
+  p {
+    text-align: justify;
+    hyphens: auto;
+  }
+
   img, svg, video, canvas, audio, iframe, embed, object {
     max-width: 100%;
     height: auto;
