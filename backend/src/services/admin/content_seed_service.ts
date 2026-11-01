@@ -17,13 +17,12 @@ import { upsertLandingContent } from '../landing_content_service';
 //   applyTrackingSeed() / clearTrackingSeed() → isi / kosongkan landing_content
 //   key `demoTracking`. Halaman Lacak Paket menampilkan kartunya otomatis.
 //
-// Produk tidak disentuh di sini (sumbernya Seeder SCM). Relasi artikel→produk
-// (article_products) ikut dihapus untuk artikel snapshot karena ID produk SCM
-// berubah tiap fetch.
+// Produk tidak disentuh di sini. Relasi artikel→produk (article_products) dari
+// snapshot dipasang lagi saat apply, hanya untuk produk yang masih ada.
 // ---------------------------------------------------------------------------
 
 type Row = Record<string, unknown>;
-const SEED = seedData as unknown as { articles: Row[]; demo_tracking?: Row };
+const SEED = seedData as unknown as { articles: Row[]; article_products?: Row[]; demo_tracking?: Row };
 const ARTICLES = SEED.articles || [];
 const ARTICLE_IDS = ARTICLES.map((a) => Number(a.id));
 const ARTICLE_SLUGS = ARTICLES.map((a) => String(a.slug));
@@ -94,6 +93,16 @@ export async function applyArticleSeed(): Promise<{ created: number }> {
       `INSERT INTO articles (${columns.map((c) => `\`${c}\``).join(', ')}) VALUES ${tuples.join(', ')}`,
       params,
     );
+
+    const links = (SEED.article_products || []).filter((l) => ARTICLE_IDS.includes(Number(l.article_id)));
+    if (links.length) {
+      const [prodRows] = await conn.query('SELECT id FROM products WHERE id IN (?)', [links.map((l) => Number(l.product_id))]);
+      const existing = new Set((prodRows as Array<{ id: number }>).map((r) => Number(r.id)));
+      const values = links
+        .filter((l) => existing.has(Number(l.product_id)))
+        .map((l) => [Number(l.article_id), Number(l.product_id)]);
+      if (values.length) await conn.query('INSERT INTO article_products (article_id, product_id) VALUES ?', [values]);
+    }
     await conn.commit();
     return { created: ARTICLES.length };
   } catch (e) {
