@@ -25,7 +25,7 @@ const COPY: Record<ContentSeedTarget, Record<'apply' | 'clear', { title: string;
   products: {
     apply: {
       title: 'Isi produk dari data katalog?',
-      body: 'Produk, foto, dan kategori dari data katalog ditambahkan. Produk hasil seeder yang masih ada dikembalikan ke isi aslinya; produk buatan admin tetap aman.',
+      body: 'Produk dan kategori dari data katalog ditambahkan; nama & foto produk disamakan dengan SCM, sedangkan deskripsi, harga, dan berat memakai data katalog. Produk hasil seeder yang masih ada dikembalikan ke isi aslinya; produk buatan admin tetap aman.',
       done: 'Produk berhasil diisi.',
     },
     clear: {

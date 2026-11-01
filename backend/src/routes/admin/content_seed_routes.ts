@@ -8,6 +8,7 @@ import {
   applyTrackingSeed,
   clearTrackingSeed,
 } from '../../services/admin/content_seed_service';
+import { syncScmNameImage } from '../../services/admin/scm_seed_service';
 import { authRequired, adminOnly } from '../../middleware/auth';
 import { eventBus, EVENTS } from '../../lib/eventBus';
 
@@ -19,9 +20,12 @@ router.get('/', async (_req: Request, res: Response) => {
   res.json({ data: await getContentSeedStatus() });
 });
 
-// POST /api/admin/content-seed/products/apply — isi produk dari data katalog
+// POST /api/admin/content-seed/products/apply — isi produk dari data katalog,
+// lalu nama & foto disamakan dgn SCM (SCM tidak bisa dihubungi → tetap data katalog)
 router.post('/products/apply', async (_req: Request, res: Response) => {
-  const data = await applyProductSeed();
+  const seeded = await applyProductSeed();
+  const scm = await syncScmNameImage(false, true).catch(() => null);
+  const data = { ...seeded, scmSynced: scm ? scm.length : null };
   res.json({ message: 'Produk berhasil diisi', data });
   eventBus.emit(EVENTS.PRODUCTS, { action: 'content-seed-apply' });
   eventBus.emit(EVENTS.LANDING, { action: 'content-seed-apply' });

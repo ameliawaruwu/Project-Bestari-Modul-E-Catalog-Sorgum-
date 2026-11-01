@@ -459,16 +459,18 @@ export function autoFetchScm(): Promise<boolean> {
 // dan hanya kalau nilainya berubah di SCM sejak fetch terakhir (snapshot marker).
 // Tidak menambah / menghapus produk, tidak menyentuh status, kategori, harga,
 // deskripsi, berat, WA, maupun produk buatan admin. `dryRun` → hanya laporkan.
+// `force` (dipakai seeder produk): nama dibandingkan dgn nama di toko (bukan
+// snapshot), jadi nama yang dikembalikan seeder ikut disamakan lagi dgn SCM.
 export interface ScmNameImageChange { productId: number; name?: [string, string]; foto: boolean }
 
-export function syncScmNameImage(dryRun = false): Promise<ScmNameImageChange[]> {
+export function syncScmNameImage(dryRun = false, force = false): Promise<ScmNameImageChange[]> {
   return exclusive(async () => {
     const prev = await readMarker();
     if (!prev.map || !prev.snap) return [];
     const scm = await fetchScmNamed();
     lastFetchAt = new Date().toISOString();
     const hash = scmHash(scm, null);
-    if (!dryRun && prev.hash === hash) return [];
+    if (!dryRun && !force && prev.hash === hash) return [];
 
     const ids = Object.values(prev.map);
     const [rows] = await dbPool.query('SELECT id, name FROM products WHERE id IN (?)', [ids.length ? ids : [0]]);
@@ -484,7 +486,7 @@ export function syncScmNameImage(dryRun = false): Promise<ScmNameImageChange[]> 
       const now = snapOf(p);
       snap[key] = { ...before, name: now.name, foto: now.foto };
       const change: ScmNameImageChange = { productId: pid, foto: Boolean(now.foto && now.foto !== before.foto) };
-      if (now.name !== before.name) change.name = [shopName.get(pid)!, now.name];
+      if (now.name !== (force ? shopName.get(pid) : before.name)) change.name = [shopName.get(pid)!, now.name];
       if (change.name || change.foto) plan.push({ change, p, now });
     }
     if (dryRun) return plan.map((x) => x.change);
