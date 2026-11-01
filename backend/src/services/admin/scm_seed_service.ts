@@ -329,16 +329,18 @@ async function insertScmProduct(
     if (best < 0.5) old = undefined;
   }
 
+  // Tanpa padanan persis: hanya kategori & harga yang dipinjam, deskripsi/komposisi
+  // produk lain tidak ikut, dan produk masuk sebagai draft (dicek admin dulu).
   const oldCat = old ? Number(old.category_id) : NaN;
   const row: Row = {
-    ...(old || {}),
+    ...(exact ? old : {}),
     category_id: ctx.categoryIds.includes(oldCat) ? oldCat : ctx.categoryIds[0],
     name,
     slug: uniqueSlug(name, ctx.usedSlugs),
-    description: descOf(p) ?? (old?.description as string | undefined) ?? null,
-    weight_spec: unitOf(p) ?? (old?.weight_spec as string | undefined) ?? null,
+    description: descOf(p) ?? (exact ? (old?.description as string | undefined) : undefined) ?? null,
+    weight_spec: unitOf(p) ?? (exact ? (old?.weight_spec as string | undefined) : undefined) ?? null,
     price: old ? Number(old.price) || ctx.medianPrice : ctx.medianPrice,
-    is_active: activeOf(p),
+    is_active: exact ? activeOf(p) : 0,
     is_featured: 0,
     rating_avg: 0,
     review_count: 0,
@@ -523,6 +525,81 @@ export function syncScmNameImage(dryRun = false, force = false): Promise<ScmName
       [MARKER_KEY]: JSON.stringify({ ...prev, files, snap, hash } satisfies Marker),
     }).catch(() => 0);
     return plan.map((x) => x.change);
+  });
+}
+
+// Fetch manual (tombol "Fetch dari SCM" di Kelola Lain-lain):
+//   - produk hasil SCM yang ada di toko → nama disamakan dgn SCM, foto diganti
+//     kalau foto di SCM berubah sejak fetch terakhir;
+//   - produk SCM yang belum ada di toko → ditambahkan (lihat insertScmProduct).
+// Deskripsi, harga, berat, kategori, status produk yang sudah ada tidak disentuh.
+// Produk yang sudah dihapus admin / hilang dari SCM dibiarkan.
+export interface ScmFetchResult { renamed: number; photos: number; created: string[]; drafts: string[] }
+
+export function fetchScmUpdates(): Promise<ScmFetchResult> {
+  return exclusive(async () => {
+    const prev = await readMarker();
+    const scm = await fetchScmNamed();
+    lastFetchAt = new Date().toISOString();
+
+    const map: Record<string, number> = { ...(prev.map || {}) };
+    const snap: Record<string, ScmSnap> = { ...(prev.snap || {}) };
+    const ids = [...prev.ids];
+    const mapped = Object.values(map);
+    const [rows] = await dbPool.query('SELECT id, name FROM products WHERE id IN (?)', [mapped.length ? mapped : [0]]);
+    const shopName = new Map((rows as Array<{ id: number; name: string }>).map((r) => [Number(r.id), String(r.name)]));
+
+    const result: ScmFetchResult = { renamed: 0, photos: 0, created: [], drafts: [] };
+    const written: string[] = [];
+    const dropped: string[] = [];
+    const conn = await dbPool.getConnection();
+    try {
+      await conn.beginTransaction();
+      const ctx = await loadInsertCtx(conn, written);
+      for (const p of scm) {
+        const key = scmKey(p);
+        const now = snapOf(p);
+        const pid = map[key];
+        if (pid) {
+          if (!shopName.has(pid)) continue; // sudah dihapus dari toko → biarkan
+          const before = snap[key];
+          if (now.name !== shopName.get(pid)) {
+            await conn.query('UPDATE products SET name = ? WHERE id = ?', [now.name, pid]);
+            result.renamed++;
+          }
+          const img = now.foto && now.foto !== before?.foto ? resolveImage(p.fotoUrl, written) : null;
+          if (img) {
+            dropped.push(...(await imageUrlsOf(conn, [pid])));
+            await conn.query('DELETE FROM product_images WHERE product_id = ?', [pid]);
+            await insertImages(conn, pid, [img], now.name);
+            result.photos++;
+          }
+          snap[key] = { ...(before || now), name: now.name, foto: now.foto };
+          continue;
+        }
+        const { productId, exact } = await insertScmProduct(conn, p, ctx);
+        map[key] = productId;
+        snap[key] = now;
+        ids.push(productId);
+        (exact ? result.created : result.drafts).push(now.name);
+      }
+      await conn.commit();
+    } catch (e) {
+      await conn.rollback();
+      written.forEach((f) => fs.rmSync(path.join(config.upload.dir, f), { force: true }));
+      throw e;
+    } finally {
+      conn.release();
+    }
+
+    const droppedNames = new Set(dropped.map((u) => path.basename(u)));
+    prev.files.filter((f) => droppedNames.has(path.basename(f)))
+      .forEach((f) => fs.rmSync(path.join(config.upload.dir, path.basename(f)), { force: true }));
+    const files = [...prev.files.filter((f) => !droppedNames.has(path.basename(f))), ...written];
+    await upsertLandingContent({
+      [MARKER_KEY]: JSON.stringify({ ...prev, ids, files, map, snap, hash: scmHash(scm, null) } satisfies Marker),
+    });
+    return result;
   });
 }
 

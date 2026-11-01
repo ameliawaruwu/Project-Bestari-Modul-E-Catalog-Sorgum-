@@ -259,7 +259,23 @@ export interface ScmApplyResult {
   fallback: number;
 }
 
+export interface ScmFetchResult {
+  renamed: number;
+  photos: number;
+  created: string[];
+  drafts: string[];
+}
+
 export const scmSeedApi = {
+  // POST /api/admin/scm-seed/fetch — perbarui nama/foto produk SCM & tambah produk baru
+  fetch: async (): Promise<ScmFetchResult | null> => {
+    const res = await request<{ data: ScmFetchResult }>(
+      '/admin/scm-seed/fetch',
+      { method: 'POST', body: {}, auth: true },
+    );
+    return res?.data || null;
+  },
+
   // GET /api/admin/scm-seed — status seeder SCM
   getStatus: async (): Promise<ScmSeedStatus | null> => {
     const res = await request<{ data: ScmSeedStatus }>(

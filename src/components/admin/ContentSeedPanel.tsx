@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { ContentSeedStatus, ContentSeedTarget } from '../../api/adminApi';
+import type { ContentSeedStatus, ContentSeedTarget, ScmFetchResult } from '../../api/adminApi';
 
 // ---------------------------------------------------------------------------
 // Panel Seeder Konten — isi / hapus produk, artikel dan kartu "Lacak Paket"
@@ -12,6 +12,8 @@ import type { ContentSeedStatus, ContentSeedTarget } from '../../api/adminApi';
 //             "Hapus" menghapus artikel snapshot saja — artikel buatan admin aman.
 // - Lacak   : "Isi" menampilkan kartu resi contoh di halaman Lacak Paket;
 //             "Hapus" mengosongkannya.
+// - SCM     : "Fetch" menyamakan nama & foto produk dengan SCM dan menambahkan
+//             produk SCM yang belum ada di toko.
 // ---------------------------------------------------------------------------
 
 interface ContentSeedPanelProps {
@@ -19,7 +21,22 @@ interface ContentSeedPanelProps {
   onDataChanged?: () => void;
 }
 
-type Action = { target: ContentSeedTarget; kind: 'apply' | 'clear' };
+type Action = { target: ContentSeedTarget; kind: 'apply' | 'clear' } | { target: 'scm'; kind: 'fetch' };
+
+const SCM_COPY = {
+  title: 'Ambil data terbaru dari SCM?',
+  body: 'Nama & foto produk disamakan dengan SCM, dan produk baru di SCM ditambahkan ke toko. Deskripsi, harga, dan berat produk yang sudah ada tidak berubah. Produk baru yang belum ada di data katalog masuk sebagai draft supaya harga & deskripsinya dicek dulu.',
+};
+
+function scmSummary(r: ScmFetchResult | null): string {
+  if (!r) return 'Data SCM berhasil diambil.';
+  const parts: string[] = [];
+  if (r.renamed) parts.push(`${r.renamed} nama diperbarui`);
+  if (r.photos) parts.push(`${r.photos} foto diperbarui`);
+  if (r.created.length) parts.push(`${r.created.length} produk baru`);
+  if (r.drafts.length) parts.push(`${r.drafts.length} produk baru sebagai draft (${r.drafts.join(', ')})`);
+  return parts.length ? `SCM: ${parts.join(', ')}.` : 'Produk sudah sama dengan SCM.';
+}
 
 const COPY: Record<ContentSeedTarget, Record<'apply' | 'clear', { title: string; body: string; done: string }>> = {
   products: {
@@ -78,12 +95,16 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
     loadStatus();
   }, [loadStatus]);
 
-  const run = async ({ target, kind }: Action) => {
+  const run = async (action: Action) => {
     setIsBusy(true);
     try {
-      const { contentSeedApi } = await import('../../api/adminApi');
-      await contentSeedApi.run(target, kind);
-      showToast(COPY[target][kind].done);
+      const { contentSeedApi, scmSeedApi } = await import('../../api/adminApi');
+      if (action.target === 'scm') {
+        showToast(scmSummary(await scmSeedApi.fetch()));
+      } else {
+        await contentSeedApi.run(action.target, action.kind);
+        showToast(COPY[action.target][action.kind].done);
+      }
       setModal(null);
       await loadStatus();
       onDataChanged?.();
@@ -126,8 +147,8 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
     },
   ];
 
-  const copy = modal ? COPY[modal.target][modal.kind] : null;
-  const isApply = modal?.kind === 'apply';
+  const copy = !modal ? null : modal.target === 'scm' ? SCM_COPY : COPY[modal.target][modal.kind];
+  const isApply = modal?.kind !== 'clear';
 
   return (
     <div className="bg-white dark:bg-[#0E1A11] p-5 sm:p-6 rounded-2xl border border-[#E2EFE0] dark:border-[rgba(165,214,167,0.15)] shadow-xs flex flex-col gap-5 h-full">
@@ -184,6 +205,27 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
             </div>
           </div>
         ))}
+
+        <div className="rounded-xl border border-[#E2EFE0] dark:border-white/10 bg-[#F9FBF7] dark:bg-[#162419] p-3.5 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+            <span className="material-symbols-outlined text-lg text-[#1F5132] dark:text-[#86EFAC]">cloud_sync</span>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-[#14331C] dark:text-[#F4F8F3]">Produk dari SCM</div>
+              <div className="text-[10px] text-[#556353] dark:text-white/60 truncate">Perbarui nama & foto, tambah produk baru</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 justify-end">
+            <button
+              type="button"
+              onClick={() => setModal({ target: 'scm', kind: 'fetch' })}
+              disabled={isBusy}
+              className="bg-gradient-to-r from-[#3A8F4B] to-[#5AA563] hover:from-[#2F773E] hover:to-[#4A8D52] disabled:opacity-60 text-white px-3.5 py-1.5 rounded-lg font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[15px]">sync</span>
+              <span>Fetch SCM</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <p className="text-[10px] text-[#556353] dark:text-white/60 leading-relaxed border-t border-[#E2EFE0]/60 dark:border-white/10 pt-4">
@@ -194,7 +236,7 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
           <div className="relative w-full max-w-md bg-white dark:bg-[#0E1A11] rounded-2xl shadow-2xl border border-[#E2EFE0] dark:border-white/10 p-6 space-y-4">
             <div className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto ${isApply ? 'bg-[#EAF6E8] text-[#1F5132]' : 'bg-[#FFEBEE] text-[#D32F2F]'}`}>
-              <span className="material-symbols-outlined text-3xl">{isApply ? 'download' : 'delete_forever'}</span>
+              <span className="material-symbols-outlined text-3xl">{modal.kind === 'fetch' ? 'cloud_sync' : isApply ? 'download' : 'delete_forever'}</span>
             </div>
             <div className="text-center space-y-1.5">
               <h3 className="font-['Plus_Jakarta_Sans'] text-lg font-extrabold text-[#14331C] dark:text-[#F4F8F3]">{copy.title}</h3>
@@ -215,7 +257,7 @@ export const ContentSeedPanel: React.FC<ContentSeedPanelProps> = ({ showToast, o
                 disabled={isBusy}
                 className={`flex-1 py-2.5 rounded-xl text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer disabled:opacity-50 ${isApply ? 'bg-[#3A8F4B] hover:bg-[#2F773E]' : 'bg-[#D32F2F] hover:bg-[#C62828]'}`}
               >
-                {isBusy ? 'Memproses…' : isApply ? 'Ya, Isi' : 'Ya, Hapus'}
+                {isBusy ? 'Memproses…' : modal.kind === 'fetch' ? 'Ya, Fetch' : isApply ? 'Ya, Isi' : 'Ya, Hapus'}
               </button>
             </div>
           </div>
