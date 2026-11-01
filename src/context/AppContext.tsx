@@ -100,7 +100,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [banners, setBanners] = useState<BannerSlide[]>([]);
 
   const [shopSettings, setShopSettings] = useState<ShopSettings>({
-    storeName: 'SORGUM', logoUrl: '', whatsappNumber: '',
+    storeName: 'KWT Melati Sorgum', logoUrl: '', whatsappNumber: '',
   });
 
   const [landingContent, setLandingContent] = useState<LandingContent>(DEFAULT_LANDING_CONTENT);

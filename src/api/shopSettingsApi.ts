@@ -12,7 +12,7 @@ export interface ShopSettings {
 }
 
 export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
-  storeName: 'SORGUM',
+  storeName: 'KWT Melati Sorgum',
   logoUrl: '',
   whatsappNumber: '',
 };

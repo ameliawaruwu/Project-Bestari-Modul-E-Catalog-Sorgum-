@@ -12,6 +12,8 @@ import React from 'react';
  *   Enter          -> baris baru; baris kosong memisahkan paragraf
  *   "- ", "• ", "* " -> bullet list
  *   "1. ", "1) "     -> numbered list
+ *   Baris pendek tanpa tanda baca akhir yang langsung diikuti baris lain
+ *   (tanpa baris kosong) -> subjudul, mis. "India: roti tanpa gluten".
  */
 
 export type ArticleTextProps = {
@@ -44,6 +46,16 @@ const NUMBER_RE = /^\s*\d+[.)]\s+(.*)$/;
 export const PARA_FIRST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed article-drop-cap';
 const PARA_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal';
 const LIST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal pl-5 space-y-1.5';
+
+const HEADING_CLASS = "font-['Plus_Jakarta_Sans'] text-[#162809] dark:text-[#F4F8F3] text-base md:text-lg font-bold leading-snug mt-2";
+
+// Subjudul = baris pertama paragraf multi-baris yang pendek dan tidak diakhiri
+// tanda baca kalimat. Paragraf satu baris tidak pernah dianggap subjudul.
+function isSubheading(lines: string[]): boolean {
+  if (lines.length < 2) return false;
+  const first = lines[0];
+  return first.length <= 80 && !/[.!?,;:]$/.test(first);
+}
 
 function tokenize(raw: string): Token[] {
   return raw
@@ -97,6 +109,22 @@ export const ArticleText: React.FC<ArticleTextProps> = ({ content, dropCap, alig
   return (
     <div className="space-y-4">
       {segments.map((seg, i) => {
+        if (seg.kind === 'p' && isSubheading(seg.lines)) {
+          return (
+            <div key={i} className="space-y-1.5">
+              <h3 className={HEADING_CLASS}>{seg.lines[0]}</h3>
+              <p className={`${PARA_CLASS} ${alignCls}`}>
+                {seg.lines.slice(1).map((line, j) => (
+                  <React.Fragment key={j}>
+                    {j > 0 && <br />}
+                    {line}
+                  </React.Fragment>
+                ))}
+              </p>
+            </div>
+          );
+        }
+
         if (seg.kind === 'p') {
           return (
             <p key={i} className={`${i === 0 && dropCap ? PARA_FIRST_CLASS : PARA_CLASS} ${alignCls}`}>

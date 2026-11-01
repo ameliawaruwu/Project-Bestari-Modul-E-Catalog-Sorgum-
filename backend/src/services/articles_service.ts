@@ -12,7 +12,7 @@ async function getProductIdsForArticle(articleId: number): Promise<number[]> {
 // Ambil detail produk terkait (aktif) dari relasi article_products.
 async function getRelatedProductsForArticle(articleId: number): Promise<any[]> {
   const [rows] = await dbPool.query(
-    `SELECT p.id, p.name, p.slug, p.price, p.is_active, p.weight_spec,
+    `SELECT p.id, p.name, p.slug, p.price, p.price_max, p.is_active, p.weight_spec,
             p.wa_contact,
             (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) AS primary_image,
             c.name AS category_name

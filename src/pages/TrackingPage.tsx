@@ -1,8 +1,33 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
 
+// Status dari API ekspedisi datang dalam bahasa Inggris ("Delivered", dst.).
+// Di mode bahasa Indonesia diterjemahkan supaya UI tidak campur bahasa.
+const STATUS_ID: Record<string, string> = {
+  delivered: 'Terkirim',
+  'on process': 'Diproses',
+  'in transit': 'Dalam Perjalanan',
+  'on delivery': 'Sedang Diantar',
+  'out for delivery': 'Sedang Diantar',
+  'picked up': 'Sudah Dijemput Kurir',
+  pickup: 'Dijemput Kurir',
+  manifested: 'Data Diterima Kurir',
+  returned: 'Dikembalikan',
+  return: 'Dikembalikan',
+  cancelled: 'Dibatalkan',
+  canceled: 'Dibatalkan',
+  'on hold': 'Tertahan',
+  failed: 'Gagal Dikirim',
+};
+
+function statusLabel(status: string | undefined, language: string): string {
+  if (!status) return language === 'en' ? 'In Transit' : 'Sedang Dikirim';
+  if (language === 'en') return status;
+  return STATUS_ID[status.trim().toLowerCase()] || status;
+}
+
 export const TrackingPage: React.FC = () => {
-  const { t, shopSettings, landingContent } = useApp();
+  const { t, shopSettings, landingContent, language } = useApp();
   const [resi, setResi] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -410,7 +435,7 @@ export const TrackingPage: React.FC = () => {
 
               <span className="px-2.5 py-1 rounded-full bg-[#EAF6E8] dark:bg-[#152718] border border-[#245B3A]/30 text-sm font-bold text-[#245B3A] dark:text-[#86EFAC] flex items-center gap-1.5 shadow-2xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#245B3A] dark:bg-[#86EFAC] animate-pulse inline-block" />
-                {result.status || 'Sedang Dikirim'}
+                {statusLabel(result.status, language)}
               </span>
             </div>
 

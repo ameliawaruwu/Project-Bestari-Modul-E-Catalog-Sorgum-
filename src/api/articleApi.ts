@@ -53,6 +53,12 @@ function mapArticle(a: ArticleRow): Article {
   };
 }
 
+// Sama dengan format harga di katalog: "Rp min - Rp max" bila ada harga maks.
+function formatRupiahRange(min: number, max: number | null): string {
+  if (max && max > min) return `Rp ${min.toLocaleString('id-ID')} - Rp ${max.toLocaleString('id-ID')}`;
+  return `Rp ${min.toLocaleString('id-ID')}`;
+}
+
 // Map row produk terkait (dari relasi article_products) ke shape Product ringkas
 // yang FE butuhkan di kartu produk (id, nama, harga, gambar, kategori).
 function mapRelatedProduct(rp: Record<string, any>): any {
@@ -61,7 +67,7 @@ function mapRelatedProduct(rp: Record<string, any>): any {
     id: String(rp.id),
     name: rp.name,
     price: rp.price,
-    formattedPrice: `IDR ${Number(rp.price || 0).toLocaleString('id-ID')}`,
+    formattedPrice: formatRupiahRange(Number(rp.price || 0), rp.price_max ? Number(rp.price_max) : null),
     unitInfo: unit,
     weight: unit,
     image: rp.primary_image || '',

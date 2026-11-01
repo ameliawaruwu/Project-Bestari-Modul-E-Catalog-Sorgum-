@@ -70,8 +70,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
 
         <div className="mt-auto pt-1.5 sm:pt-2 border-t border-[#E8F5E9] dark:border-[rgba(165,214,167,0.15)] flex justify-between items-center gap-1.5">
-          <span className="font-['JetBrains_Mono'] text-sm text-[#162809] dark:text-[#86EFAC] font-black tracking-tight truncate">
-            {product.formattedPrice}
+          <span className="font-['JetBrains_Mono'] text-xs sm:text-sm leading-tight text-[#162809] dark:text-[#86EFAC] font-black tracking-tight min-w-0">
+            {/* Rentang harga boleh turun baris, tapi hanya setelah "-" (di HP kartu sempit). */}
+            {(product.formattedPrice || '').split(' - ').map((part, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && ' - '}
+                <span className="font-['JetBrains_Mono'] whitespace-nowrap">{part}</span>
+              </React.Fragment>
+            ))}
           </span>
 
           <div

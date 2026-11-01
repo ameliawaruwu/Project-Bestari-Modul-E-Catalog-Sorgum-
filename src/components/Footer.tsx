@@ -18,14 +18,14 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               alt={shopSettings.storeName || 'Logo toko'}
               className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-lg"
             />
-            <span className="font-['Plus_Jakarta_Sans'] text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
-              {shopSettings.storeName ? shopSettings.storeName.split(' ')[0] : 'KWT'}
+            <span className="font-['Plus_Jakarta_Sans'] text-lg sm:text-xl font-black text-white uppercase tracking-tight">
+              {shopSettings.storeName || 'KWT Melati Sorgum'}
             </span>
           </div>
           <p className="font-['Plus_Jakarta_Sans'] text-xs text-white/80 leading-relaxed font-normal">
             {t(
-              'Pelopor produk sorgum berkualitas tinggi di Indonesia. Kami berdedikasi untuk kesehatan Anda dan keberlanjutan bumi melalui inovasi pangan lokal.',
-              'Pioneer of high-quality sorghum products in Indonesia. We are dedicated to your health and the sustainability of the earth through local food innovation.'
+              'Kelompok Wanita Tani dari Kabupaten Bandung yang mengolah sorgum menjadi beras, tepung, dan camilan sehat untuk keluarga Indonesia.',
+              'A women farmers group from Bandung Regency turning sorghum into rice, flour, and healthy snacks for Indonesian families.'
             )}
           </p>
         </div>
@@ -82,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
       <div className="max-w-[1100px] mx-auto mt-5 sm:mt-6 flex justify-center text-center px-2">
         <p className="font-['Plus_Jakarta_Sans'] text-[11px] text-white/65">
-          {t('© 2026 KWT · Kemurnian Alami untuk Hidup Sehat.', '© 2026 KWT · Pure Nature for Healthy Living.')}
+          © 2026 {shopSettings.storeName || 'KWT Melati Sorgum'} · {t('Kemurnian Alami untuk Hidup Sehat.', 'Pure Nature for Healthy Living.')}
         </p>
       </div>
     </footer>
