@@ -16,12 +16,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, onSelectArtic
     >
       {/* Di HP: gambar di kiri (kartu horizontal, hemat tinggi & cepat dipindai).
           Di layar ≥sm: proporsional & compact di desktop zoom 100%. */}
-      <div className="w-28 sm:w-full h-auto sm:h-36 shrink-0 overflow-hidden relative bg-[#F7F5EF] dark:bg-[#1f1d18] border-r sm:border-r-0 sm:border-b border-[#E2EAE0] dark:border-white/10">
+      <div className="w-28 sm:w-full min-h-[96px] sm:min-h-0 sm:h-36 shrink-0 overflow-hidden relative bg-[#F7F5EF] dark:bg-[#1f1d18] border-r sm:border-r-0 sm:border-b border-[#E2EAE0] dark:border-white/10">
         {article.image ? (
           <img
             src={article.image}
             alt={article.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            // absolute: tinggi kartu ditentukan teks, bukan rasio foto (foto
+            // potret tidak lagi membuat kartu di HP lebih tinggi dari lainnya).
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
         ) : (
