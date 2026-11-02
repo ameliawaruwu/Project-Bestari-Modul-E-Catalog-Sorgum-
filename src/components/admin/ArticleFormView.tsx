@@ -49,7 +49,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
 }) => {
   const [titleInput, setTitleInput] = useState('');
   const [categoryInput, setCategoryInput] = useState('Budidaya');
-  const [authorInput, setAuthorInput] = useState('Tim Nutrisi Sorgum');
+  const [authorInput, setAuthorInput] = useState('Admin E-Catalog');
   const [createdAtText, setCreatedAtText] = useState('');
   const [heroImage, setHeroImage] = useState('');
   const [blocks, setBlocks] = useState<ArticleBlockDraft[]>([]);
@@ -97,7 +97,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
     } else {
       setTitleInput('');
       setCategoryInput('Budidaya');
-      setAuthorInput('Tim Nutrisi Sorgum');
+      setAuthorInput('Admin E-Catalog');
       setCreatedAtText('');
       setHeroImage('');
       setProductIds([]);
@@ -281,7 +281,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
                 type="text"
                 value={authorInput}
                 onChange={(e) => setAuthorInput(e.target.value)}
-                placeholder="Contoh: Tim Nutrisi Sorgum"
+                placeholder="Contoh: Admin E-Catalog"
                 className="w-full bg-[#F7F8F6] border border-[#E0E0E0] rounded-xl p-3.5 text-xs sm:text-sm text-[#1B5E20] focus:ring-1 focus:ring-[#2E7D32] outline-none font-medium"
               />
             </div>

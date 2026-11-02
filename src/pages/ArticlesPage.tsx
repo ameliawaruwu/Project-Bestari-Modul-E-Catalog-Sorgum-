@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
-import { ArticleText, ALIGN_CLASS, PARA_FIRST_CLASS, type TextAlign } from '../components/article/ArticleText';
+import { ArticleText, ALIGN_CLASS, PARA_FIRST_CLASS, withDropCap, type TextAlign } from '../components/article/ArticleText';
 import { ProductCard } from '../components/ProductCard';
 import { Article } from '../types';
 import { useApp } from '../context/AppContext';
@@ -184,7 +184,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
           if (idx === 0) {
             return (
               <p key={idx} className={`${PARA_FIRST_CLASS} ${ALIGN_CLASS[block.align || 'left']}`}>
-                {block.content}
+                {withDropCap(block.content || '')}
               </p>
             );
           }
@@ -305,7 +305,7 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
                       {t('Penerbit', 'Author')}
                     </span>
                     <span className="text-[#555555] font-['Plus_Jakarta_Sans'] text-xs">
-                      {activeArticle.author || 'Tim Ahli Gizi Sorgum'}
+                      {activeArticle.author || 'Admin E-Catalog'}
                     </span>
                   </div>
                 </li>

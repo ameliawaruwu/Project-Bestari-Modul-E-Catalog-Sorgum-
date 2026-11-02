@@ -854,31 +854,19 @@ table th, table td {
   display: none;
 }
 
-/* Huruf kapital pertama artikel (drop cap), sejajar rapi dengan baris teks.
-   Dihitung dari metrik Plus Jakarta Sans (cap-height 0.745em) dengan
-   line-height body 1.625: tinggi huruf = 2 baris, tepi atas rata dengan
-   huruf kapital baris pertama dan dasar rata dengan baris kedua. */
-.article-drop-cap::first-letter {
+/* Huruf kapital pertama artikel (drop cap) — elemen <span> sungguhan (bukan
+   ::first-letter / initial-letter yang hasilnya beda-beda antar browser).
+   Dihitung dari metrik Plus Jakarta Sans (cap-height 0.75, ascent 1.03,
+   descent 0.23) dengan line-height paragraf 1.625:
+     font-size   = 1 + 1.625/0.75            = 3.1667em  (tinggi kapital = 2 baris)
+     line-height = 2*(baseline2/size - 0.4)  = 0.992     (dasar huruf = baseline baris 2)
+   Puncak huruf rata dengan kapital baris 1, dasar rata dengan baris 2. */
+.article-drop-cap-letter {
   float: left;
   font-weight: 700;
   color: #1B5E20;
-  font-size: 3.18em;
-  line-height: 0.973;
+  font-size: 3.1667em;
+  line-height: 0.992;
+  margin-top: 0.02em;
   padding-right: 0.1em;
-  margin: 0;
-}
-
-/* Browser yang mendukung initial-letter (Chrome/Edge 110+, Safari) menghitung
-   sendiri: puncak huruf rata dengan kapital baris 1, dasar rata dengan baris 2
-   — tidak bergantung metrik font, ukuran layar, atau perataan teks. */
-@supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
-  .article-drop-cap::first-letter {
-    float: none;
-    font-size: inherit;
-    line-height: inherit;
-    -webkit-initial-letter: 2;
-    initial-letter: 2;
-    margin-right: 0.12em;
-    padding-right: 0;
-  }
 }

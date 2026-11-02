@@ -43,8 +43,21 @@ const BULLET_RE = /^\s*[-•*]\s+(.*)$/;
 const NUMBER_RE = /^\s*\d+[.)]\s+(.*)$/;
 const HEADING_RE = /^\s*##\s+(.*)$/;
 
-// Drop cap memakai class `article-drop-cap` (src/index.css) agar sejajar.
-export const PARA_FIRST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed article-drop-cap';
+export const PARA_FIRST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal';
+
+/** Huruf pertama teks jadi drop cap (class `article-drop-cap-letter`, src/index.css). */
+export function withDropCap(text: string): React.ReactNode {
+  const trimmed = text.replace(/^\s+/, '');
+  const [first, ...rest] = Array.from(trimmed);
+  if (!first) return text;
+  return (
+    <>
+      <span className="article-drop-cap-letter" aria-hidden="true">{first}</span>
+      <span className="sr-only">{first}</span>
+      {rest.join('')}
+    </>
+  );
+}
 const PARA_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal';
 const LIST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal pl-5 space-y-1.5';
 
@@ -120,7 +133,7 @@ export const ArticleText: React.FC<ArticleTextProps> = ({ content, dropCap, alig
               {seg.lines.map((line, j) => (
                 <React.Fragment key={j}>
                   {j > 0 && <br />}
-                  {line}
+                  {i === 0 && j === 0 && dropCap ? withDropCap(line) : line}
                 </React.Fragment>
               ))}
             </p>
