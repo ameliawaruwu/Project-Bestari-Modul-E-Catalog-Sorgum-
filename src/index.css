@@ -93,6 +93,14 @@
     text-align: justify;
     hyphens: auto;
   }
+  /* HP: kolom sempit + kamus pemenggalan bahasa Indonesia tidak tersedia di
+     browser → rata kanan-kiri menghasilkan celah lebar. Rata kiri di HP;
+     utilitas eksplisit (mis. text-justify pilihan admin di artikel) tetap menang. */
+  @media (max-width: 639px) {
+    p {
+      text-align: left;
+    }
+  }
   /* ...kecuali di dalam wadah rata tengah/kanan: ikut perataan wadahnya */
   :where(.text-center, .text-right) p {
     text-align: inherit;

@@ -28,7 +28,8 @@ export type TextAlign = 'left' | 'right' | 'justify';
 export const ALIGN_CLASS: Record<TextAlign, string> = {
   left: 'text-left',
   right: 'text-right',
-  justify: 'text-justify',
+  // HP: kolom terlalu sempit untuk rata kanan-kiri (celah lebar) → rata kiri.
+  justify: 'text-left sm:text-justify',
 };
 
 type Segment =

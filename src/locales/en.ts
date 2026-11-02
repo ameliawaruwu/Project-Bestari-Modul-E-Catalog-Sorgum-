@@ -85,7 +85,7 @@ export const enLocale: Record<string, string> = {
   "baca-selengkapnya-2": "Read More",
   "produk-terkait-lainnya": "Other Related Products",
   "pilihan-nutrisi-sorgum-terbaik-untuk-keluarga-anda": "The best sorghum nutrition choices for your family",
-  "cari-produk-atau-kategori-misal-beras-camilan": "Search product or category (e.g. rice, snacks)...",
+  "cari-produk-atau-kategori-2": "Search product or category...",
   "hapus-pencarian-2": "Clear search",
   "urutkan": "Sort By:",
   "populer": "Popular",

@@ -85,7 +85,7 @@ export const idLocale: Record<string, string> = {
   "baca-selengkapnya-2": "Baca Selengkapnya",
   "produk-terkait-lainnya": "Produk Terkait Lainnya",
   "pilihan-nutrisi-sorgum-terbaik-untuk-keluarga-anda": "Pilihan nutrisi sorgum terbaik untuk keluarga Anda",
-  "cari-produk-atau-kategori-misal-beras-camilan": "Cari produk atau kategori (misal: beras, camilan)...",
+  "cari-produk-atau-kategori-2": "Cari produk atau kategori...",
   "hapus-pencarian-2": "Hapus pencarian",
   "urutkan": "Urutkan:",
   "populer": "Populer",

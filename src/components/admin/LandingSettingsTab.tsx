@@ -201,12 +201,60 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                   value={searchBanner}
                   onChange={(e) => setSearchBanner(e.target.value)}
                   placeholder="Cari banner..."
-                  className="bg-transparent border-none outline-none text-xs text-[#1B5E20] w-44 placeholder:text-[#555555] font-medium"
+                  className="bg-transparent border-none outline-none text-xs text-[#1B5E20] w-full sm:w-44 placeholder:text-[#555555] font-medium"
                 />
               </div>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* HP: daftar kartu (tabel 5 kolom terlalu sempit dan harus digeser) */}
+            <ul className="md:hidden divide-y divide-[#E0E0E0]">
+              {filteredBanners.map((banner) => (
+                <li key={banner.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className="w-20 h-12 rounded-lg bg-[#F7F8F6] overflow-hidden border border-[#E0E0E0] shadow-2xs shrink-0">
+                    <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-sm text-[#1B5E20] leading-tight text-left">{banner.title}</p>
+                    <p className="text-[10px] text-[#555555] mt-0.5 text-left">Diunggah {banner.uploadDate}</p>
+                    <p className="text-[11px] text-[#555555] mt-0.5 text-left truncate">{banner.targetLink}</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <label className="relative inline-flex items-center cursor-pointer" title="Aktif / nonaktif">
+                      <input
+                        type="checkbox"
+                        checked={banner.active}
+                        onChange={() => onToggleBanner(banner.id)}
+                        className="sr-only peer"
+                        aria-label={`Aktifkan ${banner.title}`}
+                      />
+                      <div className="w-9 h-5 bg-[#E0E0E0] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#E0E0E0] after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2E7D32]"></div>
+                    </label>
+                    <div className="flex gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => onOpenEditBanner(banner)}
+                        className="w-8 h-8 rounded-lg bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#1B5E20] flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+                        title="Edit banner"
+                        aria-label={`Edit ${banner.title}`}
+                      >
+                        <span className="material-symbols-outlined text-[16px]">edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onDeleteBanner(banner.id)}
+                        className="w-8 h-8 text-[#555555] hover:text-[#D32F2F] hover:bg-[#FFEBEE] rounded-lg border border-[#E0E0E0] hover:border-[#FFCDD2] transition-all cursor-pointer flex items-center justify-center"
+                        title="Hapus banner"
+                        aria-label={`Hapus ${banner.title}`}
+                      >
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr style={{ backgroundColor: '#E8F5E9', color: '#1B5E20' }} className="border-b border-[#C8E6C9]">
@@ -300,7 +348,7 @@ export const LandingSettingsTab: React.FC<LandingSettingsTabProps> = ({
                   value={searchProduk}
                   onChange={(e) => setSearchProduk(e.target.value)}
                   placeholder="Cari produk..."
-                  className="bg-transparent border-none outline-none text-xs text-[#1B5E20] w-44 placeholder:text-[#555555] font-medium"
+                  className="bg-transparent border-none outline-none text-xs text-[#1B5E20] w-full sm:w-44 placeholder:text-[#555555] font-medium"
                 />
               </div>
             </div>

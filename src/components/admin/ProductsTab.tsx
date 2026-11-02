@@ -118,8 +118,63 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
           </div>
         </div>
 
-        {/* Table - 6 Kolom Sesuai Aturan UI */}
-        <div className="overflow-x-auto">
+        {/* HP: daftar kartu (tabel 6 kolom terlalu sempit dan harus digeser) */}
+        <ul className="md:hidden divide-y divide-[#E2EFE0] dark:divide-white/10">
+          {paginatedProducts.map((prod) => (
+            <li key={prod.id} className="flex items-center gap-3 px-3.5 py-3">
+              <div className="w-12 h-12 rounded-lg overflow-hidden border border-[#E2EFE0] dark:border-white/10 shadow-2xs flex-shrink-0 bg-white">
+                <img
+                  src={prod.image}
+                  alt={prod.name}
+                  className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
+                />
+              </div>
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <p className="font-bold text-[#14331C] dark:text-[#F4F8F3] leading-tight text-sm text-left">{prod.name}</p>
+                <p className="text-[#556353] dark:text-white/60 font-semibold text-[11px] text-left">{prod.categoryLabel || prod.category}</p>
+                <p className="font-bold text-[#1F5132] dark:text-[#86EFAC] font-mono text-xs text-left">
+                  {prod.priceMax && prod.priceMax > prod.price
+                    ? `Rp ${prod.price.toLocaleString('id-ID')} - Rp ${prod.priceMax.toLocaleString('id-ID')}`
+                    : `Rp ${prod.price.toLocaleString('id-ID')}`}
+                </p>
+                {prod.isActive === false ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#FFF6D6] dark:bg-[#3A3214] text-[#8A6D00] dark:text-[#fade88] text-[10px] font-bold uppercase tracking-wider">
+                    <span className="material-symbols-outlined text-[12px]">edit_note</span>
+                    Draft
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#EAF6E8] dark:bg-[#152718] text-[#1F5132] dark:text-[#86EFAC] text-[10px] font-bold uppercase tracking-wider">
+                    <span className="material-symbols-outlined text-[12px]">public</span>
+                    Publish
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => onOpenEditProduct(prod)}
+                  className="w-9 h-9 rounded-lg bg-[#EAF6E8] hover:bg-[#D7EED3] dark:bg-[#152718] dark:hover:bg-[#1B3320] text-[#1F5132] dark:text-[#86EFAC] flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+                  title="Edit produk"
+                  aria-label={`Edit ${prod.name}`}
+                >
+                  <span className="material-symbols-outlined text-base">edit</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDeleteProduct(prod)}
+                  className="w-9 h-9 rounded-lg bg-[#FFEBEE] hover:bg-[#FFCDD2] dark:bg-[#2A1215] dark:hover:bg-[#3B171B] text-[#D32F2F] flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+                  title="Hapus produk"
+                  aria-label={`Hapus ${prod.name}`}
+                >
+                  <span className="material-symbols-outlined text-base">delete</span>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        {/* Table - 6 Kolom Sesuai Aturan UI (tablet/desktop) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse table-auto">
             <thead>
               <tr className="bg-[#F2F7F0] dark:bg-[#152718] border-y border-[#E2EFE0] dark:border-white/10 text-[#1F5132] dark:text-[#86EFAC]">
@@ -198,7 +253,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({
         </div>
 
         {/* Pagination & Counter */}
-        <div className="p-3 bg-[#F9FBF7] dark:bg-[#0E1A11] text-[#556353] dark:text-white/60 text-xs font-medium flex justify-between items-center border-t border-[#E2EFE0] dark:border-white/10">
+        <div className="p-3 bg-[#F9FBF7] dark:bg-[#0E1A11] text-[#556353] dark:text-white/60 text-xs font-medium flex flex-wrap gap-2 justify-between items-center border-t border-[#E2EFE0] dark:border-white/10">
           <span>
             Menampilkan {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredProducts.length)} dari {filteredProducts.length} Produk
           </span>

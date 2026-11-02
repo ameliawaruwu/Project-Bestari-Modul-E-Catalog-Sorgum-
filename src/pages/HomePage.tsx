@@ -74,7 +74,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           {t(landingContent.featuredTitleId || 'Koleksi Produk Pilihan SORGUM', landingContent.featuredTitleEn || 'Featured Sorghum Collection')}
         </h2>
 
-        <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] text-[#6B756E] dark:text-[#CBD5C8] max-w-lg mx-auto leading-relaxed font-normal mt-1 text-justify [text-align-last:center] hyphens-auto" lang="id">
+        <p className="font-['Plus_Jakarta_Sans'] text-xs sm:text-[13px] text-[#6B756E] dark:text-[#CBD5C8] max-w-lg mx-auto leading-relaxed font-normal mt-1 text-center sm:text-justify sm:[text-align-last:center] hyphens-auto" lang="id">
           {t(landingContent.featuredDescId || 'Pilihan olahan sorgum murni terbaik untuk kebutuhan sehari-hari Anda.', landingContent.featuredDescEn || 'The finest selection of pure sorghum products for your daily needs.')}
         </p>
       </div>

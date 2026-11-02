@@ -4,6 +4,9 @@ import App from './App.tsx';
 import { AppProvider } from './context/AppContext.tsx';
 import './i18n';
 import './index.css';
+import { installImageFallback } from './utils/imageFallback';
+
+installImageFallback();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
