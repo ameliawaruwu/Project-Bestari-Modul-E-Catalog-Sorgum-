@@ -867,3 +867,18 @@ table th, table td {
   padding-right: 0.1em;
   margin: 0;
 }
+
+/* Browser yang mendukung initial-letter (Chrome/Edge 110+, Safari) menghitung
+   sendiri: puncak huruf rata dengan kapital baris 1, dasar rata dengan baris 2
+   — tidak bergantung metrik font, ukuran layar, atau perataan teks. */
+@supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+  .article-drop-cap::first-letter {
+    float: none;
+    font-size: inherit;
+    line-height: inherit;
+    -webkit-initial-letter: 2;
+    initial-letter: 2;
+    margin-right: 0.12em;
+    padding-right: 0;
+  }
+}

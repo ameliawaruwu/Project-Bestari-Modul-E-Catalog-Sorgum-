@@ -12,8 +12,7 @@ import React from 'react';
  *   Enter          -> baris baru; baris kosong memisahkan paragraf
  *   "- ", "• ", "* " -> bullet list
  *   "1. ", "1) "     -> numbered list
- *   Baris pendek tanpa tanda baca akhir yang langsung diikuti baris lain
- *   (tanpa baris kosong) -> subjudul, mis. "India: roti tanpa gluten".
+ *   "## "            -> subjudul (dibuat dari tombol Subjudul di editor admin)
  */
 
 export type ArticleTextProps = {
@@ -35,27 +34,21 @@ export const ALIGN_CLASS: Record<TextAlign, string> = {
 type Segment =
   | { kind: 'p'; lines: string[] }
   | { kind: 'ul'; items: string[] }
-  | { kind: 'ol'; items: string[] };
+  | { kind: 'ol'; items: string[] }
+  | { kind: 'h'; text: string };
 
-type Token = { kind: 'p' | 'ul' | 'ol' | 'blank'; text: string };
+type Token = { kind: 'p' | 'ul' | 'ol' | 'h' | 'blank'; text: string };
 
 const BULLET_RE = /^\s*[-•*]\s+(.*)$/;
 const NUMBER_RE = /^\s*\d+[.)]\s+(.*)$/;
+const HEADING_RE = /^\s*##\s+(.*)$/;
 
 // Drop cap memakai class `article-drop-cap` (src/index.css) agar sejajar.
 export const PARA_FIRST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed article-drop-cap';
 const PARA_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal';
 const LIST_CLASS = 'text-[#555555] text-sm md:text-base leading-relaxed font-normal pl-5 space-y-1.5';
 
-const HEADING_CLASS = "font-['Plus_Jakarta_Sans'] text-[#162809] dark:text-[#F4F8F3] text-base md:text-lg font-bold leading-snug mt-2";
-
-// Subjudul = baris pertama paragraf multi-baris yang pendek dan tidak diakhiri
-// tanda baca kalimat. Paragraf satu baris tidak pernah dianggap subjudul.
-function isSubheading(lines: string[]): boolean {
-  if (lines.length < 2) return false;
-  const first = lines[0];
-  return first.length <= 80 && !/[.!?,;:]$/.test(first);
-}
+const HEADING_CLASS = "font-['Plus_Jakarta_Sans'] text-[#162809] dark:text-[#F4F8F3] text-base md:text-lg font-bold leading-snug mt-2 !mb-1.5";
 
 function tokenize(raw: string): Token[] {
   return raw
@@ -63,6 +56,8 @@ function tokenize(raw: string): Token[] {
     .split('\n')
     .map((line) => {
       if (!line.trim()) return { kind: 'blank', text: '' } as Token;
+      const heading = HEADING_RE.exec(line);
+      if (heading) return { kind: 'h', text: heading[1].trim() } as Token;
       const bullet = BULLET_RE.exec(line);
       if (bullet) return { kind: 'ul', text: bullet[1].trim() } as Token;
       const num = NUMBER_RE.exec(line);
@@ -77,6 +72,12 @@ function parseRichText(raw: string): Segment[] {
 
   for (const tk of tokenize(raw)) {
     if (tk.kind === 'blank') {
+      forceNew = true;
+      continue;
+    }
+    if (tk.kind === 'h') {
+      // Subjudul selalu berdiri sendiri; baris sesudahnya mulai blok baru.
+      out.push({ kind: 'h', text: tk.text });
       forceNew = true;
       continue;
     }
@@ -109,20 +110,8 @@ export const ArticleText: React.FC<ArticleTextProps> = ({ content, dropCap, alig
   return (
     <div className="space-y-4">
       {segments.map((seg, i) => {
-        if (seg.kind === 'p' && isSubheading(seg.lines)) {
-          return (
-            <div key={i} className="space-y-1.5">
-              <h3 className={HEADING_CLASS}>{seg.lines[0]}</h3>
-              <p className={`${PARA_CLASS} ${alignCls}`}>
-                {seg.lines.slice(1).map((line, j) => (
-                  <React.Fragment key={j}>
-                    {j > 0 && <br />}
-                    {line}
-                  </React.Fragment>
-                ))}
-              </p>
-            </div>
-          );
+        if (seg.kind === 'h') {
+          return <h3 key={i} className={`${HEADING_CLASS} ${alignCls}`}>{seg.text}</h3>;
         }
 
         if (seg.kind === 'p') {

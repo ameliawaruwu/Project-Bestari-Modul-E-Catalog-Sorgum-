@@ -149,7 +149,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
   };
 
   // Ringkasan untuk kartu artikel (excerpt). Untuk blok rich, buang marker
-  // list ("• ", "1. ") supaya kartu tidak menampilkan tanda tersebut.
+  // list/subjudul ("• ", "1. ", "## ") supaya kartu tidak menampilkan tanda tersebut.
   // Blok lama diperlakukan persis seperti sebelumnya.
   const buildExcerpt = (): string => {
     const text = blocks
@@ -160,7 +160,7 @@ export const ArticleFormView: React.FC<ArticleFormViewProps> = ({
         if (!b.rich) return raw;
         return raw
           .split('\n')
-          .map((ln) => ln.replace(/^\s*(?:[-•*]|\d+[.)])\s+/, '').trim())
+          .map((ln) => ln.replace(/^\s*(?:[-•*]|\d+[.)]|##)\s+/, '').trim())
           .filter(Boolean)
           .join(' ');
       })

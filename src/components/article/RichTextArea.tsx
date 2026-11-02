@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
  *   - Shift+Enter      -> sama seperti Enter (baris baru)
  *   - Tombol Bullet    -> <ul> sungguhan; berlaku untuk SEMUA baris yang diblok
  *   - Tombol Nomor     -> <ol> sungguhan (1. 2. 3. otomatis naik)
+ *   - Tombol Subjudul  -> baris yang diblok jadi subjudul tebal (<h3>)
  *   - Enter di list    -> lanjut item berikutnya (bawaan browser)
  *   - Enter di item kosong -> keluar dari list (bawaan browser)
  *   - Rata kiri / kanan-kiri / kanan -> perataan satu kartu teks (prop `align`)
@@ -17,13 +18,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
  * document.execCommand yang menghasilkan <ul> tersarang di dalam <p>).
  *
  * Format penyimpanan TIDAK berubah: tetap teks biasa dengan penanda
- * ("• item", "1. item"; satu baris per Enter, baris kosong = paragraf baru).
+ * ("• item", "1. item", "## subjudul"; satu baris per Enter, baris kosong = paragraf baru).
  * Perataan disimpan terpisah di properti `align` blok. Jadi DB, API, dan
  * halaman publik tetap kompatibel.
  */
 
 const BULLET_RE = /^\s*[-•*]\s+(.*)$/;
 const NUMBER_RE = /^\s*(\d+)[.)]\s+(.*)$/;
+const HEADING_RE = /^\s*##\s+(.*)$/;
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -59,6 +61,11 @@ export function markerTextToHtml(text: string): string {
       continue;
     }
     close();
+    const h = HEADING_RE.exec(raw);
+    if (h) {
+      html += `<h3>${esc(h[1].trim())}</h3>`;
+      continue;
+    }
     const t = raw.trim();
     html += t ? `<p>${esc(t)}</p>` : '<p><br></p>';
   }
@@ -116,7 +123,11 @@ export function htmlToMarkerText(root: HTMLElement): string {
         flush();
         // <br> penutup hanyalah penanda baris kosong milik browser.
         const t = inlineText(el).replace(/\u00a0/g, ' ').replace(/\n+$/g, '');
-        t.split('\n').forEach((l) => lines.push(l.trim()));
+        const isHeading = /^H[1-6]$/.test(tag);
+        t.split('\n').forEach((l) => {
+          const line = l.trim();
+          lines.push(isHeading && line ? `## ${line}` : line);
+        });
         return;
       }
 
@@ -153,7 +164,7 @@ function normalizeBlocks(root: HTMLElement) {
   });
 }
 
-const BLOCK_TAGS = ['P', 'DIV', 'LI'];
+const BLOCK_TAGS = ['P', 'DIV', 'LI', 'H3'];
 
 /** Elemen blok (p/div/li) tempat kursor berada. */
 function blockAtCaret(root: HTMLElement): HTMLElement | null {
@@ -224,6 +235,15 @@ function liToPara(li: HTMLElement): HTMLElement {
   return p;
 }
 
+/** Ganti tag satu baris (p <-> h3) dengan isi yang sama. */
+function retag(node: HTMLElement, tag: 'p' | 'h3'): HTMLElement {
+  const next = document.createElement(tag);
+  while (node.firstChild) next.appendChild(node.firstChild);
+  if (!next.firstChild) next.appendChild(document.createElement('br'));
+  node.replaceWith(next);
+  return next;
+}
+
 /** Gabungkan <ul>/<ol> bertetangga yang sejenis jadi satu list. */
 function mergeAdjacentLists(root: HTMLElement) {
   Array.from(root.children).forEach((c) => {
@@ -272,7 +292,7 @@ export const RichTextArea: React.FC<RichTextAreaProps> = ({
   const lastEmitted = useRef<string>('\u0000');
   const lastKey = useRef<string | null>(null);
   const [isEmpty, setIsEmpty] = useState(!value.trim());
-  const [fmt, setFmt] = useState<{ ul: boolean; ol: boolean }>({ ul: false, ol: false });
+  const [fmt, setFmt] = useState<{ ul: boolean; ol: boolean; h: boolean }>({ ul: false, ol: false, h: false });
 
   // Muat isi: saat blok berganti (docKey) selalu muat ulang; saat nilainya
   // berubah dari luar (mis. setelah simpan) muat hanya kalau editor tidak
@@ -311,7 +331,7 @@ export const RichTextArea: React.FC<RichTextAreaProps> = ({
     if (!sel || sel.rangeCount === 0 || !el.contains(sel.anchorNode)) return;
     const block = blockAtCaret(el);
     const list = block && block.tagName === 'LI' ? block.parentElement : null;
-    setFmt({ ul: list?.tagName === 'UL', ol: list?.tagName === 'OL' });
+    setFmt({ ul: list?.tagName === 'UL', ol: list?.tagName === 'OL', h: block?.tagName === 'H3' });
   }, []);
 
   useEffect(() => {
@@ -322,9 +342,9 @@ export const RichTextArea: React.FC<RichTextAreaProps> = ({
   /**
    * Tombol toolbar: semua baris yang diblok (atau baris tempat kursor) jadi
    * list; kalau semuanya sudah list sejenis, dikembalikan jadi paragraf.
-   * Bullet <-> nomor saling menggantikan.
+   * Bullet <-> nomor <-> subjudul saling menggantikan.
    */
-  const toggleList = (kind: 'ul' | 'ol') => {
+  const toggleList = (kind: 'ul' | 'ol' | 'h3') => {
     const el = editorRef.current;
     if (!el) return;
     el.focus();
@@ -372,12 +392,17 @@ export const RichTextArea: React.FC<RichTextAreaProps> = ({
     }
     if (!picked.length) picked = [all[all.length - 1]];
 
-    const allOfKind = picked.every(
-      (u) => u.tagName === 'LI' && (u.parentElement as HTMLElement).tagName.toLowerCase() === kind,
-    );
-
     let results: HTMLElement[];
-    if (allOfKind) {
+    if (kind === 'h3') {
+      const allHeading = picked.every((u) => u.tagName === 'H3');
+      results = picked.map((u) => {
+        if (allHeading) return retag(u, 'p');
+        const para = u.tagName === 'LI' ? liToPara(u) : u;
+        return para.tagName === 'H3' ? para : retag(para, 'h3');
+      });
+    } else if (picked.every(
+      (u) => u.tagName === 'LI' && (u.parentElement as HTMLElement).tagName.toLowerCase() === kind,
+    )) {
       results = picked.map(liToPara);
     } else {
       results = picked.map((u) => {
@@ -445,6 +470,18 @@ export const RichTextArea: React.FC<RichTextAreaProps> = ({
           Nomor
         </button>
 
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => toggleList('h3')}
+          title="Jadikan subjudul tebal (blok/klik barisnya dulu)"
+          aria-pressed={fmt.h}
+          className={`${TOOL_BASE} ${fmt.h ? TOOL_ON : TOOL_OFF}`}
+        >
+          <span className="material-symbols-outlined text-sm">title</span>
+          Subjudul
+        </button>
+
         <span className="w-px h-5 bg-[#E0E0E0] mx-0.5" aria-hidden="true" />
 
         {ALIGN_OPTIONS.map((opt) => (
@@ -499,6 +536,7 @@ export const RichTextArea: React.FC<RichTextAreaProps> = ({
             [&_p]:m-0 [&_div]:m-0
             [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:m-0
             [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:m-0
+            [&_h3]:m-0 [&_h3]:text-sm [&_h3]:sm:text-base [&_h3]:font-extrabold [&_h3]:text-[#162809]
             [&_li]:leading-relaxed [&_li]:pl-1
             [&_ul]:marker:text-[#2E7D32] [&_ol]:marker:text-[#2E7D32]"
         />
